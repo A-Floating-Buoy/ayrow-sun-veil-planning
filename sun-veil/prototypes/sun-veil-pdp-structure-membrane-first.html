@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP Structure - Membrane First</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+
+    .sv-page {
+      padding: var(--layout-page-md) var(--layout-page-x);
+    }
+
+    .sv-shell {
+      width: min(100%, var(--layout-max-w-wide));
+      margin: 0 auto;
+    }
+
+    .sv-narrow {
+      max-width: var(--layout-max-w);
+    }
+
+    .sv-hero {
+      min-height: 72svh;
+      display: grid;
+      align-content: center;
+      padding-bottom: var(--layout-section-md);
+    }
+
+    .sv-section {
+      padding: var(--layout-section-md) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+
+    .sv-section__head {
+      display: grid;
+      grid-template-columns: minmax(112px, 0.22fr) minmax(0, 0.78fr);
+      gap: var(--layout-block);
+      margin-bottom: var(--layout-block);
+    }
+
+    .sv-stack {
+      display: grid;
+      gap: var(--spacing-4);
+    }
+
+    .sv-stack--tight {
+      gap: var(--spacing-2);
+    }
+
+    .sv-grid {
+      display: grid;
+      gap: var(--layout-block);
+    }
+
+    .sv-grid--2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sv-grid--3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .sv-list {
+      display: grid;
+      gap: var(--spacing-6);
+      list-style: none;
+    }
+
+    .sv-list--ordered {
+      list-style-position: inside;
+    }
+
+    .sv-kicker,
+    .sv-index,
+    .sv-meta,
+    .sv-label {
+      color: var(--semantic-on-surface-accent);
+    }
+
+    .sv-muted {
+      color: var(--semantic-on-surface-muted);
+    }
+
+    .sv-quote {
+      margin-top: var(--spacing-8);
+      color: var(--semantic-on-surface-accent);
+    }
+
+    .sv-table {
+      margin-top: var(--spacing-8);
+    }
+
+    .sv-table th,
+    .sv-table td {
+      vertical-align: top;
+      padding: var(--spacing-3) var(--spacing-3) var(--spacing-3) 0;
+    }
+
+    .sv-footer {
+      padding-top: var(--layout-section-lg);
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+
+    @media (max-width: 768px) {
+      .sv-hero {
+        min-height: 64svh;
+      }
+
+      .sv-section__head,
+      .sv-grid--2,
+      .sv-grid--3 {
+        grid-template-columns: 1fr;
+      }
+
+      .sv-section__head {
+        gap: var(--spacing-5);
+      }
+
+      .sv-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="sv-page">
+    <div class="sv-shell">
+      <section class="sv-hero sv-narrow" aria-labelledby="structure-title">
+        <div class="sv-stack">
+          <p class="caption-m sv-kicker">Sun Veil PDP Structure / v2B · Membrane First</p>
+          <h1 class="heading-xxxl" id="structure-title">NO. 거의 보이지 않게. 왜? 필름이 아니라 멤브레인이기 때문에.</h1>
+          <p class="body-xl">
+            `티가 나나요? → NO.` 직후에 바로 멤브레인 차별점을 밝히고, 그 다음 고객이 체감하는 경험을 정리하는 비교안입니다.
+          </p>
+          <p class="body-m sv-muted">비교 대상: `sun-veil-pdp-structure-concise.html`은 03 Key Experience가 먼저 오는 버전입니다.</p>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="flow-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">Flow Map</p>
+          <div class="sv-stack">
+            <h2 class="heading-xxl" id="flow-title">바뀐 전체 섹션 순서.</h2>
+            <ol class="sv-list--ordered body-m">
+              <li>Hero</li>
+              <li>Quick FAQ / YES-NO</li>
+              <li>Category Reframing / Membrane Reveal</li>
+              <li>Key Experience / Invisible Applied</li>
+              <li>Confidence Snapshot / Proof Digest</li>
+              <li>Why This Zone</li>
+              <li>Use Cases / Whereable Beauty</li>
+              <li>Ritual / Usage Guide</li>
+              <li>How It Works</li>
+              <li>Technology</li>
+              <li>Full FAQ</li>
+              <li>Product Spec</li>
+              <li>CTA Footer</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="hero-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">01 · Hero</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: product definition / full-width copy</p>
+            <h2 class="heading-xxl" id="hero-title">피부를 가두지 않는, 숨 쉬는 선케어 레이어.</h2>
+            <p class="body-l">
+              Sun Veil은 필름처럼 덮는 선패치가 아니라 0.004 mm 초박막 멤브레인이 피부 위에 얹히는 새로운 방식의 Aesthetic Guard입니다.
+            </p>
+            <p class="body-m sv-muted">Reverse AG Code™ Sun Veil · 0.004 mm · UPF 50+ · Dermatest Excellent</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="quick-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">02 · Quick FAQ</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: fullpage YES-NO sequence / interaction-led</p>
+            <h2 class="heading-xxl" id="quick-title">초반 의심을 빠르게 통과시키고, 마지막에 NO로 반전합니다.</h2>
+            <p class="body-l">YES가 사용 가능성을 쌓고, `티가 나나요? → NO.`가 바로 `왜 안 보이는가?`라는 구조 설명으로 이어집니다.</p>
+          </div>
+        </div>
+
+        <ol class="sv-grid sv-grid--3 sv-list">
+          <li class="sv-stack--tight">
+            <p class="heading-xxl sv-kicker">YES</p>
+            <h3 class="heading-m">메이크업 위에도.</h3>
+            <p class="body-s">쿠션 팩트, 파운데이션 위에서도 자연스럽게 안착.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <p class="heading-xxl sv-kicker">YES</p>
+            <h3 class="heading-m">필름형 선패치와 다르게.</h3>
+            <p class="body-s">피부를 덮는 필름이 아닌 나노 섬유 멤브레인.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <p class="heading-xxl sv-kicker">YES</p>
+            <h3 class="heading-m">점착제 없이도.</h3>
+            <p class="body-s">Moisture-Bonding 방식으로 피부 위에 안착.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <p class="heading-xxl sv-kicker">YES</p>
+            <h3 class="heading-m">투명하지만 차단되게.</h3>
+            <p class="body-s">원단 기준 시험에서 UPF 50+ 결과 확인.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <p class="heading-xxl">NO</p>
+            <h3 class="heading-m">눈에 띄지 않게.</h3>
+            <p class="body-s">0.004 mm 초박막 투명 멤브레인이 얇게 자리 잡습니다.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="sv-section" aria-labelledby="difference-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">03 · Category Reframing</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: membrane reveal / 3-column grid + comparison table</p>
+            <h2 class="heading-xxl" id="difference-title">필름이 아니라 멤브레인이라서, 얇고 보이지 않게 보호합니다.</h2>
+            <p class="body-l">
+              NO의 이유를 바로 설명합니다. 제품의 핵심 차별점은 투명한 패치를 만든 것이 아니라, 피부를 덮는 필름 대신 0.004 mm 나노 섬유 멤브레인을 선택했다는 점입니다.
+            </p>
+            <p class="body-l">
+              고객은 멤브레인이 무엇인지 모를 수 있으므로, 먼저 `필름은 막`, `멤브레인은 얇은 섬유망`이라는 차이를 이해시킵니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="sv-grid sv-grid--2">
+          <div class="sv-stack">
+            <p class="caption-m sv-label">Film</p>
+            <h3 class="heading-l">하나의 막으로 피부를 덮는 구조.</h3>
+            <p class="body-m">투명해 보여도 피부 위에는 연속된 막이 올라갑니다. 열과 습기가 머무르기 쉽고, 붙였다는 존재감이 남을 수 있습니다.</p>
+          </div>
+          <div class="sv-stack">
+            <p class="caption-m sv-label">Membrane</p>
+            <h3 class="heading-l">가느다란 섬유가 얇게 얽힌 구조.</h3>
+            <p class="body-m">피부를 한 장의 막으로 덮기보다, 초박막 섬유층이 얇게 자리 잡습니다. 그래서 더 가볍고, 덜 보이고, 흐름을 고려할 수 있습니다.</p>
+          </div>
+        </div>
+
+        <ul class="sv-grid sv-grid--3 sv-list">
+          <li class="sv-stack">
+            <p class="caption-m sv-label">Thin</p>
+            <h3 class="heading-l">0.004 mm 초박막.</h3>
+            <p class="body-m">두꺼운 막으로 가리는 대신, 피부 위에 얇게 얹히는 보호 레이어.</p>
+          </li>
+          <li class="sv-stack">
+            <p class="caption-m sv-label">Invisible</p>
+            <h3 class="heading-l">메이크업 위에서도 자연스럽게.</h3>
+            <p class="body-m">보이지 않음은 별도 효과가 아니라 초박막 멤브레인 구조에서 이어지는 경험.</p>
+          </li>
+          <li class="sv-stack">
+            <p class="caption-m sv-label">Membrane</p>
+            <h3 class="heading-l">피부를 가두지 않는 구조.</h3>
+            <p class="body-m">섬유 기반 다공성 구조가 공기와 습기 흐름을 고려합니다.</p>
+          </li>
+        </ul>
+
+        <table class="sv-table">
+          <thead>
+            <tr>
+              <th>필름형 선패치</th>
+              <th>Sun Veil 멤브레인</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>하나의 면으로 피부 위를 덮는 막 구조</td>
+              <td>가느다란 섬유가 얽힌 다공성 멤브레인 구조</td>
+            </tr>
+            <tr>
+              <td>투명한 필름이어도 막의 존재감이 남을 수 있음</td>
+              <td>0.004 mm 초박막 멤브레인이 얇게 자리 잡음</td>
+            </tr>
+            <tr>
+              <td>열과 습기가 머무르기 쉬움</td>
+              <td>습기 배출을 고려한 구조</td>
+            </tr>
+            <tr>
+              <td>접착감이 부담될 수 있음</td>
+              <td>점착제 없이 안착하는 방식</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="sv-section" aria-labelledby="experience-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">04 · Key Experience</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: experience applied / 2x2 grid</p>
+            <h2 class="heading-xxl" id="experience-title">멤브레인 구조가 고객 경험으로 바뀌는 지점.</h2>
+            <p class="body-l">03에서 밝힌 구조적 차별점을 `Invisible / Seamless / Aero Flow / Gentle`의 사용 경험으로 다시 번역합니다.</p>
+          </div>
+        </div>
+
+        <ol class="sv-grid sv-grid--2 sv-list">
+          <li class="sv-stack">
+            <p class="caption-m sv-label">01 / Invisible Veil</p>
+            <h3 class="heading-l">일반적인 선패치처럼 눈에 띄지 않습니다.</h3>
+            <p class="body-m">메이크업 위에서도 자연스럽게 어우러지는 거의 보이지 않는 투명 구조.</p>
+          </li>
+          <li class="sv-stack">
+            <p class="caption-m sv-label">02 / Seamless Fit</p>
+            <h3 class="heading-l">붙인 것조차 잊게 만드는 착용감.</h3>
+            <p class="body-m">피부 굴곡과 메이크업 위에 자연스럽게 어우러지는 피팅감.</p>
+          </li>
+          <li class="sv-stack">
+            <p class="caption-m sv-label">03 / Aero Flow™</p>
+            <h3 class="heading-l">공기 흐름을 유지하면서 밀착.</h3>
+            <p class="body-m">초미세 다공성 멤브레인 구조로 장시간 착용에도 답답함을 줄입니다.</p>
+          </li>
+          <li class="sv-stack">
+            <p class="caption-m sv-label">04 / Gentle Removal</p>
+            <h3 class="heading-l">점착 부담 없이 부드럽게 분리.</h3>
+            <p class="body-m">붙이고 떼어내는 과정의 부담을 낮추는 사용 경험.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="sv-section" aria-labelledby="confidence-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">05 · Confidence</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: proof digest / 3-column grid</p>
+            <h2 class="heading-xxl" id="confidence-title">보이지 않을 만큼 얇지만, 데이터로 확인되는 구조.</h2>
+            <p class="body-l">시험성적서 원본 노출 없이 구매 판단에 필요한 수치만 고객 언어로 번역합니다.</p>
+          </div>
+        </div>
+
+        <ul class="sv-grid sv-grid--3 sv-list">
+          <li class="sv-stack">
+            <p class="caption-m sv-label">UV Protection</p>
+            <h3 class="heading-l">UPF 50+</h3>
+            <p class="body-m">UVB 99.9% · UVA 95.3% · UVR 96.3%</p>
+            <p class="caption-m sv-muted">원단 기준 시험 결과</p>
+          </li>
+          <li class="sv-stack">
+            <p class="caption-m sv-label">Breathable Structure</p>
+            <h3 class="heading-l">투습도 12,356</h3>
+            <p class="body-m">공기투과도 1.0 미만 mm/s · 평균 기공 크기 0.7 μm</p>
+          </li>
+          <li class="sv-stack">
+            <p class="caption-m sv-label">Sensitive Skin Tested</p>
+            <h3 class="heading-l">Dermatest Excellent</h3>
+            <p class="body-m">민감 피부 대상 첩포 시험 및 사용 시험 기준</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sv-section" aria-labelledby="zone-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">06 · Why This Zone</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: problem framing / 3-column grid</p>
+            <h2 class="heading-xxl" id="zone-title">선케어가 가장 먼저 무너지는 자리.</h2>
+            <p class="body-l">눈가 아래와 광대는 빛, 표정 움직임, 메이크업 변화가 집중되는 영역입니다.</p>
+          </div>
+        </div>
+
+        <ul class="sv-grid sv-grid--3 sv-list">
+          <li class="sv-stack--tight">
+            <h3 class="heading-m">메이크업 위</h3>
+            <p class="body-m">피부 표현을 무너뜨리고 싶지 않을 때.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <h3 class="heading-m">햇살이 드는 자리</h3>
+            <p class="body-m">통창, 테라스, 산책처럼 빛을 피하고 싶지 않을 때.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <h3 class="heading-m">이동 중</h3>
+            <p class="body-m">덧바르기 애매하지만 보호는 이어가고 싶을 때.</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sv-section" aria-labelledby="use-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">07 · Use Cases</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: editorial moments / 3-column grid or slider</p>
+            <h2 class="heading-xxl" id="use-title">당신의 하루 속, Sun Veil이 함께하는 순간.</h2>
+            <p class="body-l">클라이언트 원고의 생활 장면은 삭제하지 않고, 짧은 editorial moment로 정리합니다.</p>
+          </div>
+        </div>
+
+        <ol class="sv-grid sv-grid--3 sv-list">
+          <li class="sv-stack--tight">
+            <p class="caption-m sv-label">A Quiet Moment</p>
+            <h3 class="heading-m">오후 2시 창가.</h3>
+            <p class="body-s">빛이 들어오는 자리를 포기하지 않아도 됩니다.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <p class="caption-m sv-label">A Social Moment</p>
+            <h3 class="heading-m">러닝 크루.</h3>
+            <p class="body-s">하루의 흐름을 멈추지 않는 선케어.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <p class="caption-m sv-label">A Lifestyle Moment</p>
+            <h3 class="heading-m">테라스 브런치.</h3>
+            <p class="body-s">햇살을 피하지 않는 사람의 선 리추얼.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <p class="caption-m sv-label">A Free Moment</p>
+            <h3 class="heading-m">햇살 산책.</h3>
+            <p class="body-s">기분 좋은 햇살을 그대로 즐기는 시간.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <p class="caption-m sv-label">A Flow Moment</p>
+            <h3 class="heading-m">멀티태스킹.</h3>
+            <p class="body-s">무의식의 흐름대로 이어지는 지속적인 케어.</p>
+          </li>
+          <li class="sv-stack--tight">
+            <p class="caption-m sv-label">A Drive Moment</p>
+            <h3 class="heading-m">드라이브 케어.</h3>
+            <p class="body-s">빛이 오래 머무는 이동 시간에도 이어지는 보호.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="sv-section" aria-labelledby="ritual-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">08 · Ritual</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: usage steps / 3-column grid</p>
+            <h2 class="heading-xxl" id="ritual-title">Ready. Set. Go.</h2>
+          </div>
+        </div>
+
+        <ol class="sv-grid sv-grid--3 sv-list">
+          <li class="sv-stack">
+            <p class="caption-m sv-label">01 · Ready</p>
+            <p class="body-l">파우치를 열고 L/R 방향을 확인합니다.</p>
+          </li>
+          <li class="sv-stack">
+            <p class="caption-m sv-label">02 · Set</p>
+            <p class="body-l">햇살이 먼저 닿는 광대존에 올린 뒤 가볍게 눌러 안착시킵니다.</p>
+          </li>
+          <li class="sv-stack">
+            <p class="caption-m sv-label">03 · Go</p>
+            <p class="body-l">피부와 하나가 된 듯한 피팅감으로 일상을 이어갑니다.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="sv-section" aria-labelledby="how-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">09 · How It Works</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: mechanism / 2-column grid</p>
+            <h2 class="heading-xxl" id="how-title">두 개의 레이어가 하나의 얇은 베일처럼 작동합니다.</h2>
+            <p class="body-l">보호 구조와 밀착 구조를 고객이 이해할 수 있는 정도로만 설명합니다.</p>
+          </div>
+        </div>
+
+        <div class="sv-grid sv-grid--2">
+          <div class="sv-stack">
+            <p class="caption-m sv-label">How It Protects</p>
+            <h3 class="heading-l">Ultra-thin Membrane + Care Formula Layer</h3>
+            <p class="body-m">0.004 mm 투명 나노 섬유와 피부 컨디션을 고려한 포뮬러가 함께 설계된 구조.</p>
+          </div>
+          <div class="sv-stack">
+            <p class="caption-m sv-label">How It Bonds</p>
+            <h3 class="heading-l">접착하지 않고 수분으로 안착.</h3>
+            <p class="body-m">멤브레인 구조와 제형의 점성을 활용한 Moisture-Bonding 방식.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="tech-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">10 · Technology</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: deep dive / 2-column grid</p>
+            <h2 class="heading-xxl" id="tech-title">태양이 강렬할수록, 더 치밀하게 작동합니다.</h2>
+            <p class="body-l">Formula와 Material Innovation은 깊이 설명이므로 후반 배치합니다.</p>
+          </div>
+        </div>
+
+        <div class="sv-grid sv-grid--2">
+          <div class="sv-stack">
+            <p class="caption-m sv-label">Reverse AG Code™ Formula</p>
+            <h3 class="heading-l">피부 컨디션을 고려한 포뮬러.</h3>
+            <p class="body-m">NMN, Resveratrol, Pterostilbene 등 상세 성분은 검수 후 접힘 콘텐츠로 운영.</p>
+          </div>
+          <div class="sv-stack">
+            <p class="caption-m sv-label">Aero Flow Membrane™</p>
+            <h3 class="heading-l">숨 쉬는 초경량 멤브레인.</h3>
+            <p class="body-m">Skin-Breathing, Stealth Fit, Zero-Gravity를 기술 언어로 정리.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="faq-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">11 · Full FAQ</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: accordion / grouped questions</p>
+            <h2 class="heading-xxl" id="faq-title">자주 묻는 질문.</h2>
+            <p class="body-l">Quick FAQ에서 해결하지 못한 깊은 질문을 그룹화합니다. 클라이언트 작성 FAQ는 유지합니다.</p>
+          </div>
+        </div>
+
+        <div class="sv-grid sv-grid--2">
+          <div class="sv-stack">
+            <p class="caption-m sv-label">이해</p>
+            <p class="body-m">Sun Veil은 정확히 어떤 제품인가요?</p>
+            <p class="body-m">투명한데 자외선 차단이 가능한 이유는 무엇인가요?</p>
+            <p class="body-m">일반 선패치와 다른가요?</p>
+          </div>
+          <div class="sv-stack">
+            <p class="caption-m sv-label">신뢰 / 사용 경험 / 최종 선택</p>
+            <p class="body-m">점착 성분 없이 어떻게 붙나요?</p>
+            <p class="body-m">민감한 피부에도 사용할 수 있나요?</p>
+            <p class="body-m">UPF와 SPF의 차이는 무엇인가요?</p>
+            <p class="body-m">촉감, 거울 없이 부착, 재사용, 왜 선베일인가요?</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="spec-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">12 · Product Spec</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: product information / table</p>
+            <h2 class="heading-xxl" id="spec-title">구매 전 확인할 정보.</h2>
+          </div>
+        </div>
+
+        <table class="sv-table">
+          <tbody>
+            <tr>
+              <th>제품명</th>
+              <td>에이로우 리버스 AG 코드™ 선베일</td>
+            </tr>
+            <tr>
+              <th>사용기한</th>
+              <td>제조일로부터 30개월 / 개봉 후 즉시 사용</td>
+            </tr>
+            <tr>
+              <th>주의사항</th>
+              <td>본 제품은 화장품 또는 의약품이 아닌 공산품입니다. 1회 사용을 권장합니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="sv-footer" aria-labelledby="cta-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">13 · CTA Footer</p>
+          <div class="sv-stack">
+            <p class="caption-m sv-meta">Content type: closing / purchase action</p>
+            <h2 class="heading-xxxl" id="cta-title">햇살을 포기하지 않는 가장 얇고 새로운 보호 방식.</h2>
+            <p class="body-xl">AYROW Reverse AG Code™ Sun Veil</p>
+            <p class="body-l sv-quote">지금 구매하기</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP — Use Cases / Timeline (B)</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css"좋다. >
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    body { margin: 0; background: var(--semantic-bg-default); color: var(--semantic-on-surface); }
+    .uct-page { padding: var(--layout-page-md) var(--layout-page-x); }
+    .uct-shell { width: min(100%, var(--layout-max-w-wide)); margin: 0 auto; }
+    .uct-narrow { max-width: var(--layout-max-w); }
+
+    /* DOC INTRO */
+    .uct-doc {
+      min-height: 36svh;
+      display: grid; align-content: center;
+      padding-bottom: var(--layout-section-md);
+    }
+    .uct-doc__stack { display: grid; gap: var(--spacing-4); }
+    .uct-kicker { color: var(--semantic-on-surface-accent); }
+    .uct-muted  { color: var(--semantic-on-surface-muted); }
+
+    /* SPLIT: main + side notes */
+    .uct-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.6fr);
+      gap: var(--layout-block);
+      align-items: start;
+      padding: var(--layout-section-md) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .uct-note {
+      position: sticky; top: var(--spacing-8);
+      display: grid; gap: var(--spacing-5);
+      padding-left: var(--layout-block);
+      border-left: 1px solid var(--semantic-border-muted);
+    }
+    .uct-note h3 {
+      margin: 0 0 var(--spacing-2);
+      color: var(--semantic-on-surface-accent);
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    .uct-note ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--spacing-1); font-size: 13px; line-height: 1.55; }
+    .uct-note p  { margin: 0; color: var(--semantic-on-surface-muted); line-height: 1.65; font-size: 13px; }
+    .uct-note > div { padding-bottom: var(--spacing-4); border-bottom: 1px dashed var(--semantic-border-muted); }
+    .uct-note > div:last-child { border-bottom: 0; padding-bottom: 0; }
+
+    /* SECTION HEAD */
+    .uct-head {
+      display: grid; gap: var(--spacing-4);
+      margin-bottom: var(--layout-block);
+    }
+    .uct-head__index { color: var(--semantic-on-surface-muted); font-variant-numeric: tabular-nums; }
+    .uct-head__sub { color: var(--semantic-on-surface-muted); }
+
+    /* HERO SIGNATURE — 14:00 */
+    .uct-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: var(--layout-block);
+      align-items: stretch;
+      margin-bottom: var(--layout-section-md);
+      position: relative;
+    }
+    .uct-hero__visual {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      background: linear-gradient(155deg, #F4EAD0 0%, #EAD8B0 60%, #D9BD7E 100%);
+      border-radius: 12px;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+    .uct-hero__visual::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(255,255,255,0.55), transparent 35%),
+        radial-gradient(circle at 25% 70%, rgba(187,213,253,0.3), transparent 50%);
+    }
+    .uct-hero__placeholder {
+      position: relative; z-index: 1;
+      color: rgba(0,0,0,0.45);
+      font-size: 11.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      display: grid; gap: 4px;
+    }
+    .uct-hero__placeholder svg { width: 56px; height: 56px; opacity: 0.55; margin: 0 auto; }
+
+    .uct-hero__copy {
+      display: grid;
+      align-content: space-between;
+      padding: var(--spacing-2) 0;
+      gap: var(--spacing-6);
+    }
+    .uct-hero__time {
+      display: flex; gap: var(--spacing-3); align-items: baseline;
+      font-variant-numeric: tabular-nums;
+    }
+    .uct-hero__time strong {
+      font-size: 56px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--semantic-on-surface);
+    }
+    .uct-hero__time small {
+      color: var(--semantic-on-surface-muted);
+      font-size: 11.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .uct-hero__title { display: grid; gap: var(--spacing-3); }
+    .uct-hero__moment { color: var(--semantic-on-surface-muted); font-style: italic; }
+    .uct-hero__lead { color: var(--semantic-on-surface); }
+    .uct-hero__tags { display: flex; gap: var(--spacing-2); flex-wrap: wrap; }
+    .uct-tag {
+      display: inline-flex; align-items: center;
+      padding: 6px 12px;
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--semantic-on-surface-muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* TIMELINE */
+    .uct-timeline {
+      margin-bottom: var(--layout-section-md);
+    }
+    .uct-timeline__head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: var(--spacing-4);
+      margin-bottom: var(--spacing-8);
+    }
+    .uct-timeline__title {
+      display: grid; gap: 4px;
+    }
+
+    .uct-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--spacing-4);
+    }
+    /* horizontal line */
+    .uct-track::before {
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      top: 28px;
+      height: 1px;
+      background: var(--semantic-border-muted);
+    }
+
+    .uct-tnode {
+      display: grid;
+      gap: var(--spacing-3);
+      grid-template-rows: auto auto 1fr;
+    }
+    .uct-tnode__time {
+      position: relative;
+      padding-top: 44px;
+      font-variant-numeric: tabular-nums;
+      font-size: 14px;
+      color: var(--semantic-on-surface);
+      letter-spacing: 0.04em;
+    }
+    .uct-tnode__time::before {
+      content: "";
+      position: absolute;
+      top: 22px; left: 0;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-on-surface);
+    }
+    .uct-tnode__visual {
+      aspect-ratio: 4 / 5;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      display: grid; place-items: center;
+    }
+    .uct-tnode__visual::before {
+      content: "";
+      position: absolute; inset: 0;
+      mix-blend-mode: multiply; opacity: 0.4;
+      background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.5), transparent 45%);
+    }
+    .uct-tnode__placeholder {
+      color: rgba(0,0,0,0.5);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      position: relative; z-index: 1;
+    }
+    .uct-tnode[data-time="0630"] .uct-tnode__visual { background: linear-gradient(155deg, #C9D2E0, #8FA1BC); }
+    .uct-tnode[data-time="1000"] .uct-tnode__visual { background: linear-gradient(155deg, #F2E8C8, #E0CC92); }
+    .uct-tnode[data-time="1100"] .uct-tnode__visual { background: linear-gradient(155deg, #F2DCC0, #E0B98E); }
+    .uct-tnode[data-time="1600"] .uct-tnode__visual { background: linear-gradient(155deg, #F0DBA8, #D9A864); }
+    .uct-tnode[data-time="1800"] .uct-tnode__visual { background: linear-gradient(155deg, #E8B898, #B86E54); }
+
+    .uct-tnode__copy {
+      display: grid; gap: var(--spacing-2);
+    }
+    .uct-tnode__moment { color: var(--semantic-on-surface-muted); font-style: italic; font-size: 12px; }
+    .uct-tnode__title { color: var(--semantic-on-surface); font-size: 15px; font-weight: 500; line-height: 1.4; }
+    .uct-tnode__lead { color: var(--semantic-on-surface-muted); font-size: 13px; line-height: 1.55; }
+    .uct-tnode__tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .uct-tnode__tags .uct-tag { padding: 3px 8px; font-size: 10.5px; }
+
+    /* OUT-OF-TIME aside (시술 후 케어) */
+    .uct-aside {
+      display: grid;
+      grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+      gap: var(--layout-block);
+      align-items: center;
+      padding: var(--spacing-8);
+      background: var(--semantic-bg-subtle, #F6F2EA);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+    }
+    .uct-aside__label {
+      display: grid; gap: var(--spacing-2);
+    }
+    .uct-aside__kicker {
+      font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+    }
+    .uct-aside__moment { color: var(--semantic-on-surface-muted); font-style: italic; }
+    .uct-aside__copy { display: grid; gap: var(--spacing-3); }
+    .uct-aside__lead { color: var(--semantic-on-surface); }
+    .uct-aside__tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    /* MOBILE PREVIEW */
+    .uct-mobile {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--layout-block);
+      align-items: start;
+      padding: var(--layout-section-md) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .uct-phone {
+      width: 100%; max-width: 320px;
+      aspect-ratio: 9 / 18;
+      background: var(--semantic-bg-subtle, #f6f4ef);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 28px;
+      padding: 14px 12px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 10px;
+      margin: 0 auto;
+    }
+    .uct-phone__head {
+      font-size: 10px; color: var(--semantic-on-surface-muted);
+      display: flex; justify-content: space-between;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .uct-phone__hero {
+      aspect-ratio: 4 / 5;
+      background: linear-gradient(155deg, #F4EAD0, #D9BD7E);
+      border-radius: 10px;
+      position: relative; overflow: hidden;
+      display: grid; align-content: end;
+      padding: 10px;
+      color: rgba(0,0,0,0.7);
+    }
+    .uct-phone__hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 75% 22%, rgba(255,255,255,0.55), transparent 40%);
+    }
+    .uct-phone__hero strong { position: relative; z-index: 1; font-size: 12px; display: block; }
+    .uct-phone__hero span { position: relative; z-index: 1; font-size: 10px; opacity: 0.7; }
+
+    .uct-phone__vline {
+      position: relative;
+      display: grid; gap: 8px;
+      padding-left: 18px;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .uct-phone__vline::before {
+      content: "";
+      position: absolute; left: 5px; top: 4px; bottom: 4px;
+      width: 1px;
+      background: rgba(0,0,0,0.15);
+    }
+    .uct-phone__vitem {
+      position: relative;
+      font-size: 9.5px;
+      color: var(--semantic-on-surface);
+      line-height: 1.4;
+      display: grid; gap: 2px;
+    }
+    .uct-phone__vitem::before {
+      content: "";
+      position: absolute; left: -16px; top: 4px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-on-surface);
+    }
+    .uct-phone__vitem strong { font-size: 10px; font-weight: 600; }
+    .uct-phone__vitem small { color: var(--semantic-on-surface-muted); font-size: 9px; }
+
+    @media (max-width: 1024px) {
+      .uct-hero { grid-template-columns: 1fr; }
+      .uct-track { grid-template-columns: repeat(5, minmax(180px, 1fr)); overflow-x: auto; padding-bottom: var(--spacing-3); scroll-snap-type: x mandatory; }
+      .uct-track > * { scroll-snap-align: start; }
+    }
+    @media (max-width: 900px) {
+      .uct-split { grid-template-columns: 1fr; }
+      .uct-note {
+        position: static; padding-left: 0; padding-top: var(--layout-block);
+        border-left: 0; border-top: 1px solid var(--semantic-border-muted);
+      }
+      .uct-aside { grid-template-columns: 1fr; padding: var(--spacing-5); }
+      .uct-mobile { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="uct-page">
+    <div class="uct-shell">
+
+      <!-- DOC INTRO -->
+      <section class="uct-doc uct-narrow">
+        <div class="uct-doc__stack">
+          <p class="caption-m uct-kicker">Sun Veil PDP / Use Cases · Timeline Reframe (B)</p>
+          <h1 class="heading-xxxl">7개 시나리오를 평등하게 깔지 않고,<br/>하루의 흐름 위에 얹는다.</h1>
+          <p class="body-xl uct-muted">
+            오후 2시 창가(시그니처) 1장만 풀 에디토리얼 사진으로 두고, 나머지 5개는 시간축에 매핑한 카드 노드로 운영한다. 시간축에 안 맞는 시술 후 케어는 별도 strip으로 분리. "흐름이 끊기지 않는 보호" — Seamless 키워드와 직결된다.
+          </p>
+        </div>
+      </section>
+
+      <!-- USE CASES SECTION -->
+      <section class="uct-split">
+        <div>
+
+          <!-- Section header -->
+          <header class="uct-head">
+            <p class="uct-head__index caption-m">04 · USE CASES</p>
+            <h2 class="heading-xxl">당신의 하루 속,<br/>Sun Veil이 함께하는 순간</h2>
+            <p class="uct-head__sub body-xl">Whereable Beauty — Wherever + Able</p>
+          </header>
+
+          <!-- HERO SIGNATURE — 14:00 -->
+          <article class="uct-hero" data-role="signature">
+            <div class="uct-hero__visual" aria-hidden="true">
+              <div class="uct-hero__placeholder">
+                <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <rect x="6" y="10" width="52" height="44" rx="2"/>
+                  <line x1="32" y1="10" x2="32" y2="54"/>
+                  <line x1="6" y1="32" x2="58" y2="32"/>
+                  <circle cx="48" cy="20" r="4"/>
+                </svg>
+                <span>Hero Image · 4 : 5</span>
+                <span style="font-size: 10px; opacity: 0.7;">창가 / 오후의 빛 / 메이크업 위 부착 컷</span>
+              </div>
+            </div>
+
+            <div class="uct-hero__copy">
+              <div class="uct-hero__time">
+                <strong>14:00</strong>
+                <small>Signature Moment</small>
+              </div>
+
+              <div class="uct-hero__title">
+                <p class="uct-hero__moment heading-m">A Quiet Moment</p>
+                <h3 class="heading-xl">오후 2시 창가</h3>
+                <p class="uct-hero__lead body-xl">
+                  빛이 들어오는 자리를 포기하지 않아도 됩니다.
+                </p>
+              </div>
+
+              <div>
+                <div class="uct-hero__tags">
+                  <span class="uct-tag">메이크업 위 부착</span>
+                  <span class="uct-tag">티 나지 않는 밀착</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- TIMELINE: 5 nodes -->
+          <section class="uct-timeline" aria-label="하루의 흐름">
+            <header class="uct-timeline__head">
+              <div class="uct-timeline__title">
+                <p class="caption-m uct-muted">Day Flow · Across the hours</p>
+                <p class="heading-m">하루 동안 이어지는 보호의 순간</p>
+              </div>
+            </header>
+
+            <div class="uct-track" role="list">
+
+              <article class="uct-tnode" data-time="0630" role="listitem">
+                <p class="uct-tnode__time">06:30</p>
+                <div class="uct-tnode__visual"><span class="uct-tnode__placeholder">Running</span></div>
+                <div class="uct-tnode__copy">
+                  <p class="uct-tnode__moment">A Social Moment</p>
+                  <p class="uct-tnode__title">러닝 크루</p>
+                  <p class="uct-tnode__lead">하루의 흐름을 멈추지 않는 선케어</p>
+                  <div class="uct-tnode__tags">
+                    <span class="uct-tag">운동 환경 고려</span>
+                    <span class="uct-tag">빠른 부착</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="uct-tnode" data-time="1000" role="listitem">
+                <p class="uct-tnode__time">10:00</p>
+                <div class="uct-tnode__visual"><span class="uct-tnode__placeholder">Multitask</span></div>
+                <div class="uct-tnode__copy">
+                  <p class="uct-tnode__moment">A Flow Moment</p>
+                  <p class="uct-tnode__title">멀티 태스킹</p>
+                  <p class="uct-tnode__lead">무의식의 흐름대로 지속적인 케어</p>
+                  <div class="uct-tnode__tags">
+                    <span class="uct-tag">장시간 착용</span>
+                    <span class="uct-tag">생활 밀착</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="uct-tnode" data-time="1100" role="listitem">
+                <p class="uct-tnode__time">11:00</p>
+                <div class="uct-tnode__visual"><span class="uct-tnode__placeholder">Brunch</span></div>
+                <div class="uct-tnode__copy">
+                  <p class="uct-tnode__moment">A Lifestyle Moment</p>
+                  <p class="uct-tnode__title">테라스 브런치</p>
+                  <p class="uct-tnode__lead">햇살을 피하지 않는 사람의 SUN 리추얼</p>
+                  <div class="uct-tnode__tags">
+                    <span class="uct-tag">레이어드 선케어</span>
+                    <span class="uct-tag">우아한 선루틴</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="uct-tnode" data-time="1600" role="listitem">
+                <p class="uct-tnode__time">16:00</p>
+                <div class="uct-tnode__visual"><span class="uct-tnode__placeholder">Walk</span></div>
+                <div class="uct-tnode__copy">
+                  <p class="uct-tnode__moment">A Free Moment</p>
+                  <p class="uct-tnode__title">기분 좋은 햇살 산책</p>
+                  <p class="uct-tnode__lead">햇살을 그대로 즐기는 시간</p>
+                  <div class="uct-tnode__tags">
+                    <span class="uct-tag">장시간 착용</span>
+                    <span class="uct-tag">생활 밀착</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="uct-tnode" data-time="1800" role="listitem">
+                <p class="uct-tnode__time">18:00</p>
+                <div class="uct-tnode__visual"><span class="uct-tnode__placeholder">Drive</span></div>
+                <div class="uct-tnode__copy">
+                  <p class="uct-tnode__moment">A Drive Moment</p>
+                  <p class="uct-tnode__title">드라이브 케어</p>
+                  <p class="uct-tnode__lead">빛이 오래 머무는 이동 시간에도 이어지는 보호</p>
+                  <div class="uct-tnode__tags">
+                    <span class="uct-tag">장시간 착용</span>
+                    <span class="uct-tag">생활 밀착</span>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+          </section>
+
+          <!-- OUT-OF-TIME — 시술 후 케어 -->
+          <article class="uct-aside" aria-label="시간을 넘어서는 순간">
+            <div class="uct-aside__label">
+              <p class="uct-aside__kicker">Beyond the hours</p>
+              <h3 class="heading-l">시간을 넘어서는 순간</h3>
+              <p class="uct-aside__moment">A Calm Moment</p>
+            </div>
+            <div class="uct-aside__copy">
+              <p class="heading-m">시술 후 케어</p>
+              <p class="uct-aside__lead body-xl">예민해진 피부 컨디션을 위한 얇은 보호 레이어</p>
+              <div class="uct-aside__tags">
+                <span class="uct-tag">장시간 착용</span>
+                <span class="uct-tag">생활 밀착</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- DESIGN NOTES -->
+        <aside class="uct-note">
+          <div>
+            <h3>구성 원칙 (B안)</h3>
+            <ul>
+              <li>7개 시나리오를 평등 카드로 깔지 않는다.</li>
+              <li>14:00 시그니처 1장만 사진으로 깊이 박는다.</li>
+              <li>나머지 5개는 시간축 위 노드 카드로 폭을 넓힌다.</li>
+              <li>시간축에 안 맞는 시술 후 케어는 별도 strip.</li>
+              <li>카피는 고객사 원문 그대로.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>왜 시간축인가</h3>
+            <p>"흐름이 끊기지 않는 보호" — Seamless 키워드와 직결된다. 7개를 시간 위에 펼치면 "어디서든"보다 "하루 종일"이 더 강하게 회수된다.</p>
+          </div>
+
+          <div>
+            <h3>자산 부담</h3>
+            <ul>
+              <li>풀씬 사진 1장 (14:00 시그니처).</li>
+              <li>나머지 5개 노드는 컬러 그라데이션 placeholder로도 충분.</li>
+              <li>여유가 생기면 작은 디테일 컷을 노드별로 보강 가능.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>시간 매핑 (임의)</h3>
+            <ul>
+              <li>06:30 러닝 / 10:00 멀티 / 11:00 브런치 / 14:00 창가 / 16:00 산책 / 18:00 드라이브</li>
+              <li>고객사·브랜드 협의로 조정 가능.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>인터랙션</h3>
+            <ul>
+              <li>가로 타임라인. 1024px 이하에서 가로 스크롤 snap.</li>
+              <li>모바일은 세로 타임라인 (왼쪽 라인 + 오른쪽 카드).</li>
+              <li>노드 hover 시 dot fill만 변경. 자동재생 X.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>법무 / RA 검수 보류</h3>
+            <ul>
+              <li>시술 후 케어 — 공산품 표기 충돌 가능성. 카피 노출 전 확인.</li>
+            </ul>
+          </div>
+        </aside>
+      </section>
+
+      <!-- MOBILE PREVIEW -->
+      <section class="uct-mobile">
+        <div>
+          <header class="uct-head">
+            <p class="uct-head__index caption-m">Mobile Preview</p>
+            <h2 class="heading-l">시그니처는 첫 viewport,<br/>타임라인은 세로 흐름</h2>
+            <p class="uct-muted body-xl">모바일에서는 가로 타임라인 대신 세로 타임라인. 시간 흐름이 위→아래로 자연스럽게 이어진다.</p>
+          </header>
+
+          <div style="display: grid; gap: 8px; font-size: 13px; color: var(--semantic-on-surface-muted); line-height: 1.6;">
+            <p>· 14:00 시그니처는 화면 폭 풀, 4 : 5 사진 영역.</p>
+            <p>· 5개 시간 노드는 vertical timeline. 왼쪽 라인 + 오른쪽 카드.</p>
+            <p>· 시술 후 케어는 timeline 끝에 hairline 박스로 분리.</p>
+            <p>· 시간 라벨은 굵게, Moment 라벨은 italic muted.</p>
+          </div>
+        </div>
+
+        <div class="uct-phone" aria-hidden="true">
+          <div class="uct-phone__head">
+            <span>Use Cases</span>
+            <span>Day Flow</span>
+          </div>
+          <div class="uct-phone__hero">
+            <strong>14 : 00 · 오후 2시 창가</strong>
+            <span>A Quiet Moment</span>
+          </div>
+          <div class="uct-phone__vline">
+            <div class="uct-phone__vitem"><strong>06:30 · 러닝 크루</strong><small>A Social Moment</small></div>
+            <div class="uct-phone__vitem"><strong>10:00 · 멀티 태스킹</strong><small>A Flow Moment</small></div>
+            <div class="uct-phone__vitem"><strong>11:00 · 테라스 브런치</strong><small>A Lifestyle Moment</small></div>
+            <div class="uct-phone__vitem"><strong>16:00 · 햇살 산책</strong><small>A Free Moment</small></div>
+            <div class="uct-phone__vitem"><strong>18:00 · 드라이브 케어</strong><small>A Drive Moment</small></div>
+            <div class="uct-phone__vitem" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(0,0,0,0.15);"><strong>시술 후 케어</strong><small>A Calm Moment · Beyond the hours</small></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</body>
+</html>

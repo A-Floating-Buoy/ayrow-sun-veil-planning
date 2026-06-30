@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP — Wireframe B (Recommended)</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    body { margin: 0; background: var(--semantic-bg-default); color: var(--semantic-on-surface); }
+    .wf-page { padding: var(--layout-page-md) var(--layout-page-x); }
+    .wf-shell { width: min(100%, var(--layout-max-w-wide)); margin: 0 auto; }
+    .wf-narrow { max-width: var(--layout-max-w); }
+
+    .wf-hero {
+      min-height: 48svh;
+      display: grid; align-content: center;
+      padding-bottom: var(--layout-section-md);
+    }
+    .wf-text-stack { display: grid; gap: var(--spacing-4); }
+    .wf-kicker { color: var(--semantic-on-surface-accent); }
+    .wf-muted  { color: var(--semantic-on-surface-muted); }
+
+    .wf-section {
+      padding: var(--layout-section-md) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.6fr);
+      gap: var(--layout-block);
+      align-items: start;
+    }
+    .wf-section__head { display: grid; gap: var(--spacing-2); margin-bottom: var(--spacing-6); }
+    .wf-section__index { color: var(--semantic-on-surface-muted); font-variant-numeric: tabular-nums; }
+    .wf-section__q { color: var(--semantic-on-surface-muted); }
+    .wf-section__delta {
+      display: inline-block; padding: 3px 8px;
+      background: rgba(58,107,74,0.12); color: #3a6b4a;
+      border-radius: 4px; font-size: 11px; letter-spacing: 0.04em;
+      margin-top: 4px;
+    }
+    .wf-section__delta--merge { background: rgba(177,75,58,0.12); color: #b14b3a; }
+    .wf-section__delta--new { background: rgba(58,87,143,0.12); color: #3a578f; }
+
+    .wf-note {
+      position: sticky; top: var(--spacing-8);
+      display: grid; gap: var(--spacing-5);
+      padding-left: var(--layout-block);
+      border-left: 1px solid var(--semantic-border-muted);
+    }
+    .wf-note h3 {
+      margin: 0 0 var(--spacing-2);
+      color: var(--semantic-on-surface-accent);
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    .wf-note ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--spacing-1); font-size: 13px; line-height: 1.55; }
+    .wf-note p  { margin: 0; color: var(--semantic-on-surface-muted); line-height: 1.65; font-size: 13px; }
+    .wf-note > div { padding-bottom: var(--spacing-4); border-bottom: 1px dashed var(--semantic-border-muted); }
+    .wf-note > div:last-child { border-bottom: 0; padding-bottom: 0; }
+    .wf-note .wf-warn { color: #b14b3a; }
+    .wf-note .wf-good { color: #3a6b4a; }
+
+    .wf-frame {
+      width: 100%; max-width: 420px; margin: 0 auto;
+      background: var(--semantic-bg-subtle, #f6f4ef);
+      border: 1px dashed var(--semantic-border-muted);
+      border-radius: 14px; padding: 14px;
+      display: grid; gap: 10px;
+    }
+    .wf-frame--wide { max-width: 100%; }
+    .wf-block {
+      background: rgba(0,0,0,0.04);
+      border-radius: 8px; padding: 10px 12px;
+      font-size: 12.5px; color: var(--semantic-on-surface-muted);
+    }
+    .wf-block--visual {
+      aspect-ratio: 4/3; display: grid; place-items: center;
+      background:
+        repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0 8px, transparent 8px 16px),
+        rgba(0,0,0,0.04);
+      color: var(--semantic-on-surface-muted); font-size: 12px; text-align: center;
+    }
+    .wf-block--visual.is-tall { aspect-ratio: 3/4; }
+    .wf-block--visual.is-wide { aspect-ratio: 16/9; }
+    .wf-block--visual.is-pill { aspect-ratio: 21/9; }
+    .wf-block--text {
+      background: transparent; padding: 4px 2px;
+      color: var(--semantic-on-surface); font-weight: 500;
+    }
+    .wf-block--text small {
+      display: block; color: var(--semantic-on-surface-muted);
+      font-weight: 400; margin-top: 4px;
+      font-size: 11.5px; line-height: 1.5;
+    }
+    .wf-row { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+    .wf-row--3 { grid-template-columns: repeat(3, 1fr); }
+    .wf-row--4 { grid-template-columns: repeat(4, 1fr); }
+    .wf-chip {
+      background: rgba(0,0,0,0.05); border-radius: 999px;
+      padding: 5px 10px; font-size: 11px; text-align: center;
+      color: var(--semantic-on-surface-muted);
+    }
+    .wf-chip--solid {
+      background: var(--semantic-on-surface);
+      color: var(--semantic-bg-default);
+    }
+    .wf-card {
+      background: rgba(0,0,0,0.03); border-radius: 8px;
+      padding: 10px; font-size: 11.5px;
+      color: var(--semantic-on-surface-muted);
+      display: grid; gap: 6px;
+    }
+    .wf-card strong { color: var(--semantic-on-surface); font-size: 12px; }
+    .wf-card--accent {
+      background: var(--semantic-on-surface);
+      color: var(--semantic-bg-default);
+    }
+    .wf-card--accent strong { color: var(--semantic-bg-default); }
+    .wf-toggle {
+      display: grid; grid-template-columns: 1fr 1fr;
+      background: rgba(0,0,0,0.04); border-radius: 999px; padding: 3px;
+      font-size: 11.5px; text-align: center;
+    }
+    .wf-toggle span { padding: 6px 0; border-radius: 999px; }
+    .wf-toggle span.is-on { background: var(--semantic-on-surface); color: var(--semantic-bg-default); }
+    .wf-acc {
+      background: rgba(0,0,0,0.03); border-radius: 6px;
+      padding: 8px 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11.5px; color: var(--semantic-on-surface);
+    }
+    .wf-acc::after { content: "+"; color: var(--semantic-on-surface-muted); }
+    .wf-tag {
+      display: inline-block;
+      background: var(--semantic-on-surface); color: var(--semantic-bg-default);
+      font-size: 10.5px; padding: 3px 7px; border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+    .wf-tag--soft { background: rgba(0,0,0,0.08); color: var(--semantic-on-surface); }
+    .wf-stepdots { display: flex; gap: 6px; justify-content: center; }
+    .wf-stepdots span { width: 24px; height: 4px; border-radius: 2px; background: rgba(0,0,0,0.15); }
+    .wf-stepdots span.is-on { background: var(--semantic-on-surface); }
+    .wf-bottombar {
+      position: sticky; bottom: 0;
+      background: var(--semantic-on-surface); color: var(--semantic-bg-default);
+      padding: 10px 12px; border-radius: 8px;
+      font-size: 12px; text-align: center;
+    }
+    .wf-bis {
+      display: grid; gap: 8px;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+    }
+    .wf-bis div {
+      padding: 14px 8px; background: rgba(0,0,0,0.04); border-radius: 8px;
+    }
+    .wf-bis strong { display: block; font-size: 13px; margin-bottom: 4px; color: var(--semantic-on-surface); }
+    .wf-bis span  { display: block; font-size: 10.5px; color: var(--semantic-on-surface-muted); }
+
+    @media (max-width: 900px) {
+      .wf-section { grid-template-columns: 1fr; }
+      .wf-note {
+        position: static; padding-left: 0; padding-top: var(--layout-block);
+        border-left: 0; border-top: 1px solid var(--semantic-border-muted);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wf-page">
+    <div class="wf-shell">
+
+      <!-- DOC INTRO -->
+      <section class="wf-hero wf-narrow">
+        <div class="wf-text-stack">
+          <p class="caption-m wf-kicker">Sun Veil PDP / Wireframe B · Recommended</p>
+          <h1 class="heading-xxxl">11 → 9 섹션. 카페24 모바일에 맞춰 압축·통합한 안.</h1>
+          <p class="body-xl">
+            원본의 메시지 의도(필름 vs 멤브레인 단일 대비축, Yes-set Quick FAQ, 데이터 신뢰)를 보존하면서, 카페24 상세 컨텐츠 영역의 제약(모바일 우선·리뷰까지의 시간 예산·메인 구매 모듈 분리)에 맞게 인지 중복을 제거하고 시각 증명을 보강한 설계.
+          </p>
+          <p class="body-m wf-muted">
+            주요 변화 — At a Glance를 윗단으로, Film vs Membrane에 시각 실험 추가, Problem과 Use Cases 통합, How It Works와 Technology 통합, Quick/Full FAQ 중복 제거.
+          </p>
+        </div>
+      </section>
+
+      <!-- 01 HERO -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">01 / 9</p>
+            <h2 class="heading-xl">Hero — 카테고리 재정의 선언</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 이 제품이 뭐지?</p>
+            <span class="wf-section__delta">변경: 핵심 metric chip 동반 노출</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--visual is-tall">Hero Visual · 광대존 close-up · 자연광</div>
+            <div class="wf-block wf-block--text">
+              필름이 아닌, 숨 쉬는 멤브레인.
+              <small>피부 위에 얹히는 0.004mm 보호 레이어</small>
+            </div>
+            <div class="wf-row wf-row--4">
+              <div class="wf-chip">0.004mm</div>
+              <div class="wf-chip">UPF 50+</div>
+              <div class="wf-chip">UVB 99.9</div>
+              <div class="wf-chip">Dermatest</div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>카테고리 재정의 선언 + 즉시 신뢰 형성. 첫 viewport 안에서 "다른 카테고리"임과 "데이터로 검증됨"을 동시에 박는다.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>Full-bleed hero visual</li>
+              <li>H1 + sub-headline (원본 카피 다듬음)</li>
+              <li>핵심 신뢰 chip 4개 (1행)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>"필름" → "멤브레인" 짧은 텍스트 전환 (reduced-motion 시 정적). 모바일은 비주얼 위 + chip 아래, 데스크탑은 좌 비주얼 + 우 텍스트·chip 2열.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>모델 광대존 close-up (자연광, 동일 톤 그레이딩)</li>
+              <li>대안: 손 위 패치 매크로 (투명도 강조)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">A안 대비 — chip 4개로 신뢰 동반 노출, 이후 At a Glance와 Proof의 정보 중복 부담을 분산.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 02 AT A GLANCE -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">02 / 9</p>
+            <h2 class="heading-xl">At a Glance — BIS 3축 시그니처</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 그래서 이게 뭘 해주나?</p>
+            <span class="wf-section__delta">이동: A안의 03-3 → 페이지 윗단으로</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">
+              세 가지 축으로 작동합니다.
+              <small>Breathable · Invisible · Seamless</small>
+            </div>
+            <div class="wf-bis">
+              <div><strong>Breathable</strong><span>공기·습기 통과</span></div>
+              <div><strong>Invisible</strong><span>0.004mm 투명</span></div>
+              <div><strong>Seamless</strong><span>잊는 착용감</span></div>
+            </div>
+            <div class="wf-block wf-block--visual is-pill">3축 시그니처 비주얼 (B/I/S 아이콘 시리즈)</div>
+            <div class="wf-row wf-row--3">
+              <div class="wf-card"><strong>피부 자극 0.00</strong><span>Dermatest Excellent</span></div>
+              <div class="wf-card"><strong>UPF 50+</strong><span>UVB 99.9% 차단</span></div>
+              <div class="wf-card"><strong>비건</strong><span>Vegan Society</span></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>페이지 윗단의 빠른 정찰. 핵심 키워드 3축(BIS)을 한 번에 박고, 페이지 전체에서 반복될 시그니처를 미리 인지화. 동시에 신뢰 metric 3종으로 1차 의심 해소.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>BIS 3축 카드 (시그니처 처리)</li>
+              <li>3축 통합 비주얼 1개 (선택)</li>
+              <li>핵심 신뢰 카드 3개 (피부·UV·비건)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>BIS 3축은 항상 가로 3분할 유지 (모바일에서도 — 짧은 영문이라 가능). 신뢰 카드는 모바일 1열, 데스크탑 3열.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>BIS 3축 시그니처 아이콘 또는 일러스트 (브랜드 자산)</li>
+              <li>Dermatest / Vegan Society 작은 인증 마크</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">A안 대비 — At a Glance를 페이지 윗단으로 끌어올려 빠른 정찰 본질 회복. BIS 3축이 페이지 전체 메시지의 시그니처로 작동하기 시작.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 03 FILM vs MEMBRANE -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">03 / 9</p>
+            <h2 class="heading-xl">Film vs Membrane — 시각 증명</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 기존 선패치와 뭐가 다른가?</p>
+            <span class="wf-section__delta wf-section__delta--new">강화: 시각 실험 (두께 비교 + 공기 통과 시연)</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">
+              같은 ‘패치’처럼 보여도, 작동 방식은 다릅니다.
+            </div>
+            <div class="wf-block wf-block--visual is-wide">두께 비교 시각화 · 머리카락 / 비닐랩 / Sun Veil (스케일 일러스트)</div>
+            <div class="wf-block wf-block--visual is-wide">공기 통과 시연 영상 · 김 서림 비교 (필름 vs Sun Veil) · 10초 silent loop</div>
+            <div class="wf-row">
+              <div class="wf-card">
+                <span class="wf-tag wf-tag--soft">기존 선패치</span>
+                <strong>필름 = 막</strong>
+                <span>공기 차단 / 열·습기 정체</span>
+              </div>
+              <div class="wf-card wf-card--accent">
+                <span class="wf-tag" style="background: var(--semantic-bg-default); color: var(--semantic-on-surface);">선베일</span>
+                <strong>나노 섬유 멤브레인</strong>
+                <span>공기·수분 흐름 유지</span>
+              </div>
+            </div>
+            <div class="wf-acc"><span>더 자세한 비교 5항목</span></div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>Hero의 선언을 "보면 믿게 되는" 시각 증명으로 잇는 결정적 섹션. 카테고리 개척 페이지의 결정타 — 데이터 이전에 직관적 차이를 눈으로 확인시킴.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>두께 비교 일러스트 (스케일 표현)</li>
+              <li>공기 통과 시연 영상 (무음, 자동재생, 10초 loop)</li>
+              <li>비교 카드 2개 (강조 카드 처리)</li>
+              <li>"더 자세한 비교 5항목" 아코디언 (원본의 5행 비교 흡수)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>영상은 가시화 시점에 자동재생, 사용자 탭으로 정지. 비교 5항목은 default collapsed로 페이지 길이 방어. 데스크탑은 비교 카드를 좌우 동시 노출 + 중앙 divider.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li class="wf-good">[NEW] 두께 비교 일러스트 — 머리카락(0.07mm) / 비닐랩(0.012mm) / Sun Veil(0.004mm)</li>
+              <li class="wf-good">[NEW] 공기 통과 시연 영상 — 김 서림 비교 (필름 위 vs Sun Veil 위)</li>
+              <li>대안: 입김 통과 시연 또는 미세 입자 통과 비주얼</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">A안 대비 — 데이터 chip 위주의 추상 증명에서 "직관적 시각 증명"으로 전환. 카테고리 개척 전략의 결정타.</p>
+            <p class="wf-warn">시연 영상 촬영 비용·시간 발생. 두께 비교에서 "최저"가 아닌 "참조 비교"로 표현 (광고법 회피).</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 04 QUICK FAQ -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">04 / 9</p>
+            <h2 class="heading-xl">Quick FAQ — Yes-set</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 빠르게 의심 해소</p>
+            <span class="wf-section__delta">변경: 6 → 5 항목 (4 YES + 1 NO 리듬)</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">스크롤 전, 먼저 답합니다.</div>
+            <div class="wf-acc"><span>메이크업 위에? <strong>YES</strong></span></div>
+            <div class="wf-acc"><span>일반 필름과 다른가? <strong>YES</strong></span></div>
+            <div class="wf-acc"><span>투명한데 차단? <strong>YES</strong></span></div>
+            <div class="wf-acc"><span>민감 피부도? <strong>YES</strong></span></div>
+            <div class="wf-acc"><span>티 나나요? <strong>NO</strong></span></div>
+            <div class="wf-block" style="text-align: center; font-size: 11.5px;">→ 더 깊은 질문은 아래 FAQ에서</div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>의도된 Yes-set 카피 장치는 보존. 단 항목 수를 줄여 리듬 강화. 마지막에 Full FAQ로의 명시적 핸드오프를 추가해 중복 인지 부담 감소.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>Accordion 5개 (탭하면 답 펼침)</li>
+              <li>각 항목 우측에 큰 YES/NO 라벨</li>
+              <li>섹션 말미 Full FAQ 핸드오프 라인</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>한 번에 한 항목 펼침. YES/NO는 항상 노출(Yes-set 시각 리듬). 모바일·데스크탑 동일 1열 유지.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>"메이크업 위 부착" 짧은 시연 영상 (10초 loop)</li>
+              <li>"투명 구조" close-up 매크로</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">A안 대비 — 점착제 질문은 Full FAQ로 이동, YES 5→4로 리듬 강화. Full FAQ 핸드오프로 중복 인지 부담 감소.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 05 WHY & WHEN -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">05 / 9</p>
+            <h2 class="heading-xl">Why & When — 광대존 + 라이프스타일</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 왜 나에게? 언제 쓰나?</p>
+            <span class="wf-section__delta wf-section__delta--merge">통합: A안의 03(Why) + 03-2(Problem) + 04(Use Cases) → 1섹션</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">
+              선케어가 가장 먼저 무너지는 자리, 광대존.
+              <small>덧바르기도 부담스러운 순간을 위한 보호 레이어</small>
+            </div>
+            <div class="wf-block wf-block--visual is-wide">얼굴 일러스트 · 광대존 hotspot</div>
+            <div class="wf-block wf-block--text" style="margin-top: 6px;">
+              일상의 4가지 모먼트
+            </div>
+            <div class="wf-block wf-block--visual is-wide">에디토리얼 컷 1 · 창가 / 러닝 / 브런치 / 산책 (4스와이프)</div>
+            <div class="wf-stepdots">
+              <span class="is-on"></span><span></span><span></span><span></span>
+            </div>
+            <div class="wf-row wf-row--4" style="font-size: 10.5px;">
+              <div class="wf-chip">창가</div>
+              <div class="wf-chip">러닝</div>
+              <div class="wf-chip">브런치</div>
+              <div class="wf-chip">산책</div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>"왜 광대존인가" + "언제 쓰나"를 한 흐름으로. 부위 특이성(Problem)과 라이프스타일 fit(Use Cases)이 본질적으로 같은 메시지이므로 하나의 섹션으로 통합.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>얼굴 일러스트 + 광대존 hotspot (정적)</li>
+              <li>에디토리얼 swipe carousel (자동재생 X)</li>
+              <li>4 슬라이드 — 라이프스타일 컷 + 모먼트 라벨</li>
+              <li>모먼트 chip 4개 (네비게이션 도움)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>모바일 가로 스와이프, 데스크탑 좌우 화살표 + 키보드. 4슬라이드는 모바일에서도 끝까지 도달 가능한 적정 수. 자동재생 금지(에디토리얼 톤).</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>얼굴 일러스트 1장 (광대존 강조)</li>
+              <li>라이프스타일 컷 4장 (동일 톤·동일 색감)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">A안 대비 — 9 모먼트 + 7 슬라이드 + 7 pain → 4 슬라이드로 압축. 16 카드 → 4 카드. 모바일 스크롤 길이 큰 폭 단축.</p>
+            <p class="wf-warn">"시술 후 케어" 모먼트는 본 섹션에서 빼고 FAQ로 옮김 (RA 검수 부담 감소).</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 06 RITUAL -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">06 / 9</p>
+            <h2 class="heading-xl">Ritual Guide — 3단계</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 어떻게 붙이지?</p>
+            <span class="wf-section__delta">유지: A안 04-2 그대로</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-row wf-row--3">
+              <div class="wf-card"><strong>01 Ready</strong><div class="wf-block wf-block--visual">파우치 · L/R 확인</div></div>
+              <div class="wf-card"><strong>02 Set</strong><div class="wf-block wf-block--visual">광대존 안착</div></div>
+              <div class="wf-card"><strong>03 Go</strong><div class="wf-block wf-block--visual">일상 이어가기</div></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>사용 진입 장벽 제거. "복잡할 것 같다"는 의심 사전 차단. Why & When 직후에 위치해 "쓰고 싶다 → 어떻게 쓰지?" 흐름 자연스럽게.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>Step card x3 (가로 3분할)</li>
+              <li>각 카드: 단계명 + 비주얼 + 한 문장</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>모바일 카드 세로 스택 또는 가로 스와이프, 데스크탑 가로 3분할. 영상 사용 시 silent loop, 사용자 탭 정지.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>3단계 사진 또는 10초 silent loop 영상</li>
+              <li>L/R 표기 패키지 디테일 컷</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p>상품정보고시 사용방법과 카피 표현 일관성 체크. 인상용 단순화는 본 섹션, 의무 표기는 Spec(섹션 09)에 위임 — A안과 동일.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 07 HOW IT WORKS + TECH -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">07 / 9</p>
+            <h2 class="heading-xl">How It Works + Reverse AG Code™</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 어떻게 작동하고 무엇이 들어있나?</p>
+            <span class="wf-section__delta wf-section__delta--merge">통합: A안의 05(How) + 06(Tech) → 1섹션, 3 sub-tab</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">두 레이어가 하나의 피부처럼 작동합니다.</div>
+            <div class="wf-toggle" style="grid-template-columns: 1fr 1fr 1fr;">
+              <span class="is-on">Structure</span><span>Bonding</span><span>Formula</span>
+            </div>
+            <div class="wf-block wf-block--visual is-wide">2-Layer Exploded Diagram (현재 활성: Structure)</div>
+            <div class="wf-row">
+              <div class="wf-card"><strong>Layer 1 · 멤브레인</strong><span>0.004mm 투명 나노 섬유 · 자외선 보호</span></div>
+              <div class="wf-card"><strong>Layer 2 · 약액층</strong><span>피부 컨디션 유지 서포트 층</span></div>
+            </div>
+            <div class="wf-block" style="text-align: center; font-size: 11px; padding: 6px;">↓ Tab 전환 시</div>
+            <div class="wf-block wf-block--visual is-wide">Bonding 단면 다이어그램 또는 Formula 시그니처 마크</div>
+            <div class="wf-row wf-row--3">
+              <div class="wf-card"><strong>NMN</strong><span>핵심 1</span></div>
+              <div class="wf-card"><strong>Resveratrol</strong><span>핵심 2</span></div>
+              <div class="wf-card"><strong>Pterostilbene</strong><span>핵심 3</span></div>
+            </div>
+            <div class="wf-acc"><span>Synergy Modules · 더보기 (PDRN, CICA 등)</span></div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>"어떻게 작동하나"의 구조적·기술적 답을 한 섹션에서. Structure(레이어) → Bonding(밀착) → Formula(성분) 3 단계로 사용자가 깊이를 선택. 효능 표현 제한 환경에서 "구조 사실"이 핵심 시그널.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>3-tab toggle (Structure / Bonding / Formula)</li>
+              <li>탭별 비주얼 + 카드</li>
+              <li>Formula 탭: 핵심 3성분 강조 카드 + Synergy 더보기 아코디언</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>Tab 전환 시 페이드. 모바일은 Tab 라벨이 좁아질 수 있으므로 짧은 영문 권장. 진입 시 Structure가 default 활성, 사용자 탐색 유도.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>2-layer exploded SVG (Structure)</li>
+              <li>Moisture-Bonding 단면 일러스트 (Bonding)</li>
+              <li>Reverse AG Code™ 시그니처 마크 (Formula)</li>
+              <li>나노 섬유 매크로 (옵션, Structure 보조)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">A안 대비 — 5섹션 + 6섹션 통합으로 인지 중복 제거. 14성분 평탄 나열 → 핵심 3 + 더보기 구조로 시그널 강도 상승.</p>
+            <p class="wf-warn">3-tab은 정보 집약도가 높아 화면 높이가 길어질 수 있음. 모바일 미리보기 검증 필요. Reverse AG Code™의 한국어 슬로건 한 줄 추가 권장.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 08 PROOF -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">08 / 9</p>
+            <h2 class="heading-xl">Proof — 데이터 그룹</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 믿을 만한 근거가 있나?</p>
+            <span class="wf-section__delta">유지: A안 08, Hero/At a Glance 신뢰 chip과 정렬</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">보이지 않지만, 데이터로 확인됩니다.</div>
+            <div class="wf-card">
+              <strong>UV Protection</strong>
+              <div class="wf-row wf-row--3">
+                <div class="wf-chip">UVB 99.9%</div><div class="wf-chip">UVA 95.3%</div><div class="wf-chip">UPF 50+</div>
+              </div>
+              <span style="font-size: 10px;">FITI · 원단 기준</span>
+            </div>
+            <div class="wf-card">
+              <strong>Skin Tolerability</strong>
+              <div class="wf-row">
+                <div class="wf-chip">자극 0.00</div><div class="wf-chip">Dermatest Excellent</div>
+              </div>
+              <span style="font-size: 10px;">Dermatest · 민감 피부 30명 + 2주 임상</span>
+            </div>
+            <div class="wf-card">
+              <strong>Breathable Structure</strong>
+              <div class="wf-row wf-row--3">
+                <div class="wf-chip">투습 12,356</div><div class="wf-chip">공기 &lt;1.0</div><div class="wf-chip">기공 0.7μm</div>
+              </div>
+              <span style="font-size: 10px;">FITI · 물성 시험</span>
+            </div>
+            <div class="wf-card">
+              <strong>Spec & Ethics</strong>
+              <div class="wf-row wf-row--3">
+                <div class="wf-chip">두께 0.004mm</div><div class="wf-chip">중량 0.05g</div><div class="wf-chip">Vegan</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>Hero·At a Glance에서 chip으로 미리 본 신뢰 metric을 그룹으로 정리하여 깊이 제공. 출처 caption으로 신뢰 닻 제공.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>Metric group cards 4개 (UV / Skin / Breathable / Spec)</li>
+              <li>각 카드 하단 출처 caption (FITI · Dermatest · Vegan Society)</li>
+              <li>Metric chip은 진입 시 count-up 1회</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>Count-up 1회 (reduced-motion 시 즉시 표기). 모바일 카드 세로 스택, 데스크탑 2x2 그리드.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>FITI / Dermatest / Vegan Society 작은 인증 마크</li>
+              <li>리포트 PDF 캡처는 노출 X</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">A안 대비 — Section 02의 데이터 블록 중복 제거(B안에서는 Section 03이 시각 실험으로 전환됨). UVA 95.3%(리포트 기준)으로 통일. Vegan은 인증 확인 후 노출.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 09 FAQ + SPEC + CTA -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">09 / 9</p>
+            <h2 class="heading-xl">FAQ + Spec + CTA — 마무리 묶음</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 마지막 의심 + 의무 정보 + 마무리</p>
+            <span class="wf-section__delta wf-section__delta--merge">통합: A안의 09(Full FAQ) + 10(Spec) + 11(CTA) → 1섹션</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">남은 질문</div>
+            <div class="wf-acc"><span>점착 성분 없이 어떻게 붙나요?</span></div>
+            <div class="wf-acc"><span>UPF와 SPF의 차이는?</span></div>
+            <div class="wf-acc"><span>촉감이 어떤가요?</span></div>
+            <div class="wf-acc"><span>거울 없이도 부착 가능?</span></div>
+            <div class="wf-acc"><span>재사용 가능?</span></div>
+            <div class="wf-acc"><span>시술 후에도 사용 가능?</span></div>
+            <div class="wf-acc"><span>왜 선베일을 사용해야 하나요?</span></div>
+
+            <div class="wf-block wf-block--text" style="margin-top: 12px;">상품정보 고시</div>
+            <div class="wf-acc"><span>제품명 / 용량 / 사용기한</span></div>
+            <div class="wf-acc"><span>사용방법 (의무)</span></div>
+            <div class="wf-acc"><span>사용 시 주의사항 (의무)</span></div>
+            <div class="wf-acc"><span>품질보증 / 소비자상담 / 제조국</span></div>
+
+            <div class="wf-block wf-block--visual is-wide" style="margin-top: 12px;">Mood Visual · 닫는 한 컷</div>
+            <div class="wf-block wf-block--text" style="text-align: center;">
+              햇살을 포기하지 않는 가장 앞선 방식.
+            </div>
+            <div class="wf-bottombar">Sun Veil 경험하기</div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>긴 페이지의 마무리 — 잔여 질문(심화 FAQ) + 법적 의무 표기(Spec) + 감성 마무리(CTA)를 한 묶음으로. 사용자가 여기까지 도달했다면 이미 구매 의사 형성, 마지막 정리 자리.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>FAQ accordion 7개 (Quick FAQ에서 다루지 않은 심화만)</li>
+              <li>Spec accordion 4그룹</li>
+              <li>Mood visual + closing copy</li>
+              <li>본문 CTA + 하단 sticky bar (모바일)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>모든 accordion default collapsed. 키보드 접근성 보장. 모바일 sticky CTA bar는 카페24 메인 모듈 sticky와 시각 충돌 없도록 z-index 조율.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>마무리 무드 컷 1장 (Hero와 다른 톤·다른 모먼트)</li>
+              <li>옵션: 패키지 정면 컷 (Spec 섹션 보조)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">A안 대비 — 3섹션 통합으로 페이지 끝 정리 깔끔. Quick에서 다룬 질문은 Full에서 빼서 중복 제거. "왜 선베일?"은 항목 위로 끌어올려 마지막 결정 doping.</p>
+            <p class="wf-warn">한 섹션에 3 역할이 묶여 시각적 묶임이 약할 수 있음 — 섹션 내부에서 명시적 sub-section divider 필요.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- SUMMARY -->
+      <section class="wf-section">
+        <div class="wf-text-stack" style="grid-column: 1 / -1;">
+          <p class="caption-m wf-kicker">Wireframe B · 정리</p>
+          <h2 class="heading-xl">11 → 9 섹션. 인지 중복 제거 + 시각 증명 보강.</h2>
+          <p class="body-m wf-muted">
+            주요 변경 — (1) At a Glance를 윗단으로 이동해 BIS 3축 시그니처를 페이지 전체 메시지의 닻으로. (2) Film vs Membrane에 두께 비교·공기 통과 시각 실험을 추가해 카테고리 개척의 결정타. (3) Why·Problem·Use Cases를 한 섹션으로 압축(16 카드 → 4 카드). (4) How It Works와 Technology를 3-tab으로 통합. (5) Quick FAQ는 4 YES + 1 NO 리듬으로 강화, 중복 질문은 Full로 이전. (6) Full FAQ + Spec + CTA를 마무리 한 묶음으로. 카페24 모바일 사용자가 리뷰 영역까지 도달할 시간 예산 확보.
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</body>
+</html>

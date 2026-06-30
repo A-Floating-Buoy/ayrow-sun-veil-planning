@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil — Pain Moments Card · Typography Only</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    :root { --bleu: var(--primitive-bleu, #2e3a8a); }
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+
+    .intro {
+      max-width: 880px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+    }
+    .intro h1 { margin: 0 0 0.6em; font-size: clamp(28px, 4vw, 44px); letter-spacing: -0.01em; }
+    .intro p { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+    .kicker {
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.4em;
+    }
+
+    /* ============================================
+       Cards Section
+       ============================================ */
+    .cards-section {
+      padding: 4vh max(5vw, 24px) 12vh;
+      max-width: 1180px; margin: 0 auto;
+    }
+    .cards-section__head {
+      display: grid; gap: 8px;
+      margin-bottom: 40px;
+      max-width: 720px;
+    }
+    .cards-section__h {
+      font-size: 11.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+      margin: 0;
+    }
+    .cards-section__title {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .cards-section__lead {
+      margin: 0;
+      color: var(--semantic-on-surface-muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .cards-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 900px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+
+    .card-pain {
+      background: white;
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 16px;
+      padding: 32px 28px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 24px;
+      align-content: start;
+      min-height: 200px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition:
+        opacity 700ms cubic-bezier(0.2, 0.8, 0.4, 1),
+        transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1),
+        box-shadow 350ms ease,
+        border-color 350ms ease;
+    }
+    .cards-section.is-on .card-pain { opacity: 1; transform: translateY(0); }
+    .cards-section.is-on .card-pain:nth-child(1) { transition-delay: 0ms; }
+    .cards-section.is-on .card-pain:nth-child(2) { transition-delay: 80ms; }
+    .cards-section.is-on .card-pain:nth-child(3) { transition-delay: 160ms; }
+    .cards-section.is-on .card-pain:nth-child(4) { transition-delay: 240ms; }
+    .cards-section.is-on .card-pain:nth-child(5) { transition-delay: 320ms; }
+    .cards-section.is-on .card-pain:nth-child(6) { transition-delay: 400ms; }
+
+    @media (hover: hover) {
+      .card-pain:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        border-color: rgba(46, 58, 138, 0.2);
+      }
+      .card-pain:hover .card-pain__index { color: var(--bleu); }
+    }
+
+    .card-pain__index {
+      font-size: clamp(28px, 3vw, 36px);
+      font-weight: 600;
+      color: var(--semantic-on-surface);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      transition: color 350ms ease;
+    }
+
+    .card-pain__copy {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--semantic-on-surface-muted);
+      letter-spacing: -0.005em;
+    }
+    .card-pain__copy strong {
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(17px, 1.8vw, 19px);
+      font-weight: 600;
+      color: var(--semantic-on-surface);
+      line-height: 1.45;
+      letter-spacing: -0.01em;
+    }
+
+    /* ============================================
+       Notes
+       ============================================ */
+    .notes {
+      max-width: 880px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .notes h2 { margin: 0 0 0.6em; font-size: clamp(22px, 2.4vw, 28px); }
+    .notes p { margin: 0 0 0.6em; color: var(--semantic-on-surface-muted); line-height: 1.6; font-size: 14px; }
+    .notes ul { margin: 0 0 1em; padding-left: 1.2em; }
+    .notes li { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; font-size: 14px; }
+    .notes code {
+      background: rgba(0,0,0,0.05);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card-pain { opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <section class="intro">
+    <p class="kicker">Sun Veil PDP / Pain Moments · Typography Only</p>
+    <h1>아이콘 없이, 타이포만으로.</h1>
+    <p>아이콘이 카피의 의미를 정확히 보강하지 못할 때는 차라리 없는 게 낫습니다. 인덱스 숫자 + 카피의 핵심 phrase 강조로 시각 위계를 완성한 안.</p>
+    <p>각 카드는 좌상단 큰 인덱스(01~06)와 카피 두 줄로 구성. 카피의 일반 부분은 muted, 핵심 phrase는 큰 타이포 + 진한 색으로 시각 시그널 역할.</p>
+  </section>
+
+  <section class="cards-section" id="cards">
+    <header class="cards-section__head">
+      <p class="cards-section__h">Pain Moments</p>
+      <h2 class="cards-section__title">언제 신경이 쓰이나요.</h2>
+      <p class="cards-section__lead">아래 6가지 모먼트 중 한 번이라도 떠오른다면, Sun Veil이 그 자리에 함께합니다.</p>
+    </header>
+
+    <div class="cards-grid">
+
+      <article class="card-pain">
+        <div class="card-pain__index">01</div>
+        <p class="card-pain__copy">
+          자외선 차단제를
+          <strong>덧바르기 힘들 때</strong>
+        </p>
+      </article>
+
+      <article class="card-pain">
+        <div class="card-pain__index">02</div>
+        <p class="card-pain__copy">
+          메이크업 위에 덧바르면
+          <strong>무너질까 봐 손이 멈출 때</strong>
+        </p>
+      </article>
+
+      <article class="card-pain">
+        <div class="card-pain__index">03</div>
+        <p class="card-pain__copy">
+          하루 종일,
+          <strong>흐름을 끊지 않고 자외선 대응을 유지</strong>하고 싶을 때
+        </p>
+      </article>
+
+      <article class="card-pain">
+        <div class="card-pain__index">04</div>
+        <p class="card-pain__copy">
+          <strong>러닝·골프·테니스</strong>
+          등 야외 활동이 많은 날, 더 신경 쓰일 때
+        </p>
+      </article>
+
+      <article class="card-pain">
+        <div class="card-pain__index">05</div>
+        <p class="card-pain__copy">
+          실내에서도
+          <strong>생활 자외선이 계속 신경 쓰일 때</strong>
+        </p>
+      </article>
+
+      <article class="card-pain">
+        <div class="card-pain__index">06</div>
+        <p class="card-pain__copy">
+          눈가·광대처럼
+          <strong>특정 부위가 유독 노출될 때</strong>
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="notes">
+    <h2>디자인 노트</h2>
+    <ul>
+      <li><strong>인덱스 (01~06)</strong> — clamp(28, 3vw, 36)px, weight 600. 기본 색은 on-surface, 호버 시 Bleu로 변환 (미세한 인터랙션 시그널)</li>
+      <li><strong>카피 일반 부분</strong> — 14px, muted 색. 도입 phrase로 컨텍스트 형성</li>
+      <li><strong>카피 강조 phrase</strong> — clamp(17, 1.8vw, 19)px, weight 600, on-surface 색. <code>display: block</code>으로 줄바꿈 → 시각 위계 명확</li>
+      <li><strong>카드 layout</strong> — grid (인덱스 위 / 카피 아래), gap 24px. 카드 padding 32×28px, min-height 200px (균일성)</li>
+      <li><strong>인터랙션</strong> — 진입 시 80ms stagger fade-up, 데스크탑 호버 -4px lift + box-shadow + Bleu border tint + 인덱스 색 변환</li>
+      <li><strong>접근성</strong> — prefers-reduced-motion fallback</li>
+    </ul>
+
+    <h2 style="margin-top: 6vh;">왜 이 안이 효과적인가</h2>
+    <p>아이콘 prototype이 일부 모호한 카피(③ 흐름, ⑤ 생활 자외선, ⑥ 노출)를 시각으로 보강하려 했지만, 추상 개념을 정확히 표현하는 아이콘은 거의 불가능했습니다 — 어색한 아이콘은 인지 부담만 더하고 신뢰를 깎습니다.</p>
+    <p>타이포만 쓰면:</p>
+    <ul>
+      <li>카피 자체가 의미 전달의 유일한 매체 — 사용자 시선이 카피에 집중</li>
+      <li>핵심 phrase의 큰 타이포가 자체 시각 시그널 역할 (아이콘 없어도 카드를 빠르게 훑을 때 핵심만 잡힘)</li>
+      <li>인덱스 숫자가 "여러 모먼트 중 하나" 분류감 부여 — 사용자가 "내가 해당하는 카드"를 자연스럽게 찾음</li>
+      <li>AYROW 절제·럭셔리 톤에 부합 — 과한 시각 요소 X</li>
+    </ul>
+
+    <h2 style="margin-top: 6vh;">대안 메모 (확장 시)</h2>
+    <ul>
+      <li><strong>+ 컨텍스트 라벨</strong> — 인덱스 옆에 한 단어 라벨 ("외출 / 메이크업 / 흐름 / 야외 / 실내 / 부위") 추가하면 분류감 더 명확. 단 카피 첫 phrase와 중복 위험</li>
+      <li><strong>+ 디바이더 라인</strong> — 인덱스와 카피 사이 미세 hairline. 시각 호흡 추가</li>
+      <li><strong>인덱스 변형</strong> — 숫자 대신 영문 (i. ii. iii…) 또는 한글 (하나·둘·셋…). 톤에 따라</li>
+      <li><strong>카피 강조 위치 변형</strong> — 강조 phrase를 카피 시작에 두는 안 (예: "<strong>덧바르기 힘들 때</strong>, 자외선 차단제를")도 가능. 단 한국어 어순상 자연스러움 검토</li>
+    </ul>
+  </section>
+
+  <script>
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const section = document.getElementById('cards');
+      if (reduce) {
+        section.classList.add('is-on');
+        return;
+      }
+      let played = false;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !played) {
+            played = true;
+            section.classList.add('is-on');
+            io.disconnect();
+          }
+        });
+      }, { threshold: 0.2, rootMargin: '-5% 0px' });
+      io.observe(section);
+    })();
+  </script>
+</body>
+</html>

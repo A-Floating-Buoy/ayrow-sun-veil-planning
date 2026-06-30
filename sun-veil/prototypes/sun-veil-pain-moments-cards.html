@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil — Pain Moments Card Design</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    :root { --bleu: var(--primitive-bleu, #2e3a8a); }
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+
+    .intro {
+      max-width: 880px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+    }
+    .intro h1 { margin: 0 0 0.6em; font-size: clamp(28px, 4vw, 44px); letter-spacing: -0.01em; }
+    .intro p { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+    .kicker {
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.4em;
+    }
+
+    /* ============================================
+       Cards Section
+       ============================================ */
+    .cards-section {
+      padding: 4vh max(5vw, 24px) 12vh;
+      max-width: 1180px; margin: 0 auto;
+    }
+    .cards-section__head {
+      display: grid; gap: 8px;
+      margin-bottom: 40px;
+      max-width: 720px;
+    }
+    .cards-section__h {
+      font-size: 11.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+      margin: 0;
+    }
+    .cards-section__title {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .cards-section__lead {
+      margin: 0;
+      color: var(--semantic-on-surface-muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .cards-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 900px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+
+    .card-pain {
+      background: white;
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 16px;
+      padding: 28px 24px 32px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+      opacity: 0;
+      transform: translateY(12px);
+      transition:
+        opacity 700ms cubic-bezier(0.2, 0.8, 0.4, 1),
+        transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1),
+        box-shadow 350ms ease,
+        border-color 350ms ease;
+    }
+    .cards-section.is-on .card-pain { opacity: 1; transform: translateY(0); }
+    .cards-section.is-on .card-pain:nth-child(1) { transition-delay: 0ms; }
+    .cards-section.is-on .card-pain:nth-child(2) { transition-delay: 80ms; }
+    .cards-section.is-on .card-pain:nth-child(3) { transition-delay: 160ms; }
+    .cards-section.is-on .card-pain:nth-child(4) { transition-delay: 240ms; }
+    .cards-section.is-on .card-pain:nth-child(5) { transition-delay: 320ms; }
+    .cards-section.is-on .card-pain:nth-child(6) { transition-delay: 400ms; }
+
+    @media (hover: hover) {
+      .card-pain:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        border-color: rgba(46, 58, 138, 0.2);
+      }
+    }
+
+    .card-pain__icon {
+      width: 44px; height: 44px;
+      color: var(--bleu);
+    }
+    .card-pain__copy {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--semantic-on-surface);
+      letter-spacing: -0.005em;
+    }
+    .card-pain__copy strong {
+      font-weight: 600;
+      color: var(--semantic-on-surface);
+    }
+
+    .icon-stroke { stroke: currentColor; stroke-width: 1.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-fill   { fill: currentColor; }
+    .icon-accent { stroke: var(--bleu); }
+    .icon-dashed { stroke-dasharray: 2 3; }
+
+    /* ============================================
+       Notes
+       ============================================ */
+    .notes {
+      max-width: 880px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .notes h2 { margin: 0 0 0.6em; font-size: clamp(22px, 2.4vw, 28px); }
+    .notes p { margin: 0 0 0.6em; color: var(--semantic-on-surface-muted); line-height: 1.6; font-size: 14px; }
+    .notes ul { margin: 0 0 1em; padding-left: 1.2em; }
+    .notes li { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; font-size: 14px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card-pain { opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <section class="intro">
+    <p class="kicker">Sun Veil PDP / Pain Moments · Card Design</p>
+    <h1>이런 순간, 필요합니다.</h1>
+    <p>6개 사용 시나리오를 카드형으로 정리. 각 카드는 단순 라인 아이콘 + 카피 한 줄로 구성. 사용자가 "내 얘기다"를 짧은 시간에 매핑할 수 있도록 시각 단서로 보강.</p>
+    <p>아이콘은 currentColor 기반 라인. 마지막 ⑥(부위)만 Bleu 액센트로 부위 특이성 강조.</p>
+  </section>
+
+  <section class="cards-section" id="cards">
+    <header class="cards-section__head">
+      <p class="cards-section__h">Pain Moments</p>
+      <h2 class="cards-section__title">언제 신경이 쓰이나요.</h2>
+      <p class="cards-section__lead">아래 6가지 모먼트 중 한 번이라도 떠오른다면, Sun Veil이 그 자리에 함께합니다.</p>
+    </header>
+
+    <div class="cards-grid">
+
+      <!-- 01. 자외선 차단제 덧바르기 힘들 때 -->
+      <article class="card-pain">
+        <svg viewBox="0 0 48 48" class="card-pain__icon" role="img" aria-label="선크림 덧바르기">
+          <!-- 캡 -->
+          <rect class="icon-stroke" x="20" y="6" width="8" height="4" rx="1"/>
+          <!-- 튜브 -->
+          <rect class="icon-stroke" x="17" y="10" width="14" height="22" rx="2"/>
+          <line class="icon-stroke" x1="17" y1="16" x2="31" y2="16"/>
+          <!-- 망설임 점선 -->
+          <line class="icon-stroke icon-dashed" x1="11" y1="40" x2="37" y2="40"/>
+          <!-- ✕ 표시 (덧바르기 X) -->
+          <line class="icon-stroke icon-accent" x1="34" y1="11" x2="40" y2="17"/>
+          <line class="icon-stroke icon-accent" x1="40" y1="11" x2="34" y2="17"/>
+        </svg>
+        <p class="card-pain__copy">자외선 차단제를 <strong>덧바르기 힘들 때</strong></p>
+      </article>
+
+      <!-- 02. 메이크업 위 덧바르면 무너질까 -->
+      <article class="card-pain">
+        <svg viewBox="0 0 48 48" class="card-pain__icon" role="img" aria-label="메이크업 위 덧바르기">
+          <!-- 손가락 (검지) -->
+          <path class="icon-stroke" d="M 22 6 L 22 16 Q 22 18 24 18 L 26 18 Q 28 18 28 16 L 28 6"/>
+          <!-- 손등 -->
+          <path class="icon-stroke" d="M 18 18 Q 18 24 22 24 L 28 24 Q 30 24 30 22 L 30 18 Z" fill="white"/>
+          <!-- 메이크업 표면 (라인) -->
+          <line class="icon-stroke" x1="10" y1="34" x2="38" y2="34"/>
+          <!-- 표면 위 텍스처 -->
+          <line class="icon-stroke icon-dashed" x1="10" y1="38" x2="38" y2="38"/>
+          <!-- 멈춤 표시 (가까이 가는 점선) -->
+          <line class="icon-stroke icon-dashed" x1="24" y1="26" x2="24" y2="32"/>
+        </svg>
+        <p class="card-pain__copy">메이크업 위에 덧바르면 <strong>무너질까 봐 손이 멈출 때</strong></p>
+      </article>
+
+      <!-- 03. 하루 종일 흐름 -->
+      <article class="card-pain">
+        <svg viewBox="0 0 48 48" class="card-pain__icon" role="img" aria-label="하루 종일 흐름">
+          <!-- 태양 궤적 (오전→오후 호) -->
+          <path class="icon-stroke" d="M 8 36 Q 24 6 40 36"/>
+          <!-- 지면 라인 -->
+          <line class="icon-stroke" x1="6" y1="36" x2="42" y2="36"/>
+          <!-- 시작점 (오전) — 작은 원 -->
+          <circle class="icon-stroke" cx="8" cy="36" r="1.5"/>
+          <!-- 정점 (정오) — 태양 -->
+          <circle class="icon-stroke icon-accent" cx="24" cy="14" r="3"/>
+          <!-- 끝점 (오후) — 작은 원 -->
+          <circle class="icon-stroke" cx="40" cy="36" r="1.5"/>
+          <!-- 햇살 (정점 주변) -->
+          <line class="icon-stroke icon-accent" x1="24" y1="6" x2="24" y2="9"/>
+          <line class="icon-stroke icon-accent" x1="18" y1="9" x2="20" y2="11"/>
+          <line class="icon-stroke icon-accent" x1="30" y1="9" x2="28" y2="11"/>
+        </svg>
+        <p class="card-pain__copy">하루 종일, <strong>흐름을 끊지 않고 자외선 대응을 유지</strong>하고 싶을 때</p>
+      </article>
+
+      <!-- 04. 러닝·골프·테니스 -->
+      <article class="card-pain">
+        <svg viewBox="0 0 48 48" class="card-pain__icon" role="img" aria-label="야외 활동">
+          <!-- 햇살 (좌상) -->
+          <circle class="icon-stroke icon-accent" cx="10" cy="10" r="2.5"/>
+          <line class="icon-stroke icon-accent" x1="10" y1="4" x2="10" y2="6"/>
+          <line class="icon-stroke icon-accent" x1="4" y1="10" x2="6" y2="10"/>
+          <line class="icon-stroke icon-accent" x1="14" y1="14" x2="16" y2="16"/>
+          <!-- 러닝 사람 — 머리 -->
+          <circle class="icon-stroke" cx="30" cy="14" r="3"/>
+          <!-- 몸통 -->
+          <path class="icon-stroke" d="M 30 17 L 26 26"/>
+          <!-- 앞 다리 -->
+          <path class="icon-stroke" d="M 26 26 L 22 38"/>
+          <!-- 뒷 다리 -->
+          <path class="icon-stroke" d="M 26 26 L 32 36"/>
+          <!-- 앞 팔 -->
+          <path class="icon-stroke" d="M 28 21 L 34 19"/>
+          <!-- 뒷 팔 -->
+          <path class="icon-stroke" d="M 28 21 L 24 25"/>
+          <!-- 지면 -->
+          <line class="icon-stroke" x1="20" y1="40" x2="40" y2="40"/>
+        </svg>
+        <p class="card-pain__copy"><strong>러닝·골프·테니스</strong> 등 야외 활동이 많은 날, 더 신경 쓰일 때</p>
+      </article>
+
+      <!-- 05. 실내 생활 자외선 -->
+      <article class="card-pain">
+        <svg viewBox="0 0 48 48" class="card-pain__icon" role="img" aria-label="실내 창가 자외선">
+          <!-- 창문 외곽 -->
+          <rect class="icon-stroke" x="8" y="8" width="32" height="32" rx="1"/>
+          <!-- 창 분할 -->
+          <line class="icon-stroke" x1="24" y1="8" x2="24" y2="40"/>
+          <line class="icon-stroke" x1="8" y1="24" x2="40" y2="24"/>
+          <!-- 햇살 (창 안쪽 좌상에서 들어옴) -->
+          <line class="icon-stroke icon-accent" x1="12" y1="12" x2="20" y2="20"/>
+          <line class="icon-stroke icon-accent" x1="16" y1="12" x2="22" y2="18"/>
+          <line class="icon-stroke icon-accent" x1="12" y1="16" x2="18" y2="22"/>
+          <!-- 햇살 도달 점 -->
+          <circle class="icon-fill icon-accent" cx="20" cy="20" r="1.2"/>
+        </svg>
+        <p class="card-pain__copy">실내에서도 <strong>생활 자외선이 계속 신경 쓰일 때</strong></p>
+      </article>
+
+      <!-- 06. 눈가·광대 부위 -->
+      <article class="card-pain">
+        <svg viewBox="0 0 48 48" class="card-pain__icon" role="img" aria-label="눈가·광대 부위">
+          <!-- 얼굴 외곽 -->
+          <ellipse class="icon-stroke" cx="24" cy="26" rx="13" ry="17"/>
+          <!-- 눈 -->
+          <ellipse class="icon-stroke" cx="19" cy="22" rx="2" ry="0.8"/>
+          <ellipse class="icon-stroke" cx="29" cy="22" rx="2" ry="0.8"/>
+          <!-- 코 -->
+          <path class="icon-stroke" d="M 24 24 L 23 30 Q 24 31 25 30"/>
+          <!-- 입 -->
+          <path class="icon-stroke" d="M 21 35 Q 24 37 27 35"/>
+          <!-- 광대 좌 (점선 강조 + Bleu) -->
+          <ellipse class="icon-stroke icon-accent icon-dashed" cx="17" cy="28" rx="3.5" ry="2.4"/>
+          <!-- 광대 우 -->
+          <ellipse class="icon-stroke icon-accent icon-dashed" cx="31" cy="28" rx="3.5" ry="2.4"/>
+        </svg>
+        <p class="card-pain__copy">눈가·광대처럼 <strong>특정 부위가 유독 노출</strong>될 때</p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="notes">
+    <h2>디자인 노트</h2>
+    <ul>
+      <li>레이아웃 — 데스크탑 3열, 태블릿 2열, 모바일 1열. <code>gap: 16px</code></li>
+      <li>아이콘 — 단순 라인 (1.4px stroke) + currentColor + Bleu 액센트로 핵심 강조 ①덧바르기 X / ③정점 태양 / ④햇살 / ⑤햇살 / ⑥광대존</li>
+      <li>인터랙션 — 진입 시 80ms stagger fade-up, 데스크탑 호버 시 -4px lift + 미세 box-shadow + 테두리 Bleu tint</li>
+      <li>카피 강조 — 카피의 핵심 phrase에 <code>&lt;strong&gt;</code>으로 시각 위계 (사용자가 카드를 빠르게 훑을 때 핵심만 잡힘)</li>
+      <li>접근성 — 각 SVG에 <code>role="img"</code> + <code>aria-label</code>로 스크린리더 지원, prefers-reduced-motion fallback</li>
+    </ul>
+
+    <h2 style="margin-top: 6vh;">카피 vs 시각 매핑</h2>
+    <p>이전 분석에서 카피의 모호한 단어(① "힘든 이유", ③ "흐름", ⑤ "생활 자외선", ⑥ "노출")가 즉시 이해되지 않는 약점이 있었음. 아이콘이 그 모호함을 시각으로 보강:</p>
+    <ul>
+      <li>① 선크림 튜브 + ✕ — "덧바름" 자체가 제한된 상황 명시</li>
+      <li>② 손가락 + 메이크업 표면 + 멈춤 점선 — 행동의 망설임 시각화</li>
+      <li>③ 태양 궤적 (오전→정오→오후) — "하루 종일 흐름" 구체화</li>
+      <li>④ 러닝 사람 + 햇살 — 활동 + 환경</li>
+      <li>⑤ 창문 + 햇살 들어옴 — "생활 자외선" = 창가 환경 명시</li>
+      <li>⑥ 얼굴 + 광대 점선 — 부위 특이성 시각화</li>
+    </ul>
+
+    <h2 style="margin-top: 6vh;">순서 변형 옵션</h2>
+    <p>현재는 원문 순서. 만약 명확한 카피를 앞으로 두고 추상 카피를 뒤로 두려면:</p>
+    <p style="font-family: 'Soehne Mono', monospace; font-size: 13px; background: rgba(0,0,0,0.04); padding: 12px 16px; border-radius: 8px;">② → ④ → ⑥ → ① → ⑤ → ③ (명확 → 추상)</p>
+    <p>이 순서면 사용자가 첫 두 카드(메이크업 위·러닝)에서 즉시 공감 모드에 들어가고, 그 흐름에 추상 카피가 따라와 더 잘 받아들여짐. 단 원문의 의도된 순서가 있다면 유지.</p>
+  </section>
+
+  <script>
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const section = document.getElementById('cards');
+      if (reduce) {
+        section.classList.add('is-on');
+        return;
+      }
+      let played = false;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !played) {
+            played = true;
+            section.classList.add('is-on');
+            io.disconnect();
+          }
+        });
+      }, { threshold: 0.2, rootMargin: '-5% 0px' });
+      io.observe(section);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,758 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>선베일 상세페이지</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="34e3e64d-624c-803c-b051-f434354a8df6" class="page sans"><header><h1 class="page-title" dir="auto">선베일 상세페이지</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8028-967d-d0b7d600044a" class="toggle"><li><details open=""><summary>2. 제품 콘텐츠(Sun-Veil_The Sunlight Ritual)</summary><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81f2-857a-f59c839acb9a" class="toggle"><li><details open=""><summary>목차</summary><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-81e9-a075-f03490b2b91d" class="numbered-list" start="0"><li><strong>QUICK NAVIGATION (STICKY) </strong><mark class="highlight-gray"><strong>→ </strong></mark><mark class="highlight-gray">페이지 상단에 고정되는 앵커 네비게이션</mark></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-8167-b37e-eb0c6f81302f" class="numbered-list" start="1"><li><strong>HERO SECTION</strong></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-8149-9232-dd102d8c4b4a" class="numbered-list" start="2"><li><strong>NEW CATEGORY DEFINITION</strong></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-81f2-8299-c2a92974a482" class="numbered-list" start="3"><li><strong>WHY SUN VEIL EXISTS</strong><div style="display:contents" dir="auto"><ol type="a" id="34e3e64d-624c-81d6-b6ad-eb94ce342c26" class="numbered-list" start="1"><li>Quick FAQ</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="34e3e64d-624c-81db-9976-f67fb8626b54" class="numbered-list" start="2"><li>Problem</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="34e3e64d-624c-816d-a901-d340a9186492" class="numbered-list" start="3"><li>At a Glance</li></ol></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-8115-82c0-e332667d4c64" class="numbered-list" start="4"><li><strong>USE CASES (SLIDER)</strong><div style="display:contents" dir="auto"><ol type="a" id="3513e64d-624c-8057-9b7f-f26eb15889d6" class="numbered-list" start="1"><li>Whereable Beauty</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="3513e64d-624c-80fc-97f9-c5f54be79a87" class="numbered-list" start="2"><li>Ritual / Usage Guide</li></ol></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-8130-85ff-e0ab95e0f339" class="numbered-list" start="5"><li><strong>HOW IT WORKS</strong><div style="display:contents" dir="auto"><ol type="a" id="34e3e64d-624c-8185-9d8a-f64230aa5e03" class="numbered-list" start="1"><li>How It Protects (레이어)</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="34e3e64d-624c-813d-a151-dd193e7b765f" class="numbered-list" start="2"><li>How It Bonds (밀착)</li></ol></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-8117-8ed6-edaae714aba4" class="numbered-list" start="6"><li><strong>TECHNOLOGY</strong><div style="display:contents" dir="auto"><ol type="a" id="34e3e64d-624c-81a7-a641-e3eb7c105ce5" class="numbered-list" start="1"><li>Reverse AG Code™ (Formula)</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="34e3e64d-624c-8179-88eb-e108846058a9" class="numbered-list" start="2"><li>Material Innovation (Membrane)</li></ol></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-81f7-98b4-f8abdd357b98" class="numbered-list" start="7"><li><strong>KEY EXPERIENCE (INVISIBLE / BREATHABLE / SEAMLESS / GENTLE)</strong></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-81de-9e67-f17cbedc7a80" class="numbered-list" start="8"><li><strong>PROOF</strong><div style="display:contents" dir="auto"><ol type="a" id="34e3e64d-624c-814f-9983-fbae5666b355" class="numbered-list" start="1"><li>Clinical &amp; Lab Data</li></ol></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-812c-8955-f72b949d4878" class="numbered-list" start="9"><li><strong>FULL FAQ</strong></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-8185-a4ec-c22cc62b4c92" class="numbered-list numbered-list-digits-2" start="10"><li><strong>PRODUCT SPEC </strong></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="34e3e64d-624c-81e5-96bc-c97c3959679b" class="numbered-list numbered-list-digits-2" start="11"><li><strong>CTA FOOTER</strong></li></ol></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81fd-9811-e25b20954a45" class="">
+</p></div></details></li></ul></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81a6-ad86-db46323b277e"/></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-8040-8b0e-c2e18485ad5e" class=""><mark class="highlight-red"><code>빨간 글씨는 내부 설명용, 삭제 가능</code></mark></p></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-81a9-9957-c95bcc991403" class="block-color-gray_background">01 · HERO SECTION </h1></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81ca-ad6a-f1b01db0e571" class=""><mark class="highlight-red"><code>카테고리 포지셔닝을 완전히 바꾸는 헤드라인</code></mark></p></div><div style="display:contents" dir="auto"><h2 id="34e3e64d-624c-80bc-8253-eaff46984ba3" class=""><strong>당신이 붙이고 있던 건 ‘필름’입니다.</strong></h2></div><div style="display:contents" dir="auto"><h2 id="34e3e64d-624c-80c4-b508-df2f2282e5fd" class=""><strong>Sun Veil은 <br/>‘</strong><mark class="highlight-default"><strong>숨 쉬는 멤브레인 (나노 섬유)’입</strong></mark><strong>니다.</strong></h2></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8068-95ab-c12b81289bfa"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8040-b276-e31979894b8c" class=""><strong>이제, 막는 보호에서 </strong></p></div><div style="display:contents" dir="auto"><h2 id="3543e64d-624c-80b9-812a-dd4b1e0fdd13" class=""><strong>숨 쉬는 보호로 바뀝니다.</strong></h2></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8045-bf38-dd9aa2f2071d"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-80d2-b693-f293dd96b1bb" class="">숨 쉬는 멤브레인 (Membrane)</h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-805a-b01e-f7eb3b531969" class="">막는 필름과 달리, <br/>열·습기·땀은 배출하고 피부를 가두지 않는 나노 섬유 구조</p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-8024-97fe-f21c1a0c6d23"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-80e2-878e-cd9adb35af1e" class=""><strong>A New Kind of Aesthetic Guard</strong><strong> </strong></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80a7-bfd1-c6f0f356e8b6" class=""><code>→ 카테고리 정의</code></p></div><div style="display:contents" dir="auto"><h2 id="34e3e64d-624c-80fc-bc05-d18635610499" class="">Reverse AG Code™ Sun Veil</h2></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-808c-a212-c474c45fa358"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80ac-95ce-f47a7e2ffbd8" class=""><strong>보이지 않게 </strong></p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-805e-adf0-f0e990cc2c4a" class=""><strong>그러나<br/>막지 않고 보호합니다.</strong></h3></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-80f0-882b-e90efd388a33" class=""><em><strong>0.004mm</strong></em></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80f7-bc1a-ec80dca513c2" class="">피부 위에 얹히는 <br/>숨 쉬는 초박막 보호 레이어</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8176-beab-f2cc4a6ff156"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-811b-963f-d8e84ac4eb98" class="block-color-gray_background">02 · CATEGORY REFRAMING</h1></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8177-856a-d7d4a21d7cbb" class=""><mark class="highlight-red"><code>전환을 만드는 공격적인 리프레이밍</code></mark></p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81e8-bea5-fa483b747a01" class=""><mark class="highlight-default"><mark class="highlight-default_background">Reverse AG Code™ </mark></mark><mark class="highlight-default">Sun Veil</mark></h3></div><div style="display:contents" dir="auto"><blockquote id="34e3e64d-624c-815f-909d-d37501c1beee" class=""><mark class="highlight-default">피부 위에 </mark><mark class="highlight-default"><strong>숨 쉬는 보호 레이어,<br/>선케어의 방식을 재정의한, </strong></mark><mark class="highlight-default">Aesthetic Guard</mark></blockquote></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-812f-a112-d2a53c0b418f"/></div><div style="display:contents" dir="auto"><h2 id="34e3e64d-624c-809e-a90a-ca36267e2d82" class=""><strong>Film vs Membrane</strong></h2></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8005-9d9c-ca247c39cc26" class="">같은 ‘패치’로 보였다면, <br/>완전히 잘못 보고 있던 겁니다.</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-800a-b60f-e19dd5d7ce5a"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8046-a118-f88f1979041f" class=""><strong>막는 것 vs 숨 쉬는 것</strong></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8089-9264-f1aeb0982f79" class="">당신의 피부는 어떤 쪽을 선택하나요?</p></div><div style="display:contents" dir="ltr"><table id="34e3e64d-624c-808e-96c4-fffcbd13bd21" class="simple-table"><tbody><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-8080-a55d-d54cf78701bd"><td id="Fjvx" class="" style="width:214.33333333333334px"><strong>기존 선패치</strong></td><td id="?_[u" class="" style="width:75px"><strong>       vs</strong></td><td id="[u]h" class="" style="width:332.328125px"><strong>에이로우 선베일</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-80d4-8041-e2a914021377"><td id="Fjvx" class="" style="width:214.33333333333334px"><strong>필름 = </strong>막 (막힘)</td><td id="?_[u" class="" style="width:75px"><strong>      </strong></td><td id="[u]h" class="" style="width:332.328125px"><strong>나노 섬유 멤브레인 = </strong>선택적 투과 구조 (숨 쉬는 구조)</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-80cc-843e-c54a6cdba411"><td id="Fjvx" class="" style="width:214.33333333333334px">피부를 덮는 구조</td><td id="?_[u" class="" style="width:75px"></td><td id="[u]h" class="" style="width:332.328125px">섬유 기반 다공성 구조</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-804d-b512-e42e48f26423"><td id="Fjvx" class="" style="width:214.33333333333334px">공기 흐름 차단</td><td id="?_[u" class="" style="width:75px"></td><td id="[u]h" class="" style="width:332.328125px">공기 &amp; 수분 흐름 유지</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-807d-8c74-d82af642131d"><td id="Fjvx" class="" style="width:214.33333333333334px">장시간 사용 시 답답함</td><td id="?_[u" class="" style="width:75px"></td><td id="[u]h" class="" style="width:332.328125px">장시간 부착 가능</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-808e-a46b-cb677d37fde2"><td id="Fjvx" class="" style="width:214.33333333333334px">열/수분 정체</td><td id="?_[u" class="" style="width:75px"></td><td id="[u]h" class="" style="width:332.328125px">피부 호흡 및 컨디션 유지</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-80f0-9d53-e821765ba769"><td id="Fjvx" class="" style="width:214.33333333333334px">“붙이는 순간, 피부는 막힌다”</td><td id="?_[u" class="" style="width:75px"></td><td id="[u]h" class="" style="width:332.328125px">“붙여도, 피부는 계속 숨 쉰다”</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8077-8417-c11b54e95d6b" class="">선패치, 불편했던 이유는 <mark class="highlight-default">단 하나입</mark>니다. </p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-803f-8a66-d4021808452d" class=""><strong>“숨을 못 쉬기 때문입니다.”</strong></h3></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8060-9c34-e8336d0bb1ae" class="bulleted-list"><li style="list-style-type:disc">땀/열/습기로 답답함</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8078-ace0-e5aa6797a47f" class="bulleted-list"><li style="list-style-type:disc">필름 텐션으로 인한 밀폐감, 피부 조임</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8032-915c-f650bcfa8055" class="bulleted-list"><li style="list-style-type:disc">메이크업 위에서 들뜸</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80a7-901f-ee119e2a8340" class="bulleted-list"><li style="list-style-type:disc">접착 성분으로 인한 뻣뻣함, 잔주름 픽스</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-806f-a7a9-c21089316c3d" class="bulleted-list"><li style="list-style-type:disc">오래 붙이면 피부 피로감<br/></li></ul></div><div style="display:contents" dir="auto"><blockquote id="34e3e64d-624c-80b4-b0eb-f47581742da9" class="">그래서 우리는 ‘필름막’을 버리고<div style="display:contents" dir="auto"><p id="34e3e64d-624c-80c8-b07a-d4e51fe0fcf6" class=""><strong>‘나노 섬유’를 선택했습니다</strong></p></div></blockquote></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-803e-a867-e553c196b299" class=""><mark class="highlight-default">“선베일은 보호하지만, 피부를 가두지 않습니다.”</mark></h3></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-800a-9828-df88cfcda3f7"/></div><div style="display:contents" dir="auto"><h2 id="34e3e64d-624c-80ac-bce5-cce7ddfe2b67" class=""><mark class="highlight-default">&quot;숨 쉼은 느껴질 뿐 아니라, 데이터로 증명됩니다”</mark></h2></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80c6-97ba-ca9c8e4e46af" class=""><mark class="highlight-red">🔬 </mark><mark class="highlight-red"><code>데이터 블록</code></mark></p></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80a1-a902-e407b6efa5f9" class="bulleted-list"><li style="list-style-type:disc">투습도: <strong>12,356 g/m²·24h</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-805c-942b-e39cd1983fa9" class="bulleted-list"><li style="list-style-type:disc">공기 투과도: <strong>1.0 미만 mm/s</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-809c-8297-d2f87d5f2cb1" class="bulleted-list"><li style="list-style-type:disc">평균 기공 크기: <strong>0.7μm (0.0007mm)</strong><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80d7-b7ce-d71863930d35" class="bulleted-list"><li style="list-style-type:circle">시험 방법: METHOD B</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-804c-bad8-d9512ff20956" class="bulleted-list"><li style="list-style-type:circle">시험 장비: POROMETER 3G-Zh</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80fe-882e-d5bc4fbb3ba9" class="bulleted-list"><li style="list-style-type:circle">시험 용액: PROFIL Wetting Fluid</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-806d-96e6-cf6d93b62b63" class="bulleted-list"><li style="list-style-type:circle">SHAPE FACTOR: 0.715<strong>                                           </strong></li></ul></div></li></ul></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-80cd-946d-f9d1018431a9" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/image.png"><img style="width:665.96875px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/image.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8017-a16f-e785a39e3dc3" class=""><strong>                                                                                                                           </strong><strong>FITI 시험 연구원<br/>                                                                                            </strong>FITI Testing &amp; Research Institute<strong> </strong></p></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-8050-9a67-fefd0c0742b1"><div class="source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/FITI%EC%8B%9C%ED%97%98%EC%97%B0%EA%B5%AC%EC%9B%90_Sun_Veil_%EB%AC%BC%EC%84%B1_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EB%A6%AC%ED%8F%AC%ED%8A%B8_260403.PDF.pdf">FITI시험연구원_Sun Veil 물성 테스트 리포트_260403.PDF.pdf</a></div></figure></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8034-87ba-f05e79ca4c5b" class="">
+</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-80de-9541-e5952d791f30"/></div><div style="display:contents" dir="auto"><h2 id="34e3e64d-624c-80ce-bb53-dd4b421d40ff" class="">“숨 쉬면서도, 제대로 차단합니다”</h2></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80be-a739-f035b3d52b73" class="">숨 쉬는 구조 위에, 초박막 차단 레이어를 더했습니다.</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80a0-80fd-d84d0da1c394" class="">🔬<mark class="highlight-red"> </mark><mark class="highlight-red"><code>데이터 블록</code></mark></p></div><div style="display:contents" dir="auto"><div id="34e3e64d-624c-809d-b70a-e6b36ecdad60" class="column-list"><div style="display:contents" dir="auto"><div id="34e3e64d-624c-802c-97b8-d3ba1d6bab22" style="width:33.33333333333333%" class="column"><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8067-8762-ff3bac52e904" class="bulleted-list"><li style="list-style-type:disc"><strong>UVB 99.9% 차단</strong></li></ul></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80bc-b529-f39f2486c4ea" class="">
+</p></div></div></div><div style="display:contents" dir="auto"><div id="34e3e64d-624c-80dd-9d77-c9cf1f8eb39e" style="width:33.33333333333334%" class="column"><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80e1-a86b-c23028053178" class="bulleted-list"><li style="list-style-type:disc"><strong>UVA 95.3% 차단<br/></strong></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80bd-9b01-c9d3b97fca0c" class="bulleted-list"><li style="list-style-type:disc"><strong>UPF 50+</strong></li></ul></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8078-9255-febab5df27d2" class="">
+</p></div></div></div><div style="display:contents" dir="auto"><div id="34e3e64d-624c-8053-b15f-fabcbe3e8096" style="width:33.33333333333333%" class="column"><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80a8-8abd-e04728be65ae" class="bulleted-list"><li style="list-style-type:disc"><strong>UVR 96.3% 차단</strong></li></ul></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80c4-8ac5-ce92409a1959" class=""><br/> <br/> *원단 기준 시험 결과</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80b8-ba43-d93cf88809f2" class="">
+</p></div></div></div></div></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80bc-89d0-ea64847289fb" class="bulleted-list"><li style="list-style-type:disc"><strong>UV 측정 기기</strong><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-803e-999f-e3eeb3997688" class="bulleted-list"><li style="list-style-type:circle">UV-VIS-NIR Spectrophotometer<br/>(PerkinElmer Lambda 1050 with 150 mm InGaAs int. Sphere)</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8011-bf10-e03aab97929b" class="bulleted-list"><li style="list-style-type:disc"><strong>파장 범위</strong><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-807a-a613-ea3f2769d386" class="bulleted-list"><li style="list-style-type:circle">UV-B: 290–315 nm</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80c9-8a7c-e1ad31d9ec52" class="bulleted-list"><li style="list-style-type:circle">UV-A: 315–400 nm</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-809a-b2d6-fef8925beeef" class="bulleted-list"><li style="list-style-type:circle">UV-R: 290–400 nm</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8008-bba6-d0a40ccadf4e" class="bulleted-list"><li style="list-style-type:disc"><strong>파장 간격</strong><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8047-be02-fb083099a859" class="bulleted-list"><li style="list-style-type:circle">5 nm</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8041-9bd1-c5a7dcb57d14" class="bulleted-list"><li style="list-style-type:disc"><strong>UPF 등급</strong><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8003-a502-f4f338da21e2" class="bulleted-list"><li style="list-style-type:circle">50+: Rated UPF 55 이상 (AS 4399:2020 기준)</li></ul></div></li></ul></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-8044-8656-e56518fbb78b" class="image" style="text-align:right"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/image%201.png"><img style="width:336px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/image%201.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80eb-ac85-cb6c691bdd7e" class=""><strong>                                                                                                                                                  FITI 시험 연구원<br/>                                                                                                                   </strong>FITI Testing &amp; Research Institute<strong> </strong></p></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-8041-878e-fa0908b23b19"><div class="source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/FITI%EC%8B%9C%ED%97%98%EC%97%B0%EA%B5%AC%EC%9B%90_Sun_Veil_%EC%9E%90%EC%99%B8%EC%84%A0%EC%B0%A8%EB%8B%A8_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EB%A6%AC%ED%8F%AC%ED%8A%B8_1%EC%B0%A8_250930.pdf">FITI시험연구원_Sun_Veil 자외선차단 테스트 리포트 1차_250930.pdf</a></div></figure></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-80ae-9614-c52c41088067"/></div><div style="display:contents" dir="auto"><h2 id="34e3e64d-624c-80dc-acb9-dd505d6eda78" class="">숨 쉬는 보호는 선택이 아니라, 기준입니다.</h2></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8089-a9dc-cab4cf8577b8"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-814f-99ba-c9df93c56d8a" class=""><mark class="highlight-default"><strong>Sun Veil은 기존 선케어와 다르게 작동합니다.</strong></mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8141-b47c-d274ab1f959d" class=""><mark class="highlight-default">선크림처럼 덧발라야 하지도,  <br/>선패치처럼 필름 형태로 피부를 답답하게 가두지도 않습니다.</mark></p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8190-b1f0-d7ca62fb1df1" class=""><mark class="highlight-default"><strong>“덧바름과 </strong></mark><mark class="highlight-default"><strong>가둠</strong></mark><mark class="highlight-default"><strong>의 불편을 해결한  숨 쉬는 멤브레인입니다.”</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8126-811f-dcc2f13f40fb" class=""><mark class="highlight-default">보이지 않을 만큼 얇은 </mark><mark class="highlight-default"><strong>0.004mm 기공구조 멤브레인</strong></mark><mark class="highlight-default">이 <br/>피부 위에 초박막 보호 레이어를 형성해 <br/>공기 흐름을 유지하는 </mark><mark class="highlight-default"><strong>숨 쉬는 (Breathable) 구조</strong></mark><mark class="highlight-default">로 작동합니다.</mark></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80e7-94f1-f9cafea8b084" class="">그 결과, <br/>열·습기·땀은 머무르지 않고 자연스럽게 배출되며, <br/>피부는 답답함 없이 편안한 상태를 유지합니다.</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-811c-b640-fb14721d1336" class=""><mark class="highlight-default">동시에,<br/>빛·열·외부 자극이 피부 환경에 미치는 영향을 최소화하고, <br/>멤브레인이 닿는 피부 표면에서는 피부 컨디션을 정돈하는 케어가 함께 이루어집니다.</mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81a3-bba5-d90cce7491d9"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8178-a7fa-fa74290292ed" class=""><mark class="highlight-default"><strong>99.9% 자외선 차단ㅣ민감 피부 자극 지수 0.00ㅣ숨 쉬는 멤브레인 (나노 섬유) 적용ㅣ0.004mm 초박막ㅣ비건 포뮬러</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8035-bd53-cff69c1f2531" class=""><mark class="highlight-default">*원단 기준 UVB 시험 결과 (측정 조건에 따라 상이할 수 있음)<br/>*독일 더마테스트(Dermatest®) 민감 피부 대상 첩포·2주 임상 시험 완료<br/>*영국 비건소사이어티(The Vegan Society) 비건 트레이드마크 인증</mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81c4-9aad-fb8a17b201dd"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-81ea-90be-f4c46a61a6a7" class="block-color-gray_background">03 · WHY SUN VEIL EXISTS</h1></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-813e-8329-dfaf0c1e2fbb" class=""><strong>이런 순간, 필요합니다</strong></h3></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8058-b578-c23a8d93bbf7"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81dc-9761-d7b237fbada6" class=""><mark class="highlight-default"><strong>보호는 필요하지만, 드러나고 싶지 않을 때</strong></mark></p></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-80c6-8caa-c89734cf796e" class="bulleted-list"><li style="list-style-type:disc">자외선 차단제를 <strong>덧바르기 힘들 때</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81ce-8047-c438763b2924" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">메이크업 위에 덧바르면 </mark><mark class="highlight-default"><strong>무너질까 봐 손이 멈출 때</strong></mark></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8118-bd79-f6c974f0c9f6" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">하루 종일, 흐름을 끊지 않고 </mark><mark class="highlight-default"><strong>자외선 대응을 유지하고 싶을 때</strong></mark></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8187-a49b-db1b9087d46d" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">러닝·골프·테니스 등 </mark><mark class="highlight-default"><strong>야외 활동이 많은 날, 더 신경 쓰일 때</strong></mark></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81d0-9486-f286849fa25a" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">실내에서도 </mark><mark class="highlight-default"><strong>생활 자외선이 계속 신경 쓰일 때</strong></mark></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8155-b3f5-e3c55decfc8f" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">눈가·광대처럼 </mark><mark class="highlight-default"><strong>특정 부위가 유독 노출될 때</strong></mark></li></ul></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-814a-be0d-fac5a72fc320"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8110-aa95-c807fbd31f1e" class=""><mark class="highlight-default"><strong>🔥 피부가 예민해졌을 때는 더더욱</strong></mark></p></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81e7-b257-f1edddf52aec" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">피부과 시술 후, <br/></mark><mark class="highlight-default"><strong>자외선 차단은 중요하지만 직접 바르는 것이 부담스러울 때<br/>자외선 차단제를 지워야 하지만 세안을 할 수 없을 때</strong></mark></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-815b-af34-f7efb407d299" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">외부 자극에 붉게 달아올라 </mark><mark class="highlight-default"><strong>떼어내는 순간 피부 자극이 염려될 때</strong></mark></li></ul></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8146-ae92-fd572ed794b5"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8025-9be8-c05060ab24b9" class="">그래서 우리는,</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80db-8cd0-fc69081f729a" class="">보호의 방식을 바꿨습니다.</p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-806e-b9d7-cb5f7f268edf" class=""><strong>보호는 필요하지만, </strong></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80e3-b146-c6ccbb76c87f" class=""><strong>방식이 달라야 할 때</strong></p></div><div style="display:contents" dir="auto"><blockquote id="34e3e64d-624c-8048-8728-c36d6258f715" class=""><strong>이럴 때 필요한 건,</strong><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-80f2-9854-e90db5fa9642" class="">선케어가 아니라 <strong>선베일입니다.</strong></h3></div></blockquote></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8169-b138-ed2769cdb087"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8139-8bb7-c918a5f954b8" class="block-color-default_background"><mark class="highlight-blue_background"><span style="border-bottom:0.05em solid">3-1. Quick FAQ</span></mark></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-804e-8585-c6c43743590a" class=""><em><mark class="highlight-blue_background"><code>→ 쇼츠형 FAQ 구조 = 전환 최적화 구조</code></mark></em></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-806e-841f-f054f9be063b" class=""><mark class="highlight-blue_background"><code><strong>Quick FAQ의 역할 (</strong></code></mark><em><mark class="highlight-blue_background"><code>Before You Scroll) </code></mark></em></p></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-805e-8931-c4a9c3e18e83" class="bulleted-list"><li style="list-style-type:disc"><code>핵심 의심 제거</code></li></ul></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-801c-b3c1-d7e90284576d" class="bulleted-list"><li style="list-style-type:disc"><code>차별 포인트 인지</code></li></ul></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-809b-824d-f2b0cf06496f" class="bulleted-list"><li style="list-style-type:disc"><code>구매 장벽 제거</code></li></ul></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-813d-8d1d-f0a9387ca8f2" class="block-color-gray_background"><strong>✔ 메이크업 위에 사용해도 되나요?</strong></h3></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-80b8-9967-ed5c434eb7a6" class=""><mark class="highlight-yellow_background"><strong>YES</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-805b-999d-ec0b00382d3c" class=""><strong>네, 가능합니다.</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-819a-85ba-c90dd330d11a" class="">쿠션 팩트, 파운데이션 등 대부분의 메이크업 위에서도 <br/><strong>투명하고 들뜸 없이 밀착</strong>되어 <strong>피부 표현을 방해하지 않습니다.</strong></p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-8001-8684-c2bf4ab16493"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-80b3-906f-dc0de905a494" class="block-color-gray_background">✔ 일반<mark class="highlight-default"> 필름형 선</mark>패치와 다른가요? </h3></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-8072-ad0f-da11adeeb422" class=""><mark class="highlight-yellow_background"><strong>YES</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-803b-a36c-c01911f13c77" class=""><strong>네, 다릅니다.</strong></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80aa-8fb2-c36e49da9ed0" class=""><mark class="highlight-default">일반 투명 선패치는 필름 형태로 피부를 </mark><mark class="highlight-default"><strong>덮고 가두는 구조입니다.</strong></mark></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8047-95a5-e3b73ba28e8b" class=""><mark class="highlight-default"><strong>Sun Veil</strong></mark><mark class="highlight-default">은 </mark><mark class="highlight-default"><strong>나노 섬유 기반 멤브레인</strong></mark><mark class="highlight-default">으로 </mark>공기와 수분 흐름을 유지하면서도 <br/>자외선은 차단하는 방식으로, <strong>붙여도 피부가 계속 숨 쉴 수 있도록 설계</strong>되었습니다.</p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-80da-93b0-ef6948f575c8"/></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-809c-a389-c1bc73f5ba3f" class="block-color-gray_background"><strong>✔ 점착 성분 없이도 잘 붙나요?</strong></h3></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-8030-bf32-f6ade74b6e92" class=""><mark class="highlight-yellow_background"><strong>YES</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80b0-8df3-c78c367cb8ac" class=""><strong>네, 잘 밀착됩니다.</strong></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80c2-9339-e5cf9c40565a" class=""><strong>초박막 멤브레인의 기공 구조</strong>와 <strong>스킨케어 제형의 점성 기반 ‘Moisture-Bonding’ 방식</strong>이 결합되어 <br/>피부에 자연스럽게 안착됩니다.</p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-808a-a12f-d5c065078948"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8119-81f8-e6c94d5e924f" class="block-color-gray_background"><mark class="highlight-default"><strong>✔ 투명한데 자외선 차단이 가능한가요?</strong></mark></h3></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-80d1-b9c5-e68ad08ecf40" class=""><mark class="highlight-yellow_background"><strong>YES</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-80c0-bad7-ca15a030c6c4" class=""><strong>네, 투명하지만 차단됩니다.</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-801d-92ab-ded31cc3310a" class=""><strong>멤브레인 내부에 분포된 자외선 대응 구조</strong>가 빛에 반응해 <br/>자외선 파장을 흡수하거나 산란시키도록 설계되어 있기 때문입니다.</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81b7-a81c-ffc5f1f939ae"/></div><div style="display:contents" dir="auto"><h3 id="3513e64d-624c-80b7-974c-cce2ea771c72" class="block-color-gray_background">✔ 민감한 피부에도 사용할 수 있나요?</h3></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-8086-a9c0-d1415333f629" class=""><mark class="highlight-yellow_background"><strong>YES</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80fd-ba31-d7c34ddc2fa5" class=""><strong>네, 가능합니다.</strong></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8022-8778-fc432c4bc320" class=""><strong>민감 피부 대상 첩포 및 2주 임상 테스트를 완료</strong>했으며, <br/><strong>자극 및 알레르기 반응 없이</strong> <strong>Dermatest</strong><mark class="highlight-default">®</mark><strong> ‘Excellent’ </strong>등급을 획득했습니다.</p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-80e7-92bf-e7ff24e30190"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-819a-8f10-c9bf302fb024" class="block-color-gray_background"><strong>✔ 티가 나나요?</strong></h3></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-802d-8c94-d570416ec83c" class=""><mark class="highlight-red_background">NO.</mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8037-9f89-ed739cec13ba" class=""><strong>아니요, 거의 보이지 않습니다.</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8102-9421-dc3329135e52" class="">0.004mm 초박막 투명 멤브레인으로 <br/><strong>메이크업 위에서도 식별이 어려울 만큼 자연스럽습니다.</strong></p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-80ee-8bf5-ce1610ab9ac8"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8192-86fd-fa8896ca1157" class="block-color-default_background"><mark class="highlight-blue_background"><span style="border-bottom:0.05em solid">3-2. Problem </span></mark><mark class="highlight-blue_background"><strong><span style="border-bottom:0.05em solid">/</span></strong></mark><mark class="highlight-blue_background"><span style="border-bottom:0.05em solid"> Pain Point</span></mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8103-80c2-c0d0964347ea" class=""><em><mark class="highlight-blue_background">Where Sun Care Breaks Down</mark></em></p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81ab-ac80-d8764f59a1da" class="">이 자리, <br/>바르는 선케어만으로 충분할까요?</h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8135-bc02-cbb3705f0442" class=""><em><strong>선케어가 가장 먼저 무너지는 자리</strong></em></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81c6-958d-c8baa83e57ab" class="">눈가 아래 광대 부위는 </p></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81c2-a1b3-ecbcf8688391" class="bulleted-list"><li style="list-style-type:disc">피부가 얇아 보호막이 약하고</li></ul></div><div style="display:contents" dir="auto"><ul id="3513e64d-624c-80d0-bbf0-ede0671c76b7" class="bulleted-list"><li style="list-style-type:disc">외부 자극에 가장 먼저 노출되고</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-816a-b995-da88faa6f670" class="bulleted-list"><li style="list-style-type:disc">표정 움직임으로 가장 먼저 밀리고</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81ce-889c-e83c25a394a3" class="bulleted-list"><li style="list-style-type:disc">메이크업이 가장 얇게 올라가는 부위입니다.</li></ul></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8149-878c-d53918bc169d" class=""><strong>그래서 선케어가 가장 먼저 지워집니다.</strong></p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-800f-b47c-dd3753aa92c0" class=""><strong>문제는 그 다음입니다.</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81f4-972d-dbdd4c9fd610" class="">덧바르기 번거롭고<br/>그냥 두기엔 불안한 순간이 생깁니다.</p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-80d3-b879-c71405ceeecf" class=""><mark class="highlight-red"><code>→ “맞아, 저기 항상 화장 무너져” 바로 공감 되도록!</code></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-815b-9bab-c72aa1a2cf7a"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8140-a82a-fefe9ab089e6" class="block-color-gray_background">이런 순간</h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81db-8844-c0ab78d69d83" class=""><code>메이크업 문제</code><strong> </strong></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8017-b277-e7cab84e527a" class=""><strong>메이크업이 두꺼워지고 뜨는 게 부담스러운 순간</strong></p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-80f8-93d8-ee31cbd500b0" class="">다시 발라야 하는 건 알지만,</p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-80c5-8855-cc3f7e866ed8" class="">덧바를수록 들뜨고 갈라질까 망설여질 때</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81a1-b5ae-dbd4dd5aa06a"/></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8033-aa79-d521b907b757" class=""><code>시간/타이밍 문제 (심리스)</code><strong> </strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81e0-abae-f3f341aee5c2" class=""><strong>흐름을 끊고 싶지 않은 순간 </strong></p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-8074-bd5d-fbbbda68df27" class="">이동 중, 일하는 중, 약속 사이</p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-8031-ba43-ee52edc69c01" class="">지워진 건 알지만,</p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-80b7-8828-f76417c4be48" class="">다시 바르기엔 타이밍이 애매하고 <br/>티 나게 바르는 게 부담스러워 <br/>그냥 넘어가게 될 때</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-815d-953f-fbb3f5994f62"/></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80b3-9806-eb5157821ca0" class=""><code>땀/환경 문제</code></p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-80ef-ab72-d24e8319846d" class=""><mark class="highlight-default"><strong>땀 흘린 얼굴에</strong></mark><strong> 덧바르기 망설여지는 순간</strong></p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-80ca-9b27-dbbc703c36bd" class="">땀이나 유분이 올라온 얼굴에<br/>그 위에 다시 바르기엔 찝찝하고</p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-8073-a8f9-e78803c9e20e" class="">그렇다고 그대로 두기엔 <br/>자외선 노출이 신경 쓰일 때</p></div><div style="display:contents" dir="auto"><hr id="3513e64d-624c-80b0-bc25-c4f0bb434dcd"/></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8013-8ac7-e0b6be0fac76" class=""><code>감성/라이프스타일</code></p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-80ec-b676-f2ec3513076a" class=""><strong>햇살을 피하고 싶지 않은 순간</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8198-8149-c26d83791c7f" class=""><mark class="highlight-default">통창 카페, 오픈 테라스, 햇살 산책</mark></p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-8008-9efe-d0220798c7e8" class="">빛 드는 자리에 앉아<br/>노트북을 펴고, 책을 읽고,<br/>그대로 머물고 싶을 때</p></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-8045-990a-e3749a9e7c27" class="">햇살은 기분 좋은데,<br/>피부는 그대로 노출시키고 싶지 않을 때</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8142-b90d-d4e2248df2c8"/></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80f2-8620-c5a90e8cbf9a" class=""><code>피부 컨디션</code></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80cd-8856-faf48e32794d" class=""><strong>피부 컨디션이 신경 쓰이는 순간</strong></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-808a-b7ed-e0c94b2f7c63" class="">하루 종일 외부 자극을 받은 뒤,</p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-803f-aa7b-c58b460c1a5e" class="">기미·눈가 주름이 신경 쓰여 <br/>피부를 그대로 두기엔 불안하고</p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-806b-887e-e618b17c336d" class="">무언가 더 해주고 싶지만 <br/>복잡한 케어는 부담스러울 때</p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-8037-a924-da48f5f84138"/></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-808f-b90d-e5c0c4749db0" class=""><code>예민 문제</code></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80cd-a131-d2f82a21c606" class=""><strong>피부가 예민해진 순간</strong></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80b8-8b32-e52e9dcefaba" class="">피부과 시술 후,<br/>피부가 예민하게 반응하는 상태일 때,</p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80bd-abd7-f5de31fb66fc" class="">피부에 직접 손을 대는 건 부담스럽고</p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8084-835d-dd69aeb7fd70" class="">그렇다고 아무것도 하지 않기엔 <br/>상태가 신경 쓰일 때</p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-80eb-b249-d81001e6b1f7"/></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8099-aaa8-d26ae6ffd4bf" class=""><strong>점착제 자극이 부담스러운 순간</strong></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-803b-9065-d6fb152fc913" class="">붙이고 떼어내는 과정에서 <br/>피부 자극이 염려되고</p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8037-9bbe-ee24188023a0" class="">밀폐감이나 피부 조임 없이 <br/>편안하게 사용하고 싶을 때</p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8076-b249-e308f7ffd0ee" class="">특히 눈가 아래·광대처럼 민감 부위에<br/>점착제 잔류나 2차 자극이 걱정될 때</p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-8047-94a4-d0ed65219111"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81c8-9a4e-cb4a2617dd90" class="block-color-default_background"><mark class="highlight-default"><mark class="highlight-blue_background"><span style="border-bottom:0.05em solid">3-3. At a Glance</span></mark></mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8183-b1f6-e1aebf55ea40" class=""><em><mark class="highlight-default_background">What Changes With Sun Veil</mark></em></p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8165-8b2b-f79c68dd381d" class="">Sun Veil이 바꾸는 일상의 경험</h3></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-808c-b8f4-e3be1a457ce7" class="">붙이는 순간, 일상이 달라집니다.</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81cc-b42c-d4dde52b60e3"/></div><div style="display:contents" dir="auto"><h3 id="3573e64d-624c-8013-a588-eb334d10d986" class=""><em><span style="border-bottom:0.05em solid">Invisible &amp; Seamless</span></em></h3></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-8015-972f-c779dd155114" class=""><mark class="highlight-default"><strong>보이지 않는 </strong></mark><mark class="highlight-default"><strong>0.004mm</strong></mark></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-80d9-97d4-c92c01020628" class=""><mark class="highlight-default">붙였는지 잊을 만큼, 얇고 투명한 존재감</mark></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-8021-8ab4-ef41ca804931" class=""><code>→ 부착이 거의 안 보이는 모델 페이스 컷</code> <br/></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-810b-9106-d5ce964a1e9b" class=""><strong>메이크업과 자연스럽게 호환</strong></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-80d9-87f6-da3ab9639409" class="">경계 없이 매끄럽게 이어지는 피부 표현</p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-8097-9458-ec611e158240" class=""><mark class="highlight-red"><code>→ 메이크업 위에 부착 or 부착 후 메이크업 컷</code></mark><mark class="highlight-red"> <br/></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8159-bc89-e444b2b8c48a"/></div><div style="display:contents" dir="auto"><h3 id="3573e64d-624c-8039-addb-dfc32f539480" class=""><em><span style="border-bottom:0.05em solid">Effortless Fit</span></em></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8193-9576-f0764c3d2b13" class=""><mark class="highlight-default"><strong>점착제 </strong></mark><mark class="highlight-default"><strong>없이, 자연스럽게 밀착</strong></mark></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-80ba-8886-d12138a468f0" class="">수분에 반응해 피부에 스며들 듯 가볍게 밀착되는 </p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-805c-9aaf-cfe2551edfc4" class=""><strong>Moisture-Bonding</strong></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-8055-9405-c4768df4988a" class=""><code>→ 촉촉해 보이는 부착 상태의 페이스 컷</code> <br/></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-8044-a710-e61422e9890c" class=""><strong>헷갈림 없이, 한 번에</strong></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-80a8-9d8b-cac34b925cc9" class=""><mark class="highlight-default">직관적 L/R 구분으로, 거울 없이도 </mark>한 번에 부착</p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-80fd-adfb-d068aae8976d" class=""><strong>No Mirror, One Go</strong></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-80e0-a75b-eb8aa44c3c80" class=""><code>→ 패치 부착중인 모델 컷</code></p></div><div style="display:contents" dir="auto"><div id="3573e64d-624c-8063-baab-ffc4341425b8" class="column-list"><div style="display:contents" dir="auto"><div id="3573e64d-624c-804e-a49d-d3e9ffffec52" style="width:50.000000000000014%" class="column"><div style="display:contents" dir="ltr"><figure id="3573e64d-624c-8085-ad21-ed6f0485d19a" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/260406_AYROW_0598.jpg"><img style="width:302px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/260406_AYROW_0598.jpg"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="3573e64d-624c-80a7-ab14-cd687224c57d" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure id="3573e64d-624c-800d-a7b5-c7a5d000cf2e" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/260406_AYROW_0637.jpg"><img style="width:302px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/260406_AYROW_0637.jpg"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8178-9411-fc3602a4ff6e"/></div><div style="display:contents" dir="auto"><h3 id="3573e64d-624c-80bc-896b-cf711686eb9d" class=""><em><span style="border-bottom:0.05em solid">Whereable Beauty™</span></em></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8129-881b-d7f32a6d2756" class=""><strong>일상의 흐름을 끊지 않는 뷰티</strong></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-80f4-b6bb-f89e8a9851d1" class="">야외 활동에서 다음 일정까지, 끊김 없이 </p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-802c-af10-caa0a87513b5" class="">어디서든 이어지는, 보호와 케어</p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-8080-aa7c-d061043a1f23" class=""><code>→ 일상 속 선베일 중인 모델 컷</code> <br/></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8146-9ac8-d2671b3793de" class=""><mark class="highlight-default"><strong>선크림 위에 이어지는 레이어</strong></mark></p></div><div style="display:contents" dir="auto"><p id="3573e64d-624c-8096-909f-cfbe7d07e383" class="">덧바르지 않아도 계속 유지되는 보호</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8192-8636-f4c0c448db12"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-811e-9e87-c16f718acf83" class="block-color-gray_background">04 · USE CASES / <strong>EDITORAL SLIDER</strong></h1></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81ac-b3d7-c08c306ee067" class="">WHEREABLE BEAUTY</h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81cd-a60c-fc7b1d203561" class=""><strong>“Wherever + Able”</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8184-9349-d2f8ecde72fa" class=""><em>언제, 어디서든 가능한 뷰티 에이전트</em></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8143-a439-ccbe2472c87d"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8102-b835-f2a5e854360a" class="">당신의 하루 속, Sun Veil이 함께하는 순간</h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8103-9810-e98e5d619184" class=""><mark class="highlight-red"><code>제품이 실제로 사용되는 환경과 맥락을 보여주는 에디토리얼 섹션</code></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81c4-83d2-f52d88e1c626"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-818b-960a-c74307b2e52b" class=""><strong>1 · 오후 2시 창가 </strong><mark class="highlight-gray"><strong>→ </strong></mark><mark class="highlight-gray">A Quiet Moment</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-811a-9a8e-e7ee0f3c39c0" class=""><mark class="highlight-default">빛이 들어오는 자리를 포기하지 않아도 됩니다</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8185-818a-fccdf281ac83" class=""><mark class="highlight-default"><code>메이크업 위 부착</code></mark><mark class="highlight-default">  </mark><mark class="highlight-default"><code>티 나지 않는 밀착</code></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81bf-a230-c57855801c91"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8148-9a01-fde762ae79df" class=""><mark class="highlight-blue"><strong>2 · 러닝 크루 </strong></mark><mark class="highlight-blue">→ An Social Moment</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a1-96de-c7493c9bef7e" class=""><mark class="highlight-blue">하루의 흐름를 멈추지 않는 선케어</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8112-a4f8-e5357d2772c7" class=""><mark class="highlight-default"><code>운동 환경 고려</code></mark><mark class="highlight-default">  </mark><mark class="highlight-default"><code>빠른 부착</code></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-816f-9fc3-d720f63aec39"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81d5-bd01-cc6928713da0" class=""><strong>3 · 테라스 브런치 </strong><mark class="highlight-gray">→ A Lifestyle Moment</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-813d-b372-d74306abcbb8" class=""><mark class="highlight-default">햇살을 피하지 않는 사람의 SUN 리추얼</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81c5-8b60-fde3619ad6c4" class=""><mark class="highlight-default"><code>레이어드 선케어</code></mark><mark class="highlight-default">  </mark><mark class="highlight-default"><code>우아한 선루틴</code></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81b4-a040-ff5826a717fc"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-810a-93ef-f58bc9cde63b" class=""><strong>4 · </strong><mark class="highlight-default"><strong>기분 좋은 햇살 산책 </strong></mark><mark class="highlight-gray">→ A Free Moment</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8112-9b1d-c9010fc6edea" class="">햇살을 그대로 즐기는 시간</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8156-82f1-d784f913d6e0" class=""><mark class="highlight-default"><code>장시간 착용</code></mark><mark class="highlight-default">  </mark><mark class="highlight-default"><code>생활 밀착</code></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8131-9c74-e5072a13b474"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81c8-8cd8-d2d3178fac48" class=""><strong>5 ·  멀티 태스킹 </strong><mark class="highlight-blue"><strong>무의식의 흐름대로 지속적인 케어</strong></mark><mark class="highlight-blue">→ A OO Moment</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a6-a1c7-d2bc02171fe2" class="">
+</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81bd-89c8-d61c95899c85" class=""><mark class="highlight-default"><code>장시간 착용 </code></mark><mark class="highlight-default">  </mark><mark class="highlight-default"><code>생활 밀착</code></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81bd-b7d0-d46a1526ecaa"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-811b-8496-d3d78d8c86ff" class=""><strong>6 ·  드라이브 케어</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8172-a813-d960b5bc4370" class="">
+</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81dc-a88a-f126eb8a897c" class=""><mark class="highlight-default"><code>장시간 착용 </code></mark><mark class="highlight-default">  </mark><mark class="highlight-default"><code>생활 밀착</code></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8171-90bb-ea28ccdffee3"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8148-af75-d3f2584dff58" class=""><strong>7 ·  시술 후  케어</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a9-994a-cd70121e261a" class="">
+</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-818e-901e-c48a8f4b45d0" class=""><mark class="highlight-default"><code>장시간 착용 </code></mark><mark class="highlight-default">  </mark><mark class="highlight-default"><code>생활 밀착</code></mark></p></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-8121-9f04-f8ef666d81d9" class="block-color-gray_background">04-2 · RITUAL / USAGE GUIDE</h1></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8120-a7e6-d3f06e92cf30"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81cf-bf47-d679d4ba03ec" class=""><strong>01 · Ready</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-815e-8adf-d392ff8b7b3a" class="">파우치를 열고 L/R 방향을 확인합니다</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81f6-b89a-c39c784cdf3b"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81b3-83f4-cfe4a4e56b28" class=""><strong>02 · Set</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-817b-bc1f-eab21baec336" class="">햇살이 먼저 닿는 광대존에 올린 뒤 가볍게 눌러 안착시켜 줍니다</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-812d-9bdd-f556544c64f0"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8190-b511-e42dc4ff210e" class=""><strong>03 · Go</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-810c-a2ca-c6eafd4227aa" class="">피부와 하나가 된 듯한 피팅감으로 일상을 이어갑니다</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81af-a003-cc80eb48b30e"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-81b4-b824-fdd3bbb8f30d" class="block-color-gray_background">05 · HOW IT WORKS</h1></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81cb-b4f9-e891eda8e645" class=""><mark class="highlight-red">두 개의 레이어+브리더블까지 포함된 3D 이미지 → 홍성우 작가 3d 개발 중</mark><mark class="highlight-red">(5월 4주 업로드 가능)</mark></p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-817a-b593-d8697d2031a1" class="block-color-default_background"><mark class="highlight-blue_background"><span style="border-bottom:0.05em solid">5-1. How It Protects (레이어)</span></mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-812c-9ca6-e5ac2e90bdba" class=""><strong>Unveiling Veil Structure(</strong>베일 레이어 구조)</p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81df-8b94-fd0a9a8cdf17" class="">두 개의 레이어가 하나의 피부처럼 작동합니다</h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8108-82e5-dc23039e9b24" class="">Sun Veil은 <mark class="highlight-default"><strong>자외선 차단 필름이 아니라</strong></mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8137-be35-e0d55332d144" class=""><strong>기능이 다른 두 레이어가 결합된 컴포지트 나노 섬유</strong>입니다.</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8151-a31d-ebfc5d659587"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81e4-91a3-dc057e774e45" class=""><strong>Layer 1</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-810a-a45e-ecf04516b33c" class=""><strong>초박막 투명 멤브레인</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8177-a65f-eca43381c79f" class="">0.004mm 투명 나노 섬유로</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-817b-8b8f-f828c7c1702f" class="">피부 결과 메이크업 질감을 해치지 않는 자외선 보호 층</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-815d-ad40-ec4e658cc2a3"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a3-a3b4-deacf0927269" class=""><strong>Layer 2</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-814b-a46c-cc74f6b45173" class=""><strong>약액층</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8103-9ee7-e18bff5134bd" class="">멤브레인 내부 활성 성분층으로</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8111-a3a2-f506bf6dcd61" class="">외부 자극 환경에서 피부 컨디션 유지 서포트 층</p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-813c-9751-e5166f7ce222" class="block-color-default_background"><mark class="highlight-blue_background"><span style="border-bottom:0.05em solid">5-2. How It Bonds (밀착)</span></mark></h3></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81c0-86e8-ef1da4f71921" class="">접착하지 않고 수분으로 안착한다</h3></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-811a-812c-ed25612b7681"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a7-a5ea-c7c54bc7cd9e" class=""><strong>점착제 없는 클린 밀착</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8172-9971-f3a883a274db" class="">화학 접착 성분 없이</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-818f-b1b8-e4c11e243cf2" class=""><mark class="highlight-default">구조적 물성으로 구현한 </mark>물리적 밀착</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-819a-8b5c-fa65541bfb22"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a6-b9b5-f37e4ea3e22c" class=""><strong>Moisture-Bonding</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8144-88d5-e925240fc6bd" class=""><mark class="highlight-blue">선베일의 보습 성분과 피부 표면이 만나 </mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8139-aff0-e852ed122e3a" class="">표면 장력으로 피부 위에 자연스럽게 안착</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81b5-9060-fd5c608662db"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-8116-863d-d00a810b3293" class="block-color-gray_background">06 · TECHNOLOGY</h1></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81f2-ac74-d5ca77089c28" class="">태양이 강렬할수록, 더 치밀하게 작동합니다</h3></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81bc-8fe3-c3476b397ade" class="block-color-default_background"><mark class="highlight-blue_background"><span style="border-bottom:0.05em solid">6-1. </span></mark><mark class="highlight-blue_background"><strong><span style="border-bottom:0.05em solid">Reverse AG Code™ 포뮬라</span></strong></mark></h3></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81cb-b616-dc39667f12ad" class="bulleted-list"><li style="list-style-type:disc">세가지 OO성분으로 완성하는 리버스 AG 코드 <div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81c1-9a73-fb71de433417" class="bulleted-list"><li style="list-style-type:circle"><strong>NMN¹ + Resveratrol² + Pterostilbene³</strong><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81f7-8008-e77a5832f5d2" class="bulleted-list"><li style="list-style-type:square"><mark class="highlight-blue">NMN: 세포 NAD⁺ 공급, 에너지 회복¹</mark></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-818d-b85a-c875a0beda7a" class="bulleted-list"><li style="list-style-type:square"><mark class="highlight-blue">Resveratrol: SIRT1 활성화, 항산화·DNA 수선²</mark></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81ee-94ab-c497890901cd" class="bulleted-list"><li style="list-style-type:square"><mark class="highlight-blue">Pterostilbene: 차세대 스틸벤, 안정성↑, 항산화·브라이트닝³</mark></li></ul></div></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8158-9885-f2a0a68853e1" class="bulleted-list"><li style="list-style-type:disc">Synergy Modules(Unit)<div style="display:contents" dir="auto"><ul id="34e3e64d-624c-815b-857e-ecd789616a07" class="bulleted-list"><li style="list-style-type:circle">식물 유래 PDRN으로 피부 환경 회복 지원<div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8169-ae57-d45ca6f2699d" class="bulleted-list"><li style="list-style-type:square">Vegan PRN(화이트 트러플 유산균) </li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-813f-80f2-c6e62567d708" class="bulleted-list"><li style="list-style-type:square">Phyto PDRN(생 어린 병풀)</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81ec-bba5-edc85b061fae" class="bulleted-list"><li style="list-style-type:circle">외부 자극 환경에서 피부 안정 보조<div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8131-85cb-f09387f0c5aa" class="bulleted-list"><li style="list-style-type:square">CICA ROSIA 2.0</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8142-bd2b-d84b03c0eca4" class="bulleted-list"><li style="list-style-type:square">다닥냉이씨</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-810b-9a77-cadec869d05f" class="bulleted-list"><li style="list-style-type:square">망고잎</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81c0-9ea1-c869aea5d7e8" class="bulleted-list"><li style="list-style-type:circle">피부 생태계 균형 설계<div style="display:contents" dir="auto"><ul id="34e3e64d-624c-818e-9e04-f67d321cb405" class="bulleted-list"><li style="list-style-type:square">퀘르세틴</li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-814c-93cd-e1a86aa0e481" class="bulleted-list"><li style="list-style-type:square">미역 유래 비건 유산균</li></ul></div></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81ee-9b4d-ee1e719820fe"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8177-b2bc-f503f2128e90" class="block-color-default_background"><mark class="highlight-blue_background"><span style="border-bottom:0.05em solid">6-2. 에어로플로우 멤브레인</span></mark><mark class="highlight-blue_background"><strong><span style="border-bottom:0.05em solid">™</span></strong></mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81b6-9713-fbaed4c59ab2" class=""><mark class="highlight-blue">공기 흐름을 지속적으로 유지하며(피부 호흡을 방해하지 않으며) 피부에 정밀하게 밀착되는 </mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-816a-bfb4-d07013d1e244" class=""><mark class="highlight-blue">‘숨 쉬는’ 초경량 멤브레인</mark></p></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8165-8a1e-ca40b50a3671" class=""><mark class="highlight-blue">0.004mm 숨 쉬는 나노바이오 섬유</mark></h3></div><div style="display:contents" dir="auto"><div id="34e3e64d-624c-817f-af91-c175a0a7c274" class="column-list"><div style="display:contents" dir="auto"><div id="34e3e64d-624c-816d-bc88-d0820bbe330a" style="width:25%" class="column"><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8165-8770-e9f3fc73b4c9" class=""><strong>Skin-Breathing</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a4-9158-d1eefbb28316" class="">3D 에어 메쉬 구조로 답답함을 줄인 에어로플로우 설계</p></div></div></div><div style="display:contents" dir="auto"><div id="34e3e64d-624c-817c-83db-cb5a274f4d22" style="width:25%" class="column"><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8121-9d6f-cc8c113637a4" class=""><strong>Stealth Fit</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-813f-bc5c-f033e66d7280" class="">메이크업 위에서도 자연스러운 스텔스 피팅</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8166-bb5e-dd74abda3a4c" class="">
+</p></div></div></div><div style="display:contents" dir="auto"><div id="34e3e64d-624c-81b5-ab0e-db6451962753" style="width:25%" class="column"><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81f3-9b36-df09b9191be9" class=""><strong>Zero-Gravity</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8162-bc67-c41e1565c909" class="">0.004mm의 초경량 존재감</p></div></div></div><div style="display:contents" dir="auto"><div id="34e3e64d-624c-816c-93f8-c0fce47f1f60" style="width:25%" class="column"><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a0-9501-ee210414b5e3" class=""><strong>Even Realease</strong></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-819f-83e4-e1424001f596" class=""><mark class="highlight-blue">상호 작용</mark></p></div></div></div></div></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81c5-96e2-f56625b0b8ab"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-8194-af7a-fd54e2f60117" class="block-color-gray_background"><mark class="highlight-blue">07 · KEY EXPERIENCE </mark></h1></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81f1-8a29-ff74af5986f8" class=""><mark class="highlight-blue">1️⃣ Invisible Veil</mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8192-bf97-db1d58cb2545" class=""><mark class="highlight-blue">Sun Veil은</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81c9-9c1c-c5fa075916c7" class=""><mark class="highlight-blue">일반적인 선패치처럼 눈에 띄지 않습니다.</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81b5-8a02-ff0ac43c02c4" class=""><mark class="highlight-blue">메이크업 위에서도 자연스럽게 어우러지는</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81d4-946e-c91baf7f8ae5" class=""><mark class="highlight-blue"><strong>거의 보이지 않는 투명 구조</strong></mark><mark class="highlight-blue">입니다.</mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8111-a5f9-e4ecc1795c09"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8166-ad3b-ecbe1cb2924d" class=""><mark class="highlight-blue">2️⃣ Aero Flow™</mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-817d-9609-eb78b1f6f68d" class=""><mark class="highlight-blue">초미세 다공성 멤브레인 구조가</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81d9-a75d-fe3533ffabe5" class=""><mark class="highlight-blue">공기 흐름을 유지하면서 밀착됩니다.</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8119-bd23-de3df5228607" class=""><mark class="highlight-blue">숨 쉬는 구조로 장시간 착용에도 </mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81eb-a480-e07c6216346a" class=""><mark class="highlight-blue">답답함 없이 사용할 수 있습니다.</mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-811b-b561-e0f1f8216297"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8126-b7ee-f97cea9f5e07" class=""><mark class="highlight-blue">3️⃣ Seamless Fit</mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8139-8a5b-ce53f00cfc21" class=""><mark class="highlight-blue">초박막 섬유 구조가</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-818b-b7c9-e66eebaab848" class=""><mark class="highlight-blue">피부 굴곡에 자연스럽게 밀착됩니다.</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8127-94bf-db961102cc46" class=""><mark class="highlight-blue">그래서</mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81dd-83cb-eb78629bc01f" class=""><mark class="highlight-blue"><strong>붙인 것조차 잊게 만드는 착용감</strong></mark><mark class="highlight-blue">을 </mark></p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81d8-9917-e68f4c46700b" class=""><mark class="highlight-blue">제공합니다.</mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8150-9491-c1e76951b538"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8195-b8fa-e27c85e379af" class=""><mark class="highlight-blue">3️⃣ Gentle Removal</mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8116-9a60-f3cb5ea1588a" class=""><mark class="highlight-blue">제거 시 솜털 하나 건들이지 않고 섬세하게 분리됩니다.</mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-813b-bdc1-e6b8231f4c7a"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-8118-967a-c3a393732eca" class="block-color-gray_background">08 · PROOF / EVIDENCE</h1></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-80f8-8ec3-fd8b4864d733" class="bulleted-list"><li style="list-style-type:disc"><code>제품 스케일 (고객 체감 영역) → mm 사용 / Ex) 두께: 0.004 mm</code><div style="display:contents" dir="auto"><ul id="3543e64d-624c-80ab-b6bd-d5676b5bda8c" class="bulleted-list"><li style="list-style-type:circle"><code>크기, 사이즈 등</code></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-80f9-81ee-da1ba2db6180" class="bulleted-list"><li style="list-style-type:disc"><code>기술 영역 (차별화 포인트) → μm 사용 / Ex) 기공 크기: 0.7 μm</code><div style="display:contents" dir="auto"><ul id="3543e64d-624c-8024-9526-c456ebcbf847" class="bulleted-list"><li style="list-style-type:circle"><code>나노/미세 구조” 강조라서 </code><code><strong>μm 써야 기술력 살아남</strong></code></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-8084-93b2-eeee63a58e76"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81b7-8e69-c67e409d9c59" class="">보이지 않지만,</h3></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81a8-a16a-eb6d95aa7fd0" class="">데이터로 확인됩니다.</h3></div><div style="display:contents" dir="ltr"><table id="34e3e64d-624c-81cf-97e7-ce0362f0b8a5" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-80e3-8dd4-f1943707b920"><th id="k@mS" colSpan="2" class="block-color-default_background simple-table-header" style="width:472.3125px">Dermatest® · FITI 시험 연구원 데이터 기반</th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-808a-a260-f671809ca1ba"><td id="k@mS" colSpan="2" class="block-color-gray_background" style="width:472.3125px"><strong>✔ 자외선 차단 성능</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-81f9-8c70-da65b9044b17"><td id="k@mS" class="" style="width:213.3125px"><strong>UVB 차단율</strong></td><td id="}vEf" class="" style="width:259px"><strong>99.9% CUT</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-8119-9fa8-c0cb1786846e"><td id="k@mS" class="" style="width:213.3125px"><strong>UVA 차단율</strong></td><td id="}vEf" class="" style="width:259px"><strong>96.4% CUT</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-81b3-9793-fdd53092d936"><td id="k@mS" class="" style="width:213.3125px"><strong>UVR 차단율</strong></td><td id="}vEf" class="" style="width:259px"><strong>96.3% CUT</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-81d1-851f-e68e6586c469"><td id="k@mS" class="" style="width:213.3125px"><strong>UPF 지수</strong></td><td id="}vEf" class="" style="width:259px"><strong>UPF 50+</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-805d-9d95-fce169f5dd9d"><td id="k@mS" colSpan="2" class="" style="width:472.3125px">*원단 시험 기준</td></tr></div><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-8090-adfe-fc7b9cd821aa"><td id="k@mS" colSpan="2" class="block-color-gray_background" style="width:472.3125px">✔ <strong>피부 적합성</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-819e-a7cb-d0b07991ccfd"><td id="k@mS" class="" style="width:213.3125px"><strong>피부 자극 지수</strong></td><td id="}vEf" class="" style="width:259px"><strong>0.00 (자극 반응 없음)</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-8173-8cde-e4ea271349f8"><td id="k@mS" class="" style="width:213.3125px"><strong>더마테스트</strong></td><td id="}vEf" class="" style="width:259px"><strong>EXCELLENT 등급</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-81db-b9cd-e3843df597ce"><td id="k@mS" class="" style="width:213.3125px"><strong>피부 친화 소재</strong></td><td id="}vEf" class="" style="width:259px"><strong>Skin-friendly Material 기준 충족</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-802f-8ad9-ea2c222e5b39"><td id="k@mS" colSpan="2" class="" style="width:472.3125px">*민감 피부 대상 첩포 시험 및 2주 임상 시험 기준</td></tr></div><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-80c8-8e0f-ddee157e9761"><td id="k@mS" colSpan="2" class="block-color-gray_background" style="width:472.3125px"><strong>✔ 숨 쉬는 구조 데이터</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-8103-a1af-e9a6afc1412c"><td id="k@mS" class="" style="width:213.3125px"><strong>공기 투과도</strong></td><td id="}vEf" class="" style="width:259px"><strong>1.0 미만 mm/s (공기 흐름 유지)</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-8199-b48b-f904292b76fb"><td id="k@mS" class="" style="width:213.3125px"><strong>투습도</strong></td><td id="}vEf" class="" style="width:259px"><strong>12,356 g/m²·24h (습기 배출 가능)</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-810c-b558-c7da47c97fc1"><td id="k@mS" class="" style="width:213.3125px"><strong>기공 크기</strong></td><td id="}vEf" class="" style="width:259px"><strong>0.7μm (초미세 기공 구조)</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-8047-8a1e-efbb56b36bc8"><td id="k@mS" class="" style="width:213.3125px">*물성 시험 측정 기준</td><td id="}vEf" class="" style="width:259px"></td></tr></div><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-80e9-b730-e6374f965819"><td id="k@mS" colSpan="2" class="block-color-gray_background" style="width:472.3125px"><strong>✔ 물성 &amp; 설계</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-81e4-a97c-c945b489031b"><td id="k@mS" class="" style="width:213.3125px"><strong>중량</strong></td><td id="}vEf" class="" style="width:259px"><strong>0.05g (1 piece 기준 초경량)</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-803e-872e-e6e5155b5844"><td id="k@mS" class="" style="width:213.3125px"><strong>두께</strong></td><td id="}vEf" class="" style="width:259px"><strong>0.004mm (초박막)</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-8039-8c85-f67128baabf3"><td id="k@mS" class="" style="width:213.3125px"><strong>구조</strong></td><td id="}vEf" class="" style="width:259px"><strong>숨 쉬는 나노 멤브레인</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="3513e64d-624c-80fe-8d2b-f1d49b348f16"><td id="k@mS" colSpan="2" class="" style="width:472.3125px">*완제품 기준</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><p id="3513e64d-624c-8083-a273-f189b96670dd" class=""><strong>✔ 윤리 &amp; 포뮬러 기준 (Clean Formula Standard)</strong></p></div><div style="display:contents" dir="auto"><ul id="3513e64d-624c-8082-a175-c9fd74a7ad78" class="bulleted-list"><li style="list-style-type:disc"><strong>비건 인증 (The Vegan Society): 동물성 원료 무첨가 비건 포뮬러</strong></li></ul></div><div style="display:contents" dir="auto"><hr id="3513e64d-624c-80a3-8d3d-e677d783b623"/></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81eb-87d7-e5f30a0e0563"><div class="block-color-pink_background source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/Sun_Veil_%EC%9E%90%EC%99%B8%EC%84%A0%EC%B0%A8%EB%8B%A8_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EB%A6%AC%ED%8F%AC%ED%8A%B8.pdf">Sun Veil 자외선 차단 테스트 리포트.pdf</a></div></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-80e4-b304-d78280fc6ba7"><div class="block-color-pink_background source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/FITI%EC%8B%9C%ED%97%98%EC%97%B0%EA%B5%AC%EC%9B%90_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EB%A6%AC%ED%8F%AC%ED%8A%B8_H2322612470_260403.PDF.pdf">FITI시험연구원 테스트 리포트_H2322612470_260403.PDF.pdf</a></div></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-817c-848f-cab9526bb85b"><div class="block-color-pink_background source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/%EB%8D%94%EB%A7%88%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%B5%9C%EC%A2%85_%EB%B3%B4%EA%B3%A0%EC%84%9C_20260304_Test_Report_ST-SENS-2026-00010_ST-ET-2026-00010.pdf">[더마테스트] 최종 보고서_20260304_Test Report ST-SENS-2026-00010, ST-ET-2026-00010.pdf</a></div></figure></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81fd-9b18-fa26e9106882" class="toggle"><li><details open=""><summary><mark class="highlight-teal"><strong><a href="https://drive.google.com/drive/folders/168Wr-F79lfwLVQBksCkesr-bnAULr_kE">비건 소사이어티 아트워크/가이드 라인</a></strong></mark></summary><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-811f-92e6-e44a20e49e32" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-teal">Artwork &amp; Guidelines → ‘R’ Artwork / The Vegan Trademark Usage Guidelines</mark></li></ul></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-813a-93c1-ea10af350f82" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/image%202.png"><img style="width:2212px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/image%202.png"/></a></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81b6-8db0-c275f818a2bf" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/image%203.png"><img style="width:2212px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/image%203.png"/></a></figure></div></details></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8165-8038-d1394410eac8" class="toggle"><li><details open=""><summary><mark class="highlight-teal"><strong>독일더마테스트 아트워크/가이드라인</strong></mark></summary><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8116-b5e3-e67da8178ae5" class="bulleted-list"><li style="list-style-type:disc">가이드라인<div style="display:contents" dir="auto"><p id="34e3e64d-624c-8116-9bc9-c940fcf3665c" class=""><a href="https://dermatest.com/ko/%eb%a7%88%ec%bc%80%ed%8c%85/">https://dermatest.com/ko/마케팅/</a></p></div></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8175-8b96-fd0ff257e737" class="toggle"><li><details open=""><summary><strong>인증씰 로고</strong></summary><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8100-b66b-c4d0c9f228be" class="toggle"><li><details open=""><summary>Sensitive Seal_Consumer line_2026</summary><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81f7-b215-f56b5fbad8fe"><div class="source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Consumer-Line_Sensitive_CMYK_2026_March_EN.eps">dermatest_Consumer-Line_Sensitive_CMYK_2026_March_EN.eps</a></div></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-816b-8a00-c6a9c5ef76b6" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Consumer-Line_Sensitive_RGB_2026_March_EN.png"><img style="width:590.0521240234375px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Consumer-Line_Sensitive_RGB_2026_March_EN.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a1-8f45-c7e802423fb9" class="">
+</p></div></details></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81c0-a1a8-ff22634cd5c9" class="toggle"><li><details open=""><summary>Sensitive Seal_Science line_2026</summary><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-816c-aec8-e7c361cb029e"><div class="source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Sensitive_CMYK_2026_March_EN.eps">dermatest_Seal_Sensitive_CMYK_2026_March_EN.eps</a></div></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81a1-9d9b-fb3de5090017" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Sensitive_vertical_RGB_2026_March_EN.png"><img style="width:590.04345703125px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Sensitive_vertical_RGB_2026_March_EN.png"/></a></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-8134-ae69-fe0065e3ebb6"><div class="source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Sensitive_vertical_CMYK_2026_March_EN.eps">dermatest_Seal_Sensitive_vertical_CMYK_2026_March_EN.eps</a></div></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81dd-be96-ce58ad5d373b" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Sensitive_RGB_2026_March_EN.png"><img style="width:590.04345703125px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Sensitive_RGB_2026_March_EN.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8149-a52b-ec9182e60add" class="">
+</p></div></details></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-8181-b889-dbc9f103bf57" class="toggle"><li><details open=""><summary>Skin friendly Material_consumer line_2026</summary><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81f2-91bf-f6695e0ac7fc"><div class="source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Consumer-Line_Material_CMYK_2026_March_EN.eps">dermatest_Consumer-Line_Material_CMYK_2026_March_EN.eps</a></div></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81eb-899d-d285c074d89c" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Consumer-Line_Material_RGB_2026_March_EN.png"><img style="width:590.0521240234375px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Consumer-Line_Material_RGB_2026_March_EN.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-816b-88e6-e4e56b0d286e" class="">
+</p></div></details></li></ul></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81f0-82c8-f803f1c0199f" class="toggle"><li><details open=""><summary>Skin friendly Material_science line_2026</summary><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-818f-8d46-ffb81a7bd65e"><div class="source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Material_CMYK_2026_March_EN.eps">dermatest_Seal_Material_CMYK_2026_March_EN.eps</a></div></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81d6-b017-e8ce4fb2ddb0" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Material_vertical_RGB_2026_March_EN.png"><img style="width:590.04345703125px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Material_vertical_RGB_2026_March_EN.png"/></a></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81e0-9767-e68f4a7df751"><div class="source"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Material_vertical_CMYK_2026_March_EN.eps">dermatest_Seal_Material_vertical_CMYK_2026_March_EN.eps</a></div></figure></div><div style="display:contents" dir="ltr"><figure id="34e3e64d-624c-81b2-b2b1-ce92095f0b9a" class="image"><a href="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Material_RGB_2026_March_EN.png"><img style="width:590.04345703125px" src="%EC%84%A0%EB%B2%A0%EC%9D%BC%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80/dermatest_Seal_Material_RGB_2026_March_EN.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8133-b335-f94699b551af" class="">
+</p></div></details></li></ul></div></details></li></ul></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81ab-a86a-d3d9cd320014" class="">
+</p></div></details></li></ul></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8110-bca6-f2d2a8fa6a36"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-81ca-99f2-d7783407261d" class="block-color-gray_background">09 · FULL FAQ</h1></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8157-af57-c77c046d944f" class=""><code>자주 묻는 질문 (상세 버전)<br/>→ </code><code><strong>납득 강화 / 기술 신뢰 / 깊이 설명</strong></code></p></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-80d7-a041-d046c9e6f14f" class="bulleted-list"><li style="list-style-type:disc"><code>붙이는 차단 vs 바르는 차단</code></li></ul></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-806b-b07a-dd2ab21840e8" class="bulleted-list"><li style="list-style-type:disc"><code>무점착 구조</code></li></ul></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-80ea-9aa0-df38e5ee21db" class="bulleted-list"><li style="list-style-type:disc"><code>멤브레인 작동 원리</code></li></ul></div><div style="display:contents" dir="auto"><hr id="3553e64d-624c-8094-b423-d3e7b3af20db"/></div><div style="display:contents" dir="auto"><p id="3553e64d-624c-8029-8be3-f54bc32237b4" class=""><code>[이해] 1 ~ 4</code></p></div><div style="display:contents" dir="auto"><p id="3553e64d-624c-8025-961c-d04e170aaacb" class=""><code>[신뢰] 5 ~ 6</code></p></div><div style="display:contents" dir="auto"><p id="3553e64d-624c-8095-8bf6-d3f88eafbda1" class=""><code>[사용 경험] 7 촉감 / 8 거울 없이 / 9 재사용 여부</code></p></div><div style="display:contents" dir="auto"><p id="3553e64d-624c-8019-b123-f24dbecef590" class=""><code>[최종] 10 선베일을 선택해야 하는 이유</code></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81f1-830c-f63711067f9c"/></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-80aa-a687-c115fc765768" class="block-color-gray_background"><strong>✔ </strong>Sun Veil은 정확히 어떤 제품인가요? <mark class="highlight-red">→ 정의</mark></h3></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-809d-9633-e56cdaec4f21" class="">Sun Veil은 피부 위에 안착되는 <strong>초박막 멤브레인(나노 섬유)</strong>과 <br/>스킨케어 성분을 담은 <strong>케어층</strong>이 결합된 <br/><strong>반건식(hybrid dry-to-wet) 구조의 이중 레이어 패치형 제품</strong>입니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-802a-b1e4-e354415ed659" class="">초박막 기공형 멤브레인은 피부 호흡을 방해하지 않고 편안하게 밀착되며, <br/><strong>투명한 보호 레이어</strong>로 작동하도록 설계되었습니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-80d8-9414-ef6b542b2e8e" class="">동시에, 케어층에는 <strong>Reverse AG Code™ 기반의 스킨케어 성분</strong>이 담겨<br/>외부 자극으로 흔들린 피부 컨디션을 정돈하는 케어가 함께 이루어집니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8043-a7b0-f17c28b86de8" class="">피부 위에 안착되어 <strong>자외선 차단과 피부 컨디션 케어가 동시에 이어지는 <br/></strong><strong>새로운 방식의 스킨 프로텍션 솔루션</strong>입니다.</p></div><div style="display:contents" dir="auto"><hr id="3563e64d-624c-8062-a81e-ee851d5aa245"/></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-8004-8539-c3236e3e9384" class="block-color-gray_background"><mark class="highlight-default"><strong>✔ 투명한데 자외선 차단이 가능한 이유는 무엇인가요? </strong></mark><mark class="highlight-red">→ 원리</mark></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80a2-a392-e69088514d10" class="">눈에는 투명하게 보이지만, <br/><strong>멤브레인 내부에는 자외선 대응 구조가 균일하게 분포</strong>되어 있습니다.</p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80ea-93fb-c634851678da" class="">이 구조가 빛에 반응해 자외선을 흡수하거나 산란시켜<br/><strong>가시광선은 통과시키고, 자외선은 차단하도록 설계</strong>되어 있습니다.</p></div><div style="display:contents" dir="auto"><p id="3553e64d-624c-80fd-9c71-f0e6ef2238b8" class="">쉽게 설명하면,</p></div><div style="display:contents" dir="auto"><ul id="3553e64d-624c-80bf-9289-d17c7df82610" class="bulleted-list"><li style="list-style-type:disc">가시광선 → 통과 (그래서 투명)</li></ul></div><div style="display:contents" dir="auto"><ul id="3553e64d-624c-80b1-a4bd-d1d3e5476556" class="bulleted-list"><li style="list-style-type:disc">자외선 → 흡수·산란 (그래서 차단)</li></ul></div><div style="display:contents" dir="auto"><p id="3553e64d-624c-80f3-b787-daaa366664a1" class="">되는 원리이기 때문입니다.</p></div><div style="display:contents" dir="auto"><hr id="3553e64d-624c-8032-8c71-d8b031dacecc"/></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-8028-8e79-eb29578c5a2b" class="block-color-gray_background">✔ 일반<mark class="highlight-default"> 필름형 선</mark>패치와 무엇이 다른가요? <mark class="highlight-red">→ 차별</mark></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8024-8e7d-ddaaf94f762a" class=""><mark class="highlight-default">일반 투명 선패치는 필름 형태로 피부를 </mark><mark class="highlight-default"><strong>덮고 가두는 구조입니다. <br/></strong></mark><mark class="highlight-default">대부분의 필름형 선패치는 </mark><mark class="highlight-default"><strong>사실상 ‘차단막(occlusive film)’에 가깝습니다.</strong></mark></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80e6-aa53-f6da11e7de63" class="">이로 인해 공기 흐름이 차단되고, <br/>열·습기가 내부에 머물러 <br/>장시간 사용 시 답답함이나 자극이 발생할 수 있습니다.</p></div><div style="display:contents" dir="auto"><p id="3553e64d-624c-808d-8086-f565f260c9e5" class=""><mark class="highlight-default">Sun Veil은 나노 섬유 기반 멤브레인 구조로 피부를 </mark><mark class="highlight-default"><strong>가두지 않고 밀착됩니다.</strong></mark></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80d6-88ab-f891b842629e" class="">공기와 수분 흐름을 유지하면서도 <br/>자외선은 차단하도록 설계되어,</p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8059-b442-d08ae94946af" class=""><strong>붙여도 피부가 계속 숨 쉴 수 있습니다.</strong></p></div><div style="display:contents" dir="auto"><hr id="3553e64d-624c-805a-bff9-f7bc831bc8aa"/></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-8028-a1c1-de3abac08a9d" class="block-color-gray_background"><strong>✔ 점착 성분 없이 어떻게 밀착되나요? 왜 점착제를 사용하지 않았나요? </strong><mark class="highlight-red">→ 구조</mark></h3></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80e2-8969-f42db7ed4156" class=""><mark class="highlight-default"><strong>Sun Veil은 별도의 점착제를 사용하지 않습니다.</strong></mark></p></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-8061-9304-faf96d1b62ea" class="bulleted-list"><li style="list-style-type:disc"><strong>초박막 멤브레인의 기공 구조</strong>와</li></ul></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-809a-9023-ebc35de3c7cc" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default"><strong>스킨케어 제형의 점성 기반 Moisture-Bonding 방식</strong></mark><mark class="highlight-default">이 </mark></li></ul></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-80cd-9dd5-e3c1c963c679" class=""><mark class="highlight-default">결합되어 피부에 자연스럽게 안착됩니다.</mark></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8062-b29a-d764bce65e2c" class=""><mark class="highlight-default">일반적인 점착 패치는 제거 과정에서</mark></p></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-80e4-b8a7-d9a12a61e5fb" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default"><strong>점착 성분이 피부에 남거나,</strong></mark></li></ul></div><div style="display:contents" dir="auto"><ul id="3543e64d-624c-80ef-a47d-d3765144624a" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-default">특히 눈가·광대 등</mark><mark class="highlight-default"><strong> </strong></mark>피부가 얇은 <mark class="highlight-default"><strong>민감 부위에 물리적 자극(2차 자극)</strong></mark><mark class="highlight-default">을 유발할 수 있습니다.</mark></li></ul></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8073-89b7-efa17d684e82" class="">또한, 일부 점착 성분은 피부 표면에 잔류해 <br/><strong>완전한 세정이 어려운 경우도 있습니다.</strong></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-8091-96fb-f24280cbf20e" class="">Sun Veil은 이러한 점착제 구조를 배제하고, <br/><strong>피부를 가두지 않고 밀착되는 방식</strong>으로 <strong>자극과 잔류 부담을 최소화</strong>했습니다.<mark class="highlight-blue"> </mark></p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8018-add7-c02931745d1b" class=""><strong>Sun Veil의 방식은</strong></p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8048-94ff-eabf218f6ab2" class="">• 피부 굴곡을 따라 <strong>얇게 밀착</strong><br/>• <strong>공기 흐름을 유지</strong>하면서 안정적으로 고정<br/>• 피부 수분과 제형의 점성에 반응해 <strong>촉촉하게 안착</strong><br/>• 제거 시 <strong>자극 최소화</strong></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-809e-8f52-dbbb354a2abd" class=""><mark class="highlight-default"><strong>즉, 붙이는 방식이 아니라, 피부 위에 ‘안착’되는 구조입니다.</strong></mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8109-adb9-e39a02c85be4"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-811b-8f50-cb287ad16072" class="block-color-gray_background"><strong>✔ 민감한 피부나 시술 후에도 사용할 수 있나요? </strong><mark class="highlight-red">→ 안전성</mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81a2-b37e-c993b8fbc927" class=""><mark class="highlight-default">독일 Dermatest®에서<br/>민감 피부 대상 첩포 시험 및 2주 임상 시험 결과 <br/>피부 자극 및</mark> <strong>알레르기 반응이 관찰되지 않았으며 </strong><mark class="highlight-default"><strong>EXCELLENT (매우 우수)</strong></mark><mark class="highlight-default"> 등급을 받았습니다.</mark></p></div><div style="display:contents" dir="auto"><p id="3543e64d-624c-801b-973c-e9f0128fa7d0" class=""><mark class="highlight-default">자극을 최소화한 </mark><mark class="highlight-default"><strong>무점착·초박막 구조</strong></mark><mark class="highlight-default">로<br/>장시간 사용이나 시술 직후 예민해진 피부, 민감 피부에도</mark><mark class="highlight-default"><strong> 부담 없이 사용</strong></mark><mark class="highlight-default">할 수 있습니다.</mark></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-814c-80d7-c340303e6b08"/></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-8058-bfa8-f4868350f349" class="block-color-gray_background"><mark class="highlight-default"><strong>✔ UPF와 SPF의 차이는 무엇인가요? </strong></mark><mark class="highlight-red">→ 지표</mark></h3></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8047-a671-dbd65f848105" class=""><strong>SPF</strong>는 자외선 차단제를 피부에 바른 후, <br/>주로<strong> UVB로부터 피부를 얼마나 보호하는지를 나타내는 지표</strong>입니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8049-a624-f6fbe6515c36" class="">반면, <strong>UPF</strong>는 <strong>원단이나 소재 자체가 <br/>자외선을 얼마나 물리적으로 차단하는지를 나타내는 지표</strong>입니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8084-b68d-ebf710c35a07" class=""><strong><span style="border-bottom:0.05em solid">핵심 차이</span></strong></p></div><div style="display:contents" dir="auto"><ul id="3563e64d-624c-8071-bbcc-da4c7d2dfcf1" class="bulleted-list"><li style="list-style-type:disc">SPF → 피부에 ‘바르는’ 차단 (도포형 보호)</li></ul></div><div style="display:contents" dir="auto"><ul id="3563e64d-624c-8051-a6d0-def2910a46b8" class="bulleted-list"><li style="list-style-type:disc">UPF → 소재가 ‘막아주는’ 차단 (구조 기반 차단)</li></ul></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8043-ab0c-d39e7e14da22" class=""><strong>Sun Veil</strong>은<br/>원단 기준 자외선 차단 시험에서<strong> UPF 50+</strong> 성능을 확인했습니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-80f6-887d-fc61ccc86fe4" class="">또한, 멤브레인 구조 내에 분포된 자외선 대응 성분이 <br/>외부에서 유입되는 자외선을 흡수·산란시켜 차단합니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8064-8e5e-e158ba1d9960" class=""><strong>즉, “바르는 차단”이 아니라 <br/>피부 위에 얹히는 멤브레인 구조 위에서 자외선이 먼저 차단되는 방식입니다.<br/></strong><br/>*원단 기준 시험 결과이며, 실제 사용 환경 및 부착 상태 등에 따라 차이가 있을 수 있습니다.</p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81c8-8417-f97e5335a085"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8141-9469-e80be8dad359" class="block-color-gray_background"><strong>✔ 촉감이 어떤가요? 붙어 있는 게 느껴지나요? </strong><mark class="highlight-red"><strong>→ 사용 경험</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8051-9a87-ee9c4b1ddd67" class=""><strong>0.004mm 초박막 구조</strong>로 거의 촉감이 느껴지지 않으며, <br/>시간이 지나면<strong> 붙어 있는 사실조차 잊기 쉬운 착용감</strong>을 구현했습니다.</p></div><div style="display:contents" dir="auto"><hr id="3553e64d-624c-8083-83f3-f42135f242e1"/></div><div style="display:contents" dir="auto"><h3 id="3563e64d-624c-8005-a24f-eb24c843fcc7" class="block-color-gray_background"><strong>✔ (부착 상태에서) 표정을 지어도 어색하거나 거슬리지 않나요? </strong><mark class="highlight-red"><strong>→ 사용 경험</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-80ba-97da-e7dff2a19874" class="">웃고 말하는 순간에도 <strong>이질감 없이 자연스럽게 따라 움직이며, </strong><br/>피부 움직임을 방해하지 않는 <strong>편안한 착용감</strong>을 구현했습니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-802b-84d5-ffbcc31956c3" class=""><strong>기공 기반의 플렉서블 멤브레인 구조</strong>로 피부 조임 없이 유연하게 밀착되어 <br/><strong>주름이 부각되거나 끼는 현상을 최소화</strong>했습니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8010-a807-d4f67ea957f9" class="">(일반 점착 패치는 필름 텐션이나 점착 강도에 따라 피부 조임 또는 뻣뻣함이 느껴질 수 있습니다.)</p></div><div style="display:contents" dir="auto"><hr id="3563e64d-624c-8095-88ce-cd724211f563"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-81a2-a608-e6c167e95eda" class="block-color-gray_background"><strong>✔ 거울 없이도 부착 가능한가요? </strong><mark class="highlight-red"><strong>→ 사용 경험</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-818b-92a6-d736619b186c" class=""><strong>L/R 방향 구분과 직관적 위치 설계</strong>를 통해 <br/>손끝 감각만으로도 <strong>비교적 쉽게 부착</strong>할 수 있습니다.</p></div><div style="display:contents" dir="auto"><hr id="3543e64d-624c-80c8-be06-da088eae2636"/></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-8184-9708-f9ce92a1197a" class="block-color-gray_background"><strong>✔ 재사용 가능한가요? </strong><mark class="highlight-red"><strong>→ 사용 가이드</strong></mark></h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-814f-9a92-f84687352df2" class="">위생과 기능 유지를 고려해 <strong>1회 사용을 권장합니다.</strong></p></div><div style="display:contents" dir="auto"><hr id="3553e64d-624c-80de-99e0-e8aa10f800e0"/></div><div style="display:contents" dir="auto"><h3 id="3543e64d-624c-809e-b529-cb27715eefe8" class="block-color-gray_background"><mark class="highlight-blue"><strong>✔ </strong></mark><mark class="highlight-default"><strong>그래서, 왜 선베일인가요?</strong></mark><mark class="highlight-default"><strong> </strong></mark><mark class="highlight-red">→ 결론</mark></h3></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8001-8912-e78a5b3e414c" class="">눈가 아래·광대 부위는 <strong>자외선 노출이 높으면서도<br/>피부가 얇고 민감해, 보호가 가장 까다로운 영역입니다.</strong></p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8042-8fe4-ec8af78101e2" class="">또한, <strong>기미·잡티와 잔주름이 쉽게 드러나는 부위</strong>이기 때문에 <br/>보다 섬세한 방식의 보호가 필요합니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-80bc-b290-de9b38a6ecaf" class=""><strong>선크림 등 기존 도포형 제형</strong>은 물리적 지워짐 또는 땀 등으로 인해 <strong>덧바르는 과정이 필요하고, </strong><br/>필름형 패치는 피부를 답답하게 만들고 자극을 줄 수 있습니다.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-80ae-9746-d2bdb86ffc22" class="">그래서 이 부위에는, <br/><strong>피부를 가두지 않으면서도 <br/>자외선이 먼저 차단되는 구조의 보호 방식이 더 적합합니다.</strong></p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8052-bc6f-c455fc193e8b" class="">Sun Veil은 </p></div><div style="display:contents" dir="auto"><ul id="3563e64d-624c-8029-9499-c53daf355825" class="bulleted-list"><li style="list-style-type:disc"><strong>클린 무점착 밀착 구조</strong>로 피부 자극과 잔류 부담을 최소화하고, </li></ul></div><div style="display:contents" dir="auto"><ul id="3563e64d-624c-80ea-b466-ec4beb4c8b56" class="bulleted-list"><li style="list-style-type:disc">피부 위에 얹히는 <strong>초박막 멤브레인 구조</strong>로, <br/>바르지 않아도 자외선이 먼저 차단되는 방식의 보호를 구현합니다.</li></ul></div><div style="display:contents" dir="auto"><ul id="3563e64d-624c-80ca-b869-e87edcaabfa1" class="bulleted-list"><li style="list-style-type:disc">또한, <strong>반건식 듀얼 레이어 설계</strong>를 통해 외부 자극으로부터 흔들린 피부 컨디션을<br/><strong>보이지 않게 케어하는 것</strong>까지 함께 고려했습니다. </li></ul></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8078-ab5f-c01dbc2803ca" class=""><strong>투명하게, 느껴지지 않게, <br/></strong>일상 속 어디서든 부담 없이 이어지는 보호.</p></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-804f-a9a9-f829def92e1d" class="">Sun Veil은, <br/><strong>어디에서든 피부 위에서 자연스럽게 지속되는 Whereable Beauty™</strong>를 구현합니다.</p></div><div style="display:contents" dir="auto"><hr id="3563e64d-624c-801f-9023-ed0abff4acaa"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-81d4-9370-efbe360cb1be" class="block-color-gray_background">10 · PRODUCT SPEC</h1></div><div style="display:contents" dir="auto"><ul id="34e3e64d-624c-81fa-8aba-c4dedd800da5" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-purple"><a href="https://docs.google.com/spreadsheets/d/1hxr_uQaTnVU9L4DPKIxiiLJLu69q9WNvsR1m-KKaHgs/edit?usp=sharing">AYROW Products Content Sheet</a></mark></li></ul></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-81c2-b06b-fb8aa1eaa902" class=""><strong>상품정보제공 고시</strong></p></div><div style="display:contents" dir="ltr"><table id="34e3e64d-624c-8180-8eae-cf1f8d40c429" class="simple-table"><tbody><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-811d-b1eb-c60cd0340a4f"><td id="Ok_q" class="" style="width:145.9921875px"><strong>제품명</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">에이로우 리버스 AG 코드™ 선베일</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-816b-8aed-c612dc658bfc"><td id="Ok_q" class="" style="width:145.9921875px"><strong>내용물의 용량 및 중량</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">1회분(2매<mark class="highlight-default">): 0.1g</mark><br/>3회분(2매 × 3세트):<mark class="highlight-default"> 0.3 g</mark></td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-810f-96e6-d8ffe6d7128f"><td id="Ok_q" class="" style="width:145.9921875px"><strong>제품 주요 사양</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">모든 피부 타입</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-81c5-97e1-c0ec66ca809b"><td id="Ok_q" class="" style="width:145.9921875px"><strong>사용기한 또는 <br/>개봉 후 사용기간</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">사용기한과 제조번호는 제품 패키지의 표시사항을 참고하세요.<br/>제조일로부터 30개월 / 개봉 후 즉시 사용</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-813f-94d9-ccd24ceafb44"><td id="Ok_q" class="" style="width:145.9921875px"><strong>사용방법</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">1. 파우치를 개봉한 후, 라벨이 부착된 보호 시트(패치 뒷면)를 먼저 제거합니다.<br/>2. 패치의 점착면이 피부에 닿도록 눈 아래 부위 전체에 고르게 부착합니다. 인쇄된 보호 시트 위를 손으로 가볍게 눌러 들뜸 없이 밀착시킵니다.<br/>3. 인쇄된 보호 시트를 바깥쪽(관자놀이 쪽)부터 수평 방향으로 천천히 떼어냅니다.<br/><br/><strong>TIPS</strong><br/>1. 선베일의 기공 구조 특성상 공기층이 생길 수 있으며, 제거한 인쇄된 보호 시트의 안쪽 면으로 해당 부위를 가볍게 눌러주면 밀착감이 더욱 높아집니다.<br/>2. 메이크업 전·후 모두 사용 가능합니다.<br/>3. 선크림과 함께 사용할 경우, 선크림 → 선베일 순으로 사용합니다.</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-8126-b3e6-c15c0de8f0a2"><td id="Ok_q" class="" style="width:145.9921875px"><strong>사용할 때의 주의사항</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">① 사용 시 또는 사용 후 직사광선에 의하여 사용부위가 붉은 반점, 부어오름 또는 가려움증 등의 이상 증상이나 부작용이 있는 경우에는 전문의 등과 상담할 것<br/>② 상처가 있는 부위 등에는 사용을 자제할 것<br/>③ 보관 및 취급 시 주의사항 가. 어린이의 손이 닿지 않는 곳에 보관할 것 나. 직사광선을 피해서 보관할 것<br/>④ 붙이는 반창고나 습포 자극에 예민하신 분은 주의할 것<br/>⑤ 1회용 제품으로, 개봉 후 즉시 사용하고 재사용하지 말 것<br/>⑥ 땀이나 물, 유분이 있는 상태에서 부착 시 제품의 부착력이 약해지니 떨어짐에 주의할 것<br/>※ 본 제품은 화장품 또는 의약품이 아닌 공산품입니다.</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-81c7-84bd-dcc4f62305d9"><td id="Ok_q" class="" style="width:145.9921875px"><strong>품질보증기준</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">본 상품에 이상이 있을 경우 공정거래위원회 고시 “소비자 분쟁 해결 기준”에 의해 보상해 드립니다.</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-81eb-a73d-d5e95b251e29"><td id="Ok_q" class="" style="width:145.9921875px"><strong>소비자 상담 관련 <br/>전화번호</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">070-4250-0312</td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-8193-ae9c-d363b5def033"><td id="Ok_q" class="" style="width:145.9921875px"><strong>기획·판매원</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">㈜씽크앤플로우 (Think &amp; flow Inc.) </td></tr></div><div style="display:contents" dir="ltr"><tr id="34e3e64d-624c-818f-bc15-d9e6367b46c6"><td id="Ok_q" class="" style="width:145.9921875px"><strong>제조국</strong></td><td id="uIXC" class="" style="width:536.9965515136719px">대한민국</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-81d8-a802-f4b4c6d6c872"/></div><div style="display:contents" dir="auto"><h1 id="34e3e64d-624c-81c6-b03c-f920dfd19b70" class="block-color-gray_background">11 · CTA FOOTER</h1></div><div style="display:contents" dir="auto"><h3 id="34e3e64d-624c-816b-9b04-eecb0d063338" class="">햇살을 포기하지 않는 가장 앞선 방식</h3></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-8196-b870-ed93afa69fe9" class=""><strong>Aesthetic Guard,<br/>AYROW <br/>Reverse AG Code™ Sun-Veil</strong></p></div><div style="display:contents" dir="auto"><hr id="34e3e64d-624c-8196-9dd0-e352ea663b89"/></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-815a-a8f8-d29a33c468da" class="">제품 보기</p></div><div style="display:contents" dir="auto"><p id="34e3e64d-624c-814e-8021-e2e3371aef73" class=""><em>Experience Sun Veil! </em>(지금 구매하기)</p></div></details></li></ul></div><div style="display:contents" dir="auto"><p id="3563e64d-624c-8059-945b-dcd20dc15974" class="">
+</p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

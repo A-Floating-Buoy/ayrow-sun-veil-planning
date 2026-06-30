@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP Source Copy Structure</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+
+    .sv-page {
+      padding: var(--layout-page-md) var(--layout-page-x);
+    }
+
+    .sv-shell {
+      width: min(100%, var(--layout-max-w-wide));
+      margin: 0 auto;
+    }
+
+    .sv-narrow {
+      max-width: var(--layout-max-w);
+    }
+
+    .sv-section {
+      padding: var(--layout-section-md) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+
+    .sv-hero {
+      min-height: 78svh;
+      display: grid;
+      align-content: center;
+      padding-bottom: var(--layout-section-md);
+    }
+
+    .sv-section__head {
+      display: grid;
+      grid-template-columns: minmax(112px, 0.24fr) minmax(0, 0.76fr);
+      gap: var(--layout-block);
+      margin-bottom: var(--layout-block);
+    }
+
+    .sv-text-stack {
+      display: grid;
+      gap: var(--spacing-4);
+    }
+
+    .sv-list {
+      display: grid;
+      gap: var(--spacing-8);
+      list-style: none;
+    }
+
+    .sv-list--compact {
+      gap: var(--spacing-5);
+    }
+
+    .sv-two-column {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--layout-block);
+    }
+
+    .sv-three-column {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--layout-block);
+    }
+
+    .sv-rule-list {
+      list-style-position: inside;
+      display: grid;
+      gap: var(--spacing-2);
+    }
+
+    .sv-kicker,
+    .sv-index,
+    .sv-label {
+      color: var(--semantic-on-surface-accent);
+    }
+
+    .sv-muted {
+      color: var(--semantic-on-surface-muted);
+    }
+
+    .sv-quote {
+      margin-top: var(--spacing-8);
+      color: var(--semantic-on-surface-accent);
+    }
+
+    .sv-table {
+      margin-top: var(--spacing-8);
+    }
+
+    .sv-table th,
+    .sv-table td {
+      vertical-align: top;
+      padding: var(--spacing-3) var(--spacing-3) var(--spacing-3) 0;
+    }
+
+    .sv-faq {
+      display: grid;
+      gap: var(--layout-block);
+    }
+
+    .sv-faq-group {
+      display: grid;
+      gap: var(--spacing-6);
+    }
+
+    .sv-faq-item {
+      display: grid;
+      gap: var(--spacing-2);
+    }
+
+    .sv-footer {
+      padding: var(--layout-section-lg) 0 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+
+    @media (max-width: 768px) {
+      .sv-hero {
+        min-height: 70svh;
+      }
+
+      .sv-section__head,
+      .sv-two-column,
+      .sv-three-column {
+        grid-template-columns: 1fr;
+      }
+
+      .sv-section__head {
+        gap: var(--spacing-5);
+      }
+
+      .sv-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="sv-page">
+    <div class="sv-shell">
+      <section class="sv-hero sv-narrow" aria-labelledby="source-hero-title">
+        <div class="sv-text-stack">
+          <p class="caption-m sv-kicker">Source Copy Version / 검수 전 원문 표현 포함</p>
+          <h1 class="heading-xxxl" id="source-hero-title">당신이 붙이고 있던 건 ‘필름’입니다.</h1>
+          <h2 class="heading-xxl">Sun Veil은 ‘숨 쉬는 멤브레인 (나노 섬유)’입니다.</h2>
+          <p class="body-xl">이제, 막는 보호에서 숨 쉬는 보호로 바뀝니다.</p>
+          <p class="body-l">
+            막는 필름과 달리, 열·습기·땀은 배출하고 피부를 가두지 않는 나노 섬유 구조.
+          </p>
+          <p class="caption-m sv-kicker">A New Kind of Aesthetic Guard</p>
+          <p class="heading-l">Reverse AG Code™ Sun Veil</p>
+          <p class="body-xl">보이지 않게. 그러나 막지 않고 보호합니다.</p>
+          <p class="heading-xxl sv-kicker">0.004mm</p>
+          <p class="body-l">피부 위에 얹히는 숨 쉬는 초박막 보호 레이어.</p>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-category-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">02 · CATEGORY REFRAMING</p>
+          <div class="sv-text-stack">
+            <p class="caption-m sv-kicker">Reverse AG Code™ Sun Veil</p>
+            <h2 class="heading-xxl" id="source-category-title">피부 위에 숨 쉬는 보호 레이어, 선케어의 방식을 재정의한 Aesthetic Guard.</h2>
+            <h3 class="heading-l">Film vs Membrane</h3>
+            <p class="body-xl">같은 ‘패치’로 보였다면, 완전히 잘못 보고 있던 겁니다.</p>
+            <p class="heading-l sv-quote">막는 것 vs 숨 쉬는 것. 당신의 피부는 어떤 쪽을 선택하나요?</p>
+          </div>
+        </div>
+
+        <table class="sv-table">
+          <thead>
+            <tr>
+              <th>기존 선패치</th>
+              <th>에이로우 선베일</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>필름 = 막 (막힘)</td>
+              <td>나노 섬유 멤브레인 = 선택적 투과 구조 (숨 쉬는 구조)</td>
+            </tr>
+            <tr>
+              <td>피부를 덮는 구조</td>
+              <td>섬유 기반 다공성 구조</td>
+            </tr>
+            <tr>
+              <td>공기 흐름 차단</td>
+              <td>공기 & 수분 흐름 유지</td>
+            </tr>
+            <tr>
+              <td>장시간 사용 시 답답함</td>
+              <td>장시간 부착 가능</td>
+            </tr>
+            <tr>
+              <td>열/수분 정체</td>
+              <td>피부 호흡 및 컨디션 유지</td>
+            </tr>
+            <tr>
+              <td>“붙이는 순간, 피부는 막힌다”</td>
+              <td>“붙여도, 피부는 계속 숨 쉰다”</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="sv-two-column sv-quote">
+          <div class="sv-text-stack">
+            <h3 class="heading-l">선패치, 불편했던 이유는 단 하나입니다.</h3>
+            <p class="heading-xl">“숨을 못 쉬기 때문입니다.”</p>
+          </div>
+          <ul class="sv-rule-list body-m">
+            <li>땀/열/습기로 답답함</li>
+            <li>필름 텐션으로 인한 밀폐감, 피부 조임</li>
+            <li>메이크업 위에서 들뜸</li>
+            <li>접착 성분으로 인한 뻣뻣함, 잔주름 픽스</li>
+            <li>오래 붙이면 피부 피로감</li>
+          </ul>
+        </div>
+
+        <p class="heading-l sv-quote">그래서 우리는 ‘필름막’을 버리고 ‘나노 섬유’를 선택했습니다.</p>
+        <p class="heading-l sv-quote">“선베일은 보호하지만, 피부를 가두지 않습니다.”</p>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-proof-early-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">Data Blocks</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-proof-early-title">"숨 쉼은 느껴질 뿐 아니라, 데이터로 증명됩니다.”</h2>
+            <p class="body-l">“숨 쉬면서도, 제대로 차단합니다.” 숨 쉬는 구조 위에, 초박막 차단 레이어를 더했습니다.</p>
+          </div>
+        </div>
+
+        <ul class="sv-list sv-three-column">
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">Breathing Data</p>
+            <p class="heading-l">투습도: 12,356 g/m²·24h</p>
+            <p class="body-m">공기 투과도: 1.0 미만 mm/s</p>
+            <p class="body-m">평균 기공 크기: 0.7μm (0.0007mm)</p>
+            <p class="caption-m sv-muted">시험 방법 METHOD B · POROMETER 3G-Zh · SHAPE FACTOR 0.715</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">UV Data</p>
+            <p class="heading-l">UVB 99.9% 차단</p>
+            <p class="body-m">UVA 95.3% 차단</p>
+            <p class="body-m">UVR 96.3% 차단</p>
+            <p class="body-m">UPF 50+</p>
+            <p class="caption-m sv-muted">*원단 기준 시험 결과</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">Testing</p>
+            <p class="heading-l">FITI 시험 연구원</p>
+            <p class="body-m">FITI Testing & Research Institute</p>
+            <p class="caption-m sv-muted">UV-VIS-NIR Spectrophotometer · AS 4399:2020 기준</p>
+          </li>
+        </ul>
+
+        <div class="sv-text-stack sv-quote">
+          <h3 class="heading-l">숨 쉬는 보호는 선택이 아니라, 기준입니다.</h3>
+          <p class="body-l">
+            Sun Veil은 기존 선케어와 다르게 작동합니다. 선크림처럼 덧발라야 하지도, 선패치처럼 필름 형태로 피부를 답답하게 가두지도 않습니다.
+          </p>
+          <p class="heading-m">“덧바름과 가둠의 불편을 해결한 숨 쉬는 멤브레인입니다.”</p>
+          <p class="body-l">
+            보이지 않을 만큼 얇은 0.004mm 기공구조 멤브레인이 피부 위에 초박막 보호 레이어를 형성해 공기 흐름을 유지하는 Breathable 구조로 작동합니다.
+          </p>
+          <p class="body-l">
+            그 결과, 열·습기·땀은 머무르지 않고 자연스럽게 배출되며, 피부는 답답함 없이 편안한 상태를 유지합니다.
+          </p>
+          <p class="body-l">
+            동시에, 빛·열·외부 자극이 피부 환경에 미치는 영향을 최소화하고, 멤브레인이 닿는 피부 표면에서는 피부 컨디션을 정돈하는 케어가 함께 이루어집니다.
+          </p>
+          <p class="caption-m sv-muted">
+            99.9% 자외선 차단ㅣ민감 피부 자극 지수 0.00ㅣ숨 쉬는 멤브레인(나노 섬유) 적용ㅣ0.004mm 초박막ㅣ비건 포뮬러
+          </p>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-why-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">03 · WHY SUN VEIL EXISTS</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-why-title">이런 순간, 필요합니다.</h2>
+            <p class="body-xl">보호는 필요하지만, 드러나고 싶지 않을 때.</p>
+            <p class="body-xl">그래서 우리는, 보호의 방식을 바꿨습니다.</p>
+            <p class="heading-l sv-quote">보호는 필요하지만, 방식이 달라야 할 때. 이럴 때 필요한 건, 선케어가 아니라 선베일입니다.</p>
+          </div>
+        </div>
+
+        <ul class="sv-list sv-two-column">
+          <li class="sv-text-stack">
+            <h3 class="heading-m">자외선 차단제를 덧바르기 힘들 때</h3>
+            <p class="body-m">메이크업 위에 덧바르면 무너질까 봐 손이 멈출 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">하루 종일, 흐름을 끊고 싶지 않을 때</h3>
+            <p class="body-m">흐름을 끊지 않고 자외선 대응을 유지하고 싶을 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">야외 활동이 많은 날</h3>
+            <p class="body-m">러닝·골프·테니스 등 야외 활동이 많은 날, 더 신경 쓰일 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">실내에서도 생활 자외선이 신경 쓰일 때</h3>
+            <p class="body-m">눈가·광대처럼 특정 부위가 유독 노출될 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">피부가 예민해졌을 때는 더더욱</h3>
+            <p class="body-m">피부과 시술 후, 자외선 차단은 중요하지만 직접 바르는 것이 부담스러울 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">외부 자극이 염려될 때</h3>
+            <p class="body-m">외부 자극에 붉게 달아올라 떼어내는 순간 피부 자극이 염려될 때.</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-quick-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">3-1 · Quick FAQ</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-quick-title">Quick FAQ의 역할.</h2>
+            <p class="body-l">핵심 의심 제거 · 차별 포인트 인지 · 구매 장벽 제거.</p>
+          </div>
+        </div>
+
+        <ol class="sv-list sv-two-column">
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 메이크업 위에 사용해도 되나요?</p>
+            <p class="heading-xxl sv-kicker">YES</p>
+            <h3 class="heading-l">네, 가능합니다.</h3>
+            <p class="body-m">쿠션 팩트, 파운데이션 등 대부분의 메이크업 위에서도 투명하고 들뜸 없이 밀착되어 피부 표현을 방해하지 않습니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 일반 필름형 선패치와 다른가요?</p>
+            <p class="heading-xxl sv-kicker">YES</p>
+            <h3 class="heading-l">네, 다릅니다.</h3>
+            <p class="body-m">일반 투명 선패치는 필름 형태로 피부를 덮고 가두는 구조입니다. Sun Veil은 나노 섬유 기반 멤브레인으로 공기와 수분 흐름을 유지하면서도 자외선은 차단하는 방식으로, 붙여도 피부가 계속 숨 쉴 수 있도록 설계되었습니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 점착 성분 없이도 잘 붙나요?</p>
+            <p class="heading-xxl sv-kicker">YES</p>
+            <h3 class="heading-l">네, 잘 밀착됩니다.</h3>
+            <p class="body-m">초박막 멤브레인의 기공 구조와 스킨케어 제형의 점성 기반 ‘Moisture-Bonding’ 방식이 결합되어 피부에 자연스럽게 안착됩니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 투명한데 자외선 차단이 가능한가요?</p>
+            <p class="heading-xxl sv-kicker">YES</p>
+            <h3 class="heading-l">네, 투명하지만 차단됩니다.</h3>
+            <p class="body-m">멤브레인 내부에 분포된 자외선 대응 구조가 빛에 반응해 자외선 파장을 흡수하거나 산란시키도록 설계되어 있기 때문입니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 민감한 피부에도 사용할 수 있나요?</p>
+            <p class="heading-xxl sv-kicker">YES</p>
+            <h3 class="heading-l">네, 가능합니다.</h3>
+            <p class="body-m">민감 피부 대상 첩포 및 2주 임상 테스트를 완료했으며, 자극 및 알레르기 반응 없이 Dermatest® ‘Excellent’ 등급을 획득했습니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 티가 나나요?</p>
+            <p class="heading-xxl">NO.</p>
+            <h3 class="heading-l">아니요, 거의 보이지 않습니다.</h3>
+            <p class="body-m">0.004mm 초박막 투명 멤브레인으로 메이크업 위에서도 식별이 어려울 만큼 자연스럽습니다.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-pain-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">3-2 · Problem / Pain Point</p>
+          <div class="sv-text-stack">
+            <p class="caption-m sv-kicker">Where Sun Care Breaks Down</p>
+            <h2 class="heading-xxl" id="source-pain-title">이 자리, 바르는 선케어만으로 충분할까요?</h2>
+            <p class="body-xl">선케어가 가장 먼저 무너지는 자리.</p>
+            <p class="body-l">
+              눈가 아래 광대 부위는 피부가 얇아 보호막이 약하고, 외부 자극에 가장 먼저 노출되고, 표정 움직임으로 가장 먼저 밀리고, 메이크업이 가장 얇게 올라가는 부위입니다.
+            </p>
+            <p class="heading-l sv-quote">그래서 선케어가 가장 먼저 지워집니다. 문제는 그 다음입니다.</p>
+          </div>
+        </div>
+
+        <ul class="sv-list sv-two-column">
+          <li class="sv-text-stack">
+            <h3 class="heading-m">메이크업 문제</h3>
+            <p class="body-m">메이크업이 두꺼워지고 뜨는 게 부담스러운 순간. 다시 발라야 하는 건 알지만, 덧바를수록 들뜨고 갈라질까 망설여질 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">시간/타이밍 문제 (심리스)</h3>
+            <p class="body-m">이동 중, 일하는 중, 약속 사이. 다시 바르기엔 타이밍이 애매하고 티 나게 바르는 게 부담스러워 그냥 넘어가게 될 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">땀/환경 문제</h3>
+            <p class="body-m">땀이나 유분이 올라온 얼굴에 그 위에 다시 바르기엔 찝찝하고, 그렇다고 그대로 두기엔 자외선 노출이 신경 쓰일 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">햇살을 피하고 싶지 않은 순간</h3>
+            <p class="body-m">통창 카페, 오픈 테라스, 햇살 산책. 햇살은 기분 좋은데, 피부는 그대로 노출시키고 싶지 않을 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">피부 컨디션이 신경 쓰이는 순간</h3>
+            <p class="body-m">하루 종일 외부 자극을 받은 뒤, 기미·눈가 주름이 신경 쓰여 피부를 그대로 두기엔 불안할 때.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">점착제 자극이 부담스러운 순간</h3>
+            <p class="body-m">특히 눈가 아래·광대처럼 민감 부위일수록 점착제 잔류나 2차 자극이 걱정될 때.</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-glance-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">3-3 · At a Glance</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-glance-title">SUN VEIL이 만드는 여섯 가지 경험.</h2>
+          </div>
+        </div>
+
+        <ul class="sv-list sv-three-column">
+          <li class="sv-text-stack">
+            <h3 class="heading-m">메이크업 위 부착</h3>
+            <p class="body-m">투명하고 티나지 않게 안착.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">0.004mm 초박막</h3>
+            <p class="body-m">보이지 않는 존재의 가벼움.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">점착제 없는 무점착 구조</h3>
+            <p class="body-m">수분 반응 기반 밀착.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">L/R 구분 디자인</h3>
+            <p class="body-m">직관적인 부착 설계.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">야외 활동 환경 고려</h3>
+            <p class="body-m">일상의 흐름을 끊지 않는 케어.</p>
+          </li>
+          <li class="sv-text-stack">
+            <h3 class="heading-m">선크림 위 레이어드</h3>
+            <p class="body-m">덧바르기 번거로운 선케어 루틴 보완.</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-use-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">04 · USE CASES / EDITORIAL SLIDER</p>
+          <div class="sv-text-stack">
+            <p class="caption-m sv-kicker">WHEREABLE BEAUTY</p>
+            <h2 class="heading-xxl" id="source-use-title">“Wherever + Able” 언제, 어디서든 가능한 뷰티 에이전트.</h2>
+            <p class="body-xl">당신의 하루 속, Sun Veil이 함께하는 순간.</p>
+            <p class="body-m sv-muted">제품이 실제로 사용되는 환경과 맥락을 보여주는 에디토리얼 섹션.</p>
+          </div>
+        </div>
+
+        <ol class="sv-list sv-two-column">
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">1 · 오후 2시 창가 → A Quiet Moment</p>
+            <h3 class="heading-m">빛이 들어오는 자리를 포기하지 않아도 됩니다.</h3>
+            <p class="body-s sv-muted">메이크업 위 부착 · 티 나지 않는 밀착</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">2 · 러닝 크루 → An Social Moment</p>
+            <h3 class="heading-m">하루의 흐름를 멈추지 않는 선케어.</h3>
+            <p class="body-s sv-muted">운동 환경 고려 · 빠른 부착</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">3 · 테라스 브런치 → A Lifestyle Moment</p>
+            <h3 class="heading-m">햇살을 피하지 않는 사람의 선 리추얼.</h3>
+            <p class="body-s sv-muted">레이어드 선케어 · 우아한 선루틴</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">4 · 기분 좋은 햇살 산책 → A Free Moment</p>
+            <h3 class="heading-m">햇살을 그대로 즐기는 시간.</h3>
+            <p class="body-s sv-muted">장시간 착용 · 생활 밀착</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">5 · 멀티 태스킹 → A OO Moment</p>
+            <h3 class="heading-m">무의식의 흐름대로 지속적인 케어.</h3>
+            <p class="body-s sv-muted">장시간 착용 · 생활 밀착</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">6 · 드라이브 케어</p>
+            <h3 class="heading-m">장시간 착용.</h3>
+            <p class="body-s sv-muted">생활 밀착</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">7 · 시술 후 케어</p>
+            <h3 class="heading-m">장시간 착용.</h3>
+            <p class="body-s sv-muted">생활 밀착</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-ritual-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">04-2 · RITUAL / USAGE GUIDE</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-ritual-title">Ready, Set, Go.</h2>
+          </div>
+        </div>
+
+        <ol class="sv-list sv-three-column">
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">01 · Ready</p>
+            <p class="body-l">파우치를 열고 L/R 방향을 확인합니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">02 · Set</p>
+            <p class="body-l">햇살이 먼저 닿는 광대존에 올린 뒤 가볍게 눌러 안착시켜 줍니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">03 · Go</p>
+            <p class="body-l">피부와 하나가 된 듯한 피팅감으로 일상을 이어갑니다.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-how-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">05 · HOW IT WORKS</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-how-title">두 개의 레이어가 하나의 피부처럼 작동합니다.</h2>
+            <p class="body-l">Sun Veil은 자외선 차단 필름이 아니라 기능이 다른 두 레이어가 결합된 컴포지트 나노 섬유입니다.</p>
+          </div>
+        </div>
+
+        <ul class="sv-list sv-two-column">
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">Layer 1</p>
+            <h3 class="heading-l">초박막 투명 멤브레인</h3>
+            <p class="body-m">0.004mm 투명 나노 섬유로 피부 결과 메이크업 질감을 해치지 않는 자외선 보호 층.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">Layer 2</p>
+            <h3 class="heading-l">약액층</h3>
+            <p class="body-m">멤브레인 내부 활성 성분층으로 외부 자극 환경에서 피부 컨디션 유지 서포트 층.</p>
+          </li>
+        </ul>
+
+        <div class="sv-text-stack sv-quote">
+          <h3 class="heading-l">접착하지 않고 수분으로 안착한다.</h3>
+          <p class="body-l">점착제 없는 클린 밀착. 화학 접착 성분 없이 구조적 물성으로 구현한 물리적 밀착.</p>
+          <p class="body-l">Moisture-Bonding. 선베일의 보습 성분과 피부 표면이 만나 표면 장력으로 피부 위에 자연스럽게 안착.</p>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-tech-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">06 · TECHNOLOGY</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-tech-title">태양이 강렬할수록, 더 치밀하게 작동합니다.</h2>
+          </div>
+        </div>
+
+        <div class="sv-two-column">
+          <div class="sv-text-stack">
+            <p class="caption-m sv-label">6-1. Reverse AG Code™ 포뮬라</p>
+            <h3 class="heading-l">세가지 OO성분으로 완성하는 리버스 AG 코드</h3>
+            <p class="body-m">NMN¹ + Resveratrol² + Pterostilbene³</p>
+            <ul class="sv-rule-list body-s">
+              <li>NMN: 세포 NAD⁺ 공급, 에너지 회복¹</li>
+              <li>Resveratrol: SIRT1 활성화, 항산화·DNA 수선²</li>
+              <li>Pterostilbene: 차세대 스틸벤, 안정성↑, 항산화·브라이트닝³</li>
+              <li>Vegan PRN(화이트 트러플 유산균)</li>
+              <li>Phyto PDRN(생 어린 병풀)</li>
+              <li>CICA ROSIA 2.0 · 다닥냉이씨 · 망고잎</li>
+              <li>퀘르세틴 · 미역 유래 비건 유산균</li>
+            </ul>
+          </div>
+          <div class="sv-text-stack">
+            <p class="caption-m sv-label">6-2. 에어로플로우 멤브레인™</p>
+            <h3 class="heading-l">공기 흐름을 지속적으로 유지하며 피부에 정밀하게 밀착되는 ‘숨 쉬는’ 초경량 멤브레인.</h3>
+            <ul class="sv-rule-list body-s">
+              <li>0.004mm 숨 쉬는 나노바이오 섬유</li>
+              <li>Skin-Breathing</li>
+              <li>3D 에어 메쉬 구조로 답답함을 줄인 에어로플로우 설계</li>
+              <li>Stealth Fit: 메이크업 위에서도 자연스러운 스텔스 피팅</li>
+              <li>Zero-Gravity: 0.004mm의 초경량 존재감</li>
+              <li>Even Realease</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-experience-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">07 · KEY EXPERIENCE</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-experience-title">Invisible / Aero Flow™ / Seamless Fit / Gentle Removal.</h2>
+          </div>
+        </div>
+
+        <ol class="sv-list sv-two-column">
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">1️⃣ Invisible Veil</p>
+            <p class="body-l">Sun Veil은 일반적인 선패치처럼 눈에 띄지 않습니다. 메이크업 위에서도 자연스럽게 어우러지는 거의 보이지 않는 투명 구조입니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">2️⃣ Aero Flow™</p>
+            <p class="body-l">초미세 다공성 멤브레인 구조가 공기 흐름을 유지하면서 밀착됩니다. 숨 쉬는 구조로 장시간 착용에도 답답함 없이 사용할 수 있습니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">3️⃣ Seamless Fit</p>
+            <p class="body-l">초박막 섬유 구조가 피부 굴곡에 자연스럽게 밀착됩니다. 그래서 붙인 것조차 잊게 만드는 착용감을 제공합니다.</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">3️⃣ Gentle Removal</p>
+            <p class="body-l">제거 시 솜털 하나 건들이지 않고 섬세하게 분리됩니다.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-evidence-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">08 · PROOF / EVIDENCE</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-evidence-title">보이지 않지만, 데이터로 확인됩니다.</h2>
+            <p class="body-l">Dermatest® · FITI 시험 연구원 데이터 기반.</p>
+          </div>
+        </div>
+
+        <ul class="sv-list sv-two-column">
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 자외선 차단 성능</p>
+            <p class="heading-l">UVB 차단율 99.9% CUT</p>
+            <p class="body-m">UVA 차단율 96.4% CUT · UVR 차단율 96.3% CUT · UPF 50+</p>
+            <p class="caption-m sv-muted">*원단 시험 기준</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 피부 적합성</p>
+            <p class="heading-l">피부 자극 지수 0.00</p>
+            <p class="body-m">더마테스트 EXCELLENT 등급 · Skin-friendly Material 기준 충족</p>
+            <p class="caption-m sv-muted">*민감 피부 대상 첩포 시험 및 2주 임상 시험 기준</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 숨 쉬는 구조 데이터</p>
+            <p class="heading-l">투습도 12,356 g/m²·24h</p>
+            <p class="body-m">공기 투과도 1.0 미만 mm/s · 기공 크기 0.7μm</p>
+            <p class="caption-m sv-muted">*물성 시험 측정 기준</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 물성 & 설계</p>
+            <p class="heading-l">0.004mm 초박막</p>
+            <p class="body-m">중량 0.05g (1 piece 기준 초경량) · 숨 쉬는 나노 멤브레인</p>
+            <p class="caption-m sv-muted">*완제품 기준</p>
+          </li>
+          <li class="sv-text-stack">
+            <p class="caption-m sv-label">✔ 윤리 & 포뮬러 기준</p>
+            <p class="body-l">비건 인증 (The Vegan Society): 동물성 원료 무첨가 비건 포뮬러</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-faq-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">09 · FULL FAQ</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-faq-title">자주 묻는 질문 (상세 버전).</h2>
+            <p class="body-l">납득 강화 / 기술 신뢰 / 깊이 설명.</p>
+          </div>
+        </div>
+
+        <div class="sv-faq">
+          <section class="sv-faq-group" aria-labelledby="source-faq-understand">
+            <h3 class="caption-m sv-label" id="source-faq-understand">[이해] 1 ~ 4</h3>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ Sun Veil은 정확히 어떤 제품인가요?</dt>
+              <dd class="body-m">Sun Veil은 단순히 바르는 선케어가 아니라, 초박막 멤브레인을 통해 자외선을 물리적으로 차단하는 ‘붙이는 보호’ 구조입니다. 즉, ‘바르는 차단’이 아니라 피부 위에 얹히는 보호 레이어로 작동하는 새로운 방식입니다.</dd>
+            </dl>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ 투명한데 자외선 차단이 가능한 이유는 무엇인가요?</dt>
+              <dd class="body-m">눈에는 투명하게 보이지만, 멤브레인 내부에는 자외선 대응 구조가 균일하게 분포되어 있습니다. 이 구조가 빛에 반응해 자외선을 흡수하거나 산란시켜 가시광선은 통과시키고, 자외선은 차단하도록 설계되어 있습니다.</dd>
+            </dl>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ 일반 필름형 선패치와 무엇이 다른가요?</dt>
+              <dd class="body-m">일반 투명 선패치는 필름 형태로 피부를 덮고 가두는 구조입니다. 대부분의 필름형 선패치는 사실상 ‘차단막(occlusive film)’에 가깝습니다. Sun Veil은 나노 섬유 기반 멤브레인 구조로 피부를 가두지 않고 밀착됩니다.</dd>
+            </dl>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ 점착 성분 없이 어떻게 붙나요? 점착제가 나쁜 건가요?</dt>
+              <dd class="body-m">Sun Veil은 별도의 점착제를 사용하지 않습니다. 초박막 멤브레인의 기공 구조와 스킨케어 제형의 점성 기반 Moisture-Bonding 방식이 결합되어 피부에 자연스럽게 안착됩니다. 즉, 붙이는 방식이 아니라, 피부 위에 ‘안착’되는 구조입니다.</dd>
+            </dl>
+          </section>
+
+          <section class="sv-faq-group" aria-labelledby="source-faq-trust">
+            <h3 class="caption-m sv-label" id="source-faq-trust">[신뢰] 5 ~ 6</h3>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ 민감한 피부나 시술 후에도 사용할 수 있나요?</dt>
+              <dd class="body-m">독일 Dermatest® 민감 피부 대상 첩포 시험과 2주 임상 시험 결과 피부 자극 및 알러지 반응 0건으로 EXCELLENT (매우 우수) 등급을 받았습니다. 자극을 최소화한 초박막 구조로 피부 시술 후나 예민해진 상태에서도 부담 없이 사용할 수 있습니다.</dd>
+            </dl>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ UPF와 SPF의 차이는 무엇인가요?</dt>
+              <dd class="body-m">SPF는 피부에 바르는 제품의 자외선 차단 지수, UPF는 원단·소재의 자외선 차단 지수입니다. Sun Veil은 원단 기준 시험에서 UPF 50+ 결과를 확인했습니다. SPF는 “도포형 보호”, UPF는 “차단형 보호”입니다.</dd>
+            </dl>
+          </section>
+
+          <section class="sv-faq-group" aria-labelledby="source-faq-use">
+            <h3 class="caption-m sv-label" id="source-faq-use">[사용 경험] 7 ~ 9</h3>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ 촉감이 어떤가요? 붙어 있는 게 느껴지나요?</dt>
+              <dd class="body-m">0.004mm 두께로 무게감이 거의 없으며, 시간이 지나면 부착 사실 자체를 잊기 쉬운 방향으로 설계되었습니다.</dd>
+            </dl>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ 거울 없이도 부착 가능한가요?</dt>
+              <dd class="body-m">L/R 방향 구분과 직관적 위치 설계를 통해 손끝 감각만으로도 비교적 쉽게 부착할 수 있습니다.</dd>
+            </dl>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ 재사용 가능한가요?</dt>
+              <dd class="body-m">위생과 기능 유지를 위해 1회 사용을 권장드립니다.</dd>
+            </dl>
+          </section>
+
+          <section class="sv-faq-group" aria-labelledby="source-faq-final">
+            <h3 class="caption-m sv-label" id="source-faq-final">[최종] 10</h3>
+            <dl class="sv-faq-item">
+              <dt class="heading-m">✔ 왜 선베일을 사용해야 하나요? OR 그래서, 왜 선베일인가요?</dt>
+              <dd class="body-m">눈가 아래·광대 부위는 자외선 노출이 가장 높은 동시에 생활 자극이 집중되는 부위입니다. 또한, 얼굴 피부에서 가장 얇고 민감한 부위이기도 합니다. 그 결과, 이 부위는 기미·잡티와 잔주름이 발현되기 쉬운 영역으로, 보다 섬세한 보호가 필요한 부위입니다. 그래서, 이 부위에는 덧바르는 것이 아닌 ‘저자극 보호 레이어’가 필요합니다.</dd>
+            </dl>
+          </section>
+        </div>
+      </section>
+
+      <section class="sv-section" aria-labelledby="source-spec-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">10 · PRODUCT SPEC</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-spec-title">상품정보제공 고시.</h2>
+          </div>
+        </div>
+
+        <table class="sv-table">
+          <tbody>
+            <tr>
+              <th>제품명</th>
+              <td>에이로우 리버스 AG 코드™ 선베일</td>
+            </tr>
+            <tr>
+              <th>내용물의 용량 및 중량</th>
+              <td>1회분(2매): 0.1g<br>3회분(2매 × 3세트): 0.3 g</td>
+            </tr>
+            <tr>
+              <th>제품 주요 사양</th>
+              <td>모든 피부 타입</td>
+            </tr>
+            <tr>
+              <th>사용기한 또는 개봉 후 사용기간</th>
+              <td>사용기한과 제조번호는 제품 패키지의 표시사항을 참고하세요.<br>제조일로부터 30개월 / 개봉 후 즉시 사용</td>
+            </tr>
+            <tr>
+              <th>사용방법</th>
+              <td>1. 파우치를 개봉한 후, 라벨이 부착된 보호 시트(패치 뒷면)를 먼저 제거합니다.<br>2. 패치의 점착면이 피부에 닿도록 눈 아래 부위 전체에 고르게 부착합니다. 인쇄된 보호 시트 위를 손으로 가볍게 눌러 들뜸 없이 밀착시킵니다.<br>3. 인쇄된 보호 시트를 바깥쪽(관자놀이 쪽)부터 수평 방향으로 천천히 떼어냅니다.</td>
+            </tr>
+            <tr>
+              <th>TIPS</th>
+              <td>1. 선베일의 기공 구조 특성상 공기층이 생길 수 있으며, 제거한 인쇄된 보호 시트의 안쪽 면으로 해당 부위를 가볍게 눌러주면 밀착감이 더욱 높아집니다.<br>2. 메이크업 전·후 모두 사용 가능합니다.<br>3. 선크림과 함께 사용할 경우, 선크림 → 선베일 순으로 사용합니다.</td>
+            </tr>
+            <tr>
+              <th>주의사항</th>
+              <td>① 사용 시 또는 사용 후 직사광선에 의하여 사용부위가 붉은 반점, 부어오름 또는 가려움증 등의 이상 증상이나 부작용이 있는 경우에는 전문의 등과 상담할 것<br>② 상처가 있는 부위 등에는 사용을 자제할 것<br>③ 보관 및 취급 시 주의사항 가. 어린이의 손이 닿지 않는 곳에 보관할 것 나. 직사광선을 피해서 보관할 것<br>④ 붙이는 반창고나 습포 자극에 예민하신 분은 주의할 것<br>⑤ 1회용 제품으로, 개봉 후 즉시 사용하고 재사용하지 말 것<br>⑥ 땀이나 물, 유분이 있는 상태에서 부착 시 제품의 부착력이 약해지니 떨어짐에 주의할 것<br>※ 본 제품은 화장품 또는 의약품이 아닌 공산품입니다.</td>
+            </tr>
+            <tr>
+              <th>품질보증기준</th>
+              <td>본 상품에 이상이 있을 경우 공정거래위원회 고시 “소비자 분쟁 해결 기준”에 의해 보상해 드립니다.</td>
+            </tr>
+            <tr>
+              <th>소비자 상담 관련 전화번호</th>
+              <td>070-4250-0312</td>
+            </tr>
+            <tr>
+              <th>기획·판매원</th>
+              <td>㈜씽크앤플로우 (Think & flow Inc.)</td>
+            </tr>
+            <tr>
+              <th>제조국</th>
+              <td>대한민국</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="sv-footer" aria-labelledby="source-cta-title">
+        <div class="sv-section__head">
+          <p class="caption-m sv-index">11 · CTA FOOTER</p>
+          <div class="sv-text-stack">
+            <h2 class="heading-xxl" id="source-cta-title">햇살을 포기하지 않는 가장 앞선 방식.</h2>
+            <p class="heading-xl">Aesthetic Guard,<br>AYROW<br>Reverse AG Code™ Sun-Veil</p>
+            <p class="body-l sv-quote">제품 보기</p>
+            <p class="body-l"><em>Experience Sun Veil!</em> (지금 구매하기)</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

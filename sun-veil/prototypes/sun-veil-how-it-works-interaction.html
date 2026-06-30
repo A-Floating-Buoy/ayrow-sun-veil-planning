@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil — How It Works Interaction</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    :root {
+      --bleu: var(--primitive-bleu, #2e3a8a);
+      --bleu-soft: color-mix(in srgb, var(--primitive-bleu, #2e3a8a) 35%, white);
+    }
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+
+    .intro {
+      min-height: 60vh;
+      display: grid; align-content: center;
+      max-width: 880px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+    }
+    .intro h1 { margin: 0 0 0.6em; font-size: clamp(28px, 4vw, 44px); }
+    .intro p  { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+    .kicker {
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.4em;
+    }
+
+    .stage {
+      padding: 6vh max(5vw, 24px);
+      background: white;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .stage__inner {
+      max-width: 880px; margin: 0 auto;
+    }
+    .stage__head { margin-bottom: 24px; }
+    .stage__title {
+      margin: 0 0 6px;
+      font-size: clamp(22px, 2.4vw, 28px);
+      font-weight: 500;
+    }
+    .stage__concept {
+      margin: 0;
+      color: var(--semantic-on-surface-muted);
+      font-size: 14px; line-height: 1.55;
+    }
+    .stage__svg {
+      max-width: 720px; margin: 32px auto;
+    }
+    .controls {
+      display: flex; justify-content: center;
+      gap: 8px; margin-top: 16px;
+    }
+    .controls button {
+      background: transparent;
+      border: 1px solid var(--semantic-on-surface);
+      color: var(--semantic-on-surface);
+      padding: 8px 16px; border-radius: 999px;
+      font: inherit; font-size: 13px; cursor: pointer;
+    }
+
+    /* SVG common */
+    .svg { display: block; width: 100%; height: auto; color: var(--semantic-on-surface); overflow: visible; }
+    .svg-name { font-size: 13px; fill: currentColor; font-weight: 600; }
+    .svg-name--accent { fill: var(--bleu); }
+    .svg-cap { font-size: 11px; fill: currentColor; opacity: 0.6; letter-spacing: 0.02em; }
+    .svg-num { font-size: 12px; fill: currentColor; opacity: 0.7; font-variant-numeric: tabular-nums; }
+
+    /* ===================================================
+       1. Layer Exploded SVG
+       =================================================== */
+    .layer-l1-group, .layer-l2-group {
+      transform-box: fill-box;
+      transition:
+        transform 1100ms cubic-bezier(0.2, 0.8, 0.4, 1),
+        opacity 800ms ease;
+    }
+    .layer-l1-group { transform: translateY(28px); opacity: 0; } /* 처음: 아래쪽에서 위로 */
+    .layer-l2-group { transform: translateY(-22px); opacity: 0; } /* 처음: 위쪽에서 아래로 */
+    .stage.is-on .layer-l1-group {
+      transform: translateY(0);
+      opacity: 1;
+      transition-delay: 0ms;
+    }
+    .stage.is-on .layer-l2-group {
+      transform: translateY(0);
+      opacity: 1;
+      transition-delay: 200ms;
+    }
+
+    /* 다공성 점들 */
+    .layer-pore {
+      transform-box: fill-box;
+      transform-origin: center;
+      transform: scale(0);
+      opacity: 0;
+      transition:
+        transform 500ms cubic-bezier(0.34, 1.3, 0.64, 1),
+        opacity 400ms ease;
+    }
+    .stage.is-on .layer-pore { transform: scale(1); opacity: 1; }
+    /* stagger via inline style --i */
+    .stage.is-on .layer-pore { transition-delay: calc(900ms + var(--i, 0) * 60ms); }
+
+    /* 분리 화살표 */
+    .layer-divider {
+      opacity: 0;
+      transition: opacity 700ms ease 1500ms;
+    }
+    .stage.is-on .layer-divider { opacity: 0.5; }
+
+    /* 라벨 stagger */
+    .layer-label {
+      transform-box: fill-box;
+      opacity: 0;
+      transform: translateY(6px);
+      transition:
+        opacity 600ms ease,
+        transform 600ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .stage.is-on .layer-label { opacity: 1; transform: translateY(0); }
+    .stage.is-on .layer-label { transition-delay: calc(400ms + var(--i, 0) * 200ms); }
+
+    /* hover — 분리 폭 더 강조 (데스크탑) */
+    @media (hover: hover) {
+      .stage.is-on .layer-svg:hover .layer-l1-group { transform: translateY(-6px); transition-duration: 600ms; }
+      .stage.is-on .layer-svg:hover .layer-l2-group { transform: translateY(6px); transition-duration: 600ms; }
+    }
+
+    /* ===================================================
+       2. Moisture-Bonding SVG
+       =================================================== */
+    .moist-skin-curve {
+      stroke-dasharray: 720;
+      stroke-dashoffset: 720;
+      transition: stroke-dashoffset 1500ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .stage.is-on .moist-skin-curve { stroke-dashoffset: 0; }
+
+    .moist-skin-fill {
+      opacity: 0;
+      transition: opacity 800ms ease 1200ms;
+    }
+    .stage.is-on .moist-skin-fill { opacity: 0.06; }
+
+    .moist-membrane-curve {
+      stroke-dasharray: 720;
+      stroke-dashoffset: 720;
+      transition: stroke-dashoffset 1500ms cubic-bezier(0.4, 0, 0.2, 1) 600ms;
+    }
+    .stage.is-on .moist-membrane-curve { stroke-dashoffset: 0; }
+
+    .moist-water {
+      transform-box: fill-box;
+      transform-origin: center;
+      transform: scale(0);
+      opacity: 0;
+      transition:
+        transform 500ms cubic-bezier(0.34, 1.3, 0.64, 1),
+        opacity 400ms ease;
+    }
+    .stage.is-on .moist-water {
+      transform: scale(1);
+      opacity: 0.65;
+      transition-delay: calc(1800ms + var(--i, 0) * 100ms);
+    }
+
+    /* 수분 미세 shimmer (등장 후 무한 loop) */
+    .stage.is-on .moist-water {
+      animation: water-shimmer 3.6s ease-in-out infinite;
+      animation-delay: calc(2800ms + var(--i, 0) * 200ms);
+    }
+    @keyframes water-shimmer {
+      0%, 100% { translate: 0 0; }
+      50%      { translate: 0 -1.5px; }
+    }
+
+    /* 라벨 stagger */
+    .moist-label {
+      transform-box: fill-box;
+      opacity: 0;
+      transform: translateY(6px);
+      transition:
+        opacity 600ms ease,
+        transform 600ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .stage.is-on .moist-label { opacity: 1; transform: translateY(0); }
+    .stage.is-on .moist-label { transition-delay: calc(800ms + var(--i, 0) * 250ms); }
+
+    /* hover — 수분 강조 (데스크탑) */
+    @media (hover: hover) {
+      .stage.is-on .moisture-svg:hover .moist-water {
+        opacity: 0.95;
+        animation-duration: 1.8s;
+      }
+    }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .layer-l1-group, .layer-l2-group, .layer-pore, .layer-divider, .layer-label,
+      .moist-skin-fill, .moist-water, .moist-label {
+        transform: none !important;
+        opacity: 1 !important;
+        transition: none !important;
+        animation: none !important;
+      }
+      .moist-skin-curve, .moist-membrane-curve {
+        stroke-dashoffset: 0 !important;
+        transition: none !important;
+      }
+      .layer-divider { opacity: 0.5 !important; }
+      .moist-skin-fill { opacity: 0.06 !important; }
+      .moist-water { opacity: 0.65 !important; }
+    }
+
+    .notes-section {
+      max-width: 880px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+    }
+    .notes-section h2 { margin: 0 0 0.6em; font-size: clamp(22px, 2.4vw, 28px); }
+    .notes-section p { margin: 0 0 0.6em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <section class="intro">
+    <p class="kicker">Sun Veil PDP / 05 How It Works · Interaction Demo</p>
+    <h1>두 SVG에 동일 수준 인터랙션 — Layer Split + Moisture-Bonding.</h1>
+    <p>Layer Split은 처음에 두 레이어가 겹쳐 있다가 분리되며 등장. Moisture-Bonding은 곡선이 좌→우로 그려진 후 수분 입자가 차례로 등장하고 미세 shimmer 무한 loop. 두 SVG 모두 진입 시 자동 작동, "다시 보기"로 재현.</p>
+  </section>
+
+  <!-- ============================================
+       1. Layer Exploded
+       ============================================ -->
+  <section class="stage" id="layerStage">
+    <div class="stage__inner">
+      <div class="stage__head">
+        <h2 class="stage__title">Layer Split — 두 레이어가 분리되며 등장</h2>
+        <p class="stage__concept">처음에는 두 레이어가 겹쳐 있는 상태(실제 제품). 진입 시 위 레이어가 위로 8px, 아래 레이어가 아래로 12px translate + fade-in으로 분리되며 등장. 다공성 점들이 stagger pop, 분리 화살표가 마지막 등장.</p>
+      </div>
+
+      <div class="stage__svg">
+        <svg viewBox="0 0 600 380" class="svg layer-svg" role="img" aria-label="2-Layer 구조 — 멤브레인과 약액층이 분리되며 등장">
+
+          <!-- Layer 1 멤브레인 (위) -->
+          <g class="layer-l2-group">
+            <text x="60" y="56" class="svg-name svg-name--accent layer-label" style="--i: 0;">Layer 1 · 멤브레인</text>
+            <text x="540" y="56" class="svg-num layer-label" text-anchor="end" style="--i: 0;">0.004 mm</text>
+            <rect x="60" y="68" width="480" height="22" fill="var(--bleu)" rx="3"/>
+            <!-- 다공성 점들 -->
+            <g fill="white">
+              <circle cx="100" cy="79" r="1.5" class="layer-pore" style="--i: 0;"/>
+              <circle cx="160" cy="79" r="1.5" class="layer-pore" style="--i: 1;"/>
+              <circle cx="220" cy="79" r="1.5" class="layer-pore" style="--i: 2;"/>
+              <circle cx="280" cy="79" r="1.5" class="layer-pore" style="--i: 3;"/>
+              <circle cx="340" cy="79" r="1.5" class="layer-pore" style="--i: 4;"/>
+              <circle cx="400" cy="79" r="1.5" class="layer-pore" style="--i: 5;"/>
+              <circle cx="460" cy="79" r="1.5" class="layer-pore" style="--i: 6;"/>
+              <circle cx="520" cy="79" r="1.5" class="layer-pore" style="--i: 7;"/>
+            </g>
+            <text x="60" y="108" class="svg-cap layer-label" style="--i: 1;">자외선 보호 층 · 공기·수분 흐름 유지</text>
+          </g>
+
+          <!-- 분리 화살표 (양방향 점선) -->
+          <g class="layer-divider">
+            <line x1="300" y1="150" x2="300" y2="220" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+            <path d="M 295 158 L 300 150 L 305 158" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 295 212 L 300 220 L 305 212" fill="none" stroke="currentColor" stroke-width="1"/>
+          </g>
+
+          <!-- Layer 2 약액층 (아래) -->
+          <g class="layer-l1-group">
+            <text x="60" y="246" class="svg-name layer-label" style="--i: 2;">Layer 2 · 약액층</text>
+            <rect x="60" y="258" width="480" height="32" fill="var(--bleu)" opacity="0.5" rx="3"/>
+            <text x="60" y="312" class="svg-cap layer-label" style="--i: 3;">멤브레인 내부 활성 성분층</text>
+          </g>
+
+          <!-- 피부 ground -->
+          <line x1="60" y1="350" x2="540" y2="350" stroke="currentColor" stroke-dasharray="2 4" stroke-width="1" opacity="0.4"/>
+          <text x="60" y="370" class="svg-cap layer-label" style="--i: 4;">피부 표면</text>
+        </svg>
+      </div>
+
+      <div class="controls">
+        <button class="replay" data-target="layerStage">▶ 다시 보기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       2. Moisture-Bonding
+       ============================================ -->
+  <section class="stage" id="moistureStage">
+    <div class="stage__inner">
+      <div class="stage__head">
+        <h2 class="stage__title">Moisture-Bonding — 곡선이 좌→우로 그려지고 수분이 자리잡음</h2>
+        <p class="stage__concept">피부 곡선이 먼저 좌→우 stroke 그려짐 → 멤브레인 곡선이 600ms 후 같은 방향으로 그려짐 → 두 곡선 사이에 수분 입자가 차례로 등장 → 수분이 미세 shimmer로 무한 진동 ("표면 장력으로 잡혀있다").</p>
+      </div>
+
+      <div class="stage__svg">
+        <svg viewBox="0 0 600 280" class="svg moisture-svg" role="img" aria-label="Moisture-Bonding — 점착제 없이 수분 표면 장력으로 안착">
+
+          <!-- 라벨: 멤브레인 -->
+          <text x="40" y="40" class="svg-name svg-name--accent moist-label" style="--i: 0;">멤브레인</text>
+
+          <!-- 멤브레인 곡선 (위) -->
+          <path
+            class="moist-membrane-curve"
+            d="M 40 60 Q 150 50 300 60 T 560 60"
+            stroke="var(--bleu)" stroke-width="2.5" fill="none"/>
+
+          <!-- 수분 분자 -->
+          <g fill="var(--bleu)">
+            <circle cx="80"  cy="85" r="2.6" class="moist-water" style="--i: 0;"/>
+            <circle cx="140" cy="83" r="2.6" class="moist-water" style="--i: 1;"/>
+            <circle cx="200" cy="86" r="2.6" class="moist-water" style="--i: 2;"/>
+            <circle cx="260" cy="84" r="2.6" class="moist-water" style="--i: 3;"/>
+            <circle cx="320" cy="86" r="2.6" class="moist-water" style="--i: 4;"/>
+            <circle cx="380" cy="84" r="2.6" class="moist-water" style="--i: 5;"/>
+            <circle cx="440" cy="86" r="2.6" class="moist-water" style="--i: 6;"/>
+            <circle cx="500" cy="84" r="2.6" class="moist-water" style="--i: 7;"/>
+          </g>
+
+          <!-- 라벨: 표면 장력 -->
+          <text x="40" y="135" class="svg-cap moist-label" style="--i: 1;">수분 표면 장력으로 안착 (Moisture-Bonding · 점착제 없음)</text>
+
+          <!-- 피부 곡선 (아래) -->
+          <path
+            class="moist-skin-curve"
+            d="M 40 110 Q 150 100 300 110 T 560 110"
+            stroke="currentColor" stroke-width="2" fill="none"/>
+
+          <!-- 피부 채움 -->
+          <path
+            class="moist-skin-fill"
+            d="M 40 110 Q 150 100 300 110 T 560 110 L 560 240 L 40 240 Z"
+            fill="currentColor"/>
+
+          <!-- 라벨: 피부 -->
+          <text x="40" y="225" class="svg-name moist-label" style="--i: 2;">피부 표면</text>
+        </svg>
+      </div>
+
+      <div class="controls">
+        <button class="replay" data-target="moistureStage">▶ 다시 보기</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="notes-section">
+    <h2>인터랙션 검증 포인트</h2>
+    <p><strong>Layer Split — 진입</strong>: 처음 두 레이어가 겹쳐서 안 보이다가, 위 레이어가 위에서 ↓, 아래 레이어가 아래에서 ↑로 분리되며 등장. 200ms stagger로 순차.</p>
+    <p><strong>Layer Split — 디테일</strong>: 다공성 점 8개가 60ms 간격 stagger pop (cubic-bezier overshoot). 분리 화살표가 1.5s에 fade-in. 라벨은 200ms stagger.</p>
+    <p><strong>Layer Split — 호버</strong>: 데스크탑에서 SVG 호버 시 분리 폭이 더 커짐 (위 -6px, 아래 +6px). "더 자세히 보고 싶다"에 응답.</p>
+    <p><strong>Moisture-Bonding — 진입</strong>: 피부 곡선이 1.5s 동안 좌→우 stroke-dashoffset 그려짐. 600ms 후 멤브레인 곡선이 같은 방향으로 그려짐. 1.8s부터 수분 입자 8개가 100ms stagger pop.</p>
+    <p><strong>Moisture-Bonding — 무한 loop</strong>: 수분 등장 1초 후부터 미세 shimmer (translateY ±1.5px, 3.6s cycle). 입자별 200ms stagger로 자연스러운 비동기 진동.</p>
+    <p><strong>Moisture-Bonding — 호버</strong>: 데스크탑에서 SVG 호버 시 수분 opacity 0.65 → 0.95, shimmer cycle 3.6s → 1.8s 가속.</p>
+    <p><strong>접근성</strong>: prefers-reduced-motion 시 모든 transition·animation 비활성, 정적 표기.</p>
+  </section>
+
+  <script>
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const stages = document.querySelectorAll('.stage');
+
+      function activate(stage) {
+        stage.classList.remove('is-on');
+        void stage.offsetWidth;
+        stage.classList.add('is-on');
+      }
+
+      stages.forEach((stage) => {
+        if (reduce) {
+          stage.classList.add('is-on');
+          return;
+        }
+        let played = false;
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !played) {
+              played = true;
+              activate(stage);
+              io.disconnect();
+            }
+          });
+        }, { threshold: 0.55, rootMargin: '-10% 0px -10% 0px' });
+        io.observe(stage);
+      });
+
+      document.querySelectorAll('.replay').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const stage = document.getElementById(btn.dataset.target);
+          if (stage) activate(stage);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

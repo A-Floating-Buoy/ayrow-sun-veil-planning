@@ -1,0 +1,1560 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP — Styled (Brand-only BLEU)</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/surface-modes.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    /* ============================================================
+       Sun Veil PDP — Styled v1
+       Brand-only color policy:
+         - All text → var(--primitive-bleu)
+         - Inverted surfaces (.surface--bleu / .surface--ink) → white
+         - Backgrounds: default warm / CRÈME / CIEL
+       Reference: reverse-ag-code page (BLEU text on CRÈME/default)
+       ============================================================ */
+
+    :root {
+      --pdp-text:       var(--primitive-bleu);
+      --pdp-border:     rgba(46, 58, 138, 0.18);
+      --pdp-border-soft:rgba(46, 58, 138, 0.10);
+      --pdp-surface:    var(--semantic-bg-default);
+      --pdp-surface-2:  var(--primitive-creme-soft, #FBF8D0);
+      --pdp-surface-3:  var(--primitive-brand-tertiary-500); /* CIEL */
+    }
+
+    body { margin: 0; background: var(--pdp-surface); color: var(--pdp-text); }
+
+    /* All text inherits BLEU from page root */
+    .pdp-page,
+    .pdp-page * { color: var(--pdp-text); }
+    /* Inverted surfaces — white text */
+    .pdp-page .surface--bleu,
+    .pdp-page .surface--bleu *,
+    .pdp-page .surface--ink,
+    .pdp-page .surface--ink * { color: #ffffff; }
+
+    .pdp-page {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .pdp-sidebar {
+      position: sticky; top: 0;
+      align-self: start;
+      height: 100vh;
+      padding: var(--spacing-7) var(--spacing-5) var(--spacing-7) var(--spacing-7);
+      border-right: 1px solid var(--pdp-border);
+      display: flex; flex-direction: column;
+      gap: var(--spacing-5);
+      overflow-y: auto;
+    }
+    .pdp-sidebar__brand {
+      display: grid; gap: 4px;
+      padding-bottom: var(--spacing-4);
+      border-bottom: 1px solid var(--pdp-border);
+    }
+    .pdp-sidebar__brand small {
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 600;
+      color: var(--primitive-merlot);
+    }
+    .pdp-sidebar__brand strong {
+      font-size: 16px; font-weight: 500; letter-spacing: -0.01em;
+      line-height: 1.35;
+    }
+    .pdp-sidebar nav ol {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; gap: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .pdp-sidebar nav a {
+      display: grid; grid-template-columns: 22px 1fr;
+      gap: 8px; align-items: baseline;
+      padding: 7px 8px;
+      text-decoration: none;
+      font-size: 12.5px;
+      line-height: 1.4;
+      border-radius: 4px;
+    }
+    .pdp-sidebar nav a:hover { background: rgba(46,58,138,0.06); }
+    .pdp-sidebar nav a span:first-child {
+      font-size: 10.5px;
+      letter-spacing: 0.04em;
+      opacity: 0.7;
+    }
+
+    /* ===== MAIN ===== */
+    .pdp-main {
+      display: grid;
+      gap: var(--layout-section-lg);
+      padding: var(--layout-section-md) clamp(32px, 5vw, 96px) var(--layout-section-md);
+    }
+    .pdp-section { scroll-margin-top: var(--spacing-7); }
+    .pdp-narrow  { max-width: 880px; margin-inline: auto; }
+    .pdp-wide    { max-width: 1180px; margin-inline: auto; width: 100%; }
+
+    /* Section eyebrow + title */
+    .pdp-eyebrow {
+      display: inline-flex; align-items: baseline; gap: 8px;
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: var(--spacing-4);
+    }
+    .pdp-eyebrow strong {
+      color: var(--primitive-merlot);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .pdp-section__title {
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 500; line-height: 1.18; letter-spacing: -0.02em;
+      margin: 0;
+      word-break: keep-all;
+    }
+    .pdp-section__sub {
+      font-size: 17px; line-height: 1.6;
+      margin: var(--spacing-5) 0 0;
+      max-width: 60ch;
+      opacity: 0.78;
+    }
+
+    /* ============================================================
+       01 HERO
+       ============================================================ */
+    .pdp-hero {
+      min-height: 92dvh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--layout-block);
+      align-items: center;
+      padding: var(--layout-section-md) 0;
+      border-bottom: 1px solid var(--pdp-border);
+    }
+    .pdp-hero__copy { display: grid; gap: var(--spacing-7); max-width: 560px; }
+    .pdp-hero__brand {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 600;
+    }
+    .pdp-hero__lead {
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 500; line-height: 1.12; letter-spacing: -0.02em;
+      margin: 0;
+      word-break: keep-all;
+    }
+    .pdp-hero__lead em {
+      font-style: normal;
+      font-weight: 600;
+    }
+    .pdp-hero__sub {
+      font-size: 17px; line-height: 1.6;
+      max-width: 36ch;
+      margin: 0;
+      opacity: 0.8;
+    }
+    .pdp-chips {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    }
+    .pdp-chip {
+      padding: 12px 12px;
+      border: 1px solid var(--pdp-border);
+      border-radius: 10px;
+      display: grid; gap: 4px;
+      background: rgba(255,255,255,0.5);
+    }
+    .pdp-chip strong {
+      font-size: 18px; font-weight: 600;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .pdp-chip small {
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 600;
+      opacity: 0.7;
+    }
+
+    .pdp-hero__visual {
+      position: relative;
+      aspect-ratio: 5/6;
+      border-radius: 16px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 60% at 78% 28%, rgba(255,255,255,0.7), transparent 60%),
+        linear-gradient(160deg, #F2E5C5 0%, #E5CC95 50%, #C8A363 100%);
+    }
+    .pdp-hero__visual::before {
+      content: "0.004";
+      position: absolute;
+      top: 32px; right: 36px;
+      font-family: "Suisse Int'l", sans-serif;
+      font-size: clamp(80px, 9vw, 140px);
+      font-weight: 200;
+      line-height: 1; letter-spacing: -0.04em;
+      color: rgba(46, 58, 138, 0.18);
+    }
+    .pdp-hero__visual::after {
+      content: "MM";
+      position: absolute;
+      top: clamp(120px, 11vw, 180px); right: 38px;
+      font-size: 13px; letter-spacing: 0.16em; font-weight: 700;
+      color: rgba(46, 58, 138, 0.5);
+    }
+    .pdp-hero__visual-cap {
+      position: absolute; bottom: 24px; left: 24px;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(46, 58, 138, 0.6);
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       02 FILM vs MEMBRANE — CORE
+       ============================================================ */
+    .pdp-vs__intro {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto var(--layout-block);
+    }
+    .pdp-vs__intro h3 {
+      font-size: clamp(40px, 4vw, 56px);
+      font-weight: 500; line-height: 1.15; letter-spacing: -0.02em;
+      margin: 0 0 var(--spacing-4);
+    }
+    .pdp-vs__intro h3 em { font-style: normal; font-weight: 600; }
+    .pdp-vs__intro p { font-size: 18px; line-height: 1.55; margin: 0; opacity: 0.78; }
+
+    .pdp-vs__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--pdp-border);
+      border-bottom: 1px solid var(--pdp-border);
+    }
+    .pdp-vs__col { padding: var(--spacing-8) var(--spacing-7); }
+    .pdp-vs__col + .pdp-vs__col {
+      border-left: 1px solid var(--pdp-border);
+      background: rgba(187,213,253,0.18);
+    }
+    .pdp-vs__col h4 {
+      margin: 0 0 var(--spacing-2);
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 600;
+      opacity: 0.6;
+    }
+    .pdp-vs__col h3 {
+      margin: 0 0 var(--spacing-6);
+      font-size: 28px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+    }
+    .pdp-vs__row {
+      padding: var(--spacing-3) 0;
+      border-top: 1px dashed var(--pdp-border-soft);
+      display: grid; gap: 6px;
+      font-size: 14px; line-height: 1.5;
+    }
+    .pdp-vs__row:first-of-type { border-top: 0; }
+    .pdp-vs__row em {
+      font-style: normal;
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.55;
+    }
+    .pdp-vs__quote {
+      margin-top: var(--spacing-5);
+      padding: var(--spacing-3) var(--spacing-4);
+      border-left: 2px solid var(--primitive-bleu);
+      font-size: 14.5px; line-height: 1.5;
+    }
+    .pdp-vs__question {
+      margin: var(--layout-block) 0 0;
+      text-align: center;
+      font-size: 17px;
+      opacity: 0.78;
+    }
+
+    .pdp-vs__why {
+      margin-top: var(--layout-section-sm);
+      padding: var(--spacing-9) var(--spacing-7);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 16px;
+      text-align: center;
+      display: grid; gap: var(--spacing-5);
+    }
+    .pdp-vs__why-lead { margin: 0; font-size: 14px; opacity: 0.7; letter-spacing: 0.02em; }
+    .pdp-vs__why-statement {
+      margin: 0;
+      font-size: clamp(32px, 3.6vw, 48px);
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .pdp-vs__why-list {
+      list-style: none; margin: var(--spacing-3) 0 0; padding: 0;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+      max-width: 1000px; margin-inline: auto;
+    }
+    .pdp-vs__why-list li {
+      padding: 14px 12px;
+      background: rgba(46,58,138,0.04);
+      border-radius: 10px;
+      font-size: 13px; line-height: 1.5;
+      text-align: center;
+    }
+
+    .pdp-vs__choice {
+      margin-top: var(--layout-block);
+      padding: var(--spacing-9) var(--spacing-7);
+      border-radius: 16px;
+      text-align: center;
+      display: grid; gap: var(--spacing-3);
+    }
+    .pdp-vs__choice p { margin: 0; font-size: 17px; opacity: 0.85; }
+    .pdp-vs__choice h3 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+    }
+
+    .pdp-vs__closing {
+      margin: var(--spacing-9) 0 0;
+      text-align: center;
+      font-size: 22px; line-height: 1.45;
+      font-weight: 500;
+    }
+    .pdp-vs__manifesto {
+      margin: var(--spacing-7) auto 0;
+      max-width: 720px;
+      padding: var(--spacing-6) var(--spacing-5) 0;
+      border-top: 1px solid var(--pdp-border);
+      text-align: center;
+      font-size: clamp(24px, 2.8vw, 36px); line-height: 1.35;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    /* ============================================================
+       03 QUICK FAQ
+       ============================================================ */
+    .pdp-qfaq__rail {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    }
+    .pdp-qfaq__panel {
+      aspect-ratio: 9/14;
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 14px;
+      padding: 18px;
+      display: grid; grid-template-rows: auto 1fr auto auto;
+      gap: 10px;
+    }
+    .pdp-qfaq__panel.surface--bleu { border-color: var(--primitive-bleu); }
+    .pdp-qfaq__q { font-size: 12px; line-height: 1.45; opacity: 0.75; margin: 0; }
+    .pdp-qfaq__yn {
+      align-self: center;
+      text-align: center;
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .pdp-qfaq__panel.surface--bleu .pdp-qfaq__yn { font-size: clamp(56px, 7vw, 88px); }
+    .pdp-qfaq__proof {
+      justify-self: center;
+      padding: 5px 10px;
+      background: rgba(46,58,138,0.08);
+      border-radius: 4px;
+      font-size: 10px; letter-spacing: 0.04em;
+      font-weight: 600;
+      text-align: center;
+      max-width: 100%;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-variant-numeric: tabular-nums;
+    }
+    .pdp-qfaq__panel.surface--bleu .pdp-qfaq__proof {
+      background: rgba(255,255,255,0.18);
+    }
+    .pdp-qfaq__a { font-size: 11px; line-height: 1.55; text-align: center; margin: 0; opacity: 0.85; }
+
+    /* ============================================================
+       04 INVISIBLE
+       ============================================================ */
+    .pdp-invs {
+      background: var(--pdp-surface-2);
+      padding: var(--layout-section-sm) var(--spacing-9);
+      border-radius: 24px;
+      display: grid; gap: var(--layout-block);
+    }
+    .pdp-invs__hero {
+      display: grid; grid-template-columns: auto 1fr;
+      gap: var(--spacing-9);
+      align-items: center;
+    }
+    .pdp-invs__metric strong {
+      display: block;
+      font-size: clamp(120px, 14vw, 220px);
+      font-weight: 200; line-height: 0.92; letter-spacing: -0.05em;
+      font-variant-numeric: tabular-nums;
+    }
+    .pdp-invs__metric small {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 600;
+      opacity: 0.7;
+    }
+    .pdp-invs__lines { display: grid; gap: var(--spacing-3); max-width: 38ch; }
+    .pdp-invs__line {
+      font-size: clamp(20px, 2vw, 28px);
+      line-height: 1.4; font-weight: 500; letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .pdp-invs__sub { font-size: 14px; opacity: 0.7; margin: 0; }
+
+    .pdp-invs__demos {
+      display: grid; grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--spacing-5);
+    }
+    .pdp-invs__demo {
+      padding: var(--spacing-7);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 14px;
+      display: grid; gap: var(--spacing-5);
+    }
+    .pdp-invs__demo h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 600; opacity: 0.6;
+    }
+    .pdp-invs__demo-cap { margin: 0; font-size: 11px; line-height: 1.55; opacity: 0.6; }
+
+    /* Ladder */
+    .pdp-ladder { display: grid; gap: 12px; }
+    .pdp-ladder__row {
+      display: grid; grid-template-columns: 130px 1fr 80px;
+      gap: var(--spacing-3); align-items: center;
+    }
+    .pdp-ladder__label { font-size: 13px; }
+    .pdp-ladder__bar-wrap {
+      height: 14px;
+      background: rgba(46,58,138,0.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .pdp-ladder__bar {
+      height: 100%; width: var(--w, 0%);
+      background: rgba(46,58,138,0.4);
+      min-width: 2px;
+    }
+    .pdp-ladder__row.is-target .pdp-ladder__bar { background: var(--primitive-bleu); }
+    .pdp-ladder__row.is-target .pdp-ladder__label { font-weight: 600; }
+    .pdp-ladder__value {
+      font-size: 12px; text-align: right;
+      font-variant-numeric: tabular-nums;
+      opacity: 0.7;
+    }
+    .pdp-ladder__row.is-target .pdp-ladder__value { font-weight: 600; opacity: 1; }
+
+    /* Light demo */
+    .pdp-lightdemo {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-4);
+    }
+    .pdp-lightdemo__col {
+      display: grid; gap: 10px;
+      text-align: center;
+    }
+    .pdp-lightdemo__col h5 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 600; opacity: 0.65;
+    }
+    .pdp-lightdemo__viz {
+      aspect-ratio: 1/1;
+      background: linear-gradient(180deg, #FBF8D0 0%, #F4EAD0 100%);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .pdp-lightdemo__col.is-target .pdp-lightdemo__viz {
+      background: linear-gradient(180deg, #DCE6FA 0%, #BBD5FD 100%);
+    }
+    .pdp-lightdemo__col p { margin: 0; font-size: 12px; line-height: 1.5; }
+
+    /* ============================================================
+       05 WHY THIS ZONE
+       ============================================================ */
+    .pdp-why__part-label {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 600; margin: 0 0 var(--spacing-3);
+      color: var(--primitive-merlot);
+    }
+    .pdp-why__when-head { margin-bottom: var(--spacing-7); }
+    .pdp-why__when-head h3 {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0 0 var(--spacing-3);
+    }
+    .pdp-why__when-head p { font-size: 17px; line-height: 1.6; margin: 0; opacity: 0.78; }
+
+    .pdp-why__cards {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .pdp-why__card {
+      padding: var(--spacing-5);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 12px;
+      font-size: 14.5px; line-height: 1.5;
+    }
+    .pdp-why__sensitive {
+      margin-top: var(--spacing-5);
+      padding: var(--spacing-6);
+      background: rgba(128, 39, 39, 0.05);
+      border: 1px solid rgba(128, 39, 39, 0.18);
+      border-radius: 12px;
+    }
+    .pdp-why__sensitive h4 {
+      margin: 0 0 var(--spacing-3);
+      font-size: 12px; letter-spacing: 0.04em;
+      font-weight: 700;
+      color: var(--primitive-merlot);
+    }
+    .pdp-why__sensitive ul {
+      margin: 0; padding-left: 1.2em;
+      display: grid; gap: 6px;
+      font-size: 14px; line-height: 1.55;
+    }
+
+    .pdp-why__divider {
+      border: 0;
+      border-top: 1px solid var(--pdp-border);
+      margin: var(--layout-block) 0;
+    }
+
+    .pdp-why__where {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--layout-block);
+      align-items: center;
+    }
+    .pdp-why__where-copy { display: grid; gap: var(--spacing-5); }
+    .pdp-why__where-copy h3 {
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .pdp-why__where-copy > p { font-size: 16px; line-height: 1.65; margin: 0; opacity: 0.78; }
+    .pdp-why__where-copy ul {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; gap: 10px;
+    }
+    .pdp-why__where-copy ul li {
+      padding: 12px 16px;
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    .pdp-why__where-visual {
+      aspect-ratio: 4/5;
+      background: linear-gradient(160deg, #F2E5C5 0%, #D9BD7E 100%);
+      border-radius: 16px;
+      position: relative; overflow: hidden;
+    }
+    .pdp-why__where-visual svg {
+      position: absolute; inset: 8% 18%;
+      width: auto; height: 84%;
+    }
+
+    .pdp-why__bridge {
+      margin-top: var(--layout-block);
+      padding: var(--spacing-9);
+      background: var(--pdp-surface-2);
+      border-radius: 16px;
+      text-align: center;
+      display: grid; gap: var(--spacing-3);
+    }
+    .pdp-why__bridge p { margin: 0; font-size: 18px; line-height: 1.55; }
+    .pdp-why__bridge p:last-child {
+      font-size: clamp(24px, 2.6vw, 32px); font-weight: 600; letter-spacing: -0.01em;
+    }
+
+    /* ============================================================
+       06 CONFIDENCE
+       ============================================================ */
+    .pdp-conf__head { margin-bottom: var(--layout-block); text-align: center; }
+    .pdp-conf__head h2 {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0 0 var(--spacing-3);
+    }
+    .pdp-conf__head p { margin: 0; font-size: 14px; opacity: 0.65; letter-spacing: 0.04em; }
+
+    .pdp-conf__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-4);
+    }
+    .pdp-conf__card {
+      padding: var(--spacing-7);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 14px;
+      display: grid; gap: var(--spacing-4);
+    }
+    .pdp-conf__card h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 600;
+      color: var(--primitive-merlot);
+    }
+    .pdp-conf__metrics { display: grid; gap: 10px; }
+    .pdp-conf__metric {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+      padding: 10px 0;
+      border-top: 1px dashed var(--pdp-border-soft);
+      font-size: 14px;
+    }
+    .pdp-conf__metric:first-child { border-top: 0; padding-top: 0; }
+    .pdp-conf__metric span { opacity: 0.7; }
+    .pdp-conf__metric strong { font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+    .pdp-conf__cap { margin: 0; font-size: 11px; opacity: 0.55; line-height: 1.5; }
+
+    /* ============================================================
+       07 HOW IT WORKS
+       ============================================================ */
+    .pdp-how__title {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0 0 var(--layout-block); text-align: center;
+    }
+    .pdp-how__layers {
+      display: grid; grid-template-columns: 1.05fr 0.95fr;
+      gap: var(--layout-block); align-items: stretch;
+    }
+    .pdp-how__diagram {
+      aspect-ratio: 4/3;
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 14px;
+      display: grid; place-items: center;
+      padding: var(--spacing-7);
+    }
+    .pdp-how__layer-list { display: grid; gap: var(--spacing-4); }
+    .pdp-how__layer {
+      padding: var(--spacing-5);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 12px;
+      display: grid; gap: 6px;
+    }
+    .pdp-how__layer h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 600;
+      color: var(--primitive-merlot);
+    }
+    .pdp-how__layer h3 { margin: 0; font-size: 18px; font-weight: 500; }
+    .pdp-how__layer p { margin: 0; font-size: 14px; line-height: 1.6; opacity: 0.78; }
+
+    .pdp-how__bond {
+      margin-top: var(--layout-block);
+      padding: var(--spacing-8);
+      background: var(--pdp-surface-2);
+      border-radius: 16px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: var(--layout-block);
+      align-items: center;
+    }
+    .pdp-how__bond h3 { font-size: clamp(24px, 2.4vw, 30px); font-weight: 500; line-height: 1.3; margin: 0 0 var(--spacing-2); }
+    .pdp-how__bond p { font-size: 15px; line-height: 1.6; margin: 0; opacity: 0.78; }
+
+    /* ============================================================
+       08 REVERSE AG CODE
+       ============================================================ */
+    .pdp-code {
+      padding: var(--layout-section-sm) var(--spacing-9);
+      background: var(--pdp-surface-2);
+      border-radius: 24px;
+    }
+    .pdp-code__head { margin-bottom: var(--layout-block); text-align: center; display: grid; gap: var(--spacing-3); }
+    .pdp-code__brand {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 700;
+    }
+    .pdp-code__title {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .pdp-code__title sup { font-size: 0.4em; vertical-align: super; }
+    .pdp-code__sub { font-size: 16px; opacity: 0.7; margin: 0; }
+
+    .pdp-code__tier { margin-bottom: var(--spacing-7); }
+    .pdp-code__tier h4 {
+      margin: 0 0 var(--spacing-4);
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700;
+      color: var(--primitive-merlot);
+      text-align: center;
+    }
+    .pdp-code__core {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .pdp-code__pill {
+      padding: var(--spacing-6) var(--spacing-4);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 12px;
+      text-align: center;
+      display: grid; gap: 6px;
+    }
+    .pdp-code__pill strong { font-size: 18px; font-weight: 500; letter-spacing: 0.01em; }
+    .pdp-code__pill small { font-size: 11.5px; opacity: 0.65; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+
+    .pdp-code__synergy {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .pdp-code__chip {
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid var(--pdp-border);
+      border-radius: 10px;
+      display: grid; gap: 2px;
+    }
+    .pdp-code__chip strong { font-size: 13px; font-weight: 600; }
+    .pdp-code__chip small { font-size: 11.5px; opacity: 0.7; }
+
+    /* ============================================================
+       09 USE CASES — Timeline (B안)
+       ============================================================ */
+    .pdp-uc__head { text-align: center; margin-bottom: var(--layout-block); display: grid; gap: var(--spacing-3); }
+    .pdp-uc__head h2 {
+      font-size: clamp(36px, 3.8vw, 48px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .pdp-uc__head p { font-size: 16px; opacity: 0.7; margin: 0; }
+
+    .pdp-uc__hero {
+      display: grid; grid-template-columns: 1.05fr 0.95fr;
+      gap: var(--layout-block); align-items: center;
+      margin-bottom: var(--layout-section-sm);
+    }
+    .pdp-uc__hero-img {
+      aspect-ratio: 4/5;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(255,255,255,0.55), transparent 35%),
+        linear-gradient(155deg, #F4EAD0, #D9BD7E);
+      border-radius: 16px;
+    }
+    .pdp-uc__hero-copy { display: grid; gap: var(--spacing-4); }
+    .pdp-uc__time {
+      display: flex; gap: var(--spacing-4); align-items: baseline;
+      font-variant-numeric: tabular-nums;
+    }
+    .pdp-uc__time strong {
+      font-size: clamp(56px, 6vw, 88px); font-weight: 200;
+      line-height: 0.9; letter-spacing: -0.04em;
+    }
+    .pdp-uc__time small {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.6;
+    }
+    .pdp-uc__moment { font-style: italic; opacity: 0.65; font-size: 16px; margin: 0; }
+    .pdp-uc__name { font-size: clamp(28px, 2.8vw, 36px); font-weight: 500; line-height: 1.25; margin: 0; letter-spacing: -0.01em; }
+    .pdp-uc__lead { font-size: 17px; line-height: 1.55; max-width: 28ch; margin: 0; }
+    .pdp-uc__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pdp-tag {
+      display: inline-flex; align-items: center;
+      padding: 6px 12px;
+      border: 1px solid var(--pdp-border);
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      background: rgba(255,255,255,0.4);
+    }
+
+    .pdp-uc__rail {
+      position: relative;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--spacing-4);
+    }
+    .pdp-uc__rail::before {
+      content: ""; position: absolute; left: 0; right: 0; top: 22px;
+      height: 1px; background: var(--pdp-border);
+    }
+    .pdp-uc__node { display: grid; gap: 10px; }
+    .pdp-uc__node-time {
+      position: relative; padding-top: 38px;
+      font-size: 14px; font-variant-numeric: tabular-nums;
+      margin: 0;
+    }
+    .pdp-uc__node-time::before {
+      content: ""; position: absolute; top: 16px; left: 0;
+      width: 13px; height: 13px; border-radius: 50%;
+      background: var(--pdp-surface);
+      border: 1px solid var(--primitive-bleu);
+    }
+    .pdp-uc__node-img {
+      aspect-ratio: 4/5; border-radius: 10px;
+    }
+    .pdp-uc__node[data-t="0630"] .pdp-uc__node-img { background: linear-gradient(155deg, #C9D2E0, #8FA1BC); }
+    .pdp-uc__node[data-t="1000"] .pdp-uc__node-img { background: linear-gradient(155deg, #F2E8C8, #E0CC92); }
+    .pdp-uc__node[data-t="1100"] .pdp-uc__node-img { background: linear-gradient(155deg, #F2DCC0, #E0B98E); }
+    .pdp-uc__node[data-t="1600"] .pdp-uc__node-img { background: linear-gradient(155deg, #F0DBA8, #D9A864); }
+    .pdp-uc__node[data-t="1800"] .pdp-uc__node-img { background: linear-gradient(155deg, #E8B898, #B86E54); }
+    .pdp-uc__node-copy { display: grid; gap: 4px; }
+    .pdp-uc__node-moment { font-size: 11.5px; font-style: italic; opacity: 0.65; margin: 0; }
+    .pdp-uc__node-name { font-size: 15px; font-weight: 500; margin: 0; }
+    .pdp-uc__node-lead { font-size: 13px; line-height: 1.5; opacity: 0.78; margin: 0; }
+
+    .pdp-uc__beyond {
+      margin-top: var(--layout-section-sm);
+      padding: var(--spacing-8);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 16px;
+      display: grid; grid-template-columns: 1fr 1.5fr;
+      gap: var(--layout-block); align-items: center;
+    }
+    .pdp-uc__beyond h4 { margin: 0 0 4px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; opacity: 0.6; color: var(--primitive-merlot); }
+    .pdp-uc__beyond h3 { margin: 0; font-size: 22px; font-weight: 500; }
+
+    /* ============================================================
+       10 RITUAL
+       ============================================================ */
+    .pdp-ritual__title {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0 0 var(--layout-block);
+      text-align: center;
+    }
+    .pdp-ritual__steps {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-4);
+    }
+    .pdp-ritual__step {
+      padding: var(--spacing-7);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--pdp-border);
+      border-radius: 14px;
+      display: grid; gap: var(--spacing-3);
+    }
+    .pdp-ritual__num {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 700;
+      color: var(--primitive-merlot);
+      margin: 0;
+    }
+    .pdp-ritual__step h3 { margin: 0; font-size: 22px; font-weight: 500; }
+    .pdp-ritual__step p { margin: 0; font-size: 14px; line-height: 1.6; opacity: 0.78; }
+
+    /* ============================================================
+       11 FAQ
+       ============================================================ */
+    .pdp-faq__head { margin-bottom: var(--layout-block); text-align: center; display: grid; gap: var(--spacing-2); }
+    .pdp-faq__head h2 {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .pdp-faq__head p { font-size: 14px; opacity: 0.7; margin: 0; }
+
+    .pdp-faq__group { margin-bottom: var(--layout-block); }
+    .pdp-faq__group h4 {
+      margin: 0 0 var(--spacing-4);
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700;
+      color: var(--primitive-merlot);
+      padding-bottom: var(--spacing-3);
+      border-bottom: 1px solid var(--pdp-border);
+    }
+    .pdp-faq__item {
+      padding: var(--spacing-5) var(--spacing-6);
+      border-bottom: 1px solid var(--pdp-border-soft);
+      display: grid; gap: var(--spacing-3);
+    }
+    .pdp-faq__item summary {
+      list-style: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: var(--spacing-4);
+      font-size: 16px; font-weight: 500;
+    }
+    .pdp-faq__item summary::-webkit-details-marker { display: none; }
+    .pdp-faq__item summary::after { content: "+"; font-size: 22px; font-weight: 300; opacity: 0.6; }
+    .pdp-faq__item[open] summary::after { content: "−"; }
+    .pdp-faq__item p {
+      margin: 0; padding-top: var(--spacing-3);
+      font-size: 14.5px; line-height: 1.7;
+      border-top: 1px dashed var(--pdp-border-soft);
+      opacity: 0.85;
+    }
+
+    /* ============================================================
+       Footer
+       ============================================================ */
+    .pdp-foot {
+      margin-top: var(--layout-section-md);
+      padding: var(--spacing-7) 0;
+      border-top: 1px solid var(--pdp-border);
+      text-align: center;
+      font-size: 12px; letter-spacing: 0.04em;
+      opacity: 0.55;
+    }
+
+    /* ============================================================
+       Responsive
+       ============================================================ */
+    @media (max-width: 1024px) {
+      .pdp-page { grid-template-columns: 1fr; }
+      .pdp-sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--pdp-border); }
+      .pdp-hero { grid-template-columns: 1fr; gap: var(--spacing-7); min-height: auto; padding: var(--spacing-9) 0; }
+      .pdp-vs__grid, .pdp-why__where, .pdp-how__layers, .pdp-how__bond, .pdp-uc__hero, .pdp-uc__beyond { grid-template-columns: 1fr; }
+      .pdp-vs__why-list { grid-template-columns: repeat(2, 1fr); }
+      .pdp-conf__grid, .pdp-why__cards, .pdp-code__core, .pdp-code__synergy, .pdp-ritual__steps { grid-template-columns: 1fr; }
+      .pdp-qfaq__rail { grid-template-columns: repeat(5, minmax(180px, 1fr)); overflow-x: auto; padding-bottom: var(--spacing-3); }
+      .pdp-uc__rail { grid-template-columns: repeat(5, minmax(180px, 1fr)); overflow-x: auto; padding-bottom: var(--spacing-3); }
+      .pdp-invs { padding: var(--spacing-7) var(--spacing-5); }
+      .pdp-invs__hero { grid-template-columns: 1fr; }
+      .pdp-invs__demos { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .pdp-chips { grid-template-columns: repeat(2, 1fr); }
+      .pdp-vs__why-list { grid-template-columns: 1fr; }
+      .pdp-lightdemo { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="pdp-page">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="pdp-sidebar" aria-label="페이지 목차">
+      <div class="pdp-sidebar__brand">
+        <small>AYROW</small>
+        <strong>Reverse AG Code™<br/>Sun Veil</strong>
+      </div>
+      <nav>
+        <ol>
+          <li><a href="#sec-1"><span>01</span><span>Hero</span></a></li>
+          <li><a href="#sec-2"><span>02</span><span>Film vs Membrane</span></a></li>
+          <li><a href="#sec-3"><span>03</span><span>Quick FAQ</span></a></li>
+          <li><a href="#sec-4"><span>04</span><span>Invisible</span></a></li>
+          <li><a href="#sec-5"><span>05</span><span>Why This Zone</span></a></li>
+          <li><a href="#sec-6"><span>06</span><span>Confidence</span></a></li>
+          <li><a href="#sec-7"><span>07</span><span>How It Works</span></a></li>
+          <li><a href="#sec-8"><span>08</span><span>Formula</span></a></li>
+          <li><a href="#sec-9"><span>09</span><span>Use Cases</span></a></li>
+          <li><a href="#sec-10"><span>10</span><span>Ritual</span></a></li>
+          <li><a href="#sec-11"><span>11</span><span>FAQ</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main class="pdp-main">
+
+      <!-- 01 HERO -->
+      <section class="pdp-section" id="sec-1">
+        <div class="pdp-hero">
+          <div class="pdp-hero__copy">
+            <p class="pdp-hero__brand">AYROW · Reverse AG Code™ Sun Veil</p>
+            <h1 class="pdp-hero__lead">
+              당신이 붙이고 있던 건 <em>‘필름’</em>입니다.<br/>
+              Sun Veil은 <em>‘숨 쉬는 멤브레인’</em>입니다.
+            </h1>
+            <p class="pdp-hero__sub">
+              이제, 막는 보호에서 숨 쉬는 보호로 바뀝니다.<br/>
+              막는 필름과 달리, 열·습기·땀은 배출하고 피부를 가두지 않는 나노 섬유 구조.
+            </p>
+            <div class="pdp-chips">
+              <div class="pdp-chip"><strong>0.004<span style="font-size:11px;font-weight:500;">mm</span></strong><small>Thickness</small></div>
+              <div class="pdp-chip"><strong>UPF 50+</strong><small>UV Block</small></div>
+              <div class="pdp-chip"><strong>99.9%</strong><small>UVB Cut</small></div>
+              <div class="pdp-chip"><strong>Excellent</strong><small>Dermatest</small></div>
+            </div>
+          </div>
+          <div class="pdp-hero__visual" aria-hidden="true">
+            <p class="pdp-hero__visual-cap">A New Kind of Aesthetic Guard</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 FILM vs MEMBRANE — CORE -->
+      <section class="pdp-section pdp-wide" id="sec-2">
+        <header class="pdp-narrow">
+          <p class="pdp-eyebrow"><strong>02</strong>· Film vs Membrane</p>
+        </header>
+
+        <div class="pdp-vs__intro">
+          <h3><em>Film</em> vs <em>Membrane</em></h3>
+          <p>같은 ‘패치’로 보였다면, 완전히 잘못 보고 있던 겁니다.</p>
+        </div>
+
+        <div class="pdp-vs__grid">
+          <div class="pdp-vs__col">
+            <h4>Existing</h4>
+            <h3>기존 선패치</h3>
+            <div class="pdp-vs__row"><em>Form</em><span>필름 = 막 (막힘) · 피부를 덮는 구조</span></div>
+            <div class="pdp-vs__row"><em>Air</em><span>공기 흐름 차단</span></div>
+            <div class="pdp-vs__row"><em>Wear</em><span>장시간 사용 시 답답함</span></div>
+            <div class="pdp-vs__row"><em>Skin</em><span>열·수분 정체</span></div>
+            <p class="pdp-vs__quote">“붙이는 순간, 피부는 막힌다”</p>
+          </div>
+          <div class="pdp-vs__col">
+            <h4>AYROW</h4>
+            <h3>에이로우 선베일</h3>
+            <div class="pdp-vs__row"><em>Form</em><span>나노 섬유 멤브레인 = 선택적 투과 구조</span></div>
+            <div class="pdp-vs__row"><em>Air</em><span>공기 & 수분 흐름 유지</span></div>
+            <div class="pdp-vs__row"><em>Wear</em><span>장시간 부착 가능</span></div>
+            <div class="pdp-vs__row"><em>Skin</em><span>피부 호흡 및 컨디션 유지</span></div>
+            <p class="pdp-vs__quote">“붙여도, 피부는 계속 숨 쉰다”</p>
+          </div>
+        </div>
+        <p class="pdp-vs__question">막는 것 vs 숨 쉬는 것 — 당신의 피부는 어떤 쪽을 선택하나요?</p>
+
+        <div class="pdp-vs__why">
+          <p class="pdp-vs__why-lead">선패치, 불편했던 이유는 단 하나입니다.</p>
+          <h3 class="pdp-vs__why-statement">“숨을 못 쉬기 때문입니다.”</h3>
+          <ul class="pdp-vs__why-list">
+            <li>땀/열/습기로 답답함</li>
+            <li>필름 텐션으로 인한 밀폐감, 피부 조임</li>
+            <li>메이크업 위에서 들뜸</li>
+            <li>접착 성분으로 인한 뻣뻣함, 잔주름 픽스</li>
+            <li>오래 붙이면 피부 피로감</li>
+          </ul>
+        </div>
+
+        <div class="pdp-vs__choice surface--bleu">
+          <p>그래서 우리는 ‘필름막’을 버리고</p>
+          <h3>‘나노 섬유’를 선택했습니다</h3>
+        </div>
+
+        <p class="pdp-vs__closing">“선베일은 보호하지만, 피부를 가두지 않습니다.”</p>
+        <p class="pdp-vs__manifesto">“숨 쉬는 보호는 선택이 아니라, 기준입니다.”</p>
+      </section>
+
+      <!-- 03 QUICK FAQ -->
+      <section class="pdp-section pdp-wide" id="sec-3">
+        <header class="pdp-narrow" style="margin-bottom: var(--layout-block);">
+          <p class="pdp-eyebrow"><strong>03</strong>· Quick FAQ</p>
+          <h2 class="pdp-section__title">붙이기 전, 한 번 더 묻습니다.</h2>
+          <p class="pdp-section__sub">고객이 가장 자주 떠올리는 의심 다섯 가지.</p>
+        </header>
+
+        <div class="pdp-qfaq__rail">
+          <article class="pdp-qfaq__panel">
+            <p class="pdp-qfaq__q">메이크업 위에<br/>사용해도 되나요?</p>
+            <p class="pdp-qfaq__yn">YES</p>
+            <span class="pdp-qfaq__proof">메이크업 친화 설계</span>
+            <p class="pdp-qfaq__a">쿠션 팩트, 파운데이션 등 메이크업 위에서도 투명하고 들뜸 없이 밀착되어 피부 표현을 방해하지 않습니다.</p>
+          </article>
+          <article class="pdp-qfaq__panel">
+            <p class="pdp-qfaq__q">일반 필름형 선패치와<br/>다른가요?</p>
+            <p class="pdp-qfaq__yn">YES</p>
+            <span class="pdp-qfaq__proof">나노 섬유 멤브레인 구조</span>
+            <p class="pdp-qfaq__a">Sun Veil은 나노 섬유 기반 멤브레인 구조로, 공기와 수분 흐름을 유지하면서도 자외선은 차단합니다.</p>
+          </article>
+          <article class="pdp-qfaq__panel">
+            <p class="pdp-qfaq__q">점착 성분 없이도<br/>잘 붙나요?</p>
+            <p class="pdp-qfaq__yn">YES</p>
+            <span class="pdp-qfaq__proof">0.7μm 기공 · Moisture-Bonding</span>
+            <p class="pdp-qfaq__a">멤브레인의 기공 구조와 스킨케어 제형의 점성 기반 ‘Moisture-Bonding’ 방식이 결합되어 자연스럽게 안착됩니다.</p>
+          </article>
+          <article class="pdp-qfaq__panel">
+            <p class="pdp-qfaq__q">투명한데 자외선<br/>차단이 가능한가요?</p>
+            <p class="pdp-qfaq__yn">YES</p>
+            <span class="pdp-qfaq__proof">원단 UPF 50+</span>
+            <p class="pdp-qfaq__a">멤브레인 내부에 분포된 자외선 대응 구조가 빛에 반응해 자외선을 흡수·산란시킵니다.</p>
+          </article>
+          <article class="pdp-qfaq__panel surface--bleu">
+            <p class="pdp-qfaq__q">티가 나나요?</p>
+            <p class="pdp-qfaq__yn">NO</p>
+            <span class="pdp-qfaq__proof">0.004mm 멤브레인</span>
+            <p class="pdp-qfaq__a">0.004mm 초박막 투명 멤브레인으로 메이크업 위에서도 식별이 어려울 만큼 자연스럽습니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 04 INVISIBLE -->
+      <section class="pdp-section pdp-wide" id="sec-4">
+        <header class="pdp-narrow" style="margin-bottom: var(--layout-block);">
+          <p class="pdp-eyebrow"><strong>04</strong>· Invisible</p>
+          <h2 class="pdp-section__title">메이크업 위에서도, 피부 위에서도.<br/>거의 보이지 않게.</h2>
+        </header>
+
+        <div class="pdp-invs">
+          <div class="pdp-invs__hero">
+            <div class="pdp-invs__metric">
+              <strong>0.004</strong>
+              <small>MM · Ultra-thin Membrane</small>
+            </div>
+            <div class="pdp-invs__lines">
+              <p class="pdp-invs__line">측면 단면으로 보여줄 수도 없는 두께. 일상의 척도로 옮겨봅니다.</p>
+              <p class="pdp-invs__sub">머리카락의 약 1/17 · 종이의 약 1/25.</p>
+            </div>
+          </div>
+
+          <div class="pdp-invs__demos">
+            <div class="pdp-invs__demo">
+              <h4>두께 비교 — 일상 사물과 함께</h4>
+              <div class="pdp-ladder">
+                <div class="pdp-ladder__row">
+                  <span class="pdp-ladder__label">머리카락</span>
+                  <div class="pdp-ladder__bar-wrap"><div class="pdp-ladder__bar" style="--w: 50%;"></div></div>
+                  <span class="pdp-ladder__value">0.07 mm</span>
+                </div>
+                <div class="pdp-ladder__row">
+                  <span class="pdp-ladder__label">종이 한 장</span>
+                  <div class="pdp-ladder__bar-wrap"><div class="pdp-ladder__bar" style="--w: 70%;"></div></div>
+                  <span class="pdp-ladder__value">0.1 mm</span>
+                </div>
+                <div class="pdp-ladder__row">
+                  <span class="pdp-ladder__label">일반 필름 선패치</span>
+                  <div class="pdp-ladder__bar-wrap"><div class="pdp-ladder__bar" style="--w: 35%;"></div></div>
+                  <span class="pdp-ladder__value">~ 0.05 mm</span>
+                </div>
+                <div class="pdp-ladder__row is-target">
+                  <span class="pdp-ladder__label">Sun Veil</span>
+                  <div class="pdp-ladder__bar-wrap"><div class="pdp-ladder__bar" style="--w: 3%;"></div></div>
+                  <span class="pdp-ladder__value">0.004 mm</span>
+                </div>
+              </div>
+              <p class="pdp-invs__demo-cap">* 일반 필름 선패치는 시장 평균 추정치 / Sun Veil은 자체 시험 기준</p>
+            </div>
+
+            <div class="pdp-invs__demo">
+              <h4>빛이 작동하는 방식</h4>
+              <div class="pdp-lightdemo">
+                <div class="pdp-lightdemo__col">
+                  <h5>Film</h5>
+                  <div class="pdp-lightdemo__viz">
+                    <svg viewBox="0 0 100 100" style="width:100%;height:100%;display:block;" aria-label="Film 표면 빛 반사">
+                      <rect x="10" y="80" width="80" height="14" fill="rgba(217,189,126,0.55)" stroke="rgba(46,58,138,0.25)"/>
+                      <text x="50" y="90" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.6)" letter-spacing="0.5">SKIN</text>
+                      <rect x="10" y="55" width="80" height="22" fill="rgba(255,255,255,0.7)" stroke="rgba(46,58,138,0.5)"/>
+                      <text x="50" y="68" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.7)" letter-spacing="0.5">FILM</text>
+                      <line x1="28" y1="14" x2="48" y2="55" stroke="rgba(217,140,40,0.95)" stroke-width="1.5"/>
+                      <polygon points="48,55 44,49 51,49" fill="rgba(217,140,40,0.95)"/>
+                      <line x1="48" y1="55" x2="68" y2="14" stroke="rgba(217,140,40,0.95)" stroke-width="1.5" stroke-dasharray="3 2"/>
+                      <polygon points="68,14 64,18 71,16" fill="rgba(217,140,40,0.95)"/>
+                      <text x="78" y="38" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.7)" letter-spacing="0.5">REFLECT</text>
+                    </svg>
+                  </div>
+                  <p>표면에서 반사 — 가장자리가 눈에 띈다</p>
+                </div>
+                <div class="pdp-lightdemo__col is-target">
+                  <h5>Membrane</h5>
+                  <div class="pdp-lightdemo__viz">
+                    <svg viewBox="0 0 100 100" style="width:100%;height:100%;display:block;" aria-label="Membrane 빛 통과">
+                      <rect x="10" y="80" width="80" height="14" fill="rgba(217,189,126,0.55)" stroke="rgba(46,58,138,0.25)"/>
+                      <text x="50" y="90" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.6)" letter-spacing="0.5">SKIN</text>
+                      <line x1="10" y1="78" x2="90" y2="78" stroke="rgba(46,58,138,0.85)" stroke-width="1.2" stroke-dasharray="3 1"/>
+                      <text x="92" y="76" font-size="5" text-anchor="end" fill="rgba(46,58,138,0.85)" letter-spacing="0.5">MEMBRANE</text>
+                      <line x1="28" y1="14" x2="48" y2="78" stroke="rgba(217,140,40,0.95)" stroke-width="1.5"/>
+                      <line x1="48" y1="78" x2="58" y2="92" stroke="rgba(217,140,40,0.95)" stroke-width="1.5"/>
+                      <polygon points="58,92 53,89 56,86" fill="rgba(217,140,40,0.95)"/>
+                      <text x="78" y="38" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.85)" letter-spacing="0.5">PASS</text>
+                    </svg>
+                  </div>
+                  <p>0.004mm 멤브레인 — 빛이 통과해 거의 보이지 않음</p>
+                </div>
+              </div>
+              <p class="pdp-invs__demo-cap">* 가시광선은 통과 / 자외선은 멤브레인 내부 자외선 대응 구조에서 흡수·산란</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 WHY THIS ZONE -->
+      <section class="pdp-section pdp-wide" id="sec-5">
+        <header class="pdp-narrow" style="margin-bottom: var(--layout-block);">
+          <p class="pdp-eyebrow"><strong>05</strong>· Why This Zone</p>
+          <h2 class="pdp-section__title">When + Where —<br/>이런 순간, 그리고 이 자리.</h2>
+        </header>
+
+        <div>
+          <p class="pdp-why__part-label">Part 1 — When</p>
+          <header class="pdp-why__when-head">
+            <h3>이런 순간, 필요합니다</h3>
+            <p>보호는 필요하지만, 드러나고 싶지 않을 때.</p>
+          </header>
+          <div class="pdp-why__cards">
+            <div class="pdp-why__card">자외선 차단제를 덧바르기 힘들 때</div>
+            <div class="pdp-why__card">메이크업 위에 덧바르면 무너질까 봐 손이 멈출 때</div>
+            <div class="pdp-why__card">하루 종일, 흐름을 끊지 않고 자외선 대응을 유지하고 싶을 때</div>
+            <div class="pdp-why__card">러닝·골프·테니스 등 야외 활동이 많은 날, 더 신경 쓰일 때</div>
+            <div class="pdp-why__card">실내에서도 생활 자외선이 계속 신경 쓰일 때</div>
+            <div class="pdp-why__card">눈가·광대처럼 특정 부위가 유독 노출될 때</div>
+          </div>
+          <div class="pdp-why__sensitive">
+            <h4>피부가 예민해졌을 때는 더더욱</h4>
+            <ul>
+              <li>피부과 시술 후, 자외선 차단은 중요하지만 직접 바르는 것이 부담스러울 때 / 자외선 차단제를 지워야 하지만 세안을 할 수 없을 때</li>
+              <li>외부 자극에 붉게 달아올라 떼어내는 순간 피부 자극이 염려될 때</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="pdp-why__divider"/>
+
+        <div>
+          <p class="pdp-why__part-label">Part 2 — Where</p>
+          <div class="pdp-why__where">
+            <div class="pdp-why__where-copy">
+              <h3>이 자리,<br/>바르는 선케어만으로<br/>충분할까요?</h3>
+              <p>선케어가 가장 먼저 무너지는 자리. 눈가 아래 광대 부위는 피부가 얇아 보호막이 약하고, 외부 자극에 가장 먼저 노출되며, 표정 움직임으로 가장 먼저 밀리고, 메이크업이 가장 얇게 올라가는 부위입니다. 그래서 선케어가 가장 먼저 지워집니다.</p>
+              <ul>
+                <li>피부가 얇아 보호막이 약하고</li>
+                <li>외부 자극에 가장 먼저 노출되고</li>
+                <li>표정 움직임으로 가장 먼저 밀리고</li>
+                <li>메이크업이 가장 얇게 올라가는 부위입니다</li>
+              </ul>
+            </div>
+            <div class="pdp-why__where-visual">
+              <svg viewBox="0 0 200 240" fill="none" stroke="rgba(46,58,138,0.5)" stroke-width="0.8" style="width:100%;height:100%;">
+                <ellipse cx="100" cy="120" rx="70" ry="100"/>
+                <circle cx="78" cy="100" r="5" fill="rgba(46,58,138,0.25)" stroke="none"/>
+                <circle cx="122" cy="100" r="5" fill="rgba(46,58,138,0.25)" stroke="none"/>
+                <path d="M70 130 Q80 145 95 142" />
+                <path d="M130 130 Q120 145 105 142" />
+                <ellipse cx="78" cy="135" rx="14" ry="9" fill="rgba(128,39,39,0.18)" stroke="rgba(128,39,39,0.55)" stroke-dasharray="2 2"/>
+                <ellipse cx="122" cy="135" rx="14" ry="9" fill="rgba(128,39,39,0.18)" stroke="rgba(128,39,39,0.55)" stroke-dasharray="2 2"/>
+                <text x="100" y="200" fill="rgba(46,58,138,0.6)" font-size="9" text-anchor="middle" stroke="none" letter-spacing="1.5">광대 / 눈 아래 ZONE</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="pdp-why__bridge">
+          <p>그래서 우리는, 보호의 방식을 바꿨습니다.</p>
+          <p>보호는 필요하지만, 방식이 달라야 할 때 — 이럴 때 필요한 건,<br/>선케어가 아니라 선베일입니다.</p>
+        </div>
+      </section>
+
+      <!-- 06 CONFIDENCE -->
+      <section class="pdp-section pdp-wide" id="sec-6">
+        <header style="margin-bottom: var(--layout-block);">
+          <p class="pdp-eyebrow" style="justify-content: center; display: flex;"><strong>06</strong>· Confidence</p>
+        </header>
+        <div class="pdp-conf__head">
+          <h2>보이지 않지만, 데이터로 확인됩니다.</h2>
+          <p>Dermatest® · FITI 시험연구원 데이터 기반</p>
+        </div>
+
+        <div class="pdp-conf__grid">
+          <article class="pdp-conf__card">
+            <h4>UV Protection</h4>
+            <div class="pdp-conf__metrics">
+              <div class="pdp-conf__metric"><span>UVB 차단율</span><strong>99.9%</strong></div>
+              <div class="pdp-conf__metric"><span>UVA 차단율</span><strong>95.3%</strong></div>
+              <div class="pdp-conf__metric"><span>UVR 차단율</span><strong>96.3%</strong></div>
+              <div class="pdp-conf__metric"><span>UPF 지수</span><strong>UPF 50+</strong></div>
+            </div>
+            <p class="pdp-conf__cap">* 원단 시험 기준 · FITI 시험연구원</p>
+          </article>
+
+          <article class="pdp-conf__card">
+            <h4>Breathable Structure</h4>
+            <div class="pdp-conf__metrics">
+              <div class="pdp-conf__metric"><span>공기 투과도</span><strong>1.0 미만 mm/s</strong></div>
+              <div class="pdp-conf__metric"><span>투습도</span><strong>12,356 g/m²·24h</strong></div>
+              <div class="pdp-conf__metric"><span>평균 기공 크기</span><strong>0.7 μm</strong></div>
+              <div class="pdp-conf__metric"><span>두께</span><strong>0.004 mm</strong></div>
+            </div>
+            <p class="pdp-conf__cap">* 물성 시험 기준 · FITI 시험연구원</p>
+          </article>
+
+          <article class="pdp-conf__card">
+            <h4>Sensitive Skin & Ethics</h4>
+            <div class="pdp-conf__metrics">
+              <div class="pdp-conf__metric"><span>피부 자극 지수</span><strong>0.00</strong></div>
+              <div class="pdp-conf__metric"><span>더마테스트 등급</span><strong>EXCELLENT</strong></div>
+              <div class="pdp-conf__metric"><span>피부 친화 소재</span><strong>충족</strong></div>
+              <div class="pdp-conf__metric"><span>비건 포뮬러</span><strong>The Vegan Society</strong></div>
+              <div class="pdp-conf__metric"><span>중량 (1 piece)</span><strong>0.05 g</strong></div>
+            </div>
+            <p class="pdp-conf__cap">* 민감 피부 첩포 + 2주 임상 시험 기준 · Dermatest®</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 07 HOW IT WORKS -->
+      <section class="pdp-section pdp-wide" id="sec-7">
+        <header class="pdp-narrow" style="margin-bottom: var(--layout-block); text-align: center;">
+          <p class="pdp-eyebrow" style="justify-content: center; display: flex;"><strong>07</strong>· How It Works</p>
+          <h2 class="pdp-how__title">두 개의 레이어가<br/>하나의 피부처럼 작동합니다</h2>
+        </header>
+
+        <div class="pdp-how__layers">
+          <div class="pdp-how__diagram">
+            <svg viewBox="0 0 320 240" fill="none" stroke="currentColor" style="width:100%; max-width: 360px; height: auto;">
+              <rect x="20" y="180" width="280" height="40" rx="4" fill="rgba(217,189,126,0.4)" stroke="rgba(46,58,138,0.3)"/>
+              <text x="160" y="205" font-size="9" text-anchor="middle" fill="rgba(46,58,138,0.7)" stroke="none" letter-spacing="1">SKIN</text>
+              <rect x="20" y="140" width="280" height="32" rx="4" fill="rgba(187,213,253,0.5)" stroke="rgba(46,58,138,0.5)"/>
+              <text x="160" y="160" font-size="9" text-anchor="middle" fill="rgba(46,58,138,0.9)" stroke="none" letter-spacing="1">LAYER 2 · CARE FORMULA</text>
+              <rect x="20" y="106" width="280" height="26" rx="4" fill="rgba(255,255,255,0.7)" stroke="rgba(46,58,138,0.55)" stroke-dasharray="3 2"/>
+              <text x="160" y="124" font-size="9" text-anchor="middle" fill="rgba(46,58,138,0.85)" stroke="none" letter-spacing="1">LAYER 1 · ULTRA-THIN MEMBRANE</text>
+              <line x1="80" y1="40" x2="80" y2="100" stroke="rgba(128,39,39,0.7)" stroke-width="1.2"/>
+              <line x1="160" y1="40" x2="160" y2="100" stroke="rgba(128,39,39,0.7)" stroke-width="1.2"/>
+              <line x1="240" y1="40" x2="240" y2="100" stroke="rgba(128,39,39,0.7)" stroke-width="1.2"/>
+              <text x="160" y="30" font-size="9" text-anchor="middle" fill="rgba(128,39,39,0.95)" stroke="none" letter-spacing="1.5">UV</text>
+              <circle cx="60" cy="119" r="1.5" fill="rgba(46,58,138,0.7)" stroke="none"/>
+              <circle cx="120" cy="119" r="1.5" fill="rgba(46,58,138,0.7)" stroke="none"/>
+              <circle cx="200" cy="119" r="1.5" fill="rgba(46,58,138,0.7)" stroke="none"/>
+              <circle cx="260" cy="119" r="1.5" fill="rgba(46,58,138,0.7)" stroke="none"/>
+            </svg>
+          </div>
+          <div class="pdp-how__layer-list">
+            <article class="pdp-how__layer">
+              <h4>Layer 1</h4>
+              <h3>초박막 투명 멤브레인</h3>
+              <p>0.004mm 투명 나노 섬유로 피부 결과 메이크업 질감을 해치지 않는 자외선 보호 층.</p>
+            </article>
+            <article class="pdp-how__layer">
+              <h4>Layer 2</h4>
+              <h3>약액층 (Care Formula)</h3>
+              <p>멤브레인 내부 활성 성분층으로 외부 자극 환경에서 피부 컨디션 유지 서포트 층.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="pdp-how__bond">
+          <div>
+            <h3>접착하지 않고<br/>수분으로 안착한다</h3>
+            <p>화학 접착 성분 없이 구조적 물성으로 구현한 물리적 밀착 — Moisture-Bonding.</p>
+          </div>
+          <p style="font-size: 15px; line-height: 1.65; margin: 0; opacity: 0.78;">선베일의 보습 성분과 피부 표면이 만나, 표면 장력으로 피부 위에 자연스럽게 안착합니다.</p>
+        </div>
+      </section>
+
+      <!-- 08 REVERSE AG CODE -->
+      <section class="pdp-section pdp-wide" id="sec-8">
+        <header class="pdp-narrow" style="margin-bottom: var(--layout-block);">
+          <p class="pdp-eyebrow"><strong>08</strong>· Formula</p>
+        </header>
+
+        <div class="pdp-code">
+          <header class="pdp-code__head">
+            <p class="pdp-code__brand">AYROW Registered Trademark</p>
+            <h2 class="pdp-code__title">Reverse AG Code<sup>™</sup> 포뮬라</h2>
+            <p class="pdp-code__sub">태양이 강렬할수록, 더 치밀하게 작동합니다.</p>
+          </header>
+
+          <div class="pdp-code__tier">
+            <h4>Core Three</h4>
+            <div class="pdp-code__core">
+              <article class="pdp-code__pill"><strong>NMN</strong><small>Nicotinamide Mononucleotide</small></article>
+              <article class="pdp-code__pill"><strong>Resveratrol</strong><small>Stilbene 계열</small></article>
+              <article class="pdp-code__pill"><strong>Pterostilbene</strong><small>차세대 Stilbene 계열</small></article>
+            </div>
+          </div>
+
+          <div class="pdp-code__tier">
+            <h4>Synergy Modules</h4>
+            <div class="pdp-code__synergy">
+              <article class="pdp-code__chip"><strong>Vegan PRN</strong><small>화이트 트러플 유산균</small></article>
+              <article class="pdp-code__chip"><strong>Phyto PDRN</strong><small>생 어린 병풀</small></article>
+              <article class="pdp-code__chip"><strong>CICA ROSIA 2.0</strong><small>다닥냉이씨 · 망고잎</small></article>
+              <article class="pdp-code__chip"><strong>Quercetin</strong><small>퀘르세틴</small></article>
+              <article class="pdp-code__chip"><strong>Vegan LAB</strong><small>미역 유래 유산균</small></article>
+              <article class="pdp-code__chip"><strong>Aero-flow Membrane™</strong><small>3D 에어 메쉬 구조</small></article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 09 USE CASES — Timeline -->
+      <section class="pdp-section pdp-wide" id="sec-9">
+        <header style="margin-bottom: var(--layout-block);">
+          <p class="pdp-eyebrow" style="justify-content: center; display: flex;"><strong>09</strong>· Use Cases</p>
+        </header>
+        <div class="pdp-uc__head">
+          <h2>당신의 하루 속,<br/>Sun Veil이 함께하는 순간</h2>
+          <p>Whereable Beauty — Wherever + Able</p>
+        </div>
+
+        <article class="pdp-uc__hero">
+          <div class="pdp-uc__hero-img" aria-hidden="true"></div>
+          <div class="pdp-uc__hero-copy">
+            <div class="pdp-uc__time">
+              <strong>14:00</strong>
+              <small>Signature Moment</small>
+            </div>
+            <p class="pdp-uc__moment">A Quiet Moment</p>
+            <h3 class="pdp-uc__name">오후 2시 창가</h3>
+            <p class="pdp-uc__lead">빛이 들어오는 자리를 포기하지 않아도 됩니다.</p>
+            <div class="pdp-uc__tags">
+              <span class="pdp-tag">메이크업 위 부착</span>
+              <span class="pdp-tag">티 나지 않는 밀착</span>
+            </div>
+          </div>
+        </article>
+
+        <div class="pdp-uc__rail" role="list">
+          <article class="pdp-uc__node" data-t="0630" role="listitem">
+            <p class="pdp-uc__node-time">06:30</p>
+            <div class="pdp-uc__node-img"></div>
+            <div class="pdp-uc__node-copy">
+              <p class="pdp-uc__node-moment">A Social Moment</p>
+              <p class="pdp-uc__node-name">러닝 크루</p>
+              <p class="pdp-uc__node-lead">하루의 흐름을 멈추지 않는 선케어</p>
+            </div>
+          </article>
+          <article class="pdp-uc__node" data-t="1000" role="listitem">
+            <p class="pdp-uc__node-time">10:00</p>
+            <div class="pdp-uc__node-img"></div>
+            <div class="pdp-uc__node-copy">
+              <p class="pdp-uc__node-moment">A Flow Moment</p>
+              <p class="pdp-uc__node-name">멀티 태스킹</p>
+              <p class="pdp-uc__node-lead">무의식의 흐름대로 지속적인 케어</p>
+            </div>
+          </article>
+          <article class="pdp-uc__node" data-t="1100" role="listitem">
+            <p class="pdp-uc__node-time">11:00</p>
+            <div class="pdp-uc__node-img"></div>
+            <div class="pdp-uc__node-copy">
+              <p class="pdp-uc__node-moment">A Lifestyle Moment</p>
+              <p class="pdp-uc__node-name">테라스 브런치</p>
+              <p class="pdp-uc__node-lead">햇살을 피하지 않는 사람의 SUN 리추얼</p>
+            </div>
+          </article>
+          <article class="pdp-uc__node" data-t="1600" role="listitem">
+            <p class="pdp-uc__node-time">16:00</p>
+            <div class="pdp-uc__node-img"></div>
+            <div class="pdp-uc__node-copy">
+              <p class="pdp-uc__node-moment">A Free Moment</p>
+              <p class="pdp-uc__node-name">기분 좋은 햇살 산책</p>
+              <p class="pdp-uc__node-lead">햇살을 그대로 즐기는 시간</p>
+            </div>
+          </article>
+          <article class="pdp-uc__node" data-t="1800" role="listitem">
+            <p class="pdp-uc__node-time">18:00</p>
+            <div class="pdp-uc__node-img"></div>
+            <div class="pdp-uc__node-copy">
+              <p class="pdp-uc__node-moment">A Drive Moment</p>
+              <p class="pdp-uc__node-name">드라이브 케어</p>
+              <p class="pdp-uc__node-lead">빛이 오래 머무는 이동 시간에도 이어지는 보호</p>
+            </div>
+          </article>
+        </div>
+
+        <article class="pdp-uc__beyond">
+          <div>
+            <h4>Beyond the hours</h4>
+            <h3>시간을 넘어서는 순간</h3>
+            <p class="pdp-uc__moment" style="margin-top: 4px;">A Calm Moment</p>
+          </div>
+          <div>
+            <p style="margin: 0 0 6px; font-weight: 500; font-size: 17px;">시술 후 케어</p>
+            <p style="margin: 0; font-size: 14px; line-height: 1.6; opacity: 0.78;">예민해진 피부 컨디션을 위한 얇은 보호 레이어</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- 10 RITUAL -->
+      <section class="pdp-section pdp-wide" id="sec-10">
+        <header style="margin-bottom: var(--layout-block); text-align: center;">
+          <p class="pdp-eyebrow" style="justify-content: center; display: flex;"><strong>10</strong>· Ritual</p>
+          <h2 class="pdp-ritual__title">햇살을 만나기 전,<br/>3단계로 부착합니다.</h2>
+        </header>
+
+        <div class="pdp-ritual__steps">
+          <article class="pdp-ritual__step">
+            <p class="pdp-ritual__num">01 · Ready</p>
+            <h3>파우치 개봉 · L/R 확인</h3>
+            <p>파우치를 열고 L/R 방향을 확인합니다.</p>
+          </article>
+          <article class="pdp-ritual__step">
+            <p class="pdp-ritual__num">02 · Set</p>
+            <h3>광대존에 안착</h3>
+            <p>햇살이 먼저 닿는 광대존에 올린 뒤 가볍게 눌러 안착시켜 줍니다.</p>
+          </article>
+          <article class="pdp-ritual__step">
+            <p class="pdp-ritual__num">03 · Go</p>
+            <h3>일상으로 이어짐</h3>
+            <p>피부와 하나가 된 듯한 피팅감으로 일상을 이어갑니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 11 FAQ -->
+      <section class="pdp-section pdp-narrow" id="sec-11">
+        <header style="margin-bottom: var(--layout-block);">
+          <p class="pdp-eyebrow" style="justify-content: center; display: flex;"><strong>11</strong>· FAQ</p>
+        </header>
+        <div class="pdp-faq__head">
+          <h2>자주 묻는 질문</h2>
+          <p>납득 강화 · 기술 신뢰 · 깊이 설명</p>
+        </div>
+
+        <div class="pdp-faq__group">
+          <h4>이해</h4>
+          <details class="pdp-faq__item" open>
+            <summary>Sun Veil은 정확히 어떤 제품인가요?</summary>
+            <p>Sun Veil은 피부 위에 안착되는 초박막 멤브레인(나노 섬유)과 스킨케어 성분을 담은 케어층이 결합된 반건식(hybrid dry-to-wet) 구조의 이중 레이어 패치형 제품입니다.</p>
+          </details>
+          <details class="pdp-faq__item">
+            <summary>투명한데 자외선 차단이 가능한 이유는 무엇인가요?</summary>
+            <p>멤브레인 내부에 자외선 대응 구조가 균일하게 분포되어 있습니다. 가시광선은 통과시키고, 자외선은 흡수·산란시키도록 설계되어 있습니다.</p>
+          </details>
+          <details class="pdp-faq__item">
+            <summary>일반 필름형 선패치와 무엇이 다른가요?</summary>
+            <p>일반 투명 선패치는 필름 형태로 피부를 덮고 가두는 구조입니다. Sun Veil은 나노 섬유 기반 멤브레인 구조로 피부를 가두지 않고 밀착되며, 공기와 수분 흐름을 유지합니다.</p>
+          </details>
+          <details class="pdp-faq__item">
+            <summary>점착 성분 없이 어떻게 밀착되나요?</summary>
+            <p>초박막 멤브레인의 기공 구조와 스킨케어 제형의 점성 기반 Moisture-Bonding 방식이 결합되어 피부에 자연스럽게 안착됩니다. 일반 점착 패치 대비 자극·잔류 부담을 최소화했습니다.</p>
+          </details>
+        </div>
+
+        <div class="pdp-faq__group">
+          <h4>신뢰</h4>
+          <details class="pdp-faq__item">
+            <summary>민감한 피부나 시술 후에도 사용할 수 있나요?</summary>
+            <p>독일 Dermatest®에서 민감 피부 대상 첩포 시험 및 2주 임상 시험 결과 EXCELLENT 등급을 받았습니다.</p>
+          </details>
+          <details class="pdp-faq__item">
+            <summary>UPF와 SPF의 차이는 무엇인가요?</summary>
+            <p>SPF는 자외선 차단제를 피부에 바른 후 주로 UVB로부터 보호하는 지표, UPF는 원단·소재 자체가 자외선을 얼마나 차단하는지를 나타내는 지표입니다. Sun Veil은 원단 기준 시험에서 UPF 50+ 결과를 확인했습니다.</p>
+          </details>
+        </div>
+
+        <div class="pdp-faq__group">
+          <h4>사용 경험</h4>
+          <details class="pdp-faq__item">
+            <summary>촉감이 어떤가요? 붙어 있는 게 느껴지나요?</summary>
+            <p>0.004mm 초박막 구조로 거의 촉감이 느껴지지 않으며, 시간이 지나면 붙어 있는 사실조차 잊기 쉬운 착용감을 구현했습니다.</p>
+          </details>
+          <details class="pdp-faq__item">
+            <summary>표정을 지어도 어색하거나 거슬리지 않나요?</summary>
+            <p>웃고 말하는 순간에도 이질감 없이 자연스럽게 따라 움직이며, 피부 움직임을 방해하지 않는 편안한 착용감을 구현했습니다.</p>
+          </details>
+          <details class="pdp-faq__item">
+            <summary>거울 없이도 부착 가능한가요?</summary>
+            <p>L/R 방향 구분과 직관적 위치 설계를 통해 손끝 감각만으로도 비교적 쉽게 부착할 수 있습니다.</p>
+          </details>
+          <details class="pdp-faq__item">
+            <summary>재사용 가능한가요?</summary>
+            <p>위생과 기능 유지를 고려해 1회 사용을 권장합니다.</p>
+          </details>
+        </div>
+
+        <div class="pdp-faq__group">
+          <h4>최종</h4>
+          <details class="pdp-faq__item">
+            <summary>그래서, 왜 선베일인가요?</summary>
+            <p>눈가 아래·광대 부위는 자외선 노출이 높으면서도 피부가 얇고 민감해 보호가 가장 까다로운 영역입니다. Sun Veil은 클린 무점착 밀착 구조와 초박막 멤브레인 구조로, 피부를 가두지 않으면서 자외선이 먼저 차단되는 방식의 보호를 구현합니다.</p>
+          </details>
+        </div>
+      </section>
+
+      <footer class="pdp-foot">
+        <p>AYROW · Reverse AG Code™ Sun Veil · Brand-only BLEU policy · 카피는 고객사 원문 그대로</p>
+      </footer>
+
+    </main>
+  </div>
+</body>
+</html>

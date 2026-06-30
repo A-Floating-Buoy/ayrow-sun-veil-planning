@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP — Wireframe B-5 (Recommended Flow)</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    body { margin: 0; background: var(--semantic-bg-default); color: var(--semantic-on-surface); }
+    .wf-page { padding: var(--layout-page-md) var(--layout-page-x); }
+    .wf-shell { width: min(100%, var(--layout-max-w-wide)); margin: 0 auto; }
+    .wf-narrow { max-width: var(--layout-max-w); }
+
+    .wf-hero {
+      min-height: 48svh;
+      display: grid; align-content: center;
+      padding-bottom: var(--layout-section-md);
+    }
+    .wf-text-stack { display: grid; gap: var(--spacing-4); }
+    .wf-kicker { color: var(--semantic-on-surface-accent); }
+    .wf-muted  { color: var(--semantic-on-surface-muted); }
+
+    .wf-section {
+      padding: var(--layout-section-md) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.6fr);
+      gap: var(--layout-block);
+      align-items: start;
+    }
+    .wf-section__head { display: grid; gap: var(--spacing-2); margin-bottom: var(--spacing-6); }
+    .wf-section__index { color: var(--semantic-on-surface-muted); font-variant-numeric: tabular-nums; }
+    .wf-section__q { color: var(--semantic-on-surface-muted); }
+    .wf-section__delta {
+      display: inline-block; padding: 3px 8px;
+      background: rgba(58,107,74,0.12); color: #3a6b4a;
+      border-radius: 4px; font-size: 11px; letter-spacing: 0.04em;
+      margin-top: 4px;
+    }
+    .wf-section__delta--merge { background: rgba(177,75,58,0.12); color: #b14b3a; }
+    .wf-section__delta--new { background: rgba(58,87,143,0.12); color: #3a578f; }
+    .wf-section__delta--signature { background: rgba(46, 58, 138, 0.14); color: #2e3a8a; }
+
+    .wf-note {
+      position: sticky; top: var(--spacing-8);
+      display: grid; gap: var(--spacing-5);
+      padding-left: var(--layout-block);
+      border-left: 1px solid var(--semantic-border-muted);
+    }
+    .wf-note h3 {
+      margin: 0 0 var(--spacing-2);
+      color: var(--semantic-on-surface-accent);
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    .wf-note ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--spacing-1); font-size: 13px; line-height: 1.55; }
+    .wf-note p  { margin: 0; color: var(--semantic-on-surface-muted); line-height: 1.65; font-size: 13px; }
+    .wf-note > div { padding-bottom: var(--spacing-4); border-bottom: 1px dashed var(--semantic-border-muted); }
+    .wf-note > div:last-child { border-bottom: 0; padding-bottom: 0; }
+    .wf-note .wf-warn { color: #b14b3a; }
+    .wf-note .wf-good { color: #3a6b4a; }
+
+    /* Wireframe primitives */
+    .wf-frame {
+      width: 100%; max-width: 460px; margin: 0 auto;
+      background: var(--semantic-bg-subtle, #f6f4ef);
+      border: 1px dashed var(--semantic-border-muted);
+      border-radius: 14px; padding: 16px;
+      display: grid; gap: 12px;
+    }
+    .wf-frame--wide { max-width: 100%; }
+    .wf-block {
+      background: rgba(0,0,0,0.04);
+      border-radius: 8px; padding: 10px 12px;
+      font-size: 12.5px; color: var(--semantic-on-surface-muted);
+    }
+    .wf-block--visual {
+      aspect-ratio: 4/3; display: grid; place-items: center;
+      background:
+        repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0 8px, transparent 8px 16px),
+        rgba(0,0,0,0.04);
+      color: var(--semantic-on-surface-muted); font-size: 12px; text-align: center;
+    }
+    .wf-block--visual.is-tall { aspect-ratio: 3/4; }
+    .wf-block--visual.is-wide { aspect-ratio: 16/9; }
+    .wf-block--text {
+      background: transparent; padding: 4px 2px;
+      color: var(--semantic-on-surface); font-weight: 500;
+    }
+    .wf-block--text small {
+      display: block; color: var(--semantic-on-surface-muted);
+      font-weight: 400; margin-top: 4px;
+      font-size: 11.5px; line-height: 1.5;
+    }
+    .wf-block--svg {
+      background: white;
+      padding: 18px;
+      border-radius: 8px;
+    }
+    .wf-row { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+    .wf-row--3 { grid-template-columns: repeat(3, 1fr); }
+    .wf-row--4 { grid-template-columns: repeat(4, 1fr); }
+    .wf-chip {
+      background: rgba(0,0,0,0.05); border-radius: 999px;
+      padding: 5px 10px; font-size: 11px; text-align: center;
+      color: var(--semantic-on-surface-muted);
+    }
+    .wf-card {
+      background: rgba(0,0,0,0.03); border-radius: 8px;
+      padding: 10px; font-size: 11.5px;
+      color: var(--semantic-on-surface-muted);
+      display: grid; gap: 6px;
+    }
+    .wf-card strong { color: var(--semantic-on-surface); font-size: 12px; }
+    .wf-card--accent {
+      background: var(--primitive-bleu, #2e3a8a);
+      color: white;
+    }
+    .wf-card--accent strong { color: white; }
+    .wf-toggle {
+      display: grid; grid-template-columns: 1fr 1fr;
+      background: rgba(0,0,0,0.04); border-radius: 999px; padding: 3px;
+      font-size: 11.5px; text-align: center;
+    }
+    .wf-toggle--3 { grid-template-columns: 1fr 1fr 1fr; }
+    .wf-toggle span { padding: 6px 0; border-radius: 999px; }
+    .wf-toggle span.is-on { background: var(--semantic-on-surface); color: var(--semantic-bg-default); }
+    .wf-acc {
+      background: rgba(0,0,0,0.03); border-radius: 6px;
+      padding: 8px 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11.5px; color: var(--semantic-on-surface);
+    }
+    .wf-acc::after { content: "+"; color: var(--semantic-on-surface-muted); }
+    .wf-tag {
+      display: inline-block;
+      background: var(--semantic-on-surface); color: var(--semantic-bg-default);
+      font-size: 10.5px; padding: 3px 7px; border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+    .wf-tag--soft { background: rgba(0,0,0,0.08); color: var(--semantic-on-surface); }
+    .wf-stepdots { display: flex; gap: 6px; justify-content: center; }
+    .wf-stepdots span { width: 24px; height: 4px; border-radius: 2px; background: rgba(0,0,0,0.15); }
+    .wf-stepdots span.is-on { background: var(--semantic-on-surface); }
+    .wf-bottombar {
+      position: sticky; bottom: 0;
+      background: var(--semantic-on-surface); color: var(--semantic-bg-default);
+      padding: 10px 12px; border-radius: 8px;
+      font-size: 12px; text-align: center;
+    }
+    .wf-bis {
+      display: grid; gap: 8px;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+    }
+    .wf-bis div {
+      padding: 14px 8px; background: rgba(0,0,0,0.04); border-radius: 8px;
+      display: grid; gap: 8px; justify-items: center;
+    }
+    .wf-bis strong { font-size: 13px; color: var(--semantic-on-surface); }
+    .wf-bis span  { font-size: 10.5px; color: var(--semantic-on-surface-muted); }
+
+    /* QFAQ signature stage thumbnail */
+    .wf-qfaq-stage {
+      position: relative;
+      aspect-ratio: 9 / 14;
+      background: white;
+      border-radius: 8px;
+      padding: 14px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      align-items: center;
+      overflow: hidden;
+    }
+    .wf-qfaq-stage__q { font-size: 10px; color: var(--semantic-on-surface-muted); text-align: center; }
+    .wf-qfaq-stage__yn {
+      font-size: clamp(40px, 12vw, 96px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 0.9;
+      color: var(--primitive-bleu, #2e3a8a);
+      text-align: center;
+      align-self: center;
+    }
+    .wf-qfaq-stage__a { font-size: 10px; color: var(--semantic-on-surface); text-align: center; }
+    .wf-qfaq-thumbs {
+      display: grid; gap: 6px; grid-template-columns: repeat(6, 1fr);
+    }
+    .wf-qfaq-thumb {
+      aspect-ratio: 9 / 14;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 4px;
+      display: grid; place-items: center;
+      font-size: 14px; font-weight: 700;
+      color: var(--primitive-bleu, #2e3a8a);
+      letter-spacing: -0.02em;
+    }
+    .wf-qfaq-thumb--no { background: var(--primitive-bleu, #2e3a8a); color: white; }
+
+    /* SVG visual evidence styles */
+    .wf-svg {
+      display: block; width: 100%; height: auto;
+      color: var(--semantic-on-surface);
+    }
+    .wf-svg__bar { fill: currentColor; opacity: 0.78; }
+    .wf-svg__bar--accent { fill: var(--primitive-bleu, #2e3a8a); opacity: 1; }
+    .wf-svg__name { font-size: 13px; fill: currentColor; font-weight: 600; }
+    .wf-svg__name--accent { fill: var(--primitive-bleu, #2e3a8a); }
+    .wf-svg__num { font-size: 12px; fill: currentColor; opacity: 0.7; font-variant-numeric: tabular-nums; }
+    .wf-svg__num--accent { fill: var(--primitive-bleu, #2e3a8a); opacity: 1; }
+    .wf-svg__cap { font-size: 11px; fill: currentColor; opacity: 0.6; letter-spacing: 0.02em; }
+    .wf-svg__particle { fill: var(--primitive-bleu, #2e3a8a); }
+    .wf-svg-icon {
+      width: 56px; height: 56px;
+      color: var(--semantic-on-surface);
+    }
+
+    @media (max-width: 900px) {
+      .wf-section { grid-template-columns: 1fr; }
+      .wf-note {
+        position: static; padding-left: 0; padding-top: var(--layout-block);
+        border-left: 0; border-top: 1px solid var(--semantic-border-muted);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wf-page">
+    <div class="wf-shell">
+
+      <!-- DOC INTRO -->
+      <section class="wf-hero wf-narrow">
+        <div class="wf-text-stack">
+          <p class="caption-m wf-kicker">Sun Veil PDP / Wireframe B-5 · Recommended Flow</p>
+          <h1 class="heading-xxxl">Quick FAQ를 페이지 두 번째 클라이맥스로. NO → How It Works 직접 연결.</h1>
+          <p class="body-xl">
+            B안의 9 섹션을 유지하면서 후반 흐름을 재배치한 안. 가장 큰 변경은 두 가지 — (1) Quick FAQ 직후를 How It Works로 직접 연결해 NO("거의 보이지 않습니다") → "0.004mm 멤브레인 구조"로 자연스럽게 다리. (2) Why & When과 Ritual을 페이지 후반으로 옮겨 "기술 신뢰 → 라이프스타일 fit → 사용 자신감 → 결정"의 자연스러운 종결 흐름.
+          </p>
+          <p class="body-m wf-muted">
+            영상 없이 SVG로 구현 가능한 시각 증명은 인라인 SVG로 코딩 — 두께 비교, 공기 통과 단면, Layer split, Moisture-Bonding, 광대존 hotspot, BIS 3축 시그니처. 이 SVG들은 추가 디자인의 출발점.
+          </p>
+        </div>
+      </section>
+
+      <!-- 01 HERO -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">01 / 9</p>
+            <h2 class="heading-xl">Hero — 카테고리 재정의 선언</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 이 제품이 뭐지?</p>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--visual is-tall">Hero Visual · 광대존 close-up · 자연광</div>
+            <div class="wf-block wf-block--text">
+              필름이 아닌, 숨 쉬는 멤브레인.
+              <small>피부 위에 얹히는 0.004mm 보호 레이어</small>
+            </div>
+            <div class="wf-row wf-row--4">
+              <div class="wf-chip">0.004mm</div>
+              <div class="wf-chip">UPF 50+</div>
+              <div class="wf-chip">UVB 99.9</div>
+              <div class="wf-chip">Dermatest</div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>카테고리 재정의 선언 + 즉시 신뢰 형성. 첫 viewport에서 "다른 카테고리"임과 "데이터 검증됨"을 동시에 박는다.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>Full-bleed hero visual</li>
+              <li>H1 + sub-headline</li>
+              <li>핵심 신뢰 chip 4개</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>"필름" → "멤브레인" 짧은 텍스트 전환. 모바일은 비주얼 위 + chip 아래, 데스크탑은 좌 비주얼 + 우 텍스트·chip 2열.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>모델 광대존 close-up (자연광)</li>
+              <li>대안: 손 위 패치 매크로</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">B안과 동일. 카페24 상품 모듈의 제품명과 중복 회피.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 02 AT A GLANCE — BIS SIGNATURE -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">02 / 9</p>
+            <h2 class="heading-xl">At a Glance — BIS 3축 시그니처</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 그래서 이게 뭘 해주나?</p>
+            <span class="wf-section__delta wf-section__delta--new">SVG 시그니처 아이콘 코딩 포함</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">
+              세 가지 축으로 작동합니다.
+              <small>Breathable · Invisible · Seamless</small>
+            </div>
+            <div class="wf-block wf-block--svg">
+              <div class="wf-bis">
+                <div>
+                  <svg viewBox="0 0 80 80" class="wf-svg-icon" role="img" aria-label="Breathable">
+                    <line x1="10" y1="40" x2="70" y2="40" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="25" cy="40" r="2.5" fill="white" stroke="currentColor"/>
+                    <circle cx="40" cy="40" r="2.5" fill="white" stroke="currentColor"/>
+                    <circle cx="55" cy="40" r="2.5" fill="white" stroke="currentColor"/>
+                    <path d="M 40 14 L 40 32 M 35 28 L 40 33 L 45 28" stroke="currentColor" stroke-width="1.2" fill="none"/>
+                    <path d="M 40 48 L 40 66 M 35 62 L 40 67 L 45 62" stroke="currentColor" stroke-width="1.2" fill="none"/>
+                  </svg>
+                  <strong>Breathable</strong>
+                  <span>공기·습기 통과</span>
+                </div>
+                <div>
+                  <svg viewBox="0 0 80 80" class="wf-svg-icon" role="img" aria-label="Invisible">
+                    <rect x="14" y="28" width="52" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" rx="2"/>
+                    <line x1="40" y1="14" x2="40" y2="22" stroke="currentColor" stroke-width="1"/>
+                    <line x1="40" y1="58" x2="40" y2="66" stroke="currentColor" stroke-width="1"/>
+                    <line x1="14" y1="40" x2="6" y2="40" stroke="currentColor" stroke-width="1"/>
+                    <line x1="66" y1="40" x2="74" y2="40" stroke="currentColor" stroke-width="1"/>
+                  </svg>
+                  <strong>Invisible</strong>
+                  <span>0.004mm 투명</span>
+                </div>
+                <div>
+                  <svg viewBox="0 0 80 80" class="wf-svg-icon" role="img" aria-label="Seamless">
+                    <path d="M 10 50 Q 28 35 40 50 T 70 50" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <path d="M 10 46 Q 28 31 40 46 T 70 46" stroke="var(--primitive-bleu, #2e3a8a)" stroke-width="1.2" fill="none"/>
+                  </svg>
+                  <strong>Seamless</strong>
+                  <span>잊는 착용감</span>
+                </div>
+              </div>
+            </div>
+            <div class="wf-row wf-row--3">
+              <div class="wf-card"><strong>피부 자극 0.00</strong><span>Dermatest Excellent</span></div>
+              <div class="wf-card"><strong>UPF 50+</strong><span>UVB 99.9% 차단</span></div>
+              <div class="wf-card"><strong>비건</strong><span>Vegan Society</span></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>페이지 윗단의 빠른 정찰. 핵심 키워드 3축(BIS)을 한 번에 박아 페이지 전체 메시지의 닻으로 작동. 동시에 신뢰 metric으로 1차 의심 해소.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>BIS 3축 SVG 아이콘 카드 (시그니처)</li>
+              <li>핵심 신뢰 카드 3개</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>BIS 3축은 항상 가로 3분할 (모바일에서도 짧은 영문). 진입 시 SVG 라인이 stroke 그려지는 미세 모션 가능.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>BIS 3축 SVG (이 wireframe에 코딩 포함, 디자인 보강 출발점)</li>
+              <li>인증 마크 (Dermatest / Vegan Society) 보조</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">SVG 라인 아이콘 시안 — 디자이너가 톤 보강 필요. 현재는 단순 라인 + 점선·곡선으로 의미 표현.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 03 FILM vs MEMBRANE — SVG 시각 증명 -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">03 / 9</p>
+            <h2 class="heading-xl">Film vs Membrane — SVG 시각 증명</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 기존 선패치와 뭐가 다른가?</p>
+            <span class="wf-section__delta wf-section__delta--new">두께 비교 + 공기 통과 단면 SVG 코딩</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">
+              같은 ‘패치’처럼 보여도, 작동 방식은 다릅니다.
+            </div>
+
+            <!-- 두께 비교 SVG -->
+            <div class="wf-block wf-block--svg">
+              <svg viewBox="0 0 600 250" class="wf-svg" role="img" aria-label="두께 비교 — 머리카락 0.07mm, 비닐랩 0.012mm, Sun Veil 0.004mm (실측 비례)">
+                <text x="0" y="14" class="wf-svg__cap">참조 비교 · 실측 비례 (1mm = 7300px 환산)</text>
+
+                <!-- 머리카락 0.07mm -->
+                <text x="0" y="58" class="wf-svg__name">머리카락</text>
+                <text x="540" y="58" class="wf-svg__num" text-anchor="end">0.07 mm</text>
+                <rect x="0" y="68" width="540" height="51" class="wf-svg__bar" rx="2"/>
+
+                <!-- 비닐랩 0.012mm -->
+                <text x="0" y="148" class="wf-svg__name">비닐랩</text>
+                <text x="540" y="148" class="wf-svg__num" text-anchor="end">0.012 mm</text>
+                <rect x="0" y="158" width="540" height="8.7" class="wf-svg__bar" rx="1"/>
+
+                <!-- Sun Veil 0.004mm -->
+                <text x="0" y="200" class="wf-svg__name wf-svg__name--accent">Sun Veil</text>
+                <text x="540" y="200" class="wf-svg__num wf-svg__num--accent" text-anchor="end">0.004 mm</text>
+                <rect x="0" y="210" width="540" height="2.9" class="wf-svg__bar wf-svg__bar--accent" rx="1"/>
+
+                <text x="0" y="238" class="wf-svg__cap">머리카락 두께의 약 1/17</text>
+              </svg>
+            </div>
+
+            <!-- 공기 통과 시연 SVG -->
+            <div class="wf-block wf-block--svg">
+              <svg viewBox="0 0 600 320" class="wf-svg" role="img" aria-label="공기 통과 비교 — 필름은 정체, 멤브레인은 통과">
+                <defs>
+                  <marker id="arrow-flow" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 0 L 5 9 z" fill="var(--primitive-bleu, #2e3a8a)"/>
+                  </marker>
+                </defs>
+
+                <!-- 좌: 필름 -->
+                <g transform="translate(20, 20)">
+                  <text x="0" y="0" class="wf-svg__name">FILM</text>
+                  <text x="0" y="16" class="wf-svg__cap">정체</text>
+
+                  <!-- 위쪽 공기 입자 (정체) -->
+                  <g class="wf-svg__particle" opacity="0.9">
+                    <circle cx="50" cy="60" r="4"/>
+                    <circle cx="100" cy="46" r="4"/>
+                    <circle cx="150" cy="64" r="4"/>
+                    <circle cx="200" cy="50" r="4"/>
+                    <circle cx="80" cy="86" r="4"/>
+                    <circle cx="160" cy="92" r="4"/>
+                    <circle cx="220" cy="78" r="4"/>
+                  </g>
+
+                  <!-- 막힘 표시 (점선) -->
+                  <line x1="20" y1="116" x2="240" y2="116" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2 3" opacity="0.5"/>
+
+                  <!-- 필름 단면 (실선 — 막힘) -->
+                  <rect x="20" y="124" width="220" height="38" class="wf-svg__bar"/>
+
+                  <!-- 아래 공간 (텅 빔) -->
+                  <text x="130" y="210" class="wf-svg__cap" text-anchor="middle">공기 도달 ✕</text>
+                </g>
+
+                <!-- 우: 멤브레인 -->
+                <g transform="translate(340, 20)">
+                  <text x="0" y="0" class="wf-svg__name wf-svg__name--accent">MEMBRANE</text>
+                  <text x="0" y="16" class="wf-svg__cap">통과</text>
+
+                  <!-- 위쪽 공기 -->
+                  <g class="wf-svg__particle" opacity="0.5">
+                    <circle cx="50" cy="50" r="3.5"/>
+                    <circle cx="100" cy="60" r="3.5"/>
+                    <circle cx="180" cy="55" r="3.5"/>
+                  </g>
+
+                  <!-- 통과 화살표 (위→아래) -->
+                  <line x1="80" y1="80" x2="80" y2="120" stroke="var(--primitive-bleu, #2e3a8a)" stroke-width="1.4" marker-end="url(#arrow-flow)"/>
+                  <line x1="160" y1="80" x2="160" y2="120" stroke="var(--primitive-bleu, #2e3a8a)" stroke-width="1.4" marker-end="url(#arrow-flow)"/>
+
+                  <!-- 멤브레인 다공성 단면 -->
+                  <g transform="translate(20, 124)">
+                    <line x1="0" y1="0" x2="220" y2="0" stroke="currentColor" stroke-width="1"/>
+                    <line x1="0" y1="38" x2="220" y2="38" stroke="currentColor" stroke-width="1"/>
+                    <!-- 다공성 점들 (구멍) -->
+                    <g fill="white" stroke="currentColor" stroke-width="0.6">
+                      <circle cx="20" cy="19" r="2.4"/>
+                      <circle cx="50" cy="19" r="2.4"/>
+                      <circle cx="80" cy="19" r="2.4"/>
+                      <circle cx="110" cy="19" r="2.4"/>
+                      <circle cx="140" cy="19" r="2.4"/>
+                      <circle cx="170" cy="19" r="2.4"/>
+                      <circle cx="200" cy="19" r="2.4"/>
+                    </g>
+                    <!-- 단면 채움 -->
+                    <rect x="0" y="0" width="220" height="38" fill="currentColor" opacity="0.18"/>
+                  </g>
+
+                  <!-- 통과 화살표 (멤브레인 → 아래) -->
+                  <line x1="80" y1="172" x2="80" y2="208" stroke="var(--primitive-bleu, #2e3a8a)" stroke-width="1.4" marker-end="url(#arrow-flow)"/>
+                  <line x1="160" y1="172" x2="160" y2="208" stroke="var(--primitive-bleu, #2e3a8a)" stroke-width="1.4" marker-end="url(#arrow-flow)"/>
+
+                  <!-- 통과한 공기 (피부 쪽) -->
+                  <g class="wf-svg__particle" opacity="0.5">
+                    <circle cx="50" cy="232" r="3.5"/>
+                    <circle cx="120" cy="240" r="3.5"/>
+                    <circle cx="190" cy="232" r="3.5"/>
+                  </g>
+
+                  <text x="130" y="280" class="wf-svg__cap" text-anchor="middle">공기 흐름 유지 ↓</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 비교 카드 -->
+            <div class="wf-row">
+              <div class="wf-card">
+                <span class="wf-tag wf-tag--soft">기존 선패치</span>
+                <strong>필름 = 막</strong>
+                <span>공기 차단 / 열·습기 정체</span>
+              </div>
+              <div class="wf-card wf-card--accent">
+                <span class="wf-tag" style="background: white; color: var(--semantic-on-surface);">선베일</span>
+                <strong>나노 섬유 멤브레인</strong>
+                <span>공기·수분 흐름 유지</span>
+              </div>
+            </div>
+            <div class="wf-acc"><span>더 자세한 비교 5항목</span></div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>Hero의 선언을 "보면 믿게 되는" 시각 증명으로 잇는 페이지의 첫 번째 클라이맥스. 카테고리 개척 전략의 결정타.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>두께 비교 SVG (실측 비례 막대)</li>
+              <li>공기 통과 단면 SVG (필름 정체 vs 멤브레인 통과)</li>
+              <li>비교 카드 2개 (강조 카드 처리)</li>
+              <li>"더 자세한 비교 5항목" 아코디언</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>SVG는 진입 시 막대 width 0 → 정값으로 그려지는 stroke-dashoffset 또는 width 모션 가능. 공기 통과는 입자가 위→아래로 떠다니는 미세 loop 가능. 모바일은 두 SVG가 세로 스택.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li class="wf-good">[NEW] 두께 비교 SVG — 본 wireframe에 코딩 포함</li>
+              <li class="wf-good">[NEW] 공기 통과 단면 SVG — 본 wireframe에 코딩 포함</li>
+              <li>옵션: 다공성 멤브레인 매크로 사진 (이미지 가능 시)</li>
+              <li>옵션: 두 SVG에 미세 모션 추가 (CSS animation 또는 SMIL)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">영상 없이도 SVG로 시각 증명 가능. 디자이너가 SVG에 색·라인 weight·세부 디테일 보강 필요.</p>
+            <p class="wf-warn">두께 비교에서 "참조 비교"로 표현 — "최저"·"가장 얇음" 같은 광고법 위반 표현 회피. UV-A 95.3%로 통일 (리포트 기준).</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 04 QUICK FAQ — SIGNATURE MOMENT -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">04 / 9</p>
+            <h2 class="heading-xl">Quick FAQ — 시그니처 모먼트</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 빠르게 의심 해소</p>
+            <span class="wf-section__delta wf-section__delta--signature">페이지의 두 번째 클라이맥스 — 별도 prototype 참조</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">
+              스크롤하며 한 글자씩.
+              <small>Yes-Yes-…-Yes-No · 6 × 100vh sticky stage</small>
+            </div>
+
+            <!-- 시그니처 모먼트 viewport 미리보기 -->
+            <div class="wf-block wf-block--svg" style="background: white;">
+              <div class="wf-qfaq-stage">
+                <div class="wf-qfaq-stage__q">티가 나나요?</div>
+                <div class="wf-qfaq-stage__yn">N&middot;O</div>
+                <div class="wf-qfaq-stage__a">아니요, 거의 보이지 않습니다.</div>
+              </div>
+            </div>
+
+            <!-- 6 panel thumbnail -->
+            <div class="wf-qfaq-thumbs">
+              <div class="wf-qfaq-thumb">YES</div>
+              <div class="wf-qfaq-thumb">YES</div>
+              <div class="wf-qfaq-thumb">YES</div>
+              <div class="wf-qfaq-thumb">YES</div>
+              <div class="wf-qfaq-thumb">YES</div>
+              <div class="wf-qfaq-thumb wf-qfaq-thumb--no">NO</div>
+            </div>
+
+            <div class="wf-acc"><span>→ 작동 prototype: sun-veil-quick-faq-scroll.html</span></div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>페이지의 두 번째 클라이맥스 (첫째 = Film vs Membrane 시각 증명). "브랜드와 사용자의 1:1 대화"라는 시그니처 모먼트로 격상. 마지막 NO 반전이 다음 섹션(How It Works)의 도입 다리.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>Sticky 600vh stage (한 화면 = 한 Q&A)</li>
+              <li>질문(상단) → YES/NO 정중앙 (화면 중앙) → 답변 해설(하단)</li>
+              <li>YES/NO: 큰 타이포 + Bleu + 700, 글자별 stagger</li>
+              <li>답변: 스크롤 진행 비례 글자 단위 fade-in</li>
+              <li>상단 progress dot 6개</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>YES = 60ms stagger, 위에서 ↓, 동시 도미노. NO = 120ms stagger, 아래에서 ↑, overshoot. 같은 stagger 언어, 다른 속도·방향. <code>prefers-reduced-motion</code> fallback. 모바일 sticky 구매바와 z-index 조율.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>본문 카피 (질문 5 YES + 1 NO)</li>
+              <li>옵션: NO 직후 메이크업 위 close-up 컷 (다음 섹션 도입과 연결)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-warn">스크롤 예산 600vh + 핸드오프 80vh ≈ 6~7 viewport — 카페24 모바일 사용자가 리뷰 영역까지 도달할 시간 예산 잠식. 본 시그니처가 그 비용을 보상하는지 검증 필요. 키보드/스크린리더 fallback 필수.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 05 HOW IT WORKS + REVERSE AG CODE -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">05 / 9</p>
+            <h2 class="heading-xl">How It Works + Reverse AG Code™</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 보이지 않는 이유는 무엇인가?</p>
+            <span class="wf-section__delta wf-section__delta--new">NO bridge 도입부 흡수 + Layer/Bonding SVG</span>
+          </header>
+
+          <div class="wf-frame">
+            <!-- NO bridge 도입부 -->
+            <div class="wf-block wf-block--text" style="border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 14px;">
+              0.004mm. 보이지 않는 이유.
+              <small>NO("거의 보이지 않습니다")를 받는 시각 증명 도입부</small>
+            </div>
+            <div class="wf-block wf-block--visual is-wide">메이크업 위 부착 close-up · "정말 보이지 않음" 시각 회수</div>
+
+            <!-- Tab 전환 -->
+            <div class="wf-toggle wf-toggle--3"><span class="is-on">Structure</span><span>Bonding</span><span>Formula</span></div>
+
+            <!-- Structure: 2-Layer Exploded SVG -->
+            <div class="wf-block wf-block--svg">
+              <svg viewBox="0 0 600 360" class="wf-svg" role="img" aria-label="2-Layer 구조 — 멤브레인과 약액층">
+                <!-- Layer 1 멤브레인 -->
+                <g transform="translate(60, 60)">
+                  <text x="0" y="-12" class="wf-svg__name wf-svg__name--accent">Layer 1 · 멤브레인</text>
+                  <text x="480" y="-12" class="wf-svg__cap" text-anchor="end">0.004 mm</text>
+                  <rect x="0" y="0" width="480" height="22" class="wf-svg__bar wf-svg__bar--accent" rx="3"/>
+                  <!-- 다공성 점들 (구멍) -->
+                  <g fill="white">
+                    <circle cx="40" cy="11" r="1.5"/>
+                    <circle cx="100" cy="11" r="1.5"/>
+                    <circle cx="160" cy="11" r="1.5"/>
+                    <circle cx="220" cy="11" r="1.5"/>
+                    <circle cx="280" cy="11" r="1.5"/>
+                    <circle cx="340" cy="11" r="1.5"/>
+                    <circle cx="400" cy="11" r="1.5"/>
+                    <circle cx="460" cy="11" r="1.5"/>
+                  </g>
+                  <text x="0" y="40" class="wf-svg__cap">자외선 보호 층 · 공기·수분 흐름 유지</text>
+                </g>
+
+                <!-- 분리 화살표 -->
+                <g transform="translate(300, 130)">
+                  <line x1="0" y1="0" x2="0" y2="80" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+                  <path d="M -5 8 L 0 0 L 5 8" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                  <path d="M -5 72 L 0 80 L 5 72" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                </g>
+
+                <!-- Layer 2 약액층 -->
+                <g transform="translate(60, 230)">
+                  <text x="0" y="-12" class="wf-svg__name">Layer 2 · 약액층</text>
+                  <rect x="0" y="0" width="480" height="32" class="wf-svg__bar" rx="3" opacity="0.5"/>
+                  <text x="0" y="50" class="wf-svg__cap">멤브레인 내부 활성 성분층</text>
+                </g>
+
+                <!-- 피부 ground -->
+                <line x1="60" y1="320" x2="540" y2="320" stroke="currentColor" stroke-dasharray="2 4" stroke-width="1" opacity="0.5"/>
+                <text x="60" y="340" class="wf-svg__cap">피부 표면</text>
+              </svg>
+            </div>
+
+            <!-- Bonding: Moisture-Bonding SVG -->
+            <div class="wf-block wf-block--svg">
+              <svg viewBox="0 0 600 240" class="wf-svg" role="img" aria-label="Moisture-Bonding — 점착제 없이 수분 표면 장력으로 안착">
+                <!-- 멤브레인 (위, 곡선 따라감) -->
+                <path d="M 40 60 Q 150 50 300 60 T 560 60" stroke="var(--primitive-bleu, #2e3a8a)" stroke-width="2.5" fill="none"/>
+                <text x="40" y="40" class="wf-svg__name wf-svg__name--accent">멤브레인</text>
+
+                <!-- 수분 분자 (사이) -->
+                <g class="wf-svg__particle" opacity="0.65">
+                  <circle cx="80" cy="85" r="2.6"/>
+                  <circle cx="140" cy="83" r="2.6"/>
+                  <circle cx="200" cy="86" r="2.6"/>
+                  <circle cx="260" cy="84" r="2.6"/>
+                  <circle cx="320" cy="86" r="2.6"/>
+                  <circle cx="380" cy="84" r="2.6"/>
+                  <circle cx="440" cy="86" r="2.6"/>
+                  <circle cx="500" cy="84" r="2.6"/>
+                </g>
+                <text x="40" y="125" class="wf-svg__cap">수분 표면 장력으로 안착 (Moisture-Bonding · 점착제 없음)</text>
+
+                <!-- 피부 (아래, 곡선) -->
+                <path d="M 40 110 Q 150 100 300 110 T 560 110" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M 40 110 Q 150 100 300 110 T 560 110 L 560 200 L 40 200 Z" fill="currentColor" opacity="0.06"/>
+                <text x="40" y="190" class="wf-svg__name">피부 표면</text>
+              </svg>
+            </div>
+
+            <!-- Formula: Reverse AG Code™ -->
+            <div class="wf-block wf-block--text">
+              Reverse AG Code™ — 핵심 3 성분
+            </div>
+            <div class="wf-row wf-row--3">
+              <div class="wf-card"><strong>NMN</strong><span>핵심 1</span></div>
+              <div class="wf-card"><strong>Resveratrol</strong><span>핵심 2</span></div>
+              <div class="wf-card"><strong>Pterostilbene</strong><span>핵심 3</span></div>
+            </div>
+            <div class="wf-acc"><span>Synergy Modules · 더보기 (PDRN, CICA 등)</span></div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>Quick FAQ NO("거의 보이지 않습니다")를 받는 시각 회수 + 구조·기술 깊이 설명. 도입부에 메이크업 위 close-up 컷으로 NO 답변을 시각 증명한 뒤, 3-tab으로 깊이 진입 (Structure → Bonding → Formula).</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>도입부 close-up 컷 (NO bridge)</li>
+              <li>3-tab toggle (Structure / Bonding / Formula)</li>
+              <li>Layer split SVG (Structure)</li>
+              <li>Moisture-Bonding SVG (Bonding)</li>
+              <li>핵심 3성분 카드 + Synergy 더보기 (Formula)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>도입부는 정적 close-up. Tab 전환 시 페이드. SVG는 진입 시 stroke 그려지는 모션 가능. Layer split은 두 layer가 8~12px 분리되는 모션. 모바일은 3-tab 라벨 짧게.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>도입부: 메이크업 위 부착 close-up 컷 (필수)</li>
+              <li class="wf-good">[NEW] 2-Layer Exploded SVG — 본 wireframe에 코딩 포함</li>
+              <li class="wf-good">[NEW] Moisture-Bonding SVG — 본 wireframe에 코딩 포함</li>
+              <li>Reverse AG Code™ 시그니처 마크 (브랜드 자산)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">B안 대비 — NO bridge 흡수로 별도 인터스티셜 섹션 신설 불필요. NO → 0.004mm 직접 연결로 메시지 회수 자연스러움.</p>
+            <p class="wf-warn">3-tab 정보 집약도 높아 화면 길이 길어질 수 있음. 약액층은 케어 효능 직접 표현 금지(공산품) — "활성 성분층" 중립 표현 유지.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 06 PROOF -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">06 / 9</p>
+            <h2 class="heading-xl">Proof — 데이터 그룹</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 믿을 만한 근거가 있나?</p>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">보이지 않지만, 데이터로 확인됩니다.</div>
+            <div class="wf-card">
+              <strong>UV Protection</strong>
+              <div class="wf-row wf-row--3">
+                <div class="wf-chip">UVB 99.9%</div><div class="wf-chip">UVA 95.3%</div><div class="wf-chip">UPF 50+</div>
+              </div>
+              <span style="font-size: 10px;">FITI · 원단 기준</span>
+            </div>
+            <div class="wf-card">
+              <strong>Skin Tolerability</strong>
+              <div class="wf-row">
+                <div class="wf-chip">자극 0.00</div><div class="wf-chip">Dermatest Excellent</div>
+              </div>
+              <span style="font-size: 10px;">Dermatest · 민감 피부 30명 + 2주 임상</span>
+            </div>
+            <div class="wf-card">
+              <strong>Breathable Structure</strong>
+              <div class="wf-row wf-row--3">
+                <div class="wf-chip">투습 12,356</div><div class="wf-chip">공기 &lt;1.0</div><div class="wf-chip">기공 0.7μm</div>
+              </div>
+              <span style="font-size: 10px;">FITI · 물성 시험</span>
+            </div>
+            <div class="wf-card">
+              <strong>Spec & Ethics</strong>
+              <div class="wf-row wf-row--3">
+                <div class="wf-chip">두께 0.004mm</div><div class="wf-chip">중량 0.05g</div><div class="wf-chip">Vegan</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>How It Works의 구조·기술 설명을 데이터로 마무리. Hero·At a Glance에서 chip으로 미리 본 신뢰 metric을 그룹으로 정리.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>Metric group cards 4개</li>
+              <li>각 카드 하단 출처 caption</li>
+              <li>Metric chip은 진입 시 count-up 1회</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>Count-up 1회 (reduced-motion 시 즉시). 모바일 카드 세로 스택, 데스크탑 2x2.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>FITI / Dermatest / Vegan Society 인증 마크 (소형)</li>
+              <li>리포트 PDF 캡처는 노출 X</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">B-5 흐름에서 — How It Works 직후 자연 위치. 기술 설명의 데이터 마무리.</p>
+            <p class="wf-warn">UVA 95.3%(리포트)로 통일. Vegan은 인증 확인 후 노출.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 07 WHY & WHEN -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">07 / 9</p>
+            <h2 class="heading-xl">Why & When — 광대존 + 라이프스타일</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 왜 광대존? 언제 쓰나?</p>
+            <span class="wf-section__delta wf-section__delta--new">SVG 광대존 hotspot · 페이지 후반 이동</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">
+              선케어가 가장 먼저 무너지는 자리.
+              <small>덧바르기 부담스러운 순간을 위한 보호 레이어</small>
+            </div>
+
+            <!-- 광대존 SVG -->
+            <div class="wf-block wf-block--svg">
+              <svg viewBox="0 0 400 480" class="wf-svg" role="img" aria-label="광대존 — 선케어가 가장 먼저 무너지는 자리">
+                <!-- 얼굴 외곽 -->
+                <ellipse cx="200" cy="240" rx="140" ry="200" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <!-- 헤어라인 -->
+                <path d="M 80 130 Q 200 60 320 130" stroke="currentColor" stroke-width="1.2" fill="none"/>
+                <!-- 눈 -->
+                <ellipse cx="150" cy="220" rx="18" ry="6" fill="none" stroke="currentColor" stroke-width="1"/>
+                <ellipse cx="250" cy="220" rx="18" ry="6" fill="none" stroke="currentColor" stroke-width="1"/>
+                <!-- 코 -->
+                <path d="M 200 240 L 192 295 Q 200 302 208 295" stroke="currentColor" stroke-width="1" fill="none"/>
+                <!-- 입 -->
+                <path d="M 175 350 Q 200 365 225 350" stroke="currentColor" stroke-width="1" fill="none"/>
+
+                <!-- 광대존 강조 (좌우) -->
+                <ellipse cx="135" cy="280" rx="42" ry="28" fill="var(--primitive-bleu, #2e3a8a)" opacity="0.16" stroke="var(--primitive-bleu, #2e3a8a)" stroke-width="1.2" stroke-dasharray="3 3"/>
+                <ellipse cx="265" cy="280" rx="42" ry="28" fill="var(--primitive-bleu, #2e3a8a)" opacity="0.16" stroke="var(--primitive-bleu, #2e3a8a)" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+                <!-- 라벨 / 캡션 -->
+                <text x="135" y="285" class="wf-svg__name wf-svg__name--accent" text-anchor="middle">광대존</text>
+                <text x="265" y="285" class="wf-svg__name wf-svg__name--accent" text-anchor="middle">광대존</text>
+                <text x="200" y="455" class="wf-svg__cap" text-anchor="middle">자외선 노출 ↑ · 메이크업 무너짐 ↑ · 피부 두께 ↓</text>
+              </svg>
+            </div>
+
+            <div class="wf-block wf-block--text" style="margin-top: 6px;">
+              일상의 4 모먼트
+            </div>
+            <div class="wf-block wf-block--visual is-wide">에디토리얼 컷 1 · 창가 / 러닝 / 브런치 / 산책 (4 슬라이드)</div>
+            <div class="wf-stepdots">
+              <span class="is-on"></span><span></span><span></span><span></span>
+            </div>
+            <div class="wf-row wf-row--4" style="font-size: 10.5px;">
+              <div class="wf-chip">창가</div>
+              <div class="wf-chip">러닝</div>
+              <div class="wf-chip">브런치</div>
+              <div class="wf-chip">산책</div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>기술 신뢰가 형성된 후 사용자에게 "내 일상에 이 제품이 어떻게 들어오는가"를 환기. 라이프스타일 fit + 부위 특이성.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>광대존 SVG hotspot 일러스트</li>
+              <li>에디토리얼 swipe carousel (4 슬라이드)</li>
+              <li>모먼트 chip 4개</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>광대존 hotspot은 진입 시 점선 강조 등장. 슬라이더는 자동재생 X, 좌우 스와이프/화살표. 4슬라이드 = 모바일에서도 이탈 적정.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li class="wf-good">[NEW] 광대존 SVG 일러스트 — 본 wireframe에 코딩 포함</li>
+              <li>라이프스타일 컷 4장 (동일 톤·동일 색감)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">B-5 흐름에서 후반 위치 — Quick FAQ + How It Works의 무거운 정보 후 호흡 회복.</p>
+            <p class="wf-warn">"시술 후 케어" 모먼트는 본 섹션에서 빼고 FAQ로.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 08 RITUAL -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">08 / 9</p>
+            <h2 class="heading-xl">Ritual Guide — 3단계</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 어떻게 붙이지?</p>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-row wf-row--3">
+              <div class="wf-card"><strong>01 Ready</strong><div class="wf-block wf-block--visual">파우치 · L/R 확인</div></div>
+              <div class="wf-card"><strong>02 Set</strong><div class="wf-block wf-block--visual">광대존 안착</div></div>
+              <div class="wf-card"><strong>03 Go</strong><div class="wf-block wf-block--visual">일상 이어가기</div></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>Why & When으로 일상 fit 환기 직후 — "이렇게 쓴다"의 사용 자신감 부여. 구매 결정 직전 마지막 진입 장벽 제거.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>Step card x3 (Ready · Set · Go)</li>
+              <li>각 카드: 단계명 + 비주얼 + 한 문장</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>모바일 카드 세로 스택 또는 가로 스와이프, 데스크탑 가로 3분할. 영상 사용 시 silent loop, 사용자 탭 정지.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>3단계 사진 또는 10초 silent loop 영상</li>
+              <li>L/R 표기 패키지 디테일 컷</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p>상품정보고시 사용방법과 카피 표현 일관성 체크. 인상용 단순화는 본 섹션, 의무 표기는 Spec(09)에 위임.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 09 FAQ + SPEC + CTA -->
+      <section class="wf-section">
+        <div>
+          <header class="wf-section__head">
+            <p class="caption-m wf-section__index">09 / 9</p>
+            <h2 class="heading-xl">FAQ + Spec + CTA — 마무리 묶음</h2>
+            <p class="body-m wf-section__q">사용자 질문 — 마지막 의심 + 의무 정보 + 결정</p>
+            <span class="wf-section__delta wf-section__delta--merge">통합: Full FAQ + Spec + CTA → 1섹션</span>
+          </header>
+
+          <div class="wf-frame">
+            <div class="wf-block wf-block--text">남은 질문</div>
+            <div class="wf-acc"><span>점착 성분 없이 어떻게 붙나요?</span></div>
+            <div class="wf-acc"><span>UPF와 SPF의 차이는?</span></div>
+            <div class="wf-acc"><span>촉감이 어떤가요?</span></div>
+            <div class="wf-acc"><span>거울 없이도 부착 가능?</span></div>
+            <div class="wf-acc"><span>재사용 가능?</span></div>
+            <div class="wf-acc"><span>시술 후에도 사용 가능?</span></div>
+            <div class="wf-acc"><span>왜 선베일을 사용해야 하나요?</span></div>
+
+            <div class="wf-block wf-block--text" style="margin-top: 12px;">상품정보 고시</div>
+            <div class="wf-acc"><span>제품명 / 용량 / 사용기한</span></div>
+            <div class="wf-acc"><span>사용방법 (의무)</span></div>
+            <div class="wf-acc"><span>사용 시 주의사항 (의무)</span></div>
+            <div class="wf-acc"><span>품질보증 / 소비자상담 / 제조국</span></div>
+
+            <div class="wf-block wf-block--visual is-wide" style="margin-top: 12px;">Mood Visual · 닫는 한 컷</div>
+            <div class="wf-block wf-block--text" style="text-align: center;">
+              햇살을 포기하지 않는 가장 앞선 방식.
+            </div>
+            <div class="wf-bottombar">Sun Veil 경험하기</div>
+          </div>
+        </div>
+
+        <aside class="wf-note">
+          <div>
+            <h3>역할</h3>
+            <p>긴 페이지의 마무리 — 잔여 심화 FAQ + 법적 의무 표기 + 감성 마무리. 사용자가 여기까지 도달했다면 이미 구매 의사 형성, 마지막 정리 자리.</p>
+          </div>
+          <div>
+            <h3>UI Elements</h3>
+            <ul>
+              <li>FAQ accordion 7개 (Quick FAQ에서 다루지 않은 심화)</li>
+              <li>Spec accordion 4그룹</li>
+              <li>Mood visual + closing copy</li>
+              <li>본문 CTA + 하단 sticky bar (모바일)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>인터랙션 / 반응형</h3>
+            <p>모든 accordion default collapsed. 키보드 접근성. 모바일 sticky CTA bar는 카페24 메인 모듈과 z-index 조율.</p>
+          </div>
+          <div>
+            <h3>비주얼 애셋</h3>
+            <ul>
+              <li>마무리 무드 컷 1장</li>
+              <li>옵션: 패키지 정면 컷 (Spec 보조)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>검수 / 약점</h3>
+            <p class="wf-good">B안과 동일. 통합 한 섹션이지만 sub-section divider 명시.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- SUMMARY -->
+      <section class="wf-section">
+        <div class="wf-text-stack" style="grid-column: 1 / -1;">
+          <p class="caption-m wf-kicker">Wireframe B-5 · 정리</p>
+          <h2 class="heading-xl">두 클라이맥스(03 Film vs Membrane · 04 Quick FAQ) + NO → How It Works 직접 연결.</h2>
+          <p class="body-m wf-muted">
+            B안 대비 변경 — (1) Quick FAQ를 페이지 두 번째 클라이맥스로 격상, NO 직후 How It Works 도입부에 메이크업 위 close-up + "0.004mm 보이지 않는 이유"로 시각 회수. (2) Why & When과 Ritual을 페이지 후반으로 이동 — 기술 신뢰 → 라이프스타일 fit → 사용 자신감 → 결정. (3) 영상 없이 SVG로 6개 시각 증명 코딩 (BIS 3축, 두께 비교, 공기 통과, Layer split, Moisture-Bonding, 광대존 hotspot). 디자이너가 SVG에 색·라인 weight·디테일 보강하여 최종 디자인 진행.
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</body>
+</html>

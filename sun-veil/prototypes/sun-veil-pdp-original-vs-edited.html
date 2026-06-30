@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP — Original vs Edited (Comparison)</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    body { margin: 0; background: var(--semantic-bg-default); color: var(--semantic-on-surface); }
+    .cmp-page { padding: var(--layout-page-md) clamp(24px, 3vw, 48px); }
+    .cmp-shell { width: min(100%, 1800px); margin: 0 auto; }
+    .cmp-narrow { max-width: var(--layout-max-w); margin: 0 auto; }
+
+    /* Doc intro */
+    .cmp-doc { min-height: 32svh; display: grid; align-content: center; padding-bottom: var(--layout-section-md); }
+    .cmp-doc__stack { display: grid; gap: var(--spacing-4); }
+    .cmp-kicker { color: var(--semantic-on-surface-accent); }
+    .cmp-muted { color: var(--semantic-on-surface-muted); }
+
+    /* SPLIT GRID */
+    .cmp-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--semantic-border-muted);
+      border-bottom: 1px solid var(--semantic-border-muted);
+    }
+    .cmp-col {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: var(--spacing-7);
+      padding: var(--layout-section-sm) var(--spacing-7);
+      align-items: start;
+    }
+    .cmp-col + .cmp-col { border-left: 1px solid var(--semantic-border-muted); }
+    .cmp-col--orig { background: rgba(0,0,0,0.015); }
+    .cmp-col--edit { background: var(--primitive-creme-soft, #FBF8D0); }
+
+    /* Column header (sticky aside) */
+    .cmp-toc {
+      position: sticky; top: var(--spacing-6);
+      align-self: start;
+      display: grid; gap: var(--spacing-4);
+    }
+    .cmp-toc__label {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .cmp-toc__title {
+      font-size: 22px; line-height: 1.3; font-weight: 500;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .cmp-toc__sub {
+      font-size: 12.5px; line-height: 1.6;
+      color: var(--semantic-on-surface-muted);
+      margin: 0;
+    }
+    .cmp-toc ol {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; gap: 4px;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      border-top: 1px solid var(--semantic-border-muted);
+      padding-top: var(--spacing-3);
+    }
+    .cmp-toc a {
+      display: block;
+      padding: 5px 8px;
+      color: var(--semantic-on-surface);
+      text-decoration: none;
+      border-left: 1px solid var(--semantic-border-muted);
+      letter-spacing: 0.02em;
+      line-height: 1.5;
+    }
+    .cmp-toc a:hover { border-left-color: var(--semantic-on-surface); background: rgba(0,0,0,0.04); }
+    .cmp-toc a small {
+      display: block;
+      color: var(--semantic-on-surface-muted);
+      font-size: 10.5px; letter-spacing: 0.04em;
+      margin-top: 1px;
+    }
+    .cmp-toc__legend {
+      margin-top: var(--spacing-3);
+      padding-top: var(--spacing-3);
+      border-top: 1px dashed var(--semantic-border-muted);
+      display: grid; gap: 4px;
+      font-size: 11px;
+      color: var(--semantic-on-surface-muted);
+    }
+    .cmp-toc__legend strong { color: var(--semantic-on-surface); font-weight: 600; }
+
+    /* Main column */
+    .cmp-main { display: grid; gap: var(--spacing-7); min-width: 0; }
+
+    /* Section card */
+    .cmp-sec {
+      padding: var(--spacing-5);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+      display: grid; gap: var(--spacing-3);
+      scroll-margin-top: var(--spacing-8);
+    }
+    .cmp-sec__head {
+      display: flex; gap: var(--spacing-3); align-items: baseline;
+      flex-wrap: wrap;
+    }
+    .cmp-sec__index {
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted); font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .cmp-sec__index strong { color: var(--semantic-on-surface); }
+    .cmp-sec__title {
+      margin: 0;
+      font-size: 17px; line-height: 1.35; font-weight: 500;
+      letter-spacing: -0.01em;
+      flex: 1; min-width: 0;
+    }
+    .cmp-sec__purpose {
+      font-size: 12.5px; color: var(--semantic-on-surface-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .cmp-sec__sub { display: grid; gap: var(--spacing-2); }
+    .cmp-sec__sub-item {
+      padding: var(--spacing-2) var(--spacing-3);
+      background: rgba(0,0,0,0.03);
+      border-radius: 6px;
+      font-size: 12px; line-height: 1.5;
+      color: var(--semantic-on-surface);
+    }
+    .cmp-sec__sub-item strong { font-weight: 600; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--semantic-on-surface-accent); display: block; margin-bottom: 3px; }
+    .cmp-sec__copy {
+      font-size: 12.5px; line-height: 1.65;
+      color: var(--semantic-on-surface);
+      padding: var(--spacing-3);
+      background: rgba(0,0,0,0.025);
+      border-left: 2px solid var(--semantic-on-surface);
+      border-radius: 0 6px 6px 0;
+    }
+    .cmp-sec__copy em { font-style: normal; color: var(--semantic-on-surface-muted); font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+    .cmp-sec__delta {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .cmp-tag {
+      display: inline-flex; align-items: center;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10.5px; font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .cmp-tag--keep   { background: rgba(58,107,74,0.12); color: #3a6b4a; }
+    .cmp-tag--move   { background: rgba(58,87,143,0.14); color: #3a578f; }
+    .cmp-tag--merge  { background: rgba(177,75,58,0.14); color: #b14b3a; }
+    .cmp-tag--split  { background: rgba(143,87,58,0.14); color: #8f573a; }
+    .cmp-tag--new    { background: rgba(46, 58, 138, 0.14); color: #2e3a8a; }
+    .cmp-tag--remove { background: rgba(150,150,150,0.18); color: #555; text-decoration: line-through; }
+    .cmp-tag--reframe{ background: rgba(120,80,150,0.14); color: #6b3f87; }
+
+    /* Removed (edited side absent) */
+    .cmp-sec--removed { background: rgba(0,0,0,0.025); border-style: dashed; opacity: 0.7; }
+    .cmp-sec--removed .cmp-sec__title { text-decoration: line-through; color: var(--semantic-on-surface-muted); }
+
+    /* New (edited side new) */
+    .cmp-sec--new { border: 1px solid var(--primitive-bleu, #2e3a8a); }
+    .cmp-sec--new .cmp-sec__index strong { color: var(--primitive-bleu, #2e3a8a); }
+
+    /* MAPPING TABLE */
+    .cmp-map {
+      margin-top: var(--layout-section-md);
+      padding: var(--layout-section-sm) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .cmp-map__head {
+      display: grid; gap: var(--spacing-3);
+      margin-bottom: var(--spacing-7);
+    }
+    .cmp-map__head h2 { font-size: 28px; line-height: 1.3; font-weight: 400; letter-spacing: -0.01em; margin: 0; }
+    .cmp-map__head p { color: var(--semantic-on-surface-muted); margin: 0; font-size: 14px; }
+    .cmp-table {
+      display: grid;
+      grid-template-columns: 1.4fr 0.4fr 1.4fr 0.6fr 1.6fr;
+      gap: 0;
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--semantic-bg-default);
+    }
+    .cmp-table__th, .cmp-table__td {
+      padding: var(--spacing-4) var(--spacing-3);
+      font-size: 12.5px; line-height: 1.55;
+      border-bottom: 1px solid var(--semantic-border-muted);
+      border-right: 1px solid var(--semantic-border-muted);
+    }
+    .cmp-table__th {
+      background: rgba(0,0,0,0.03);
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted); font-weight: 600;
+    }
+    .cmp-table > div:nth-child(5n) { border-right: 0; }
+    .cmp-table > div:nth-last-child(-n+5) { border-bottom: 0; }
+    .cmp-table__td strong { display: block; font-weight: 600; margin-bottom: 2px; font-size: 13px; }
+    .cmp-table__td small { display: block; font-size: 11px; color: var(--semantic-on-surface-muted); margin-top: 2px; }
+    .cmp-arrow {
+      display: grid; place-items: center;
+      background: rgba(0,0,0,0.02);
+      color: var(--semantic-on-surface-muted);
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    /* DECISIONS PANEL */
+    .cmp-decisions {
+      margin-top: var(--layout-section-md);
+      padding: var(--layout-section-sm) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .cmp-decisions__head {
+      display: grid; gap: var(--spacing-3);
+      margin-bottom: var(--spacing-7);
+    }
+    .cmp-decisions__head h2 { font-size: 28px; line-height: 1.3; font-weight: 400; letter-spacing: -0.01em; margin: 0; }
+    .cmp-decisions__head p { color: var(--semantic-on-surface-muted); margin: 0; font-size: 14px; }
+    .cmp-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--spacing-4);
+    }
+    .cmp-card {
+      padding: var(--spacing-5);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+      display: grid; gap: var(--spacing-3);
+    }
+    .cmp-card__topic {
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .cmp-card h3 { margin: 0; font-size: 16px; font-weight: 500; line-height: 1.4; }
+    .cmp-card__why {
+      padding: var(--spacing-3);
+      background: rgba(0,0,0,0.025);
+      border-radius: 6px;
+      font-size: 12.5px; line-height: 1.65;
+      color: var(--semantic-on-surface);
+    }
+    .cmp-card__why em { font-style: normal; color: var(--semantic-on-surface-muted); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+    .cmp-card__discuss {
+      font-size: 12.5px; line-height: 1.6;
+      color: var(--semantic-on-surface-muted);
+      padding-top: var(--spacing-3);
+      border-top: 1px dashed var(--semantic-border-muted);
+    }
+    .cmp-card__discuss strong { color: #b14b3a; font-weight: 600; }
+
+    /* Responsive */
+    @media (max-width: 1280px) {
+      .cmp-col { grid-template-columns: 180px minmax(0, 1fr); gap: var(--spacing-5); padding: var(--layout-section-sm) var(--spacing-5); }
+      .cmp-table { grid-template-columns: 1.4fr 0.4fr 1.4fr 0.6fr 1.6fr; }
+    }
+    @media (max-width: 1024px) {
+      .cmp-split { grid-template-columns: 1fr; }
+      .cmp-col + .cmp-col { border-left: 0; border-top: 1px solid var(--semantic-border-muted); }
+      .cmp-toc { position: static; }
+      .cmp-table { grid-template-columns: 1fr; }
+      .cmp-table__td, .cmp-table__th { border-right: 0; }
+      .cmp-arrow { display: none; }
+    }
+    @media (max-width: 720px) {
+      .cmp-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="cmp-page">
+    <div class="cmp-shell">
+
+      <!-- DOC INTRO -->
+      <section class="cmp-doc cmp-narrow">
+        <div class="cmp-doc__stack">
+          <p class="caption-m cmp-kicker">Sun Veil PDP / Original vs Edited · Comparison (W1)</p>
+          <h1 class="heading-xxxl">원문 구성 vs 편집 버전<br/>두 흐름을 나란히 비교한다.</h1>
+          <p class="body-xl cmp-muted">
+            좌측: 고객사 Notion export 그대로의 11개 섹션 흐름. 우측: <strong>Film vs Membrane을 코어(02번)로 즉시 노출</strong>하는 W1 편집판. 각 column은 자체 sticky 목차를 가진다. 카피는 양쪽 모두 고객사 원문 — 변경된 것은 위치·그룹·시각화 방식이다. 하단에 섹션 매핑 표와 편집 결정 / 논의 항목 정리.
+          </p>
+        </div>
+      </section>
+
+      <!-- SPLIT VIEW -->
+      <section class="cmp-split">
+
+        <!-- =================== ORIGINAL =================== -->
+        <div class="cmp-col cmp-col--orig">
+          <aside class="cmp-toc">
+            <p class="cmp-toc__label">Left · Original</p>
+            <h2 class="cmp-toc__title">고객사 원문 구성</h2>
+            <p class="cmp-toc__sub">Notion export 기준 11 섹션. 카테고리 리프레이밍이 첫 화면 직후 두 번 반복되는 구조 (HERO + CATEGORY REFRAMING).</p>
+            <ol>
+              <li><a href="#o-1"><strong>01</strong> · HERO SECTION<small>카테고리 포지셔닝</small></a></li>
+              <li><a href="#o-2"><strong>02</strong> · CATEGORY REFRAMING<small>Film vs Membrane</small></a></li>
+              <li><a href="#o-3"><strong>03</strong> · WHY SUN VEIL EXISTS<small>FAQ + Problem + At a Glance</small></a></li>
+              <li><a href="#o-4"><strong>04</strong> · USE CASES<small>Whereable Beauty + Ritual</small></a></li>
+              <li><a href="#o-5"><strong>05</strong> · HOW IT WORKS<small>Layer + Bonding</small></a></li>
+              <li><a href="#o-6"><strong>06</strong> · TECHNOLOGY<small>Reverse AG Code™ + Membrane™</small></a></li>
+              <li><a href="#o-7"><strong>07</strong> · KEY EXPERIENCE<small>4 Pillars</small></a></li>
+              <li><a href="#o-8"><strong>08</strong> · PROOF / EVIDENCE<small>시험 데이터</small></a></li>
+              <li><a href="#o-9"><strong>09</strong> · FULL FAQ<small>10 Questions</small></a></li>
+              <li><a href="#o-10"><strong>10</strong> · PRODUCT SPEC<small>상품정보제공 고시</small></a></li>
+              <li><a href="#o-11"><strong>11</strong> · CTA FOOTER<small>구매 유도</small></a></li>
+            </ol>
+            <div class="cmp-toc__legend">
+              <p><strong>특징</strong></p>
+              <p>· 카테고리 비교가 01·02에 두 번</p>
+              <p>· Why가 03번에 위치 (문제 자각 늦음)</p>
+              <p>· Spec / CTA 별도 섹션</p>
+            </div>
+          </aside>
+
+          <div class="cmp-main">
+
+            <!-- O1 HERO -->
+            <article class="cmp-sec" id="o-1">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>01</strong></span>
+                <h3 class="cmp-sec__title">HERO SECTION</h3>
+              </header>
+              <p class="cmp-sec__purpose">카테고리 포지셔닝을 완전히 바꾸는 헤드라인</p>
+              <div class="cmp-sec__copy">
+                <em>핵심 카피</em>
+                "당신이 붙이고 있던 건 ‘필름’입니다. Sun Veil은 ‘숨 쉬는 멤브레인 (나노 섬유)’입니다. 이제, 막는 보호에서 숨 쉬는 보호로 바뀝니다."
+              </div>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>Anchor</strong>A New Kind of Aesthetic Guard / 0.004mm 초박막 보호 레이어</div>
+              </div>
+            </article>
+
+            <!-- O2 CATEGORY REFRAMING -->
+            <article class="cmp-sec" id="o-2">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>02</strong></span>
+                <h3 class="cmp-sec__title">NEW CATEGORY DEFINITION / CATEGORY REFRAMING</h3>
+              </header>
+              <p class="cmp-sec__purpose">전환을 만드는 공격적인 리프레이밍</p>
+              <div class="cmp-sec__copy">
+                <em>핵심 카피</em>
+                "Film vs Membrane — 같은 ‘패치’로 보였다면, 완전히 잘못 보고 있던 겁니다."<br/>
+                "막는 것 vs 숨 쉬는 것 — 당신의 피부는 어떤 쪽을 선택하나요?"
+              </div>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>Compare</strong>기존 선패치(필름) vs 에이로우 선베일(나노 섬유 멤브레인)</div>
+                <div class="cmp-sec__sub-item"><strong>Data</strong>투습도 12,356 / 공기 투과도 1.0&lt; / 기공 0.7μm</div>
+                <div class="cmp-sec__sub-item"><strong>UV</strong>UVB 99.9% / UVA 95.3% / UPF 50+ / UVR 96.3%</div>
+                <div class="cmp-sec__sub-item"><strong>Spec line</strong>0.004mm 초박막 · 자극 지수 0.00 · 비건 포뮬러</div>
+              </div>
+            </article>
+
+            <!-- O3 WHY SUN VEIL EXISTS -->
+            <article class="cmp-sec" id="o-3">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>03</strong></span>
+                <h3 class="cmp-sec__title">WHY SUN VEIL EXISTS</h3>
+              </header>
+              <p class="cmp-sec__purpose">3개 하위 섹션 — 의심 해소 + 문제 자각 + 차별 요약</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>3-1 Quick FAQ</strong>Before You Scroll — 메이크업/필름 차이/점착/투명+차단/민감 피부/티 안남 (6 카드)</div>
+                <div class="cmp-sec__sub-item"><strong>3-2 Problem</strong>이런 순간 (6 상황) + 예민 피부 강조 + 광대존 통찰 + 6 Pain Point 카테고리</div>
+                <div class="cmp-sec__sub-item"><strong>3-3 At a Glance</strong>Invisible & Seamless / Effortless Fit / Whereable Beauty™</div>
+              </div>
+              <div class="cmp-sec__copy">
+                <em>마무리 카피</em>
+                "보호는 필요하지만, 방식이 달라야 할 때 — 이럴 때 필요한 건, 선케어가 아니라 선베일입니다."
+              </div>
+            </article>
+
+            <!-- O4 USE CASES -->
+            <article class="cmp-sec" id="o-4">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>04</strong></span>
+                <h3 class="cmp-sec__title">USE CASES (SLIDER) + RITUAL</h3>
+              </header>
+              <p class="cmp-sec__purpose">Whereable Beauty 7 시나리오 + 사용 가이드</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>4-1 Whereable Beauty</strong>창가 / 러닝 / 브런치 / 산책 / 멀티태스킹 / 드라이브 / 시술 후 — 7 평등 카드</div>
+                <div class="cmp-sec__sub-item"><strong>4-2 Ritual</strong>01 Ready · 02 Set · 03 Go</div>
+              </div>
+            </article>
+
+            <!-- O5 HOW IT WORKS -->
+            <article class="cmp-sec" id="o-5">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>05</strong></span>
+                <h3 class="cmp-sec__title">HOW IT WORKS</h3>
+              </header>
+              <p class="cmp-sec__purpose">두 개의 레이어 + 밀착 원리</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>5-1 How It Protects</strong>Layer 1 초박막 멤브레인 + Layer 2 약액층</div>
+                <div class="cmp-sec__sub-item"><strong>5-2 How It Bonds</strong>점착제 없이 Moisture-Bonding으로 안착</div>
+              </div>
+            </article>
+
+            <!-- O6 TECHNOLOGY -->
+            <article class="cmp-sec" id="o-6">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>06</strong></span>
+                <h3 class="cmp-sec__title">TECHNOLOGY</h3>
+              </header>
+              <p class="cmp-sec__purpose">태양이 강렬할수록, 더 치밀하게 작동합니다</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>6-1 Reverse AG Code™</strong>NMN + Resveratrol + Pterostilbene + Synergy Modules (Vegan PRN, Phyto PDRN, CICA ROSIA 2.0…)</div>
+                <div class="cmp-sec__sub-item"><strong>6-2 Aero-flow Membrane™</strong>Skin-Breathing / Stealth Fit / Zero-Gravity / Even Release</div>
+              </div>
+            </article>
+
+            <!-- O7 KEY EXPERIENCE -->
+            <article class="cmp-sec" id="o-7">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>07</strong></span>
+                <h3 class="cmp-sec__title">KEY EXPERIENCE</h3>
+              </header>
+              <p class="cmp-sec__purpose">4 Pillars — Invisible / Aero Flow / Seamless / Gentle</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>1 Invisible Veil</strong>거의 보이지 않는 투명 구조</div>
+                <div class="cmp-sec__sub-item"><strong>2 Aero Flow™</strong>다공성 멤브레인, 답답함 없음</div>
+                <div class="cmp-sec__sub-item"><strong>3 Seamless Fit</strong>피부 굴곡에 자연스럽게 밀착</div>
+                <div class="cmp-sec__sub-item"><strong>4 Gentle Removal</strong>섬세한 분리</div>
+              </div>
+            </article>
+
+            <!-- O8 PROOF -->
+            <article class="cmp-sec" id="o-8">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>08</strong></span>
+                <h3 class="cmp-sec__title">PROOF / EVIDENCE</h3>
+              </header>
+              <p class="cmp-sec__purpose">보이지 않지만, 데이터로 확인됩니다</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>UV</strong>UVB 99.9% / UVA 96.4% / UVR 96.3% / UPF 50+ <em style="color:#b14b3a;font-style:normal;">※ 원문 96.4% — 리포트 95.3%</em></div>
+                <div class="cmp-sec__sub-item"><strong>Skin</strong>자극 지수 0.00 / Dermatest EXCELLENT / Skin-friendly</div>
+                <div class="cmp-sec__sub-item"><strong>Breathable</strong>공기 1.0&lt; / 투습 12,356 / 기공 0.7μm</div>
+                <div class="cmp-sec__sub-item"><strong>Spec</strong>중량 0.05g / 두께 0.004mm</div>
+                <div class="cmp-sec__sub-item"><strong>Ethics</strong>비건 인증 (The Vegan Society)</div>
+              </div>
+            </article>
+
+            <!-- O9 FULL FAQ -->
+            <article class="cmp-sec" id="o-9">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>09</strong></span>
+                <h3 class="cmp-sec__title">FULL FAQ</h3>
+              </header>
+              <p class="cmp-sec__purpose">10 Questions — 이해 / 신뢰 / 사용 경험 / 최종</p>
+            </article>
+
+            <!-- O10 PRODUCT SPEC -->
+            <article class="cmp-sec" id="o-10">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>10</strong></span>
+                <h3 class="cmp-sec__title">PRODUCT SPEC</h3>
+              </header>
+              <p class="cmp-sec__purpose">상품정보제공 고시 — 제품명·중량·사용기한·사용법·주의사항</p>
+            </article>
+
+            <!-- O11 CTA -->
+            <article class="cmp-sec" id="o-11">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>11</strong></span>
+                <h3 class="cmp-sec__title">CTA FOOTER</h3>
+              </header>
+              <p class="cmp-sec__purpose">햇살을 포기하지 않는 가장 앞선 방식 — Experience Sun Veil!</p>
+            </article>
+
+          </div>
+        </div>
+
+        <!-- =================== EDITED =================== -->
+        <div class="cmp-col cmp-col--edit">
+          <aside class="cmp-toc">
+            <p class="cmp-toc__label">Right · Edited (W1)</p>
+            <h2 class="cmp-toc__title">편집판 흐름 — Core First</h2>
+            <p class="cmp-toc__sub">Film vs Membrane(코어)을 02번으로 앞으로, 그 다음 Quick FAQ. 광대존 통찰은 When + Where 2-Part, Use Cases는 시간축 리프레임. 카피는 모두 고객사 원문.</p>
+            <ol>
+              <li><a href="#e-1"><strong>01</strong> · Hero<small>One Promise · Breathable</small></a></li>
+              <li><a href="#e-5"><strong>02</strong> · Film vs Membrane<small>CORE · 코어 메시지 즉시 노출</small></a></li>
+              <li><a href="#e-2"><strong>03</strong> · Quick FAQ<small>YES×4 → NO 반전</small></a></li>
+              <li><a href="#e-3"><strong>04</strong> · Invisible Demo<small>NO 반전 페이오프 (신설)</small></a></li>
+              <li><a href="#e-4"><strong>05</strong> · Why This Zone<small>When + Where (2-Part)</small></a></li>
+              <li><a href="#e-6"><strong>06</strong> · Confidence<small>Data 3-tier</small></a></li>
+              <li><a href="#e-7"><strong>07</strong> · How It Works<small>Layer + Bonding</small></a></li>
+              <li><a href="#e-8"><strong>08</strong> · Reverse AG Code™<small>TM·성분 팩트</small></a></li>
+              <li><a href="#e-9"><strong>09</strong> · Use Cases<small>Timeline (B안)</small></a></li>
+              <li><a href="#e-10"><strong>10</strong> · Ritual<small>Ready / Set / Go</small></a></li>
+              <li><a href="#e-11"><strong>11</strong> · Full FAQ<small>4-Group Accordion</small></a></li>
+            </ol>
+            <div class="cmp-toc__legend">
+              <p><strong>변경 핵심 (W1)</strong></p>
+              <p>· <strong>Film vs Membrane = 02번 (코어)</strong></p>
+              <p>· Quick FAQ는 코어 직후 03번</p>
+              <p>· NO → Invisible 진입 페이오프 신설</p>
+              <p>· Why This Zone = When + Where 2-Part</p>
+              <p>· Use Cases = 시간축 리프레임</p>
+              <p>· Spec / CTA = Cafe24 자동 영역 위임</p>
+            </div>
+          </aside>
+
+          <div class="cmp-main">
+
+            <!-- E1 HERO -->
+            <article class="cmp-sec" id="e-1">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>01</strong></span>
+                <h3 class="cmp-sec__title">Hero — One Promise</h3>
+              </header>
+              <p class="cmp-sec__purpose">"이게 뭐지?" / Breathable 선언</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 01 HERO 카피 그대로</div>
+                <div class="cmp-sec__sub-item"><strong>Add</strong>4 데이터 chips (0.004mm · UPF 50+ · UVB 99.9% · Dermatest Excellent)</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--keep">KEEP 카피</span>
+              </div>
+            </article>
+
+            <!-- E5 (NEW POSITION 02) FILM vs MEMBRANE — CORE -->
+            <article class="cmp-sec cmp-sec--new" id="e-5">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>02</strong></span>
+                <h3 class="cmp-sec__title">Film vs Membrane — CORE <span class="cmp-tag cmp-tag--new" style="margin-left:6px;">CORE</span></h3>
+              </header>
+              <p class="cmp-sec__purpose">"왜 다른가?" / 카테고리 차별의 코어 — 페이지 가장 큰 무게</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 02 CATEGORY REFRAMING — Hero 직후 위치로 끌어올려 코어 메시지 즉시 노출</div>
+                <div class="cmp-sec__sub-item"><strong>흐름</strong>비교 표 → "숨을 못 쉬기 때문입니다" → 5개 불편 → "필름막을 버리고 나노 섬유를 선택" → Closing</div>
+                <div class="cmp-sec__sub-item"><strong>전략</strong>Membrane 우위 직접 자랑 X · 기존 Film 문제 해결로 우회</div>
+                <div class="cmp-sec__sub-item"><strong>카피 회수</strong>"숨을 못 쉬기 때문입니다" / 5개 불편 / "필름막 버리고 나노 섬유 선택" / "선베일은 보호하지만 가두지 않습니다"</div>
+                <div class="cmp-sec__sub-item"><strong>Drop</strong>02번에 있던 데이터/UV는 06 Confidence로 통합</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--move">MOVE 02→02 (위치 강화)</span>
+                <span class="cmp-tag cmp-tag--reframe">REFRAME 비교+이유+선택</span>
+                <span class="cmp-tag cmp-tag--split">SPLIT 데이터 → 06</span>
+              </div>
+            </article>
+
+            <!-- E2 QUICK FAQ -->
+            <article class="cmp-sec" id="e-2">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>03</strong></span>
+                <h3 class="cmp-sec__title">Quick FAQ — YES×4 → NO 반전</h3>
+              </header>
+              <p class="cmp-sec__purpose">"빠른 의심 5개 해소" / Invisible 진입 cue</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 03-1 Quick FAQ → 코어(02) 직후 03번 위치</div>
+                <div class="cmp-sec__sub-item"><strong>Drop</strong>민감 피부 카드 (Confidence로 이동) — NO 반전 흐름 유지</div>
+                <div class="cmp-sec__sub-item"><strong>Add</strong>마지막 NO 패널 → 04 Invisible로 진입 cue</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--move">MOVE 03→03 (코어 직후)</span>
+                <span class="cmp-tag cmp-tag--reframe">YES×4 → NO</span>
+              </div>
+            </article>
+
+            <!-- E3 INVISIBLE -->
+            <article class="cmp-sec cmp-sec--new" id="e-3">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>04</strong></span>
+                <h3 class="cmp-sec__title">Invisible Demonstration <span class="cmp-tag cmp-tag--new" style="margin-left:6px;">NEW</span></h3>
+              </header>
+              <p class="cmp-sec__purpose">"정말 안 보이나?" / NO 반전 페이오프 — 0.004mm 시각화</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 07 KEY EXPERIENCE의 1️⃣ Invisible Veil이 텍스트로만 처리됨 → 시각 demo로 신설</div>
+                <div class="cmp-sec__sub-item"><strong>Asset</strong>측면 thickness / 메이크업 위 부착 / 빛 통과 (자산 미확보 시 인포그래픽 대체)</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--new">NEW 신설</span>
+              </div>
+            </article>
+
+            <!-- E4 WHY THIS ZONE -->
+            <article class="cmp-sec" id="e-4">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>05</strong></span>
+                <h3 class="cmp-sec__title">Why This Zone — When + Where (2-Part)</h3>
+              </header>
+              <p class="cmp-sec__purpose">"왜 나에게 필요?" / 자기 상황 인식 → 부위 통찰</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>Part 1 · When</strong>이런 순간 (원문 03-2 도입부 6 상황 + 예민 피부 강조)</div>
+                <div class="cmp-sec__sub-item"><strong>Part 2 · Where</strong>광대존 통찰 (원문 03-2 Pain Point 도입)</div>
+                <div class="cmp-sec__sub-item"><strong>Bridge</strong>"선케어가 아니라 선베일입니다" — 다음 섹션으로</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--merge">MERGE 03-2 통합</span>
+                <span class="cmp-tag cmp-tag--reframe">2-Part 확장</span>
+              </div>
+            </article>
+
+            <!-- E6 CONFIDENCE -->
+            <article class="cmp-sec" id="e-6">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>06</strong></span>
+                <h3 class="cmp-sec__title">Confidence — Data 3-tier</h3>
+              </header>
+              <p class="cmp-sec__purpose">"믿을 수 있나?" / Breathable 수치 증명</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 02 데이터 블록 + 08 PROOF 통합 → 한 섹션으로 압축</div>
+                <div class="cmp-sec__sub-item"><strong>3-tier</strong>UV Protection / Breathable Structure / Sensitive Skin Tested</div>
+                <div class="cmp-sec__sub-item"><strong>Drop</strong>시험성적서 원본 이미지 — 고객-facing 미노출</div>
+                <div class="cmp-sec__sub-item"><strong>Fix</strong>UVA 96.4% → 95.3% (리포트 기준 정정)</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--merge">MERGE 02+08</span>
+                <span class="cmp-tag cmp-tag--move">MOVE 08→06</span>
+              </div>
+            </article>
+
+            <!-- E7 HOW IT WORKS -->
+            <article class="cmp-sec" id="e-7">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>07</strong></span>
+                <h3 class="cmp-sec__title">How It Works — Layer + Bonding</h3>
+              </header>
+              <p class="cmp-sec__purpose">"어떻게 작동?"</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 05 그대로 — 두 레이어 + Moisture-Bonding</div>
+                <div class="cmp-sec__sub-item"><strong>Visual</strong>Layer split SVG + CRÈME bonding strip</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--keep">KEEP</span>
+              </div>
+            </article>
+
+            <!-- E8 REVERSE AG CODE -->
+            <article class="cmp-sec" id="e-8">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>08</strong></span>
+                <h3 class="cmp-sec__title">Reverse AG Code™ — TM·성분 팩트</h3>
+              </header>
+              <p class="cmp-sec__purpose">"무엇이 들었나?" / 효능 단정 X · TM 정체성·구성 공개</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 06 TECHNOLOGY 6-1 Reverse AG Code™</div>
+                <div class="cmp-sec__sub-item"><strong>Drop</strong>효능 단정 카피 (NAD⁺ / SIRT1 / DNA 수선 / 브라이트닝) — 공산품 표기와 충돌</div>
+                <div class="cmp-sec__sub-item"><strong>Keep</strong>Core 3 (NMN / Resveratrol / Pterostilbene) + Synergy 6 카드 (이름·분류만)</div>
+                <div class="cmp-sec__sub-item"><strong>Merge</strong>원문 6-2 Aero-flow Membrane™은 Synergy에 흡수</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--reframe">REFRAME 효능→팩트</span>
+                <span class="cmp-tag cmp-tag--merge">MERGE 6-2 흡수</span>
+              </div>
+            </article>
+
+            <!-- E9 USE CASES -->
+            <article class="cmp-sec" id="e-9">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>09</strong></span>
+                <h3 class="cmp-sec__title">Use Cases — Timeline (B안)</h3>
+              </header>
+              <p class="cmp-sec__purpose">"언제 쓰지?" / Seamless</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 04 Whereable Beauty 7 시나리오</div>
+                <div class="cmp-sec__sub-item"><strong>Reframe</strong>평등 카드 7 → 시간축 위 14:00 시그니처 + 5 시간 노드 + 시간축 외 1 strip</div>
+                <div class="cmp-sec__sub-item"><strong>Why</strong>"흐름이 끊기지 않는 보호" Seamless 키워드와 직결 / 자산 부담 감소</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--reframe">REFRAME 시간축</span>
+              </div>
+            </article>
+
+            <!-- E10 RITUAL -->
+            <article class="cmp-sec" id="e-10">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>10</strong></span>
+                <h3 class="cmp-sec__title">Ritual — Ready / Set / Go</h3>
+              </header>
+              <p class="cmp-sec__purpose">"어떻게 붙이지?" / Seamless 사용 흐름</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 04-2 Ritual 그대로</div>
+                <div class="cmp-sec__sub-item"><strong>Position</strong>04 USE CASES 안 → 별도 10번 섹션으로 분리</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--split">SPLIT 04-2 분리</span>
+              </div>
+            </article>
+
+            <!-- E11 FULL FAQ -->
+            <article class="cmp-sec" id="e-11">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>11</strong></span>
+                <h3 class="cmp-sec__title">Full FAQ — 4-Group Accordion</h3>
+              </header>
+              <p class="cmp-sec__purpose">"마지막 의심" / narrative 종결</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>From</strong>원문 09 Full FAQ 10 questions</div>
+                <div class="cmp-sec__sub-item"><strong>Group</strong>이해 4 / 신뢰 2 / 경험 4 / 최종 1 — 가독성 ↑</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--reframe">REFRAME 그룹화</span>
+              </div>
+            </article>
+
+            <!-- REMOVED notes -->
+            <article class="cmp-sec cmp-sec--removed">
+              <header class="cmp-sec__head">
+                <span class="cmp-sec__index"><strong>—</strong></span>
+                <h3 class="cmp-sec__title">07 KEY EXPERIENCE / 10 PRODUCT SPEC / 11 CTA FOOTER</h3>
+              </header>
+              <p class="cmp-sec__purpose">제거 또는 외부 영역 위임</p>
+              <div class="cmp-sec__sub">
+                <div class="cmp-sec__sub-item"><strong>07 KEY EXPERIENCE</strong>분산 — Invisible은 03 신설 / Aero Flow는 08 Synergy / Seamless는 09 Use Cases / Gentle은 11 FAQ</div>
+                <div class="cmp-sec__sub-item"><strong>10 PRODUCT SPEC</strong>Cafe24 상품정보제공 고시 자동 영역에 위임</div>
+                <div class="cmp-sec__sub-item"><strong>11 CTA FOOTER</strong>PDP 상단 buy box로 위임 — narrative 끝에 별도 CTA 불필요</div>
+              </div>
+              <div class="cmp-sec__delta">
+                <span class="cmp-tag cmp-tag--remove">REMOVE</span>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =================== MAPPING TABLE =================== -->
+      <section class="cmp-map">
+        <header class="cmp-map__head">
+          <p class="caption-m cmp-kicker">Mapping</p>
+          <h2>섹션 매핑 — 원문이 어디로 갔는가</h2>
+          <p>각 원문 섹션이 편집판에서 어디에 배치됐는지 / 어떤 처리를 받았는지 일대일 추적.</p>
+        </header>
+
+        <div class="cmp-table">
+          <div class="cmp-table__th">Original</div>
+          <div class="cmp-table__th"></div>
+          <div class="cmp-table__th">Edited</div>
+          <div class="cmp-table__th">Action</div>
+          <div class="cmp-table__th">Reason / Note</div>
+
+          <div class="cmp-table__td"><strong>01 HERO</strong><small>당신이 붙이고 있던 건 ‘필름’</small></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>01 Hero</strong><small>+ 4 데이터 chips</small></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--keep">KEEP</span></div>
+          <div class="cmp-table__td">카피 그대로 / 첫 viewport에 chip 추가</div>
+
+          <div class="cmp-table__td"><strong>02 CATEGORY REFRAMING</strong><small>Film vs Membrane + 불편 이유 + 데이터</small></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>02 Film vs Membrane (CORE)</strong><br/><strong>06 Confidence</strong></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--keep">KEEP 02</span><span class="cmp-tag cmp-tag--reframe">REFRAME 코어</span><span class="cmp-tag cmp-tag--split">SPLIT 데이터→06</span></div>
+          <div class="cmp-table__td">위치 02번 그대로 유지하되 <strong>코어 무게 강화</strong> (가장 큰 시각·서사 비중) / 비교 표 + "숨을 못 쉬기 때문입니다" + 5개 불편 + "필름막 버리고 나노 섬유 선택" + Closing 모두 회수 / 데이터/UV는 06 Confidence로 분리</div>
+
+          <div class="cmp-table__td"><strong>03-1 Quick FAQ</strong></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>03 Quick FAQ</strong><small>YES×4 → NO</small></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--move">MOVE</span><span class="cmp-tag cmp-tag--reframe">REFRAME</span></div>
+          <div class="cmp-table__td">앞으로 (코어 직후 위치) / 6장 → 5장 (민감 피부 카드는 06으로) / NO를 04 Invisible 진입 cue로</div>
+
+          <div class="cmp-table__td"><strong>03-2 Problem</strong><small>이런 순간 + 광대존 + Pain Point</small></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>05 Why This Zone</strong><small>When + Where 2-Part</small></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--merge">MERGE</span></div>
+          <div class="cmp-table__td">"이런 순간"(When) + 광대존(Where)을 한 섹션 2-Part로 통합 / Bridge 카피로 다음 섹션 진입</div>
+
+          <div class="cmp-table__td"><strong>03-3 At a Glance</strong></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>분산</strong><small>01 Hero chips · 02 vs · 09 Use Cases</small></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--split">SPLIT</span></div>
+          <div class="cmp-table__td">짧은 차별 요약은 Hero chips와 코어(02) 섹션에 흡수</div>
+
+          <div class="cmp-table__td"><strong>04 USE CASES</strong><small>Whereable Beauty 7 시나리오</small></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>09 Use Cases</strong><small>Timeline B안</small></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--reframe">REFRAME</span></div>
+          <div class="cmp-table__td">평등 7카드 → 14:00 시그니처 + 5 시간 노드 + 시간축 외 1 / 자산 부담 감소</div>
+
+          <div class="cmp-table__td"><strong>04-2 Ritual</strong></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>10 Ritual</strong></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--split">SPLIT</span></div>
+          <div class="cmp-table__td">Use Cases 안에서 분리, 별도 섹션으로</div>
+
+          <div class="cmp-table__td"><strong>05 HOW IT WORKS</strong></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>07 How It Works</strong></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--keep">KEEP</span></div>
+          <div class="cmp-table__td">위치만 이동, 내용 그대로</div>
+
+          <div class="cmp-table__td"><strong>06 TECHNOLOGY</strong><small>Reverse AG Code™ + Membrane™</small></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>08 Reverse AG Code™</strong></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--reframe">REFRAME</span><span class="cmp-tag cmp-tag--merge">MERGE</span></div>
+          <div class="cmp-table__td">효능 단정 카피 미노출 / Aero-flow Membrane™은 Synergy 카드로 흡수</div>
+
+          <div class="cmp-table__td"><strong>07 KEY EXPERIENCE</strong></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>분산</strong><small>03 Invisible / 08 Synergy / 09 Use Cases / 11 FAQ</small></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--split">SPLIT</span><span class="cmp-tag cmp-tag--new">NEW</span></div>
+          <div class="cmp-table__td">Invisible은 단독 시각 demo로 신설 / 나머지는 관련 섹션에 흡수</div>
+
+          <div class="cmp-table__td"><strong>08 PROOF</strong></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>06 Confidence</strong></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--move">MOVE</span></div>
+          <div class="cmp-table__td">위치 앞으로 / 시험성적서 원본 이미지 미노출</div>
+
+          <div class="cmp-table__td"><strong>09 FULL FAQ</strong></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><strong>11 Full FAQ</strong></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--keep">KEEP</span></div>
+          <div class="cmp-table__td">4-그룹 accordion으로 가독성만 보강</div>
+
+          <div class="cmp-table__td"><strong>10 PRODUCT SPEC</strong></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><em>Cafe24 자동 영역</em></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--remove">REMOVE</span></div>
+          <div class="cmp-table__td">상품정보제공 고시 자동 노출 영역에 위임</div>
+
+          <div class="cmp-table__td"><strong>11 CTA FOOTER</strong></div>
+          <div class="cmp-table__td cmp-arrow">→</div>
+          <div class="cmp-table__td"><em>PDP 상단 buy box</em></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--remove">REMOVE</span></div>
+          <div class="cmp-table__td">상단 buy box가 별도로 존재 — narrative 끝에 CTA 중복 불필요</div>
+
+          <div class="cmp-table__td"><em>—</em></div>
+          <div class="cmp-table__td cmp-arrow">+</div>
+          <div class="cmp-table__td"><strong>03 Invisible Demo</strong></div>
+          <div class="cmp-table__td"><span class="cmp-tag cmp-tag--new">NEW</span></div>
+          <div class="cmp-table__td">원문 07 Invisible Veil이 텍스트로만 처리 → 단독 시각 demo로 신설 / NO 반전 페이오프</div>
+        </div>
+      </section>
+
+      <!-- =================== DECISION CARDS =================== -->
+      <section class="cmp-decisions">
+        <header class="cmp-decisions__head">
+          <p class="caption-m cmp-kicker">Decisions to discuss</p>
+          <h2>편집 결정 / 논의 필요 항목</h2>
+          <p>편집 방식에 대해 한 번 더 정렬이 필요한 핵심 결정 8개. 각 카드는 — <strong>What</strong> 변경 내용 / <strong>Why</strong> 사유 / <strong>To discuss</strong> 논의 포인트.</p>
+        </header>
+
+        <div class="cmp-deck">
+
+          <article class="cmp-card">
+            <p class="cmp-card__topic">D1 · Section Order (W1)</p>
+            <h3>Film vs Membrane = 02번 코어 즉시 노출</h3>
+            <div class="cmp-card__why">
+              <em>Why</em>
+              Membrane은 현재 시장 단독 우위 차별 요소(경쟁 제품군이 Film형). 이 코어 메시지가 5번째 섹션에 묻히면 사용자가 안 읽고 이탈할 위험. Hero 직후 02번에 두어 코어 즉시 노출. 02 섹션은 페이지에서 가장 큰 시각·서사 비중. Quick FAQ는 코어 직후 03번.
+            </div>
+            <p class="cmp-card__discuss"><strong>결정 완료:</strong> W1으로 확정. 02 섹션은 비교 표 + "숨을 못 쉬기 때문입니다" + 5개 불편 + "필름막 버리고 나노 섬유 선택" + Closing 흐름. Membrane 우위 직접 자랑 X — 기존 Film 문제 해결로 우회.</p>
+          </article>
+
+          <article class="cmp-card">
+            <p class="cmp-card__topic">D2 · Section New</p>
+            <h3>Invisible Demonstration을 단독 섹션(03)으로 신설</h3>
+            <div class="cmp-card__why">
+              <em>Why</em>
+              원문 07 KEY EXPERIENCE의 Invisible Veil이 텍스트로만 처리됨 → 시각 demo로 승격해야 NO 반전의 페이오프가 살아난다.
+            </div>
+            <p class="cmp-card__discuss"><strong>논의:</strong> 시각 자산(메이크업 위 부착 / 측면 thickness) 확보 가능 시점. 자산 미확보 시 인포그래픽으로 갈지 섹션 자체를 보류할지.</p>
+          </article>
+
+          <article class="cmp-card">
+            <p class="cmp-card__topic">D3 · Section Merge</p>
+            <h3>Why This Zone을 When + Where 2-Part로 통합</h3>
+            <div class="cmp-card__why">
+              <em>Why</em>
+              원문 03-2의 "이런 순간"(When)과 광대존 통찰(Where)이 다른 섹션처럼 다뤄지면 같은 섹션의 두 통찰이 흩어진다. 통합으로 인지 순서(자기 상황 → 부위) 확보.
+            </div>
+            <p class="cmp-card__discuss"><strong>논의:</strong> 예민 피부 강조 박스가 Part 1 안에 있는 게 맞는지, 별도 톤(빨간 표시)이 적절한지.</p>
+          </article>
+
+          <article class="cmp-card">
+            <p class="cmp-card__topic">D4 · Section Reframe</p>
+            <h3>Use Cases를 시간축 리프레임(B안)으로</h3>
+            <div class="cmp-card__why">
+              <em>Why</em>
+              7개 평등 카드 = 자산 7장 부담. "흐름이 끊기지 않는 보호"(Seamless) 메시지와도 직결되지 않음. 시간축으로 묶으면 자산 1-2장으로도 메시지가 더 강해진다.
+            </div>
+            <p class="cmp-card__discuss"><strong>논의:</strong> 시간 매핑이 임의값(06:30 / 10:00 / 11:00 / 14:00 / 16:00 / 18:00). 고객사·브랜드 협의로 조정 필요.</p>
+          </article>
+
+          <article class="cmp-card">
+            <p class="cmp-card__topic">D5 · Copy Constraint</p>
+            <h3>Reverse AG Code™ — 효능 단정 카피 전부 미노출</h3>
+            <div class="cmp-card__why">
+              <em>Why</em>
+              본 제품은 공산품으로 등재. 화장품에 허용되는 효능 표현(NAD⁺ / SIRT1 / DNA 수선 / 브라이트닝 등)은 표기 충돌 가능. 섹션 정체성을 효능 어필 → 기술 정체성·구성 공개로 전환.
+            </div>
+            <p class="cmp-card__discuss"><strong>논의:</strong> "피부 컨디션을 고려한 포뮬러" 같은 우회 표현도 같이 RA 검수. 섹션 위치를 단독(현 08)으로 둘지 How It Works Layer 2로 흡수할지.</p>
+          </article>
+
+          <article class="cmp-card">
+            <p class="cmp-card__topic">D6 · Section Removal</p>
+            <h3>Spec / CTA 섹션을 PDP 표준 영역에 위임</h3>
+            <div class="cmp-card__why">
+              <em>Why</em>
+              Cafe24 PDP는 상단 buy box와 하단 상품정보제공 고시가 자동 노출 영역. narrative 안에 별도 CTA·Spec을 두면 중복.
+            </div>
+            <p class="cmp-card__discuss"><strong>논의:</strong> narrative 마지막이 Full FAQ로 끝나는 흐름이 자연스러운지. 마지막에 brand statement(원문 11 CTA의 "햇살을 포기하지 않는") 한 줄만 살릴지.</p>
+          </article>
+
+          <article class="cmp-card">
+            <p class="cmp-card__topic">D7 · Data Correction</p>
+            <h3>UVA 96.4% → 95.3% 정정</h3>
+            <div class="cmp-card__why">
+              <em>Why</em>
+              원문 카피에는 96.4%, FITI 시험연구원 자외선 차단 리포트에는 95.3%. 리포트 기준으로 정정.
+            </div>
+            <p class="cmp-card__discuss"><strong>논의:</strong> 중량 표기도 동일 이슈 — 1 piece 0.05g vs 1회분 2매 0.1g vs 좌우 한 쌍 0.3g. 패키지 기준 최종 확정 필요.</p>
+          </article>
+
+          <article class="cmp-card">
+            <p class="cmp-card__topic">D8 · Asset Strategy</p>
+            <h3>시험성적서 원본 이미지 노출 X</h3>
+            <div class="cmp-card__why">
+              <em>Why</em>
+              고객은 시험성적서를 읽고 싶은 게 아니라 안심 정보를 빠르게 이해하고 싶다. 원본 PDF 캡처 대신 카드 제목 + 수치 + 짧은 캡션으로 번역.
+            </div>
+            <p class="cmp-card__discuss"><strong>논의:</strong> FITI / Dermatest 출처 표기 사용 범위. 인증 seal 로고는 v1에서 생략, 최소한의 보조 요소로만 사용.</p>
+          </article>
+
+        </div>
+      </section>
+
+      <footer style="margin-top: var(--layout-section-md); padding-top: var(--spacing-6); border-top: 1px solid var(--semantic-border-muted); color: var(--semantic-on-surface-muted); font-size: 12px; letter-spacing: 0.04em;">
+        <p>Sun Veil PDP · Original vs Edited · 카피는 양쪽 모두 고객사 원문 / 변경 = 위치·그룹·시각화 방식 / 편집 결정 8개는 위 카드 참조</p>
+      </footer>
+
+    </div>
+  </main>
+</body>
+</html>

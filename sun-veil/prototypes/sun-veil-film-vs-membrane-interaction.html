@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil — Film vs Membrane Interaction</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    :root {
+      --bleu: var(--primitive-bleu, #2e3a8a);
+    }
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+    .page {
+      max-width: 1080px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+    }
+    .intro h1 { margin: 0 0 0.6em; font-size: clamp(28px, 4vw, 44px); }
+    .intro p { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+    .kicker {
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.4em;
+    }
+
+    .stage {
+      margin: 8vh 0;
+      padding: 40px 24px;
+      background: white;
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 16px;
+    }
+    .stage h2 {
+      margin: 0 0 8px;
+      font-size: clamp(22px, 2.4vw, 28px);
+      font-weight: 500;
+    }
+    .stage__cap {
+      margin: 0 0 32px;
+      color: var(--semantic-on-surface-muted);
+      font-size: 14px;
+    }
+    .stage__svg {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .controls button {
+      background: transparent;
+      border: 1px solid var(--semantic-on-surface);
+      color: var(--semantic-on-surface);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* ========== SVG common ========== */
+    .svg {
+      display: block;
+      width: 100%; height: auto;
+      color: var(--semantic-on-surface);
+    }
+    .svg-bar { fill: currentColor; opacity: 0.78; }
+    .svg-bar--accent { fill: var(--bleu); opacity: 1; }
+    .svg-name { font-size: 13px; fill: currentColor; font-weight: 600; }
+    .svg-name--accent { fill: var(--bleu); }
+    .svg-num { font-size: 12px; fill: currentColor; opacity: 0.7; font-variant-numeric: tabular-nums; }
+    .svg-num--accent { fill: var(--bleu); opacity: 1; }
+    .svg-cap { font-size: 11px; fill: currentColor; opacity: 0.6; letter-spacing: 0.02em; }
+
+    /* ========== 두께 비교 SVG ========== */
+    .thickness-bar {
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1200ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .stage.is-in-view .thickness-bar:nth-of-type(1) { transition-delay: 0ms; }
+    .stage.is-in-view .thickness-bar:nth-of-type(2) { transition-delay: 300ms; }
+    .stage.is-in-view .thickness-bar:nth-of-type(3) { transition-delay: 600ms; }
+    .stage.is-in-view .thickness-bar { transform: scaleX(1); }
+
+    .stage.is-in-view .thickness-accent-pulse {
+      animation: pulse-accent 1.4s ease-in-out 1.6s 1;
+    }
+    @keyframes pulse-accent {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+
+    /* count-up은 JS가 SVG <text> 내용 변경 */
+    .thickness-num { font-variant-numeric: tabular-nums; }
+
+    /* hover 강조 — 데스크탑만 */
+    @media (hover: hover) {
+      .thickness-row { cursor: default; }
+      .stage.is-in-view .thickness-row:hover .thickness-bar { opacity: 1; }
+      .stage.is-in-view .thickness-row:hover .thickness-accent-bar {
+        opacity: 1;
+        filter: drop-shadow(0 0 8px var(--bleu));
+      }
+      .stage.is-in-view .thickness-row:hover ~ .thickness-ratio { opacity: 1; }
+      .thickness-ratio { opacity: 0.55; transition: opacity 200ms; }
+    }
+
+    /* ========== 공기 통과 SVG ========== */
+    /* 멤브레인 쪽 흐름 입자 — 위에서 아래로 무한 loop */
+    .particle-flow {
+      animation: particle-down 4.2s linear infinite;
+      animation-play-state: running;
+    }
+    @keyframes particle-down {
+      0%   { transform: translateY(-12px); opacity: 0; }
+      10%  { opacity: 0.8; }
+      48%  { opacity: 0.8; }
+      52%  { opacity: 0.8; }
+      90%  { opacity: 0.8; }
+      100% { transform: translateY(238px); opacity: 0; }
+    }
+    .particle-flow--a { animation-delay: 0s; }
+    .particle-flow--b { animation-delay: 1.4s; }
+    .particle-flow--c { animation-delay: 2.8s; }
+
+    /* 필름 쪽 입자 — 떨어져서 표면에 부딪히는 즉시 튕겨 흩어짐 (정지 없음) */
+    .particle-bounce {
+      animation: film-bounce 3.2s infinite;
+      transform-box: fill-box;
+    }
+    @keyframes film-bounce {
+      0%   { transform: translateY(-30px); opacity: 0; animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0); } /* 가속 낙하 */
+      15%  { opacity: 0.85; }
+      48%  { transform: translateY(80px);  opacity: 0.95; animation-timing-function: cubic-bezier(0.2, 0.8, 0.4, 1); } /* 표면 도달 → 즉시 튕김 (감속) */
+      100% { transform: translate(var(--bx, -40px), 0px); opacity: 0; } /* 튕겨 흩어짐 */
+    }
+    .particle-bounce--a { animation-delay: 0s; }
+    .particle-bounce--b { animation-delay: 0.6s; }
+    .particle-bounce--c { animation-delay: 1.2s; }
+    .particle-bounce--d { animation-delay: 1.8s; }
+    .particle-bounce--e { animation-delay: 2.4s; }
+
+    /* 다공성 점 — 미세 fade pulse */
+    .pore-pulse {
+      animation: pore-pulse 2.4s ease-in-out infinite alternate;
+    }
+    @keyframes pore-pulse {
+      from { opacity: 0.7; }
+      to   { opacity: 1; }
+    }
+
+    /* hover 가속 (데스크탑) */
+    @media (hover: hover) {
+      .airflow-membrane:hover .particle-flow { animation-duration: 2.4s; }
+      .airflow-membrane:hover .pore-pulse { animation-duration: 1.2s; }
+      .airflow-film:hover .particle-bounce { animation-duration: 2.0s; }
+    }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .thickness-bar { transform: scaleX(1) !important; transition: none !important; }
+      .thickness-accent-pulse { animation: none !important; }
+      .particle-flow, .particle-bounce, .pore-pulse { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="intro">
+      <p class="kicker">Sun Veil PDP / Film vs Membrane · Interaction Demo</p>
+      <h1>SVG 시각 증명에 인터랙션 적용 — 두께 비교 + 공기 통과.</h1>
+      <p>두 시각 증명에 절제된 인터랙션을 적용한 작동 시안. 두께 비교는 한 번의 stagger draw로 데이터 임팩트, 공기 통과는 무한 loop로 영상 대체. 페이지 진입 시 자동 작동, 데스크탑 호버 시 강조.</p>
+    </section>
+
+    <!-- 두께 비교 -->
+    <section class="stage" id="thickness-stage">
+      <h2>두께 비교</h2>
+      <p class="stage__cap">머리카락 0.07mm → 비닐랩 0.012mm → Sun Veil 0.004mm. 진입 시 한 번 그려지고 멈춤.</p>
+
+      <div class="stage__svg">
+        <svg viewBox="0 0 600 250" class="svg" role="img" aria-label="두께 비교 — 머리카락, 비닐랩, Sun Veil의 실측 비례">
+          <text x="0" y="14" class="svg-cap">참조 비교 · 실측 비례 (1mm = 7300px 환산)</text>
+
+          <!-- 머리카락 -->
+          <g class="thickness-row">
+            <text x="0" y="58" class="svg-name">머리카락</text>
+            <text x="540" y="58" class="svg-num thickness-num" text-anchor="end" data-target="0.07" data-suffix=" mm">0.00 mm</text>
+            <rect x="0" y="68" width="540" height="51" class="svg-bar thickness-bar" rx="2"/>
+          </g>
+
+          <!-- 비닐랩 -->
+          <g class="thickness-row">
+            <text x="0" y="148" class="svg-name">비닐랩</text>
+            <text x="540" y="148" class="svg-num thickness-num" text-anchor="end" data-target="0.012" data-suffix=" mm">0.000 mm</text>
+            <rect x="0" y="158" width="540" height="8.7" class="svg-bar thickness-bar" rx="1"/>
+          </g>
+
+          <!-- Sun Veil -->
+          <g class="thickness-row">
+            <text x="0" y="200" class="svg-name svg-name--accent">Sun Veil</text>
+            <text x="540" y="200" class="svg-num svg-num--accent thickness-num" text-anchor="end" data-target="0.004" data-suffix=" mm">0.000 mm</text>
+            <rect x="0" y="210" width="540" height="2.9" class="svg-bar svg-bar--accent thickness-bar thickness-accent-bar thickness-accent-pulse" rx="1"/>
+          </g>
+
+          <text x="0" y="238" class="svg-cap thickness-ratio">머리카락 두께의 약 1/17</text>
+        </svg>
+      </div>
+
+      <div class="controls">
+        <button id="thickness-replay">▶ 다시 보기</button>
+      </div>
+    </section>
+
+    <!-- 공기 통과 -->
+    <section class="stage" id="airflow-stage">
+      <h2>공기 통과 비교</h2>
+      <p class="stage__cap">필름은 정체, 멤브레인은 통과. 항상 작동하는 무한 loop. 멤브레인 영역에 호버하면 흐름 가속 (데스크탑).</p>
+
+      <div class="stage__svg">
+        <svg viewBox="0 0 600 320" class="svg" role="img" aria-label="공기 통과 비교 — 필름은 정체, 멤브레인은 통과">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 0 L 10 0 L 5 9 z" fill="var(--bleu)"/>
+            </marker>
+          </defs>
+
+          <!-- 좌: 필름 -->
+          <g transform="translate(20, 20)" class="airflow-film">
+            <text x="0" y="0" class="svg-name">FILM</text>
+            <text x="0" y="16" class="svg-cap">정체</text>
+
+            <!-- 떨어져서 표면에 부딪히고 튕겨 흩어지는 입자 -->
+            <g fill="var(--bleu)" opacity="0.85">
+              <circle cx="50"  cy="40" r="4" class="particle-bounce particle-bounce--a" style="--bx: -32px;"/>
+              <circle cx="100" cy="40" r="4" class="particle-bounce particle-bounce--b" style="--bx:  22px;"/>
+              <circle cx="150" cy="40" r="4" class="particle-bounce particle-bounce--c" style="--bx: -18px;"/>
+              <circle cx="200" cy="40" r="4" class="particle-bounce particle-bounce--d" style="--bx:  35px;"/>
+              <circle cx="80"  cy="35" r="4" class="particle-bounce particle-bounce--e" style="--bx: -42px;"/>
+              <circle cx="160" cy="35" r="4" class="particle-bounce particle-bounce--a" style="--bx:  30px;"/>
+              <circle cx="220" cy="40" r="4" class="particle-bounce particle-bounce--b" style="--bx:  12px;"/>
+            </g>
+
+            <!-- 막힘 표시 -->
+            <line x1="20" y1="116" x2="240" y2="116" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2 3" opacity="0.5"/>
+
+            <!-- 필름 단면 (실선) -->
+            <rect x="20" y="124" width="220" height="38" class="svg-bar"/>
+
+            <text x="130" y="210" class="svg-cap" text-anchor="middle">공기 도달 ✕</text>
+          </g>
+
+          <!-- 우: 멤브레인 -->
+          <g transform="translate(340, 20)" class="airflow-membrane">
+            <text x="0" y="0" class="svg-name svg-name--accent">MEMBRANE</text>
+            <text x="0" y="16" class="svg-cap">통과</text>
+
+            <!-- 흐름 입자 (위 → 다공성 → 아래로 무한 loop) -->
+            <!-- 입자 A 트랙 (x=80) -->
+            <circle cx="80" cy="0" r="3.6" fill="var(--bleu)" class="particle-flow particle-flow--a"/>
+            <circle cx="80" cy="0" r="3.6" fill="var(--bleu)" class="particle-flow particle-flow--b"/>
+            <circle cx="80" cy="0" r="3.6" fill="var(--bleu)" class="particle-flow particle-flow--c"/>
+
+            <!-- 입자 B 트랙 (x=160) -->
+            <g transform="translate(80, 0)">
+              <circle cx="80" cy="0" r="3.6" fill="var(--bleu)" class="particle-flow particle-flow--b"/>
+              <circle cx="80" cy="0" r="3.6" fill="var(--bleu)" class="particle-flow particle-flow--c"/>
+              <circle cx="80" cy="0" r="3.6" fill="var(--bleu)" class="particle-flow particle-flow--a"/>
+            </g>
+
+            <!-- 멤브레인 다공성 단면 -->
+            <g transform="translate(20, 124)">
+              <line x1="0" y1="0" x2="220" y2="0" stroke="currentColor" stroke-width="1"/>
+              <line x1="0" y1="38" x2="220" y2="38" stroke="currentColor" stroke-width="1"/>
+              <rect x="0" y="0" width="220" height="38" fill="currentColor" opacity="0.16"/>
+              <!-- 다공성 구멍 (흰색 fade pulse) -->
+              <g fill="white" stroke="currentColor" stroke-width="0.6">
+                <circle cx="20" cy="19" r="2.4" class="pore-pulse"/>
+                <circle cx="50" cy="19" r="2.4" class="pore-pulse" style="animation-delay: 0.3s;"/>
+                <circle cx="80" cy="19" r="2.4" class="pore-pulse" style="animation-delay: 0.6s;"/>
+                <circle cx="110" cy="19" r="2.4" class="pore-pulse" style="animation-delay: 0.9s;"/>
+                <circle cx="140" cy="19" r="2.4" class="pore-pulse" style="animation-delay: 1.2s;"/>
+                <circle cx="170" cy="19" r="2.4" class="pore-pulse" style="animation-delay: 1.5s;"/>
+                <circle cx="200" cy="19" r="2.4" class="pore-pulse" style="animation-delay: 1.8s;"/>
+              </g>
+            </g>
+
+            <text x="130" y="280" class="svg-cap" text-anchor="middle">공기 흐름 유지 ↓</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="controls">
+        <button id="airflow-toggle">⏸ 흐름 일시정지</button>
+      </div>
+    </section>
+
+    <section class="intro" style="margin-top: 8vh;">
+      <p class="kicker">Notes</p>
+      <p>두께 비교 — 진입 시 stagger draw + 수치 count-up + Sun Veil 막대 pulse 한 번. 데스크탑은 row 호버 시 Sun Veil 막대 강조 + 비율 라벨. "다시 보기" 버튼으로 모션 재현.</p>
+      <p>공기 통과 — 멤브레인 입자가 위→다공성→아래로 무한 loop, 필름 입자는 막혀서 미세 진동. 다공성 구멍은 미세 fade pulse. 데스크탑 호버 시 흐름 가속(animation-duration 4.2s → 2.4s).</p>
+      <p>접근성 — <code>prefers-reduced-motion: reduce</code> 시 모든 모션 비활성화, SVG는 정적 표시.</p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      // ========== 두께 비교 진입 감지 + count-up ==========
+      const thicknessStage = document.getElementById('thickness-stage');
+      const numEls = thicknessStage.querySelectorAll('.thickness-num');
+
+      function countUp() {
+        numEls.forEach((el, idx) => {
+          const target = parseFloat(el.dataset.target);
+          const suffix = el.dataset.suffix || '';
+          const duration = 1200;
+          const delay = 0 + idx * 300;
+          const start = performance.now() + delay;
+
+          function tick(now) {
+            const t = Math.max(0, Math.min(1, (now - start) / duration));
+            // ease-out
+            const eased = 1 - Math.pow(1 - t, 2);
+            const value = target * eased;
+            const decimals = (target.toString().split('.')[1] || '').length;
+            el.textContent = value.toFixed(decimals) + suffix;
+            if (t < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+
+      function resetThickness() {
+        thicknessStage.classList.remove('is-in-view');
+        numEls.forEach((el) => {
+          const target = parseFloat(el.dataset.target);
+          const decimals = (target.toString().split('.')[1] || '').length;
+          el.textContent = (0).toFixed(decimals) + (el.dataset.suffix || '');
+        });
+        // force reflow
+        void thicknessStage.offsetWidth;
+        thicknessStage.classList.add('is-in-view');
+        countUp();
+      }
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        thicknessStage.classList.add('is-in-view');
+        numEls.forEach((el) => {
+          const target = parseFloat(el.dataset.target);
+          const decimals = (target.toString().split('.')[1] || '').length;
+          el.textContent = target.toFixed(decimals) + (el.dataset.suffix || '');
+        });
+      } else {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !thicknessStage.classList.contains('is-in-view')) {
+              thicknessStage.classList.add('is-in-view');
+              countUp();
+              io.disconnect();
+            }
+          });
+        }, { threshold: 0.4 });
+        io.observe(thicknessStage);
+      }
+
+      document.getElementById('thickness-replay').addEventListener('click', resetThickness);
+
+      // ========== 공기 통과 toggle ==========
+      const airflowStage = document.getElementById('airflow-stage');
+      const toggleBtn = document.getElementById('airflow-toggle');
+      let paused = false;
+      toggleBtn.addEventListener('click', () => {
+        paused = !paused;
+        airflowStage.querySelectorAll('.particle-flow, .particle-bounce, .pore-pulse').forEach((el) => {
+          el.style.animationPlayState = paused ? 'paused' : 'running';
+        });
+        toggleBtn.textContent = paused ? '▶ 흐름 재생' : '⏸ 흐름 일시정지';
+      });
+    })();
+  </script>
+</body>
+</html>

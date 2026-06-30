@@ -1,0 +1,1922 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP — Mixed (Blueprint × Prototype + Halftone)</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/surface-modes.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    /* ============================================================
+       Sun Veil PDP — Mixed v1
+         · 청사진 11-section flow (W1: Film vs Membrane = 02 코어)
+         · prototype 인터랙션 (sticky horizontal scroll · image reveal · text highlight)
+         · brand-only BLEU 텍스트 정책 (reverse-ag-code 톤)
+         · 하프톤 visual 통일 — 이미지 placeholder에 dot pattern overlay
+         · sticky product-actions bar (CRÈME)
+       ============================================================ */
+
+    :root {
+      --m-text:        var(--primitive-bleu);
+      --m-border:      rgba(46, 58, 138, 0.18);
+      --m-border-soft: rgba(46, 58, 138, 0.10);
+      --m-bg:          var(--semantic-bg-default);
+      --m-surface-2:   var(--primitive-creme-soft, #FBF8D0);
+      --m-surface-3:   var(--primitive-brand-tertiary-500); /* CIEL */
+      --m-card-bg:     #ebf2fe;
+      --m-content-w:   980px;
+      --m-sidebar-w:   220px;
+      --m-actions-h:   54px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #fff;
+      color: var(--m-text);
+      font-family: var(--font-body-family);
+      overflow: hidden; /* page lock — internal scroll */
+      height: 100vh;
+    }
+    body, body * { color: var(--m-text); }
+    body .surface--bleu, body .surface--bleu *,
+    body .surface--ink,  body .surface--ink * { color: #fff; }
+
+    /* ====== APP FRAME ====== */
+    .m-app { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ====== SIDEBAR ====== */
+    .m-side {
+      width: var(--m-sidebar-w);
+      background: #fff;
+      border-right: 1px solid var(--m-border-soft);
+      display: flex; flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .m-side.is-min { width: 52px; }
+    .m-side.is-min .m-side__brand-text,
+    .m-side.is-min .m-side__item span:not(.m-side__icon),
+    .m-side.is-min .m-side__sub,
+    .m-side.is-min .m-side__caret { display: none; }
+    .m-side.is-min .m-side__item { justify-content: center; padding: 9px; }
+    .m-side.is-min .m-side__head { padding: 12px 8px; }
+    .m-side.is-min .m-side__toggle-icon { transform: rotate(180deg); }
+
+    .m-side__head {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid var(--m-border-soft);
+      flex-shrink: 0;
+    }
+    .m-side__brand-thumb {
+      width: 28px; height: 28px; border-radius: 4px;
+      background: var(--m-surface-3); flex-shrink: 0;
+    }
+    .m-side__brand-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .m-side__brand-text small {
+      font-size: 11px; font-weight: 500; line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+    .m-side__brand-text strong {
+      font-size: 13px; font-weight: 600; line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .m-side__nav {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      padding: 8px;
+    }
+    .m-side__nav::-webkit-scrollbar { width: 0; }
+
+    .m-side__item {
+      display: flex; align-items: center; gap: 4px; width: 100%;
+      text-align: left;
+      font-family: inherit; font-size: 12px; font-weight: 500;
+      letter-spacing: 0.01em;
+      padding: 7px 8px; border: 0; border-radius: 6px;
+      background: transparent; cursor: pointer;
+      transition: background 0.15s;
+      font-variant-numeric: tabular-nums;
+    }
+    .m-side__item:hover { background: rgba(46, 58, 138, 0.06); }
+    .m-side__item.is-active { font-weight: 600; background: rgba(46, 58, 138, 0.08); }
+    .m-side__icon {
+      width: 22px; height: 22px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; opacity: 0.55;
+    }
+    .m-side__caret {
+      margin-left: auto;
+      width: 12px; height: 12px;
+      transition: transform 0.2s;
+    }
+
+    .m-side__sub {
+      overflow: hidden; max-height: 0;
+      transition: max-height 0.3s;
+    }
+    .m-side__sub.is-open { max-height: 500px; }
+    .m-side__subitem {
+      display: block; width: 100%; text-align: left;
+      padding: 5px 8px 5px 32px;
+      font-family: inherit; font-size: 11.5px; line-height: 1.5;
+      border: 0; background: transparent; cursor: pointer;
+      opacity: 0.65;
+    }
+    .m-side__subitem:hover, .m-side__subitem.is-active { opacity: 1; font-weight: 600; }
+
+    .m-side__foot {
+      padding: 10px 12px;
+      border-top: 1px solid var(--m-border-soft);
+      display: flex; align-items: center; gap: 8px;
+      flex-shrink: 0;
+    }
+    .m-side__toggle {
+      width: 24px; height: 24px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 0; border-radius: 4px;
+      background: transparent; cursor: pointer;
+    }
+    .m-side__toggle:hover { background: rgba(46, 58, 138, 0.08); }
+    .m-side__toggle-icon {
+      width: 14px; height: 14px;
+      transition: transform 0.3s;
+    }
+
+    /* ====== CONTENT PANEL ====== */
+    .m-content { flex: 1; min-width: 0; overflow: hidden; }
+    .m-scroll {
+      width: 100%; height: 100%;
+      overflow-y: auto; overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    .m-scroll::-webkit-scrollbar { width: 4px; }
+    .m-scroll::-webkit-scrollbar-thumb { background: rgba(46,58,138,0.12); border-radius: 4px; }
+
+    .m-section { scroll-margin-top: 0; position: relative; }
+
+    /* ====== STICKY PRODUCT ACTIONS ====== */
+    .m-actions {
+      position: sticky; top: 0; z-index: 50;
+      height: var(--m-actions-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      background: var(--m-surface-2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--m-border-soft);
+    }
+    .m-actions__info {
+      display: flex; flex-direction: column;
+      flex: 1; min-width: 0; margin-right: 24px;
+    }
+    .m-actions__name {
+      font-family: var(--font-body-family);
+      font-size: 14px; font-weight: 500; line-height: 1.4;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      letter-spacing: -0.01em;
+    }
+    .m-actions__sub {
+      font-size: 11px; font-weight: 500; line-height: 1.4;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      opacity: 0.7;
+    }
+    .m-actions__price {
+      display: flex; align-items: baseline; gap: 8px; flex-shrink: 0;
+      font-size: 12px; font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .m-actions__price del { opacity: 0.5; }
+    .m-actions__discount { color: #b14b3a; font-weight: 600; }
+    .m-actions__btns { display: flex; gap: 6px; flex-shrink: 0; margin-left: 24px; }
+    .m-actions__btn {
+      height: 36px; padding: 0 16px;
+      border: 0; border-radius: 999px;
+      font-family: inherit; font-size: 12px; font-weight: 500;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .m-actions__btn:hover { opacity: 0.85; }
+    .m-actions__btn--primary { background: var(--primitive-bleu); color: #fff; }
+    .m-actions__btn--secondary {
+      background: var(--m-surface-3); color: var(--primitive-bleu);
+    }
+
+    /* ====== HALFTONE PLACEHOLDERS ======
+       사진 자산이 들어가기 전, 하프톤 효과 시뮬레이션
+       BLEU 도트 패턴 + 듀오톤 그라데이션
+       ============================================ */
+    .m-halftone {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.35), transparent 60%),
+        linear-gradient(155deg, var(--primitive-creme-soft, #FBF8D0) 0%, #E5CC95 60%, var(--primitive-creme-deep, #EFE785) 100%);
+    }
+    .m-halftone::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(46, 58, 138, 0.85) 38%, transparent 38%);
+      background-size: 5px 5px;
+      mix-blend-mode: multiply;
+      opacity: 0.55;
+    }
+    .m-halftone--blue {
+      background: linear-gradient(155deg, #DCE6FA 0%, #BBD5FD 100%);
+    }
+    .m-halftone--blue::before {
+      background-image: radial-gradient(circle, rgba(46, 58, 138, 0.95) 38%, transparent 38%);
+      background-size: 5px 5px;
+      opacity: 0.4;
+    }
+    .m-halftone--warm {
+      background: linear-gradient(155deg, #F4EAD0, #D9BD7E);
+    }
+    .m-halftone--cool {
+      background: linear-gradient(155deg, #C9D2E0, #8FA1BC);
+    }
+    .m-halftone--sunset {
+      background: linear-gradient(155deg, #E8B898, #B86E54);
+    }
+    .m-halftone__label {
+      position: absolute; bottom: 20px; left: 24px;
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--primitive-bleu); font-weight: 700;
+      mix-blend-mode: difference;
+    }
+
+    /* ====== COMMON SECTION HEADER ====== */
+    .m-shell { max-width: var(--m-content-w); margin: 0 auto; padding: 0 48px; }
+    .m-shell-wide { max-width: 1280px; margin: 0 auto; padding: 0 48px; }
+    .m-eyebrow {
+      display: inline-flex; align-items: baseline; gap: 8px;
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .m-eyebrow strong { color: var(--primitive-merlot); font-weight: 700; }
+    .m-section__title {
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 500; line-height: 1.18; letter-spacing: -0.02em;
+      margin: 0; word-break: keep-all;
+    }
+    .m-section__sub {
+      font-size: 16px; line-height: 1.6;
+      max-width: 56ch; margin: 16px 0 0;
+      opacity: 0.78;
+    }
+
+    /* ====== 01 HERO ====== */
+    .m-hero {
+      padding: 96px 0 120px;
+    }
+    .m-hero__inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: center;
+    }
+    .m-hero__copy { display: grid; gap: 24px; max-width: 520px; }
+    .m-hero__brand {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 700;
+    }
+    .m-hero__lead {
+      font-size: clamp(36px, 4.5vw, 56px);
+      font-weight: 500; line-height: 1.15; letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .m-hero__lead em { font-style: normal; font-weight: 600; }
+    .m-hero__sub {
+      font-size: 16px; line-height: 1.65;
+      margin: 0; max-width: 36ch;
+      opacity: 0.78;
+    }
+    .m-hero__chips {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+      margin-top: 16px;
+    }
+    .m-chip {
+      padding: 12px 10px;
+      border: 1px solid var(--m-border);
+      border-radius: 10px;
+      display: grid; gap: 4px;
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .m-chip strong {
+      font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .m-chip small {
+      font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 600; opacity: 0.7;
+    }
+    .m-hero__visual {
+      position: relative;
+      aspect-ratio: 5/6;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .m-hero__visual::after {
+      content: "0.004";
+      position: absolute; top: 32px; right: 36px;
+      font-size: clamp(80px, 9vw, 140px);
+      font-weight: 200; line-height: 1; letter-spacing: -0.04em;
+      color: var(--primitive-bleu);
+      mix-blend-mode: difference;
+      opacity: 0.55;
+    }
+
+    /* ====== 02 FILM vs MEMBRANE — CORE ====== */
+    .m-vs { padding: 120px 0; background: var(--m-bg); }
+    .m-vs__intro { text-align: center; max-width: 720px; margin: 0 auto 56px; }
+    .m-vs__intro h3 {
+      font-size: clamp(40px, 4.5vw, 56px);
+      font-weight: 500; line-height: 1.15; letter-spacing: -0.02em;
+      margin: 0 0 16px;
+    }
+    .m-vs__intro h3 em { font-style: normal; font-weight: 600; }
+    .m-vs__intro p { font-size: 18px; line-height: 1.55; margin: 0; opacity: 0.78; }
+    .m-vs__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--m-border);
+      border-bottom: 1px solid var(--m-border);
+      max-width: 1080px; margin: 0 auto;
+    }
+    .m-vs__col { padding: 40px 32px; }
+    .m-vs__col + .m-vs__col {
+      border-left: 1px solid var(--m-border);
+      background: rgba(187, 213, 253, 0.18);
+    }
+    .m-vs__col h4 {
+      margin: 0 0 8px;
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 600; opacity: 0.6;
+    }
+    .m-vs__col h3 {
+      margin: 0 0 28px;
+      font-size: 26px; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em;
+    }
+    .m-vs__row {
+      padding: 14px 0;
+      border-top: 1px dashed var(--m-border-soft);
+      display: grid; gap: 6px;
+      font-size: 14px; line-height: 1.5;
+    }
+    .m-vs__row:first-of-type { border-top: 0; padding-top: 0; }
+    .m-vs__row em {
+      font-style: normal;
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 700; opacity: 0.55;
+    }
+    .m-vs__quote {
+      margin-top: 20px;
+      padding: 12px 16px;
+      border-left: 2px solid var(--primitive-bleu);
+      font-size: 14px; line-height: 1.5;
+    }
+    .m-vs__question {
+      margin: 56px auto 0;
+      max-width: 720px;
+      text-align: center;
+      font-size: 17px; opacity: 0.78;
+    }
+    .m-vs__why {
+      margin: 80px auto 0;
+      max-width: 980px;
+      padding: 64px 40px;
+      background: var(--m-bg);
+      border: 1px solid var(--m-border);
+      border-radius: 20px;
+      text-align: center;
+      display: grid; gap: 24px;
+    }
+    .m-vs__why-lead { margin: 0; font-size: 14px; opacity: 0.65; letter-spacing: 0.02em; }
+    .m-vs__why-statement {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 48px); line-height: 1.2;
+      font-weight: 600; letter-spacing: -0.02em;
+    }
+    .m-vs__why-list {
+      list-style: none; margin: 12px 0 0; padding: 0;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+      max-width: 880px; margin-inline: auto;
+    }
+    .m-vs__why-list li {
+      padding: 14px 12px;
+      background: rgba(46, 58, 138, 0.04);
+      border-radius: 10px;
+      font-size: 13px; line-height: 1.5; text-align: center;
+    }
+    .m-vs__choice {
+      margin: 56px auto 0;
+      max-width: 980px;
+      padding: 80px 40px;
+      border-radius: 20px;
+      text-align: center;
+      display: grid; gap: 12px;
+    }
+    .m-vs__choice p { margin: 0; font-size: 17px; opacity: 0.85; }
+    .m-vs__choice h3 {
+      margin: 0;
+      font-size: clamp(32px, 4.2vw, 52px);
+      font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+    }
+    .m-vs__closing {
+      margin: 56px auto 0;
+      max-width: 720px;
+      text-align: center;
+      font-size: 22px; line-height: 1.45;
+      font-weight: 500;
+    }
+    .m-vs__manifesto {
+      margin: 32px auto 0;
+      max-width: 720px;
+      padding: 24px 16px 0;
+      border-top: 1px solid var(--m-border);
+      text-align: center;
+      font-size: clamp(24px, 3vw, 36px); line-height: 1.35;
+      font-weight: 600; letter-spacing: -0.01em;
+    }
+
+    /* ====== 03 QUICK FAQ — Fullpage Hybrid (한 질문 한 화면) ======
+       · 5 패널 stack on sticky stage
+       · letter-by-letter pop animation (Y-E-S / N-O)
+       · mini-proof chip 유지 (mixed의 보강)
+       · NO 패널은 BLEU 색상 반전 + Invisible 진입 cue
+       ============================================ */
+    .m-qfaqf-wrap {
+      position: relative;
+      height: 500vh; /* 5 panels × 100vh */
+      background: var(--m-bg);
+    }
+    .m-qfaqf-stage {
+      position: sticky;
+      top: var(--m-actions-h);
+      height: calc(100vh - var(--m-actions-h));
+      overflow: hidden;
+      display: grid; place-items: center;
+      background: var(--m-bg);
+      transition: background 600ms ease;
+    }
+    .m-qfaqf-stage.is-no { background: var(--primitive-bleu); }
+
+    .m-qfaqf__progress {
+      position: absolute;
+      top: 24px; left: 0; right: 0;
+      display: flex; gap: 6px;
+      padding: 0 max(48px, 5vw);
+      pointer-events: none;
+      z-index: 4;
+    }
+    .m-qfaqf__progress span {
+      flex: 1; height: 2px;
+      background: rgba(46, 58, 138, 0.12);
+      border-radius: 1px; overflow: hidden;
+      position: relative;
+      transition: background 400ms ease;
+    }
+    .m-qfaqf-stage.is-no .m-qfaqf__progress span { background: rgba(255,255,255,0.2); }
+    .m-qfaqf__progress span::after {
+      content: ""; position: absolute; inset: 0;
+      background: var(--primitive-bleu);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 200ms linear, background 400ms ease;
+    }
+    .m-qfaqf-stage.is-no .m-qfaqf__progress span::after { background: #fff; }
+    .m-qfaqf__progress span.is-on::after { transform: scaleX(var(--p, 0)); }
+    .m-qfaqf__progress span.is-done::after { transform: scaleX(1); }
+
+    .m-qfaqf__panel {
+      position: absolute; inset: 0;
+      opacity: 0; pointer-events: none;
+      transition: opacity 320ms ease;
+      display: grid; place-items: center;
+      padding: 10vh max(48px, 5vw);
+      gap: clamp(20px, 2.5vh, 32px);
+      grid-auto-rows: min-content;
+    }
+    .m-qfaqf__panel.is-active { opacity: 1; pointer-events: auto; }
+
+    .m-qfaqf__q {
+      order: 1;
+      text-align: center;
+      font-size: clamp(18px, 2.4vw, 26px);
+      font-weight: 500;
+      max-width: 720px; margin: 0;
+      opacity: 0.65;
+      transform: translateY(8px);
+      transition: opacity 600ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .m-qfaqf__panel.is-active .m-qfaqf__q { opacity: 0.65; transform: translateY(0); }
+    .m-qfaqf-stage.is-no .m-qfaqf__q { color: rgba(255,255,255,0.7); opacity: 1; }
+
+    .m-qfaqf__yn {
+      order: 2;
+      text-align: center;
+      font-size: clamp(96px, 16vw, 220px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 0.9;
+      color: var(--primitive-bleu);
+      margin: 0;
+      pointer-events: none;
+    }
+    .m-qfaqf-stage.is-no .m-qfaqf__yn { color: #fff; }
+    .m-qfaqf__yn span { display: inline-block; opacity: 0; }
+    /* YES letter pop: top-down with overshoot */
+    .m-qfaqf__yn--yes span {
+      transform: translateY(-22px) rotate(-3deg);
+      transition: opacity 380ms cubic-bezier(0.2, 0.8, 0.4, 1),
+                  transform 520ms cubic-bezier(0.2, 1.3, 0.4, 1);
+    }
+    .m-qfaqf__panel.is-active .m-qfaqf__yn--yes span:nth-child(1) { opacity: 1; transform: translateY(0) rotate(0); transition-delay: 140ms; }
+    .m-qfaqf__panel.is-active .m-qfaqf__yn--yes span:nth-child(2) { opacity: 1; transform: translateY(0) rotate(0); transition-delay: 220ms; }
+    .m-qfaqf__panel.is-active .m-qfaqf__yn--yes span:nth-child(3) { opacity: 1; transform: translateY(0) rotate(0); transition-delay: 300ms; }
+    /* NO letter pop: bottom-up with rotation, slower */
+    .m-qfaqf__yn--no span {
+      transform: translateY(28px) rotate(3deg);
+      transition: opacity 480ms cubic-bezier(0.2, 0.8, 0.4, 1),
+                  transform 700ms cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    .m-qfaqf__panel.is-active .m-qfaqf__yn--no span:nth-child(1) { opacity: 1; transform: translateY(0) rotate(0); transition-delay: 220ms; }
+    .m-qfaqf__panel.is-active .m-qfaqf__yn--no span:nth-child(2) { opacity: 1; transform: translateY(0) rotate(0); transition-delay: 380ms; }
+
+    .m-qfaqf__proof {
+      order: 3;
+      padding: 6px 14px;
+      background: rgba(46, 58, 138, 0.08);
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      transition: background 400ms ease;
+    }
+    .m-qfaqf-stage.is-no .m-qfaqf__proof {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .m-qfaqf__a {
+      order: 4;
+      max-width: 640px;
+      text-align: center;
+      font-size: clamp(15px, 1.8vw, 19px);
+      font-weight: 400;
+      line-height: 1.6;
+      margin: 0;
+      opacity: 0.85;
+    }
+
+    /* NO panel cue — 다음 섹션 (Invisible) 진입 */
+    .m-qfaqf__cue {
+      position: absolute;
+      bottom: 40px; left: 0; right: 0;
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 600ms ease;
+      color: rgba(255,255,255,0.7);
+    }
+    .m-qfaqf-stage.is-no .m-qfaqf__cue { opacity: 1; transition-delay: 700ms; }
+    .m-qfaqf__cue::after {
+      content: " ↓";
+      display: inline-block;
+      animation: cueBounce 1.6s ease-in-out infinite;
+      margin-left: 4px;
+    }
+    @keyframes cueBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
+
+    @media (max-width: 700px) {
+      .m-qfaqf__panel { padding: 8vh max(24px, 5vw); gap: 18px; }
+      .m-qfaqf__yn { font-size: clamp(72px, 26vw, 140px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .m-qfaqf-wrap { height: auto; }
+      .m-qfaqf-stage { position: static; height: auto; padding: 8vh 0; background: var(--m-bg); }
+      .m-qfaqf__panel { position: static; opacity: 1; padding: 6vh max(48px, 5vw); border-top: 1px solid var(--m-border-soft); }
+      .m-qfaqf__panel:first-of-type { border-top: 0; }
+      .m-qfaqf__panel.is-no { background: var(--primitive-bleu); }
+      .m-qfaqf__panel.is-no .m-qfaqf__q,
+      .m-qfaqf__panel.is-no .m-qfaqf__yn,
+      .m-qfaqf__panel.is-no .m-qfaqf__a { color: #fff; }
+      .m-qfaqf__yn span { opacity: 1; transform: none; }
+      .m-qfaqf__progress { display: none; }
+      .m-qfaqf__cue { display: none; }
+    }
+
+    /* ====== 04 INVISIBLE — image reveal + ladder + light ====== */
+    .m-invs { padding: 120px 0; background: var(--m-surface-2); }
+    .m-invs__hero {
+      display: grid; grid-template-columns: auto 1fr; gap: 56px;
+      align-items: center;
+      max-width: var(--m-content-w); margin: 0 auto;
+      padding: 0 48px 64px;
+    }
+    .m-invs__metric strong {
+      display: block;
+      font-size: clamp(120px, 14vw, 200px);
+      font-weight: 200; line-height: 0.92; letter-spacing: -0.05em;
+      font-variant-numeric: tabular-nums;
+    }
+    .m-invs__metric small {
+      display: inline-block; margin-top: 12px;
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 700; opacity: 0.7;
+    }
+    .m-invs__lines { display: grid; gap: 12px; max-width: 38ch; }
+    .m-invs__line { font-size: clamp(20px, 2vw, 26px); line-height: 1.4; font-weight: 500; letter-spacing: -0.01em; margin: 0; }
+    .m-invs__sub { font-size: 14px; opacity: 0.7; margin: 0; }
+
+    /* Image Reveal — UV 시각화 */
+    .m-reveal-wrap { position: relative; height: 200vh; }
+    .m-reveal {
+      position: sticky; top: var(--m-actions-h);
+      min-height: calc(100vh - var(--m-actions-h));
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 32px;
+      padding: 60px 0;
+    }
+    .m-reveal__head {
+      text-align: center;
+      max-width: var(--m-content-w); padding: 0 48px;
+    }
+    .m-reveal__title {
+      font-size: clamp(28px, 3.2vw, 40px);
+      font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .m-reveal__sub { font-size: 14px; opacity: 0.7; margin: 8px 0 0; }
+    .m-reveal__frame {
+      position: relative; width: 480px;
+      max-width: calc(100vw - 96px);
+      aspect-ratio: 4/5;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .m-reveal__base, .m-reveal__uv {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+    }
+    .m-reveal__base.m-halftone { background: linear-gradient(155deg, #E8B898, #B86E54); }
+    .m-reveal__uv {
+      background: linear-gradient(155deg, #DCE6FA 0%, #BBD5FD 100%);
+      clip-path: inset(0 100% 0 0);
+      will-change: clip-path;
+    }
+    .m-reveal__uv::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(46, 58, 138, 0.85) 38%, transparent 38%);
+      background-size: 5px 5px;
+      mix-blend-mode: multiply;
+      opacity: 0.45;
+    }
+    .m-reveal__divider {
+      position: absolute; top: 0; bottom: 0;
+      width: 2px; background: var(--primitive-bleu);
+      box-shadow: 0 0 16px rgba(46, 58, 138, 0.4);
+      pointer-events: none;
+    }
+    .m-reveal__caption {
+      position: absolute; top: 24px; padding: 6px 12px;
+      background: rgba(0,0,0,0.4); color: #fff;
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; border-radius: 4px;
+    }
+    .m-reveal__caption--left { left: 24px; }
+    .m-reveal__caption--right { right: 24px; color: #fff; background: rgba(46,58,138,0.7); }
+
+    /* Demos: ladder + light */
+    .m-invs__demos {
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px;
+      max-width: var(--m-content-w); margin: 80px auto 0;
+      padding: 0 48px;
+    }
+    .m-demo {
+      padding: 32px 28px;
+      background: var(--m-bg);
+      border: 1px solid var(--m-border);
+      border-radius: 16px;
+      display: grid; gap: 20px;
+    }
+    .m-demo h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; opacity: 0.6;
+    }
+    .m-demo__cap { margin: 0; font-size: 11px; line-height: 1.55; opacity: 0.6; }
+    /* Ladder */
+    .m-ladder { display: grid; gap: 12px; }
+    .m-ladder__row { display: grid; grid-template-columns: 130px 1fr 80px; gap: 12px; align-items: center; }
+    .m-ladder__label { font-size: 13px; }
+    .m-ladder__bar-wrap { height: 14px; background: rgba(46, 58, 138, 0.06); border-radius: 3px; overflow: hidden; }
+    .m-ladder__bar { height: 100%; width: var(--w, 0%); background: rgba(46, 58, 138, 0.4); min-width: 2px; }
+    .m-ladder__row.is-target .m-ladder__bar { background: var(--primitive-bleu); }
+    .m-ladder__row.is-target .m-ladder__label { font-weight: 600; }
+    .m-ladder__value { font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; opacity: 0.7; }
+    .m-ladder__row.is-target .m-ladder__value { font-weight: 600; opacity: 1; }
+    /* Light demo */
+    .m-light { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .m-light__col { display: grid; gap: 10px; text-align: center; }
+    .m-light__col h5 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; opacity: 0.65;
+    }
+    .m-light__viz {
+      aspect-ratio: 1/1;
+      background: linear-gradient(180deg, #FBF8D0 0%, #F4EAD0 100%);
+      border-radius: 10px; overflow: hidden;
+    }
+    .m-light__col.is-target .m-light__viz {
+      background: linear-gradient(180deg, #DCE6FA 0%, #BBD5FD 100%);
+    }
+    .m-light__col p { margin: 0; font-size: 12px; line-height: 1.5; }
+
+    /* ====== 05 WHY THIS ZONE ====== */
+    .m-why { padding: 120px 0; background: var(--m-bg); }
+    .m-why__part { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--primitive-merlot); margin: 0 0 16px; }
+    .m-why__when-head { margin-bottom: 40px; max-width: var(--m-content-w); margin-inline: auto; padding: 0 48px; }
+    .m-why__when-head h3 {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0 0 12px;
+    }
+    .m-why__when-head p { font-size: 17px; line-height: 1.6; margin: 0; opacity: 0.78; }
+    .m-why__cards {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      max-width: var(--m-content-w); margin: 0 auto;
+      padding: 0 48px;
+    }
+    .m-why__card {
+      padding: 24px;
+      background: var(--m-bg);
+      border: 1px solid var(--m-border);
+      border-radius: 12px;
+      font-size: 14px; line-height: 1.5;
+    }
+    .m-why__sensitive {
+      max-width: var(--m-content-w); margin: 24px auto 0;
+      padding: 24px 32px;
+      background: rgba(128, 39, 39, 0.04);
+      border: 1px solid rgba(128, 39, 39, 0.18);
+      border-radius: 12px;
+      margin-left: auto; margin-right: auto;
+      width: calc(100% - 96px); max-width: var(--m-content-w);
+    }
+    .m-why__sensitive h4 { margin: 0 0 12px; font-size: 12px; letter-spacing: 0.04em; font-weight: 700; color: var(--primitive-merlot); }
+    .m-why__sensitive ul {
+      margin: 0; padding-left: 1.2em;
+      display: grid; gap: 6px;
+      font-size: 14px; line-height: 1.55;
+    }
+    .m-why__divider {
+      max-width: var(--m-content-w); margin: 80px auto;
+      border: 0; border-top: 1px solid var(--m-border);
+      width: calc(100% - 96px);
+    }
+    .m-why__where {
+      max-width: var(--m-content-w); margin: 0 auto;
+      padding: 0 48px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
+      align-items: center;
+    }
+    .m-why__where-copy { display: grid; gap: 24px; }
+    .m-why__where-copy h3 {
+      font-size: clamp(28px, 3.2vw, 40px);
+      font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .m-why__where-copy > p { font-size: 16px; line-height: 1.65; margin: 0; opacity: 0.78; }
+    .m-why__where-copy ul {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; gap: 10px;
+    }
+    .m-why__where-copy ul li {
+      padding: 12px 16px;
+      background: var(--m-bg);
+      border: 1px solid var(--m-border);
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    .m-why__where-visual {
+      aspect-ratio: 4/5;
+      border-radius: 16px;
+      position: relative; overflow: hidden;
+    }
+    .m-why__bridge {
+      max-width: var(--m-content-w); margin: 80px auto 0;
+      padding: 56px 40px;
+      background: var(--m-surface-2);
+      border-radius: 20px;
+      text-align: center;
+      display: grid; gap: 12px;
+      width: calc(100% - 96px);
+    }
+    .m-why__bridge p { margin: 0; font-size: 17px; line-height: 1.55; }
+    .m-why__bridge p:last-child {
+      font-size: clamp(24px, 2.8vw, 32px);
+      font-weight: 600; letter-spacing: -0.01em;
+    }
+
+    /* ====== 06 CONFIDENCE ====== */
+    .m-conf { padding: 120px 0; background: var(--m-bg); }
+    .m-conf__head {
+      text-align: center;
+      max-width: var(--m-content-w); margin: 0 auto 56px;
+      padding: 0 48px;
+    }
+    .m-conf__head h2 {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0 0 12px;
+    }
+    .m-conf__head p { margin: 0; font-size: 14px; opacity: 0.65; letter-spacing: 0.04em; }
+    .m-conf__grid {
+      max-width: var(--m-content-w); margin: 0 auto;
+      padding: 0 48px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .m-conf__card {
+      padding: 32px 28px;
+      background: var(--m-bg);
+      border: 1px solid var(--m-border);
+      border-radius: 16px;
+      display: grid; gap: 16px;
+    }
+    .m-conf__card h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; color: var(--primitive-merlot);
+    }
+    .m-conf__metrics { display: grid; gap: 10px; }
+    .m-conf__metric {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+      padding: 10px 0;
+      border-top: 1px dashed var(--m-border-soft);
+      font-size: 14px;
+    }
+    .m-conf__metric:first-child { border-top: 0; padding-top: 0; }
+    .m-conf__metric span { opacity: 0.7; }
+    .m-conf__metric strong { font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+    .m-conf__cap { margin: 0; font-size: 11px; opacity: 0.55; line-height: 1.5; }
+
+    /* ====== 07 HOW IT WORKS ====== */
+    .m-how { padding: 120px 0; background: var(--m-bg); }
+    .m-how__head {
+      text-align: center;
+      max-width: var(--m-content-w); margin: 0 auto 56px;
+      padding: 0 48px;
+    }
+    .m-how__head h2 {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .m-how__layers {
+      max-width: var(--m-content-w); margin: 0 auto;
+      padding: 0 48px;
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px;
+      align-items: stretch;
+    }
+    .m-how__diagram {
+      aspect-ratio: 4/3;
+      background: var(--m-bg);
+      border: 1px solid var(--m-border);
+      border-radius: 14px;
+      display: grid; place-items: center;
+      padding: 32px;
+    }
+    .m-how__list { display: grid; gap: 16px; }
+    .m-how__layer {
+      padding: 24px;
+      background: var(--m-bg);
+      border: 1px solid var(--m-border);
+      border-radius: 12px;
+      display: grid; gap: 6px;
+    }
+    .m-how__layer h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; color: var(--primitive-merlot);
+    }
+    .m-how__layer h3 { margin: 0; font-size: 18px; font-weight: 500; }
+    .m-how__layer p { margin: 0; font-size: 14px; line-height: 1.6; opacity: 0.78; }
+    .m-how__bond {
+      max-width: var(--m-content-w); margin: 56px auto 0;
+      padding: 40px;
+      background: var(--m-surface-2);
+      border-radius: 16px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
+      align-items: center;
+      width: calc(100% - 96px);
+    }
+    .m-how__bond h3 { font-size: clamp(24px, 2.4vw, 30px); font-weight: 500; line-height: 1.3; margin: 0 0 8px; }
+    .m-how__bond p { font-size: 15px; line-height: 1.6; margin: 0; opacity: 0.78; }
+
+    /* ====== 08 REVERSE AG CODE ====== */
+    .m-code { padding: 120px 0; background: var(--m-bg); }
+    .m-code__inner {
+      max-width: var(--m-content-w); margin: 0 auto;
+      padding: 64px 48px;
+      background: var(--m-surface-2);
+      border-radius: 24px;
+      width: calc(100% - 96px);
+    }
+    .m-code__head { text-align: center; margin-bottom: 40px; display: grid; gap: 12px; }
+    .m-code__brand { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; }
+    .m-code__title {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .m-code__title sup { font-size: 0.4em; vertical-align: super; }
+    .m-code__sub { font-size: 16px; opacity: 0.7; margin: 0; }
+    .m-code__tier { margin-bottom: 32px; }
+    .m-code__tier h4 {
+      margin: 0 0 16px;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; color: var(--primitive-merlot); text-align: center;
+    }
+    .m-code__core {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .m-code__pill {
+      padding: 28px 20px;
+      background: var(--m-bg);
+      border: 1px solid var(--m-border);
+      border-radius: 12px;
+      text-align: center;
+      display: grid; gap: 6px;
+    }
+    .m-code__pill strong { font-size: 18px; font-weight: 500; letter-spacing: 0.01em; }
+    .m-code__pill small { font-size: 11px; opacity: 0.65; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+    .m-code__synergy {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .m-code__chip {
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid var(--m-border);
+      border-radius: 10px;
+      display: grid; gap: 2px;
+    }
+    .m-code__chip strong { font-size: 13px; font-weight: 600; }
+    .m-code__chip small { font-size: 11px; opacity: 0.7; }
+
+    /* ====== 09 USE CASES — sticky horizontal scroll ====== */
+    .m-uc-wrap { position: relative; }
+    .m-uc {
+      position: sticky; top: var(--m-actions-h);
+      min-height: calc(100vh - var(--m-actions-h));
+      overflow-x: clip; overflow-y: visible;
+      background: var(--m-bg);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .m-uc__center { padding: 80px 0; width: 100%; }
+    .m-uc__head {
+      max-width: var(--m-content-w);
+      margin: 0 auto 40px;
+      padding: 0 48px;
+    }
+    .m-uc__head h2 {
+      font-size: clamp(36px, 3.8vw, 48px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0 0 8px;
+    }
+    .m-uc__head p { font-size: 16px; opacity: 0.65; margin: 0; }
+    .m-uc__track {
+      display: flex; gap: 20px;
+      padding-left: max(48px, calc((100% - var(--m-content-w)) / 2 + 48px));
+      will-change: transform;
+    }
+    .m-uc__card {
+      flex: 0 0 380px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .m-uc__card-img {
+      aspect-ratio: 4/5;
+      border-radius: 16px; overflow: hidden;
+    }
+    .m-uc__card[data-t="signature"] .m-uc__card-img { background: linear-gradient(155deg, #F4EAD0, #D9BD7E); }
+    .m-uc__card[data-t="0630"] .m-uc__card-img { background: linear-gradient(155deg, #C9D2E0, #8FA1BC); }
+    .m-uc__card[data-t="1000"] .m-uc__card-img { background: linear-gradient(155deg, #F2E8C8, #E0CC92); }
+    .m-uc__card[data-t="1100"] .m-uc__card-img { background: linear-gradient(155deg, #F2DCC0, #E0B98E); }
+    .m-uc__card[data-t="1600"] .m-uc__card-img { background: linear-gradient(155deg, #F0DBA8, #D9A864); }
+    .m-uc__card[data-t="1800"] .m-uc__card-img { background: linear-gradient(155deg, #E8B898, #B86E54); }
+    .m-uc__card-body { padding: 0 4px; display: grid; gap: 6px; }
+    .m-uc__time { display: flex; gap: 12px; align-items: baseline; font-variant-numeric: tabular-nums; }
+    .m-uc__time strong { font-size: 32px; font-weight: 300; line-height: 1; letter-spacing: -0.02em; }
+    .m-uc__time small { font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; opacity: 0.6; }
+    .m-uc__moment { font-style: italic; opacity: 0.6; font-size: 13px; margin: 0; }
+    .m-uc__name { font-size: 18px; font-weight: 500; line-height: 1.3; margin: 0; }
+    .m-uc__lead { font-size: 13.5px; line-height: 1.55; margin: 0; opacity: 0.85; }
+    .m-uc__card[data-t="signature"] .m-uc__name { font-size: 24px; }
+
+    /* ====== 10 RITUAL ====== */
+    .m-ritual { padding: 120px 0; background: var(--m-bg); }
+    .m-ritual__head {
+      text-align: center;
+      max-width: var(--m-content-w); margin: 0 auto 56px;
+      padding: 0 48px;
+    }
+    .m-ritual__head h2 {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .m-ritual__steps {
+      max-width: var(--m-content-w); margin: 0 auto;
+      padding: 0 48px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .m-ritual__step {
+      padding: 32px 28px;
+      background: var(--m-bg);
+      border: 1px solid var(--m-border);
+      border-radius: 16px;
+      display: grid; gap: 12px;
+    }
+    .m-ritual__num {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      font-weight: 700; color: var(--primitive-merlot); margin: 0;
+    }
+    .m-ritual__step h3 { margin: 0; font-size: 22px; font-weight: 500; }
+    .m-ritual__step p { margin: 0; font-size: 14px; line-height: 1.6; opacity: 0.78; }
+
+    /* ====== 11 FAQ ====== */
+    .m-faq { padding: 120px 0 80px; background: var(--m-bg); }
+    .m-faq__head {
+      text-align: center;
+      max-width: 720px; margin: 0 auto 56px;
+      padding: 0 48px;
+      display: grid; gap: 8px;
+    }
+    .m-faq__head h2 {
+      font-size: clamp(32px, 3.6vw, 44px);
+      font-weight: 500; line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .m-faq__head p { font-size: 14px; opacity: 0.7; margin: 0; }
+    .m-faq__inner {
+      max-width: 800px; margin: 0 auto;
+      padding: 0 48px;
+    }
+    .m-faq__group { margin-bottom: 40px; }
+    .m-faq__group h4 {
+      margin: 0 0 16px;
+      padding-bottom: 12px;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; color: var(--primitive-merlot);
+      border-bottom: 1px solid var(--m-border);
+    }
+    .m-faq__item {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--m-border-soft);
+    }
+    .m-faq__item summary {
+      list-style: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px;
+      font-size: 16px; font-weight: 500;
+    }
+    .m-faq__item summary::-webkit-details-marker { display: none; }
+    .m-faq__item summary::after { content: "+"; font-size: 22px; font-weight: 300; opacity: 0.5; }
+    .m-faq__item[open] summary::after { content: "−"; }
+    .m-faq__item p {
+      margin: 16px 0 0; padding-top: 12px;
+      font-size: 14px; line-height: 1.7;
+      border-top: 1px dashed var(--m-border-soft);
+      opacity: 0.85;
+    }
+
+    /* ====== FOOTER ====== */
+    .m-foot {
+      padding: 40px 48px;
+      text-align: center;
+      font-size: 12px; opacity: 0.5;
+      border-top: 1px solid var(--m-border);
+      letter-spacing: 0.04em;
+    }
+
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 1024px) {
+      .m-side { display: none; }
+      .m-hero__inner, .m-vs__grid, .m-why__where, .m-how__layers, .m-how__bond {
+        grid-template-columns: 1fr;
+      }
+      .m-vs__why-list, .m-why__cards, .m-conf__grid, .m-ritual__steps, .m-code__core, .m-code__synergy {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .m-invs__hero, .m-invs__demos { grid-template-columns: 1fr; }
+      .m-shell, .m-shell-wide { padding: 0 24px; }
+    }
+    @media (max-width: 600px) {
+      .m-hero__chips { grid-template-columns: repeat(2, 1fr); }
+      .m-vs__why-list, .m-why__cards, .m-conf__grid, .m-ritual__steps, .m-code__core, .m-code__synergy { grid-template-columns: 1fr; }
+      .m-light { grid-template-columns: 1fr; }
+      .m-actions { padding: 0 16px; }
+      .m-actions__price { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="m-app">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="m-side" id="mSide">
+    <div class="m-side__head">
+      <div class="m-side__brand-thumb"></div>
+      <div class="m-side__brand-text">
+        <small>Reverse AG Code™</small>
+        <strong>Sun Veil</strong>
+      </div>
+    </div>
+
+    <div class="m-side__nav">
+      <button class="m-side__item" data-section="sec-1"><span class="m-side__icon">01</span><span>Hero</span></button>
+      <button class="m-side__item" data-section="sec-2"><span class="m-side__icon">02</span><span>Film vs Membrane</span></button>
+      <button class="m-side__item" data-section="sec-3"><span class="m-side__icon">03</span><span>Quick FAQ</span></button>
+      <button class="m-side__item" data-section="sec-4"><span class="m-side__icon">04</span><span>Invisible</span></button>
+      <button class="m-side__item" data-section="sec-5"><span class="m-side__icon">05</span><span>Why This Zone</span></button>
+      <button class="m-side__item" data-section="sec-6"><span class="m-side__icon">06</span><span>Confidence</span></button>
+      <button class="m-side__item" data-section="sec-7"><span class="m-side__icon">07</span><span>How It Works</span></button>
+      <button class="m-side__item" data-section="sec-8"><span class="m-side__icon">08</span><span>Formula</span></button>
+      <button class="m-side__item" data-section="sec-9"><span class="m-side__icon">09</span><span>Use Cases</span></button>
+      <button class="m-side__item" data-section="sec-10"><span class="m-side__icon">10</span><span>Ritual</span></button>
+      <button class="m-side__item" data-section="sec-11"><span class="m-side__icon">11</span><span>FAQ</span></button>
+    </div>
+
+    <div class="m-side__foot">
+      <button class="m-side__toggle" id="mSideToggle" aria-label="사이드바 토글">
+        <svg class="m-side__toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===================== CONTENT ===================== -->
+  <div class="m-content">
+    <div class="m-scroll" id="mScroll">
+
+      <!-- ===== STICKY PRODUCT ACTIONS ===== -->
+      <div class="m-actions">
+        <div class="m-actions__info">
+          <span class="m-actions__name">Reverse AG Code™ Sun Veil</span>
+          <span class="m-actions__sub">자외선 노출로부터 피부를 보호하는 투명 멤브레인 패치</span>
+        </div>
+        <div class="m-actions__price">
+          <del>248,000원</del>
+          <strong>210,800원</strong>
+          <span class="m-actions__discount">15%</span>
+        </div>
+        <div class="m-actions__btns">
+          <button class="m-actions__btn m-actions__btn--secondary">바로 구매</button>
+          <button class="m-actions__btn m-actions__btn--primary">카트에 담기</button>
+        </div>
+      </div>
+
+      <!-- ===== 01 HERO ===== -->
+      <section class="m-section m-hero" id="sec-1">
+        <div class="m-shell">
+          <div class="m-hero__inner">
+            <div class="m-hero__copy">
+              <p class="m-hero__brand">AYROW · Reverse AG Code™ Sun Veil</p>
+              <h1 class="m-hero__lead">
+                당신이 붙이고 있던 건 <em>‘필름’</em>입니다.<br/>
+                Sun Veil은 <em>‘숨 쉬는 멤브레인’</em>입니다.
+              </h1>
+              <p class="m-hero__sub">
+                이제, 막는 보호에서 숨 쉬는 보호로 바뀝니다.<br/>
+                막는 필름과 달리, 열·습기·땀은 배출하고 피부를 가두지 않는 나노 섬유 구조.
+              </p>
+              <div class="m-hero__chips">
+                <div class="m-chip"><strong>0.004<span style="font-size:11px;font-weight:500;">mm</span></strong><small>Thickness</small></div>
+                <div class="m-chip"><strong>UPF 50+</strong><small>UV Block</small></div>
+                <div class="m-chip"><strong>99.9%</strong><small>UVB Cut</small></div>
+                <div class="m-chip"><strong>Excellent</strong><small>Dermatest</small></div>
+              </div>
+            </div>
+            <div class="m-hero__visual m-halftone" aria-hidden="true">
+              <span class="m-halftone__label">A New Kind of Aesthetic Guard</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 02 FILM vs MEMBRANE — CORE ===== -->
+      <section class="m-section m-vs" id="sec-2">
+        <div class="m-shell-wide">
+          <p class="m-eyebrow"><strong>02</strong>· Film vs Membrane (CORE)</p>
+        </div>
+
+        <div class="m-vs__intro">
+          <h3><em>Film</em> vs <em>Membrane</em></h3>
+          <p>같은 ‘패치’로 보였다면, 완전히 잘못 보고 있던 겁니다.</p>
+        </div>
+
+        <div class="m-vs__grid">
+          <div class="m-vs__col">
+            <h4>Existing</h4>
+            <h3>기존 선패치</h3>
+            <div class="m-vs__row"><em>Form</em><span>필름 = 막 (막힘) · 피부를 덮는 구조</span></div>
+            <div class="m-vs__row"><em>Air</em><span>공기 흐름 차단</span></div>
+            <div class="m-vs__row"><em>Wear</em><span>장시간 사용 시 답답함</span></div>
+            <div class="m-vs__row"><em>Skin</em><span>열·수분 정체</span></div>
+            <p class="m-vs__quote">“붙이는 순간, 피부는 막힌다”</p>
+          </div>
+          <div class="m-vs__col">
+            <h4>AYROW</h4>
+            <h3>에이로우 선베일</h3>
+            <div class="m-vs__row"><em>Form</em><span>나노 섬유 멤브레인 = 선택적 투과 구조</span></div>
+            <div class="m-vs__row"><em>Air</em><span>공기 & 수분 흐름 유지</span></div>
+            <div class="m-vs__row"><em>Wear</em><span>장시간 부착 가능</span></div>
+            <div class="m-vs__row"><em>Skin</em><span>피부 호흡 및 컨디션 유지</span></div>
+            <p class="m-vs__quote">“붙여도, 피부는 계속 숨 쉰다”</p>
+          </div>
+        </div>
+        <p class="m-vs__question">막는 것 vs 숨 쉬는 것 — 당신의 피부는 어떤 쪽을 선택하나요?</p>
+
+        <div class="m-vs__why">
+          <p class="m-vs__why-lead">선패치, 불편했던 이유는 단 하나입니다.</p>
+          <h3 class="m-vs__why-statement">“숨을 못 쉬기 때문입니다.”</h3>
+          <ul class="m-vs__why-list">
+            <li>땀/열/습기로 답답함</li>
+            <li>필름 텐션으로 인한 밀폐감, 피부 조임</li>
+            <li>메이크업 위에서 들뜸</li>
+            <li>접착 성분으로 인한 뻣뻣함, 잔주름 픽스</li>
+            <li>오래 붙이면 피부 피로감</li>
+          </ul>
+        </div>
+
+        <div class="m-vs__choice surface--bleu">
+          <p>그래서 우리는 ‘필름막’을 버리고</p>
+          <h3>‘나노 섬유’를 선택했습니다</h3>
+        </div>
+
+        <p class="m-vs__closing">“선베일은 보호하지만, 피부를 가두지 않습니다.”</p>
+        <p class="m-vs__manifesto">“숨 쉬는 보호는 선택이 아니라, 기준입니다.”</p>
+      </section>
+
+      <!-- ===== 03 QUICK FAQ — Fullpage Hybrid ===== -->
+      <section class="m-section" id="sec-3">
+        <div class="m-qfaqf-wrap" id="mQfaqfWrap">
+          <div class="m-qfaqf-stage" id="mQfaqfStage">
+
+            <!-- Progress -->
+            <div class="m-qfaqf__progress" id="mQfaqfProgress">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <!-- Panel 1 — YES -->
+            <article class="m-qfaqf__panel" data-stage="0">
+              <p class="m-qfaqf__q">메이크업 위에 사용해도 되나요?</p>
+              <div class="m-qfaqf__yn m-qfaqf__yn--yes"><span>Y</span><span>E</span><span>S</span></div>
+              <span class="m-qfaqf__proof">메이크업 친화 설계</span>
+              <p class="m-qfaqf__a">쿠션 팩트, 파운데이션 등 메이크업 위에서도 투명하고 들뜸 없이 밀착되어 피부 표현을 방해하지 않습니다.</p>
+            </article>
+
+            <!-- Panel 2 — YES -->
+            <article class="m-qfaqf__panel" data-stage="1">
+              <p class="m-qfaqf__q">일반 필름형 선패치와 다른가요?</p>
+              <div class="m-qfaqf__yn m-qfaqf__yn--yes"><span>Y</span><span>E</span><span>S</span></div>
+              <span class="m-qfaqf__proof">나노 섬유 멤브레인 구조</span>
+              <p class="m-qfaqf__a">Sun Veil은 나노 섬유 기반 멤브레인 구조로, 공기와 수분 흐름을 유지하면서도 자외선은 차단합니다.</p>
+            </article>
+
+            <!-- Panel 3 — YES -->
+            <article class="m-qfaqf__panel" data-stage="2">
+              <p class="m-qfaqf__q">점착 성분 없이도 잘 붙나요?</p>
+              <div class="m-qfaqf__yn m-qfaqf__yn--yes"><span>Y</span><span>E</span><span>S</span></div>
+              <span class="m-qfaqf__proof">0.7μm 기공 · Moisture-Bonding</span>
+              <p class="m-qfaqf__a">멤브레인의 기공 구조와 스킨케어 제형의 점성 기반 ‘Moisture-Bonding’ 방식이 결합되어 자연스럽게 안착됩니다.</p>
+            </article>
+
+            <!-- Panel 4 — YES -->
+            <article class="m-qfaqf__panel" data-stage="3">
+              <p class="m-qfaqf__q">투명한데 자외선 차단이 가능한가요?</p>
+              <div class="m-qfaqf__yn m-qfaqf__yn--yes"><span>Y</span><span>E</span><span>S</span></div>
+              <span class="m-qfaqf__proof">원단 UPF 50+</span>
+              <p class="m-qfaqf__a">멤브레인 내부에 분포된 자외선 대응 구조가 빛에 반응해 자외선을 흡수·산란시킵니다.</p>
+            </article>
+
+            <!-- Panel 5 — NO (반전) -->
+            <article class="m-qfaqf__panel is-no" data-stage="4">
+              <p class="m-qfaqf__q">티가 나나요?</p>
+              <div class="m-qfaqf__yn m-qfaqf__yn--no"><span>N</span><span>O</span></div>
+              <span class="m-qfaqf__proof">0.004mm 멤브레인</span>
+              <p class="m-qfaqf__a">0.004mm 초박막 투명 멤브레인으로 메이크업 위에서도 식별이 어려울 만큼 자연스럽습니다.</p>
+            </article>
+
+            <!-- Cue (NO 활성 시 등장) -->
+            <p class="m-qfaqf__cue">스크롤 — 보이지 않게 보호하는 방식 보기</p>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 04 INVISIBLE ===== -->
+      <section class="m-section m-invs" id="sec-4">
+        <div class="m-shell">
+          <p class="m-eyebrow"><strong>04</strong>· Invisible</p>
+
+          <div class="m-invs__hero">
+            <div class="m-invs__metric">
+              <strong>0.004</strong>
+              <small>MM · Ultra-thin Membrane</small>
+            </div>
+            <div class="m-invs__lines">
+              <p class="m-invs__line">측면 단면으로 보여줄 수도 없는 두께. 일상의 척도로 옮겨봅니다.</p>
+              <p class="m-invs__sub">머리카락의 약 1/17 · 종이의 약 1/25.</p>
+            </div>
+          </div>
+
+          <div class="m-invs__demos">
+            <div class="m-demo">
+              <h4>두께 비교 — 일상 사물과 함께</h4>
+              <div class="m-ladder">
+                <div class="m-ladder__row">
+                  <span class="m-ladder__label">머리카락</span>
+                  <div class="m-ladder__bar-wrap"><div class="m-ladder__bar" style="--w: 50%;"></div></div>
+                  <span class="m-ladder__value">0.07 mm</span>
+                </div>
+                <div class="m-ladder__row">
+                  <span class="m-ladder__label">종이 한 장</span>
+                  <div class="m-ladder__bar-wrap"><div class="m-ladder__bar" style="--w: 70%;"></div></div>
+                  <span class="m-ladder__value">0.1 mm</span>
+                </div>
+                <div class="m-ladder__row">
+                  <span class="m-ladder__label">일반 필름 선패치</span>
+                  <div class="m-ladder__bar-wrap"><div class="m-ladder__bar" style="--w: 35%;"></div></div>
+                  <span class="m-ladder__value">~ 0.05 mm</span>
+                </div>
+                <div class="m-ladder__row is-target">
+                  <span class="m-ladder__label">Sun Veil</span>
+                  <div class="m-ladder__bar-wrap"><div class="m-ladder__bar" style="--w: 3%;"></div></div>
+                  <span class="m-ladder__value">0.004 mm</span>
+                </div>
+              </div>
+              <p class="m-demo__cap">* 일반 필름 선패치는 시장 평균 추정치 / Sun Veil은 자체 시험 기준</p>
+            </div>
+
+            <div class="m-demo">
+              <h4>빛이 작동하는 방식</h4>
+              <div class="m-light">
+                <div class="m-light__col">
+                  <h5>Film</h5>
+                  <div class="m-light__viz">
+                    <svg viewBox="0 0 100 100" style="width:100%;height:100%;display:block;">
+                      <rect x="10" y="80" width="80" height="14" fill="rgba(217,189,126,0.55)" stroke="rgba(46,58,138,0.25)"/>
+                      <text x="50" y="90" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.6)" letter-spacing="0.5">SKIN</text>
+                      <rect x="10" y="55" width="80" height="22" fill="rgba(255,255,255,0.7)" stroke="rgba(46,58,138,0.5)"/>
+                      <text x="50" y="68" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.7)" letter-spacing="0.5">FILM</text>
+                      <line x1="28" y1="14" x2="48" y2="55" stroke="rgba(217,140,40,0.95)" stroke-width="1.5"/>
+                      <polygon points="48,55 44,49 51,49" fill="rgba(217,140,40,0.95)"/>
+                      <line x1="48" y1="55" x2="68" y2="14" stroke="rgba(217,140,40,0.95)" stroke-width="1.5" stroke-dasharray="3 2"/>
+                      <polygon points="68,14 64,18 71,16" fill="rgba(217,140,40,0.95)"/>
+                      <text x="78" y="38" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.7)" letter-spacing="0.5">REFLECT</text>
+                    </svg>
+                  </div>
+                  <p>표면에서 반사 — 가장자리가 눈에 띈다</p>
+                </div>
+                <div class="m-light__col is-target">
+                  <h5>Membrane</h5>
+                  <div class="m-light__viz">
+                    <svg viewBox="0 0 100 100" style="width:100%;height:100%;display:block;">
+                      <rect x="10" y="80" width="80" height="14" fill="rgba(217,189,126,0.55)" stroke="rgba(46,58,138,0.25)"/>
+                      <text x="50" y="90" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.6)" letter-spacing="0.5">SKIN</text>
+                      <line x1="10" y1="78" x2="90" y2="78" stroke="rgba(46,58,138,0.85)" stroke-width="1.2" stroke-dasharray="3 1"/>
+                      <text x="92" y="76" font-size="5" text-anchor="end" fill="rgba(46,58,138,0.85)" letter-spacing="0.5">MEMBRANE</text>
+                      <line x1="28" y1="14" x2="48" y2="78" stroke="rgba(217,140,40,0.95)" stroke-width="1.5"/>
+                      <line x1="48" y1="78" x2="58" y2="92" stroke="rgba(217,140,40,0.95)" stroke-width="1.5"/>
+                      <polygon points="58,92 53,89 56,86" fill="rgba(217,140,40,0.95)"/>
+                      <text x="78" y="38" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.85)" letter-spacing="0.5">PASS</text>
+                    </svg>
+                  </div>
+                  <p>0.004mm 멤브레인 — 빛이 통과해 거의 보이지 않음</p>
+                </div>
+              </div>
+              <p class="m-demo__cap">* 가시광선은 통과 / 자외선은 멤브레인 내부 자외선 대응 구조에서 흡수·산란</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMAGE REVEAL — UV 시각화 (prototype 패턴) -->
+        <div class="m-reveal-wrap" id="mRevealWrap">
+          <div class="m-reveal">
+            <div class="m-reveal__head">
+              <h3 class="m-reveal__title">자외선이 닿는 자리,<br/>그 위에서 무엇이 일어나는가</h3>
+              <p class="m-reveal__sub">스크롤로 reveal — 멤브레인이 자외선을 차단하는 모습</p>
+            </div>
+            <div class="m-reveal__frame" id="mRevealFrame">
+              <div class="m-reveal__base m-halftone" aria-hidden="true">
+                <span class="m-halftone__label">No protection</span>
+              </div>
+              <div class="m-reveal__uv" id="mRevealMask" aria-hidden="true">
+                <span class="m-reveal__caption m-reveal__caption--right">With Sun Veil</span>
+              </div>
+              <span class="m-reveal__caption m-reveal__caption--left">Without</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 05 WHY THIS ZONE ===== -->
+      <section class="m-section m-why" id="sec-5">
+        <div class="m-shell">
+          <p class="m-eyebrow"><strong>05</strong>· Why This Zone</p>
+        </div>
+
+        <div class="m-why__when-head">
+          <p class="m-why__part">Part 1 — When</p>
+          <h3>이런 순간, 필요합니다</h3>
+          <p>보호는 필요하지만, 드러나고 싶지 않을 때.</p>
+        </div>
+
+        <div class="m-why__cards">
+          <div class="m-why__card">자외선 차단제를 덧바르기 힘들 때</div>
+          <div class="m-why__card">메이크업 위에 덧바르면 무너질까 봐 손이 멈출 때</div>
+          <div class="m-why__card">하루 종일, 흐름을 끊지 않고 자외선 대응을 유지하고 싶을 때</div>
+          <div class="m-why__card">러닝·골프·테니스 등 야외 활동이 많은 날, 더 신경 쓰일 때</div>
+          <div class="m-why__card">실내에서도 생활 자외선이 계속 신경 쓰일 때</div>
+          <div class="m-why__card">눈가·광대처럼 특정 부위가 유독 노출될 때</div>
+        </div>
+
+        <div class="m-why__sensitive">
+          <h4>피부가 예민해졌을 때는 더더욱</h4>
+          <ul>
+            <li>피부과 시술 후, 자외선 차단은 중요하지만 직접 바르는 것이 부담스러울 때 / 자외선 차단제를 지워야 하지만 세안을 할 수 없을 때</li>
+            <li>외부 자극에 붉게 달아올라 떼어내는 순간 피부 자극이 염려될 때</li>
+          </ul>
+        </div>
+
+        <hr class="m-why__divider"/>
+
+        <div class="m-shell" style="margin-bottom: 24px;">
+          <p class="m-why__part">Part 2 — Where</p>
+        </div>
+
+        <div class="m-why__where">
+          <div class="m-why__where-copy">
+            <h3>이 자리,<br/>바르는 선케어만으로<br/>충분할까요?</h3>
+            <p>선케어가 가장 먼저 무너지는 자리. 눈가 아래 광대 부위는 피부가 얇아 보호막이 약하고, 외부 자극에 가장 먼저 노출되며, 표정 움직임으로 가장 먼저 밀리고, 메이크업이 가장 얇게 올라가는 부위입니다.</p>
+            <ul>
+              <li>피부가 얇아 보호막이 약하고</li>
+              <li>외부 자극에 가장 먼저 노출되고</li>
+              <li>표정 움직임으로 가장 먼저 밀리고</li>
+              <li>메이크업이 가장 얇게 올라가는 부위입니다</li>
+            </ul>
+          </div>
+          <div class="m-why__where-visual m-halftone" aria-hidden="true">
+            <span class="m-halftone__label">광대 / 눈 아래 ZONE</span>
+          </div>
+        </div>
+
+        <div class="m-why__bridge">
+          <p>그래서 우리는, 보호의 방식을 바꿨습니다.</p>
+          <p>보호는 필요하지만, 방식이 달라야 할 때 — 이럴 때 필요한 건,<br/>선케어가 아니라 선베일입니다.</p>
+        </div>
+      </section>
+
+      <!-- ===== 06 CONFIDENCE ===== -->
+      <section class="m-section m-conf" id="sec-6">
+        <div class="m-shell">
+          <p class="m-eyebrow" style="display:flex;justify-content:center;"><strong>06</strong>· Confidence</p>
+        </div>
+        <div class="m-conf__head">
+          <h2>보이지 않지만, 데이터로 확인됩니다.</h2>
+          <p>Dermatest® · FITI 시험연구원 데이터 기반</p>
+        </div>
+        <div class="m-conf__grid">
+          <article class="m-conf__card">
+            <h4>UV Protection</h4>
+            <div class="m-conf__metrics">
+              <div class="m-conf__metric"><span>UVB 차단율</span><strong>99.9%</strong></div>
+              <div class="m-conf__metric"><span>UVA 차단율</span><strong>95.3%</strong></div>
+              <div class="m-conf__metric"><span>UVR 차단율</span><strong>96.3%</strong></div>
+              <div class="m-conf__metric"><span>UPF 지수</span><strong>UPF 50+</strong></div>
+            </div>
+            <p class="m-conf__cap">* 원단 시험 기준 · FITI 시험연구원</p>
+          </article>
+          <article class="m-conf__card">
+            <h4>Breathable Structure</h4>
+            <div class="m-conf__metrics">
+              <div class="m-conf__metric"><span>공기 투과도</span><strong>1.0 미만 mm/s</strong></div>
+              <div class="m-conf__metric"><span>투습도</span><strong>12,356 g/m²·24h</strong></div>
+              <div class="m-conf__metric"><span>평균 기공 크기</span><strong>0.7 μm</strong></div>
+              <div class="m-conf__metric"><span>두께</span><strong>0.004 mm</strong></div>
+            </div>
+            <p class="m-conf__cap">* 물성 시험 기준 · FITI 시험연구원</p>
+          </article>
+          <article class="m-conf__card">
+            <h4>Sensitive Skin & Ethics</h4>
+            <div class="m-conf__metrics">
+              <div class="m-conf__metric"><span>피부 자극 지수</span><strong>0.00</strong></div>
+              <div class="m-conf__metric"><span>더마테스트 등급</span><strong>EXCELLENT</strong></div>
+              <div class="m-conf__metric"><span>피부 친화 소재</span><strong>충족</strong></div>
+              <div class="m-conf__metric"><span>비건 포뮬러</span><strong>The Vegan Society</strong></div>
+              <div class="m-conf__metric"><span>중량 (1 piece)</span><strong>0.05 g</strong></div>
+            </div>
+            <p class="m-conf__cap">* 민감 피부 첩포 + 2주 임상 시험 기준 · Dermatest®</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===== 07 HOW IT WORKS ===== -->
+      <section class="m-section m-how" id="sec-7">
+        <div class="m-how__head">
+          <p class="m-eyebrow" style="display:flex;justify-content:center;"><strong>07</strong>· How It Works</p>
+          <h2>두 개의 레이어가<br/>하나의 피부처럼 작동합니다</h2>
+        </div>
+        <div class="m-how__layers">
+          <div class="m-how__diagram">
+            <svg viewBox="0 0 320 240" style="width:100%; max-width: 360px; height: auto;">
+              <rect x="20" y="180" width="280" height="40" rx="4" fill="rgba(217,189,126,0.4)" stroke="rgba(46,58,138,0.3)"/>
+              <text x="160" y="205" font-size="9" text-anchor="middle" fill="rgba(46,58,138,0.7)" stroke="none" letter-spacing="1">SKIN</text>
+              <rect x="20" y="140" width="280" height="32" rx="4" fill="rgba(187,213,253,0.5)" stroke="rgba(46,58,138,0.5)"/>
+              <text x="160" y="160" font-size="9" text-anchor="middle" fill="rgba(46,58,138,0.9)" stroke="none" letter-spacing="1">LAYER 2 · CARE FORMULA</text>
+              <rect x="20" y="106" width="280" height="26" rx="4" fill="rgba(255,255,255,0.7)" stroke="rgba(46,58,138,0.55)" stroke-dasharray="3 2"/>
+              <text x="160" y="124" font-size="9" text-anchor="middle" fill="rgba(46,58,138,0.85)" stroke="none" letter-spacing="1">LAYER 1 · ULTRA-THIN MEMBRANE</text>
+              <line x1="80" y1="40" x2="80" y2="100" stroke="rgba(128,39,39,0.7)" stroke-width="1.2"/>
+              <line x1="160" y1="40" x2="160" y2="100" stroke="rgba(128,39,39,0.7)" stroke-width="1.2"/>
+              <line x1="240" y1="40" x2="240" y2="100" stroke="rgba(128,39,39,0.7)" stroke-width="1.2"/>
+              <text x="160" y="30" font-size="9" text-anchor="middle" fill="rgba(128,39,39,0.95)" stroke="none" letter-spacing="1.5">UV</text>
+              <circle cx="60" cy="119" r="1.5" fill="rgba(46,58,138,0.7)" stroke="none"/>
+              <circle cx="120" cy="119" r="1.5" fill="rgba(46,58,138,0.7)" stroke="none"/>
+              <circle cx="200" cy="119" r="1.5" fill="rgba(46,58,138,0.7)" stroke="none"/>
+              <circle cx="260" cy="119" r="1.5" fill="rgba(46,58,138,0.7)" stroke="none"/>
+            </svg>
+          </div>
+          <div class="m-how__list">
+            <article class="m-how__layer">
+              <h4>Layer 1</h4>
+              <h3>초박막 투명 멤브레인</h3>
+              <p>0.004mm 투명 나노 섬유로 피부 결과 메이크업 질감을 해치지 않는 자외선 보호 층.</p>
+            </article>
+            <article class="m-how__layer">
+              <h4>Layer 2</h4>
+              <h3>약액층 (Care Formula)</h3>
+              <p>멤브레인 내부 활성 성분층으로 외부 자극 환경에서 피부 컨디션 유지 서포트 층.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="m-how__bond">
+          <div>
+            <h3>접착하지 않고<br/>수분으로 안착한다</h3>
+            <p>화학 접착 성분 없이 구조적 물성으로 구현한 물리적 밀착 — Moisture-Bonding.</p>
+          </div>
+          <p style="font-size: 15px; line-height: 1.65; margin: 0; opacity: 0.78;">선베일의 보습 성분과 피부 표면이 만나, 표면 장력으로 피부 위에 자연스럽게 안착합니다.</p>
+        </div>
+      </section>
+
+      <!-- ===== 08 REVERSE AG CODE ===== -->
+      <section class="m-section m-code" id="sec-8">
+        <div class="m-shell">
+          <p class="m-eyebrow"><strong>08</strong>· Formula</p>
+        </div>
+        <div class="m-code__inner">
+          <div class="m-code__head">
+            <p class="m-code__brand">AYROW Registered Trademark</p>
+            <h2 class="m-code__title">Reverse AG Code<sup>™</sup> 포뮬라</h2>
+            <p class="m-code__sub">태양이 강렬할수록, 더 치밀하게 작동합니다.</p>
+          </div>
+          <div class="m-code__tier">
+            <h4>Core Three</h4>
+            <div class="m-code__core">
+              <article class="m-code__pill"><strong>NMN</strong><small>Nicotinamide Mononucleotide</small></article>
+              <article class="m-code__pill"><strong>Resveratrol</strong><small>Stilbene 계열</small></article>
+              <article class="m-code__pill"><strong>Pterostilbene</strong><small>차세대 Stilbene 계열</small></article>
+            </div>
+          </div>
+          <div class="m-code__tier">
+            <h4>Synergy Modules</h4>
+            <div class="m-code__synergy">
+              <article class="m-code__chip"><strong>Vegan PRN</strong><small>화이트 트러플 유산균</small></article>
+              <article class="m-code__chip"><strong>Phyto PDRN</strong><small>생 어린 병풀</small></article>
+              <article class="m-code__chip"><strong>CICA ROSIA 2.0</strong><small>다닥냉이씨 · 망고잎</small></article>
+              <article class="m-code__chip"><strong>Quercetin</strong><small>퀘르세틴</small></article>
+              <article class="m-code__chip"><strong>Vegan LAB</strong><small>미역 유래 유산균</small></article>
+              <article class="m-code__chip"><strong>Aero-flow Membrane™</strong><small>3D 에어 메쉬 구조</small></article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 09 USE CASES — sticky horizontal ===== -->
+      <section class="m-section" id="sec-9">
+        <div class="m-uc-wrap" id="mUcWrap">
+          <div class="m-uc" id="mUc">
+            <div class="m-uc__center">
+              <div class="m-uc__head">
+                <p class="m-eyebrow"><strong>09</strong>· Use Cases</p>
+                <h2>당신의 하루 속,<br/>Sun Veil이 함께하는 순간</h2>
+                <p>Whereable Beauty — Wherever + Able · 시간축 리프레임</p>
+              </div>
+              <div class="m-uc__track" id="mUcTrack">
+                <article class="m-uc__card" data-t="signature">
+                  <div class="m-uc__card-img m-halftone" aria-hidden="true"></div>
+                  <div class="m-uc__card-body">
+                    <div class="m-uc__time"><strong>14:00</strong><small>Signature</small></div>
+                    <p class="m-uc__moment">A Quiet Moment</p>
+                    <h3 class="m-uc__name">오후 2시 창가</h3>
+                    <p class="m-uc__lead">빛이 들어오는 자리를 포기하지 않아도 됩니다.</p>
+                  </div>
+                </article>
+                <article class="m-uc__card" data-t="0630">
+                  <div class="m-uc__card-img m-halftone m-halftone--cool" aria-hidden="true"></div>
+                  <div class="m-uc__card-body">
+                    <div class="m-uc__time"><strong>06:30</strong></div>
+                    <p class="m-uc__moment">A Social Moment</p>
+                    <h3 class="m-uc__name">러닝 크루</h3>
+                    <p class="m-uc__lead">하루의 흐름을 멈추지 않는 선케어</p>
+                  </div>
+                </article>
+                <article class="m-uc__card" data-t="1000">
+                  <div class="m-uc__card-img m-halftone" aria-hidden="true"></div>
+                  <div class="m-uc__card-body">
+                    <div class="m-uc__time"><strong>10:00</strong></div>
+                    <p class="m-uc__moment">A Flow Moment</p>
+                    <h3 class="m-uc__name">멀티 태스킹</h3>
+                    <p class="m-uc__lead">무의식의 흐름대로 지속적인 케어</p>
+                  </div>
+                </article>
+                <article class="m-uc__card" data-t="1100">
+                  <div class="m-uc__card-img m-halftone m-halftone--warm" aria-hidden="true"></div>
+                  <div class="m-uc__card-body">
+                    <div class="m-uc__time"><strong>11:00</strong></div>
+                    <p class="m-uc__moment">A Lifestyle Moment</p>
+                    <h3 class="m-uc__name">테라스 브런치</h3>
+                    <p class="m-uc__lead">햇살을 피하지 않는 사람의 SUN 리추얼</p>
+                  </div>
+                </article>
+                <article class="m-uc__card" data-t="1600">
+                  <div class="m-uc__card-img m-halftone m-halftone--warm" aria-hidden="true"></div>
+                  <div class="m-uc__card-body">
+                    <div class="m-uc__time"><strong>16:00</strong></div>
+                    <p class="m-uc__moment">A Free Moment</p>
+                    <h3 class="m-uc__name">햇살 산책</h3>
+                    <p class="m-uc__lead">햇살을 그대로 즐기는 시간</p>
+                  </div>
+                </article>
+                <article class="m-uc__card" data-t="1800">
+                  <div class="m-uc__card-img m-halftone m-halftone--sunset" aria-hidden="true"></div>
+                  <div class="m-uc__card-body">
+                    <div class="m-uc__time"><strong>18:00</strong></div>
+                    <p class="m-uc__moment">A Drive Moment</p>
+                    <h3 class="m-uc__name">드라이브 케어</h3>
+                    <p class="m-uc__lead">빛이 오래 머무는 이동 시간에도 이어지는 보호</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 10 RITUAL ===== -->
+      <section class="m-section m-ritual" id="sec-10">
+        <div class="m-ritual__head">
+          <p class="m-eyebrow" style="display:flex;justify-content:center;"><strong>10</strong>· Ritual</p>
+          <h2>햇살을 만나기 전,<br/>3단계로 부착합니다.</h2>
+        </div>
+        <div class="m-ritual__steps">
+          <article class="m-ritual__step">
+            <p class="m-ritual__num">01 · Ready</p>
+            <h3>파우치 개봉 · L/R 확인</h3>
+            <p>파우치를 열고 L/R 방향을 확인합니다.</p>
+          </article>
+          <article class="m-ritual__step">
+            <p class="m-ritual__num">02 · Set</p>
+            <h3>광대존에 안착</h3>
+            <p>햇살이 먼저 닿는 광대존에 올린 뒤 가볍게 눌러 안착시켜 줍니다.</p>
+          </article>
+          <article class="m-ritual__step">
+            <p class="m-ritual__num">03 · Go</p>
+            <h3>일상으로 이어짐</h3>
+            <p>피부와 하나가 된 듯한 피팅감으로 일상을 이어갑니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===== 11 FAQ ===== -->
+      <section class="m-section m-faq" id="sec-11">
+        <div class="m-faq__head">
+          <p class="m-eyebrow" style="display:flex;justify-content:center;"><strong>11</strong>· FAQ</p>
+          <h2>자주 묻는 질문</h2>
+          <p>납득 강화 · 기술 신뢰 · 깊이 설명</p>
+        </div>
+        <div class="m-faq__inner">
+          <div class="m-faq__group">
+            <h4>이해</h4>
+            <details class="m-faq__item" open>
+              <summary>Sun Veil은 정확히 어떤 제품인가요?</summary>
+              <p>Sun Veil은 피부 위에 안착되는 초박막 멤브레인(나노 섬유)과 스킨케어 성분을 담은 케어층이 결합된 반건식(hybrid dry-to-wet) 구조의 이중 레이어 패치형 제품입니다.</p>
+            </details>
+            <details class="m-faq__item">
+              <summary>투명한데 자외선 차단이 가능한 이유는 무엇인가요?</summary>
+              <p>멤브레인 내부에 자외선 대응 구조가 균일하게 분포되어 있습니다. 가시광선은 통과시키고, 자외선은 흡수·산란시키도록 설계되어 있습니다.</p>
+            </details>
+            <details class="m-faq__item">
+              <summary>일반 필름형 선패치와 무엇이 다른가요?</summary>
+              <p>일반 투명 선패치는 필름 형태로 피부를 덮고 가두는 구조입니다. Sun Veil은 나노 섬유 기반 멤브레인 구조로 피부를 가두지 않고 밀착되며, 공기와 수분 흐름을 유지합니다.</p>
+            </details>
+            <details class="m-faq__item">
+              <summary>점착 성분 없이 어떻게 밀착되나요?</summary>
+              <p>초박막 멤브레인의 기공 구조와 스킨케어 제형의 점성 기반 Moisture-Bonding 방식이 결합되어 피부에 자연스럽게 안착됩니다.</p>
+            </details>
+          </div>
+          <div class="m-faq__group">
+            <h4>신뢰</h4>
+            <details class="m-faq__item">
+              <summary>민감한 피부나 시술 후에도 사용할 수 있나요?</summary>
+              <p>독일 Dermatest®에서 민감 피부 대상 첩포 시험 및 2주 임상 시험 결과 EXCELLENT 등급을 받았습니다.</p>
+            </details>
+            <details class="m-faq__item">
+              <summary>UPF와 SPF의 차이는 무엇인가요?</summary>
+              <p>SPF는 자외선 차단제를 피부에 바른 후 주로 UVB로부터 보호하는 지표, UPF는 원단·소재 자체가 자외선을 얼마나 차단하는지를 나타내는 지표입니다.</p>
+            </details>
+          </div>
+          <div class="m-faq__group">
+            <h4>사용 경험</h4>
+            <details class="m-faq__item">
+              <summary>촉감이 어떤가요? 붙어 있는 게 느껴지나요?</summary>
+              <p>0.004mm 초박막 구조로 거의 촉감이 느껴지지 않으며, 시간이 지나면 붙어 있는 사실조차 잊기 쉬운 착용감을 구현했습니다.</p>
+            </details>
+            <details class="m-faq__item">
+              <summary>표정을 지어도 어색하거나 거슬리지 않나요?</summary>
+              <p>웃고 말하는 순간에도 이질감 없이 자연스럽게 따라 움직이며, 피부 움직임을 방해하지 않는 편안한 착용감을 구현했습니다.</p>
+            </details>
+            <details class="m-faq__item">
+              <summary>거울 없이도 부착 가능한가요?</summary>
+              <p>L/R 방향 구분과 직관적 위치 설계를 통해 손끝 감각만으로도 비교적 쉽게 부착할 수 있습니다.</p>
+            </details>
+            <details class="m-faq__item">
+              <summary>재사용 가능한가요?</summary>
+              <p>위생과 기능 유지를 고려해 1회 사용을 권장합니다.</p>
+            </details>
+          </div>
+          <div class="m-faq__group">
+            <h4>최종</h4>
+            <details class="m-faq__item">
+              <summary>그래서, 왜 선베일인가요?</summary>
+              <p>눈가 아래·광대 부위는 자외선 노출이 높으면서도 피부가 얇고 민감해 보호가 가장 까다로운 영역입니다. Sun Veil은 클린 무점착 밀착 구조와 초박막 멤브레인 구조로, 피부를 가두지 않으면서 자외선이 먼저 차단되는 방식의 보호를 구현합니다.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <footer class="m-foot">
+        <p>AYROW · Reverse AG Code™ Sun Veil · Mixed v1 (Blueprint × Prototype + Halftone) · 카피는 고객사 원문 그대로</p>
+      </footer>
+
+    </div><!-- /m-scroll -->
+  </div><!-- /m-content -->
+
+</div><!-- /m-app -->
+
+<script>
+(function () {
+  var sc = document.getElementById('mScroll');
+  if (!sc) return;
+
+  /* Sidebar toggle */
+  var side = document.getElementById('mSide');
+  var toggle = document.getElementById('mSideToggle');
+  if (toggle) toggle.addEventListener('click', function () { side.classList.toggle('is-min'); });
+
+  /* Sidebar item — scroll to */
+  document.querySelectorAll('.m-side__item[data-section]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var t = document.getElementById(this.dataset.section);
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  /* Sidebar active state */
+  var sections = document.querySelectorAll('.m-section');
+  var sbItems = document.querySelectorAll('.m-side__item[data-section]');
+  function updateActive() {
+    var st = sc.scrollTop;
+    var active = null;
+    sections.forEach(function (s) {
+      if (s.offsetTop <= st + 120) active = s.id;
+    });
+    sbItems.forEach(function (b) {
+      b.classList.toggle('is-active', b.dataset.section === active);
+    });
+  }
+  sc.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  /* Fullpage Hybrid — Quick FAQ (한 질문 한 화면) */
+  (function () {
+    var wrap   = document.getElementById('mQfaqfWrap');
+    var stage  = document.getElementById('mQfaqfStage');
+    var prog   = document.getElementById('mQfaqfProgress');
+    if (!wrap || !stage) return;
+    var panels = wrap.querySelectorAll('.m-qfaqf__panel');
+    var bars   = prog ? prog.querySelectorAll('span') : [];
+    var total  = panels.length;
+    if (!total) return;
+
+    function onScroll() {
+      var top    = wrap.offsetTop;
+      var height = wrap.offsetHeight;
+      var stageH = stage.offsetHeight;
+      var range  = height - stageH;
+      var s      = sc.scrollTop - top;
+      if (s < 0) s = 0;
+      if (s > range) s = range;
+      var p01    = range > 0 ? s / range : 0;
+      var idx    = Math.min(total - 1, Math.floor(p01 * total));
+      var sub    = (p01 * total) - idx; // 0 ~ 1 within current panel
+
+      panels.forEach(function (panel, i) {
+        panel.classList.toggle('is-active', i === idx);
+      });
+
+      bars.forEach(function (b, i) {
+        if (i < idx) {
+          b.classList.add('is-done'); b.classList.remove('is-on');
+          b.style.setProperty('--p', 1);
+        } else if (i === idx) {
+          b.classList.add('is-on'); b.classList.remove('is-done');
+          b.style.setProperty('--p', sub);
+        } else {
+          b.classList.remove('is-on', 'is-done');
+          b.style.setProperty('--p', 0);
+        }
+      });
+
+      var current = panels[idx];
+      var isNo = current && current.classList.contains('is-no');
+      stage.classList.toggle('is-no', isNo);
+    }
+
+    sc.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  /* Sticky horizontal scroll — Use Cases */
+  (function () {
+    var wrap = document.getElementById('mUcWrap');
+    var sect = document.getElementById('mUc');
+    var trk  = document.getElementById('mUcTrack');
+    if (!wrap || !sect || !trk) return;
+    var dist = 0;
+    function measure() {
+      var pw = sc.clientWidth;
+      var cw = 980;
+      var right = (pw + cw) / 2;
+      var tw = trk.scrollWidth;
+      dist = Math.max(0, tw - right + 48);
+      wrap.style.height = sect.offsetHeight + dist + 'px';
+    }
+    function onScroll() {
+      var s = sc.scrollTop - wrap.offsetTop;
+      if (s < 0) s = 0;
+      if (s > dist) s = dist;
+      trk.style.transform = 'translateX(' + (-s) + 'px)';
+    }
+    measure();
+    sc.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', function () { measure(); onScroll(); });
+  })();
+
+  /* Image Reveal — UV 시각화 */
+  (function () {
+    var wrap = document.getElementById('mRevealWrap');
+    var mask = document.getElementById('mRevealMask');
+    if (!wrap || !mask) return;
+    function onScroll() {
+      var range = wrap.offsetHeight - sc.clientHeight;
+      if (range <= 0) return;
+      var s = Math.max(0, sc.scrollTop - wrap.offsetTop);
+      var p = Math.min(1, s / range);
+      mask.style.clipPath = 'inset(0 ' + ((1 - p) * 100) + '% 0 0)';
+    }
+    sc.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+})();
+</script>
+
+</body>
+</html>

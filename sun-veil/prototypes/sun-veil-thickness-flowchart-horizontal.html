@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil — Thickness Horizontal Pan</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    :root {
+      --bleu: var(--primitive-bleu, #2e3a8a);
+      --bleu-deep: color-mix(in srgb, var(--primitive-bleu, #2e3a8a) 70%, black);
+      --bleu-soft: color-mix(in srgb, var(--primitive-bleu, #2e3a8a) 45%, white);
+      --bleu-faint: color-mix(in srgb, var(--primitive-bleu, #2e3a8a) 18%, white);
+    }
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+
+    /* ---- intro ---- */
+    .intro {
+      max-width: 880px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+    }
+    .intro h1 { margin: 0 0 0.6em; font-size: clamp(28px, 4vw, 44px); }
+    .intro p  { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+    .kicker {
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.4em;
+    }
+
+    /* ============================================
+       Horizontal Flow Chart — full-bleed + sticky pan
+       ============================================ */
+    .hflow {
+      position: relative;
+      width: 100%;
+      height: 360vh; /* 스크롤 길이 — 길수록 슬로우 진행 */
+      background:
+        linear-gradient(180deg,
+          var(--bleu-deep) 0%,
+          var(--bleu) 30%,
+          var(--bleu) 70%,
+          var(--bleu-soft) 100%);
+      color: white;
+    }
+    .hflow__sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    /* 상단 인디케이터 */
+    .hflow__head {
+      padding: clamp(20px, 4vh, 40px) clamp(20px, 5vw, 48px) 8px;
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 16px;
+    }
+    .hflow__title {
+      margin: 0;
+      font-size: clamp(16px, 1.6vw, 20px);
+      font-weight: 500;
+      letter-spacing: -0.005em;
+      color: rgba(255,255,255,0.95);
+    }
+    .hflow__progress-wrap {
+      flex: 0 0 200px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hflow__progress-track {
+      flex: 1; height: 2px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 1px; overflow: hidden;
+    }
+    .hflow__progress-bar {
+      height: 100%; width: 0%;
+      background: white;
+      transform-origin: left;
+    }
+    .hflow__progress-label {
+      font-size: 11px; letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.7);
+      font-variant-numeric: tabular-nums;
+      min-width: 36px; text-align: right;
+    }
+
+    /* 차트 wrap (스크롤에 따라 translateX) */
+    .hflow__chart-area {
+      position: relative;
+      overflow: visible;
+      align-self: center;
+    }
+    .hflow__chart {
+      height: 60vh;
+      width: max-content; /* SVG 자연 비율 유지 — viewBox 14:3 → height 60vh × 14/3 */
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
+    }
+
+    /* 하단 caption */
+    .hflow__foot {
+      padding: 8px clamp(20px, 5vw, 48px) clamp(20px, 4vh, 40px);
+      color: rgba(255,255,255,0.55);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    /* SVG 차트 스타일 */
+    .hflow-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+    .hflow-grid { stroke: rgba(255,255,255,0.08); stroke-width: 0.5; }
+    .hflow-axis-text { font-size: 14px; fill: rgba(255,255,255,0.55); font-variant-numeric: tabular-nums; }
+    .hflow-axis-label { font-size: 14px; fill: rgba(255,255,255,0.7); }
+
+    /* 영역 fill (흰색 + 그라디언트) */
+    .hflow-area { fill: url(#flowGrad); opacity: 0.92; }
+    .hflow-stroke {
+      fill: none;
+      stroke: white;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    /* 마커 */
+    .hflow-marker {
+      opacity: 0;
+      transform: translateY(-8px);
+      transform-box: fill-box;
+      transition: opacity 600ms ease, transform 600ms cubic-bezier(0.34, 1.3, 0.64, 1);
+    }
+    .hflow-marker.is-on { opacity: 1; transform: translateY(0); }
+
+    .hflow-dot { fill: var(--bleu); }
+    .hflow-dot-ring { fill: none; stroke: white; stroke-width: 2; }
+    .hflow-leader { stroke: white; stroke-width: 1; opacity: 0.4; stroke-dasharray: 3 4; }
+
+    .hflow-tip-bg {
+      fill: white;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18));
+    }
+    .hflow-tip-name {
+      font-size: 18px;
+      fill: var(--semantic-on-surface);
+      font-weight: 600;
+    }
+    .hflow-tip-value {
+      font-size: 14px;
+      fill: var(--semantic-on-surface);
+      opacity: 0.6;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 마지막 Sun Veil 마커 — Bleu 박스 + 흰 텍스트 + pop */
+    .hflow-marker--final .hflow-tip-bg {
+      fill: var(--bleu-deep);
+      filter: drop-shadow(0 6px 24px rgba(0,0,0,0.35));
+    }
+    .hflow-marker--final .hflow-tip-name { fill: white; font-size: 22px; }
+    .hflow-marker--final .hflow-tip-value { fill: rgba(255,255,255,0.85); font-size: 14px; }
+    .hflow-marker--final .hflow-dot { fill: white; stroke: var(--bleu); stroke-width: 2; }
+    .hflow-marker--final .hflow-dot-ring { stroke: white; stroke-width: 2.5; }
+    .hflow-marker--final.is-on {
+      animation: final-pop 1s cubic-bezier(0.34, 1.4, 0.64, 1) 1;
+    }
+    @keyframes final-pop {
+      0%   { opacity: 0; transform: translateY(-12px) scale(0.9); }
+      55%  { opacity: 1; transform: translateY(0) scale(1.05); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* outro */
+    .outro {
+      max-width: 880px; margin: 0 auto;
+      padding: 12vh max(5vw, 24px);
+    }
+    .outro h2 { margin: 0 0 0.6em; font-size: clamp(22px, 2.4vw, 28px); }
+    .outro p { margin: 0 0 0.6em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+
+    /* reduced motion — section 길이 줄이고 chart 정적 표시 */
+    @media (prefers-reduced-motion: reduce) {
+      .hflow { height: 100vh; }
+      .hflow__sticky { position: static; height: auto; }
+      .hflow__chart { width: 100%; transform: none !important; }
+      .hflow-marker { opacity: 1 !important; transform: none !important; animation: none !important; }
+    }
+
+    /* 모바일 — 차트 폭 줄이기, 텍스트 크기 조정 */
+    @media (max-width: 700px) {
+      .hflow { height: 280vh; }
+      .hflow__chart { height: 55vh; width: max-content; }
+      .hflow__head { flex-direction: column; align-items: stretch; }
+      .hflow__progress-wrap { flex: none; }
+      .hflow-tip-name { font-size: 14px; }
+      .hflow-tip-value { font-size: 11px; }
+      .hflow-marker--final .hflow-tip-name { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <section class="intro">
+    <p class="kicker">Sun Veil PDP / Thickness Horizontal Pan · Scroll-driven</p>
+    <h1>스크롤하면 차트가 가로로 진행하며 두께가 얇아진다.</h1>
+    <p>섹션이 화면 가득 펼쳐지고, 페이지 세로 스크롤이 곧 차트의 가로 panning이 됩니다. 차트는 화면 너비의 약 2.8배. 신용카드부터 Sun Veil(약 1px)까지 흐름으로 줄어드는 동안 친숙한 사물 마커가 viewport에 진입할 때마다 라벨이 등장하고, 마지막에 Sun Veil이 임팩트로 자리잡습니다.</p>
+    <p>아래로 스크롤하세요.</p>
+  </section>
+
+  <!-- ============================================
+       FULL-BLEED HORIZONTAL FLOW
+       ============================================ -->
+  <section class="hflow" id="hflow">
+    <div class="hflow__sticky">
+      <header class="hflow__head">
+        <h2 class="hflow__title">두께 흐름 — 0.76 mm → 0.004 mm</h2>
+        <div class="hflow__progress-wrap">
+          <div class="hflow__progress-track"><div class="hflow__progress-bar" id="progressBar"></div></div>
+          <span class="hflow__progress-label" id="progressLabel">0%</span>
+        </div>
+      </header>
+
+      <div class="hflow__chart-area">
+        <div class="hflow__chart" id="chart">
+          <svg viewBox="0 0 2800 600" class="hflow-svg" role="img" aria-label="두께 흐름 차트 — 신용카드에서 Sun Veil까지">
+
+            <defs>
+              <!-- 영역 그라디언트 -->
+              <linearGradient id="flowGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="white" stop-opacity="0.95"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0.65"/>
+              </linearGradient>
+            </defs>
+
+            <!-- 배경 그리드 -->
+            <g class="grid">
+              <line class="hflow-grid" x1="0" y1="100" x2="2800" y2="100"/>
+              <line class="hflow-grid" x1="0" y1="200" x2="2800" y2="200"/>
+              <line class="hflow-grid" x1="0" y1="300" x2="2800" y2="300"/>
+              <line class="hflow-grid" x1="0" y1="400" x2="2800" y2="400"/>
+              <line class="hflow-grid" x1="0" y1="500" x2="2800" y2="500"/>
+            </g>
+
+            <!-- Y축 라벨 (좌측 시작 부분에) -->
+            <text x="40" y="60" class="hflow-axis-label">두께</text>
+            <text x="40" y="105" class="hflow-axis-text">두꺼움</text>
+            <text x="40" y="495" class="hflow-axis-text">얇음</text>
+
+            <!-- 영역 path -->
+            <!--
+              M 60,500
+              L 60,80
+              C 600,90 1200,200 1500,290
+              C 1800,380 2200,440 2740,492
+              L 2740,500
+              Z
+            -->
+            <!-- 계단식 path — 각 사물 두께가 평탄 구간으로, 사이는 수직 drop -->
+            <path
+              class="hflow-area"
+              d="M 60,500
+                 L 60,80
+                 L 720,80
+                 L 720,190
+                 L 1260,190
+                 L 1260,290
+                 L 1780,290
+                 L 1780,420
+                 L 2380,420
+                 L 2380,495
+                 L 2740,495
+                 L 2740,500
+                 Z"/>
+            <path
+              class="hflow-stroke"
+              d="M 60,80
+                 L 720,80
+                 L 720,190
+                 L 1260,190
+                 L 1260,290
+                 L 1780,290
+                 L 1780,420
+                 L 2380,420
+                 L 2380,495
+                 L 2740,495"/>
+
+            <!-- 마커들 (X 위치 포함) -->
+            <!-- 마커 1: 신용카드 (x=420, step y=80) -->
+            <g class="hflow-marker" data-step="0" data-x="420">
+              <line class="hflow-leader" x1="420" y1="80" x2="420" y2="180"/>
+              <circle class="hflow-dot" cx="420" cy="80" r="6"/>
+              <circle class="hflow-dot-ring" cx="420" cy="80" r="11"/>
+              <g transform="translate(420, 215)">
+                <rect class="hflow-tip-bg" x="-90" y="-26" width="180" height="56" rx="10"/>
+                <text class="hflow-tip-name" x="0" y="-4" text-anchor="middle">신용카드</text>
+                <text class="hflow-tip-value" x="0" y="18" text-anchor="middle">0.76 mm</text>
+              </g>
+            </g>
+
+            <!-- 마커 2: 종이 (x=1020, step y=190) -->
+            <g class="hflow-marker" data-step="1" data-x="1020">
+              <line class="hflow-leader" x1="1020" y1="190" x2="1020" y2="250"/>
+              <circle class="hflow-dot" cx="1020" cy="190" r="6"/>
+              <circle class="hflow-dot-ring" cx="1020" cy="190" r="11"/>
+              <g transform="translate(1020, 285)">
+                <rect class="hflow-tip-bg" x="-90" y="-26" width="180" height="56" rx="10"/>
+                <text class="hflow-tip-name" x="0" y="-4" text-anchor="middle">종이 1장</text>
+                <text class="hflow-tip-value" x="0" y="18" text-anchor="middle">0.1 mm</text>
+              </g>
+            </g>
+
+            <!-- 마커 3: 머리카락 (x=1500, y ≈ 290) -->
+            <g class="hflow-marker" data-step="2" data-x="1500">
+              <line class="hflow-leader" x1="1500" y1="290" x2="1500" y2="375"/>
+              <circle class="hflow-dot" cx="1500" cy="290" r="6"/>
+              <circle class="hflow-dot-ring" cx="1500" cy="290" r="11"/>
+              <g transform="translate(1500, 410)">
+                <rect class="hflow-tip-bg" x="-90" y="-26" width="180" height="56" rx="10"/>
+                <text class="hflow-tip-name" x="0" y="-4" text-anchor="middle">머리카락</text>
+                <text class="hflow-tip-value" x="0" y="18" text-anchor="middle">0.07 mm</text>
+              </g>
+            </g>
+
+            <!-- 마커 4: 비닐랩 (x=2050, step y=420) -->
+            <g class="hflow-marker" data-step="3" data-x="2050">
+              <line class="hflow-leader" x1="2050" y1="420" x2="2050" y2="180"/>
+              <circle class="hflow-dot" cx="2050" cy="420" r="6"/>
+              <circle class="hflow-dot-ring" cx="2050" cy="420" r="11"/>
+              <g transform="translate(2050, 145)">
+                <rect class="hflow-tip-bg" x="-90" y="-26" width="180" height="56" rx="10"/>
+                <text class="hflow-tip-name" x="0" y="-4" text-anchor="middle">비닐랩</text>
+                <text class="hflow-tip-value" x="0" y="18" text-anchor="middle">0.012 mm</text>
+              </g>
+            </g>
+
+            <!-- 마커 5: Sun Veil (x=2680, step y=495) — 강조 -->
+            <g class="hflow-marker hflow-marker--final" data-step="4" data-x="2680">
+              <line class="hflow-leader" x1="2680" y1="495" x2="2680" y2="370"/>
+              <circle class="hflow-dot" cx="2680" cy="495" r="8"/>
+              <circle class="hflow-dot-ring" cx="2680" cy="495" r="15"/>
+              <g transform="translate(2680, 320)">
+                <rect class="hflow-tip-bg" x="-115" y="-32" width="230" height="68" rx="12"/>
+                <text class="hflow-tip-name" x="0" y="-6" text-anchor="middle">Sun Veil</text>
+                <text class="hflow-tip-value" x="0" y="22" text-anchor="middle">0.004 mm ≈ 1 px</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <footer class="hflow__foot">
+        ← 페이지를 스크롤하면 차트가 가로로 진행합니다 · 참조 비교 · 시각적 표현
+      </footer>
+    </div>
+  </section>
+
+  <section class="outro">
+    <h2>인터랙션 검증 포인트</h2>
+    <p><strong>Full-bleed gradient</strong> — 섹션 전체가 Bleu vertical gradient (deep → bleu → soft). 차트 영역은 흰색 그라디언트 + 흰 stroke으로 대비.</p>
+    <p><strong>Sticky horizontal pan</strong> — 섹션 height 360vh, sticky inner 100vh. 페이지 세로 스크롤 progress 0→1이 차트 translateX 0 → -(280vw - 100vw) = -180vw로 매핑.</p>
+    <p><strong>마커 진입 활성</strong> — 각 마커의 screen X가 viewport 0 ~ 우측 -100px 사이에 진입하면 fade-in (한 번, cumulative). 사용자가 중간에 빠르게 스크롤해도 모든 마커가 차례로 등장.</p>
+    <p><strong>Sun Veil 강조</strong> — 마지막 마커는 Bleu-deep 박스 + 흰 텍스트 + 큰 사이즈 + scale 0.9 → 1.05 → 1.0 pop. 차트 우측 끝에서 등장.</p>
+    <p><strong>상단 progress 바</strong> — 화면 우상단에 얇은 흰 바 + % 라벨. 사용자가 현재 어디에 있는지 시각적 피드백.</p>
+    <p><strong>접근성</strong> — prefers-reduced-motion 시 sticky 해제, chart width 100%로 정적 표시, 모든 마커 즉시 노출.</p>
+    <p><strong>모바일</strong> — chart width 320vw로 늘리고 (좁은 화면 보상), 라벨 박스 텍스트 크기 축소. progress 인디케이터는 head 영역 세로 정렬.</p>
+  </section>
+
+  <script>
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const section = document.getElementById('hflow');
+      const chart   = document.getElementById('chart');
+      const progressBar   = document.getElementById('progressBar');
+      const progressLabel = document.getElementById('progressLabel');
+      const markers = document.querySelectorAll('.hflow-marker');
+      const SVG_WIDTH = 2800;
+
+      if (reduce) {
+        markers.forEach((m) => m.classList.add('is-on'));
+        return;
+      }
+
+      const activated = new Set();
+
+      function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const scrolled = -rect.top;
+        const progress = clamp(scrolled / Math.max(1, total), 0, 1);
+
+        // chart translateX
+        const chartWidth = chart.offsetWidth;
+        const viewportWidth = window.innerWidth;
+        const maxTranslate = Math.max(0, chartWidth - viewportWidth);
+        const tx = -progress * maxTranslate;
+        chart.style.transform = `translate3d(${tx}px, 0, 0)`;
+
+        // progress bar
+        progressBar.style.width = (progress * 100).toFixed(1) + '%';
+        progressLabel.textContent = Math.round(progress * 100) + '%';
+
+        // 마커 활성 — viewport 안에 들어왔는지
+        const scaleX = chartWidth / SVG_WIDTH;
+        markers.forEach((m) => {
+          const step = m.dataset.step;
+          if (activated.has(step)) return;
+          const svgX = parseFloat(m.dataset.x);
+          const screenX = svgX * scaleX + tx;
+          // viewport 좌측 0 ~ 우측 -120px 사이에 진입하면 활성
+          if (screenX > 60 && screenX < viewportWidth - 120) {
+            m.classList.add('is-on');
+            activated.add(step);
+          }
+        });
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(() => { update(); ticking = false; });
+          ticking = true;
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
+    })();
+  </script>
+</body>
+</html>

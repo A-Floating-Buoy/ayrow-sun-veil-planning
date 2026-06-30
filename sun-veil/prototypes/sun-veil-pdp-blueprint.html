@@ -1,0 +1,2731 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP — Design Blueprint</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/surface-modes.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    /* ================================
+       Blueprint shell
+       ================================ */
+    body { margin: 0; background: var(--semantic-bg-default); color: var(--semantic-on-surface); }
+    .bp-page { padding: var(--layout-page-md) clamp(24px, 3vw, 48px); }
+    .bp-shell { width: min(100%, 1600px); margin: 0 auto; }
+    .bp-narrow { max-width: var(--layout-max-w); margin: 0 auto; }
+
+    .bp-doc { min-height: 36svh; display: grid; align-content: center; padding-bottom: var(--layout-section-md); }
+    .bp-doc__stack { display: grid; gap: var(--spacing-4); }
+    .bp-kicker { color: var(--semantic-on-surface-accent); }
+    .bp-muted  { color: var(--semantic-on-surface-muted); }
+
+    .bp-buybox-note {
+      padding: var(--spacing-5);
+      border: 1px dashed var(--semantic-border-muted);
+      border-radius: 12px;
+      color: var(--semantic-on-surface-muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: var(--layout-section-md);
+    }
+
+    /* Anchor nav (left, sticky) */
+    .bp-anchornav {
+      position: sticky; top: var(--spacing-6);
+      align-self: start;
+    }
+    .bp-anchornav ol {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; gap: 6px;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .bp-anchornav a {
+      display: block;
+      padding: 6px 8px;
+      color: var(--semantic-on-surface-muted);
+      text-decoration: none;
+      border-left: 1px solid var(--semantic-border-muted);
+      letter-spacing: 0.02em;
+    }
+    .bp-anchornav a:hover { color: var(--semantic-on-surface); border-left-color: var(--semantic-on-surface); }
+    .bp-anchornav h4 {
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent);
+      margin: 0 0 var(--spacing-3); font-weight: 600;
+    }
+
+    /* Section grid: anchor + main */
+    .bp-grid {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      gap: var(--spacing-8);
+      align-items: start;
+    }
+    .bp-main { display: grid; gap: var(--layout-section-lg); min-width: 0; }
+
+    .bp-section { display: grid; gap: var(--spacing-6); scroll-margin-top: var(--spacing-8); }
+    .bp-section__head { display: grid; gap: var(--spacing-2); padding-bottom: var(--spacing-4); border-bottom: 1px solid var(--semantic-border-muted); }
+    .bp-section__index {
+      display: inline-flex; gap: 8px; align-items: baseline;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+      font-variant-numeric: tabular-nums; font-weight: 600;
+    }
+    .bp-section__index strong { color: var(--semantic-on-surface); }
+    .bp-section__title { color: var(--semantic-on-surface); }
+    .bp-section__sub  { color: var(--semantic-on-surface-muted); }
+
+    .bp-section__body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: var(--spacing-8); align-items: start; }
+    .bp-aside {
+      position: sticky; top: var(--spacing-6);
+      display: grid; gap: var(--spacing-5);
+    }
+
+    /* Canvas — desktop sketch */
+    .bp-canvas {
+      background: var(--semantic-bg-subtle, #FBF6EC);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 14px;
+      padding: var(--spacing-7);
+      overflow: hidden;
+      position: relative;
+    }
+    .bp-canvas--accent {
+      background: var(--primitive-creme-soft, #FBF8D0);
+      border-color: var(--primitive-creme-line, #D9CF5B);
+    }
+    .bp-canvas--ciel {
+      background: var(--primitive-brand-tertiary-500, #BBD5FD);
+      color: var(--primitive-bleu, #2e3a8a);
+      border-color: rgba(46,58,138,0.16);
+    }
+    .bp-canvas--ink {
+      background: var(--primitive-neutral-950, #111);
+      color: #ffffff;
+      border-color: #000;
+    }
+    .bp-canvas__device {
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+      margin-bottom: var(--spacing-5);
+    }
+
+    /* Phone mockup */
+    .bp-phone {
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 9 / 19;
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 22px;
+      padding: 12px 10px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 8px;
+      overflow: hidden;
+    }
+    .bp-phone__bar {
+      font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+      display: flex; justify-content: space-between;
+    }
+    .bp-phone__body {
+      display: grid; gap: 8px; align-content: start;
+      overflow: hidden;
+    }
+
+    /* Memo box */
+    .bp-memo {
+      padding: var(--spacing-5);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 10px;
+      display: grid; gap: var(--spacing-3);
+    }
+    .bp-memo h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent);
+      font-weight: 600;
+    }
+    .bp-memo p { margin: 0; color: var(--semantic-on-surface-muted); font-size: 12.5px; line-height: 1.6; }
+    .bp-memo ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: 12.5px; line-height: 1.55; color: var(--semantic-on-surface-muted); }
+
+    /* RA flag */
+    .bp-ra {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 7px;
+      background: rgba(177,75,58,0.12); color: #b14b3a;
+      border-radius: 4px;
+      font-size: 10px; letter-spacing: 0.04em; font-weight: 600;
+    }
+    .bp-ra::before { content: "•"; }
+
+    /* Common atoms */
+    .bp-tag {
+      display: inline-flex; align-items: center;
+      padding: 5px 11px;
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--semantic-on-surface-muted);
+      letter-spacing: 0.02em;
+      background: rgba(255,255,255,0.4);
+    }
+    .bp-chip {
+      display: inline-flex; align-items: baseline;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--semantic-on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+    .bp-chip strong { font-weight: 600; }
+    .bp-chiplist { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    /* Image placeholder */
+    .bp-img {
+      aspect-ratio: 4/5;
+      border-radius: 10px;
+      background: linear-gradient(155deg, #F4EAD0 0%, #EAD8B0 60%, #D9BD7E 100%);
+      position: relative; overflow: hidden;
+      display: grid; place-items: center;
+    }
+    .bp-img::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(255,255,255,0.55), transparent 35%),
+        radial-gradient(circle at 25% 70%, rgba(187,213,253,0.32), transparent 50%);
+    }
+    .bp-img__label {
+      position: relative; z-index: 1;
+      color: rgba(0,0,0,0.5);
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      text-align: center;
+    }
+    .bp-img--simple { background: rgba(0,0,0,0.04); border: 1px dashed rgba(0,0,0,0.12); }
+    .bp-img--simple::before { display: none; }
+    .bp-img--landscape { aspect-ratio: 16/9; }
+    .bp-img--square { aspect-ratio: 1/1; }
+
+    /* ================================
+       Section-specific blocks
+       ================================ */
+
+    /* HERO */
+    .hero { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--layout-block); align-items: center; }
+    .hero__copy { display: grid; gap: var(--spacing-6); }
+    .hero__brand {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .hero__lead {
+      font-size: 44px; line-height: 1.18; letter-spacing: -0.01em;
+      font-weight: 400;
+      color: var(--semantic-on-surface);
+    }
+    .hero__lead .hl-line { display: block; }
+    .hero__lead .hl-strong { font-weight: 500; }
+    .hero__sub {
+      font-size: 15px; line-height: 1.6;
+      color: var(--semantic-on-surface-muted);
+      max-width: 32ch;
+    }
+    .hero__data {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+      margin-top: var(--spacing-3);
+    }
+    .hero__data-item {
+      padding: 12px 10px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 8px;
+      display: grid; gap: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .hero__data-item strong { font-size: 16px; font-weight: 600; }
+    .hero__data-item small { font-size: 10.5px; color: var(--semantic-on-surface-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .hero__visual {
+      aspect-ratio: 5/6;
+      background:
+        radial-gradient(ellipse 70% 60% at 78% 28%, rgba(255,255,255,0.65), transparent 60%),
+        linear-gradient(160deg, #F2E5C5 0%, #E5CC95 50%, #C8A363 100%);
+      border-radius: 14px;
+      position: relative; overflow: hidden;
+      display: grid; place-items: end;
+      padding: var(--spacing-5);
+    }
+    .hero__visual-label {
+      position: relative; z-index: 1;
+      color: rgba(0,0,0,0.55);
+      font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hero__visual::before {
+      content: "0.004"; position: absolute;
+      top: 24px; right: 28px; z-index: 1;
+      font-family: "Suisse Int'l", sans-serif;
+      font-size: 88px; font-weight: 200; line-height: 1;
+      color: rgba(0,0,0,0.18);
+      letter-spacing: -0.02em;
+    }
+    .hero__visual::after {
+      content: "MM"; position: absolute;
+      top: 96px; right: 30px; z-index: 1;
+      font-size: 14px; letter-spacing: 0.12em;
+      color: rgba(0,0,0,0.4); font-weight: 600;
+    }
+
+    /* QUICK FAQ */
+    .qfaq { display: grid; gap: var(--spacing-5); }
+    .qfaq__intro { display: grid; gap: var(--spacing-2); margin-bottom: var(--spacing-3); }
+    .qfaq__rail {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--spacing-3);
+    }
+    .qfaq__panel {
+      aspect-ratio: 9/14;
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+      padding: 14px;
+      display: grid; grid-template-rows: auto 1fr auto auto; gap: 8px;
+      position: relative;
+    }
+    .qfaq__proof {
+      justify-self: center;
+      padding: 4px 9px;
+      background: rgba(0,0,0,0.05);
+      border-radius: 4px;
+      font-size: 9px;
+      letter-spacing: 0.04em;
+      color: var(--semantic-on-surface);
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+      width: fit-content;
+      font-weight: 600;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .qfaq__panel--no .qfaq__proof {
+      background: rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.95);
+    }
+    .qfaq__panel--no {
+      background: var(--primitive-bleu, #2e3a8a);
+      color: #fff;
+      border-color: var(--primitive-bleu, #2e3a8a);
+    }
+    .qfaq__q {
+      font-size: 10.5px; line-height: 1.4;
+      color: var(--semantic-on-surface-muted);
+      letter-spacing: 0.02em;
+    }
+    .qfaq__panel--no .qfaq__q { color: rgba(255,255,255,0.7); }
+    .qfaq__yn {
+      align-self: center;
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 0.95;
+      color: var(--primitive-bleu, #2e3a8a);
+      text-align: center;
+    }
+    .qfaq__panel--no .qfaq__yn { color: #fff; font-size: clamp(36px, 7vw, 60px); }
+    .qfaq__a {
+      font-size: 9.5px; line-height: 1.5;
+      color: var(--semantic-on-surface);
+      text-align: center;
+    }
+    .qfaq__panel--no .qfaq__a { color: rgba(255,255,255,0.85); }
+    .qfaq__progress { display: flex; gap: 4px; margin-top: var(--spacing-2); }
+    .qfaq__progress span { flex: 1; height: 2px; background: rgba(0,0,0,0.1); border-radius: 2px; }
+    .qfaq__progress span.is-on { background: var(--semantic-on-surface); }
+
+    /* INVISIBLE — 3-blocked (impact / ladder / light) */
+    .invs { display: grid; gap: var(--layout-block); }
+    .invs__hero {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--spacing-8);
+      align-items: center;
+      padding: var(--spacing-4) 0;
+    }
+    .invs__metric { font-variant-numeric: tabular-nums; }
+    .invs__metric strong {
+      font-size: 160px; font-weight: 200; line-height: 0.92; letter-spacing: -0.04em;
+      color: var(--semantic-on-surface); display: block;
+    }
+    .invs__metric small {
+      font-size: 11px; letter-spacing: 0.12em; color: var(--semantic-on-surface-muted);
+      text-transform: uppercase; margin-top: 10px; display: inline-block;
+      font-weight: 600;
+    }
+    .invs__lines { display: grid; gap: var(--spacing-3); max-width: 36ch; }
+    .invs__line {
+      font-size: 22px; line-height: 1.45;
+      color: var(--semantic-on-surface);
+      font-weight: 500; letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .invs__sub {
+      font-size: 13px;
+      color: var(--semantic-on-surface-muted);
+      margin: 0; line-height: 1.55;
+    }
+
+    .invs__demos {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--layout-block);
+    }
+    .invs__demo {
+      padding: var(--spacing-6);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+      display: grid; gap: var(--spacing-5);
+    }
+    .invs__demo h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .invs__demo .invs__demo-cap {
+      margin: 0;
+      font-size: 11px; line-height: 1.5;
+      color: var(--semantic-on-surface-muted);
+    }
+
+    /* Thickness ladder */
+    .ladder { display: grid; gap: 10px; }
+    .ladder__row {
+      display: grid;
+      grid-template-columns: 130px 1fr 76px;
+      gap: var(--spacing-3);
+      align-items: center;
+    }
+    .ladder__label {
+      font-size: 12.5px;
+      color: var(--semantic-on-surface);
+      letter-spacing: 0;
+    }
+    .ladder__bar-wrap {
+      height: 14px;
+      background: rgba(0,0,0,0.04);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .ladder__bar {
+      height: 100%;
+      width: var(--w, 0%);
+      background: var(--semantic-on-surface-muted);
+      min-width: 2px;
+      transition: width 0.4s ease-out;
+    }
+    .ladder__row.is-target .ladder__bar {
+      background: var(--primitive-bleu, #2e3a8a);
+    }
+    .ladder__row.is-target .ladder__label {
+      font-weight: 600;
+      color: var(--primitive-bleu, #2e3a8a);
+    }
+    .ladder__value {
+      font-size: 11.5px;
+      color: var(--semantic-on-surface-muted);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      letter-spacing: 0;
+    }
+    .ladder__row.is-target .ladder__value {
+      color: var(--primitive-bleu, #2e3a8a);
+      font-weight: 600;
+    }
+
+    /* Light demo */
+    .lightdemo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-3);
+    }
+    .lightdemo__col {
+      display: grid; gap: var(--spacing-2);
+      text-align: center;
+    }
+    .lightdemo__col h5 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted); font-weight: 600;
+    }
+    .lightdemo__viz {
+      aspect-ratio: 1/1;
+      background: linear-gradient(180deg, #FBF8D0 0%, #F4EAD0 100%);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .lightdemo__col p {
+      margin: 0;
+      font-size: 11.5px; line-height: 1.5;
+      color: var(--semantic-on-surface);
+    }
+    .lightdemo__col.is-target h5 { color: var(--primitive-bleu, #2e3a8a); }
+    .lightdemo__col.is-target .lightdemo__viz {
+      background: linear-gradient(180deg, #DCE6FA 0%, #BBD5FD 100%);
+    }
+
+    @media (max-width: 1024px) {
+      .invs__hero { grid-template-columns: 1fr; gap: var(--spacing-5); }
+      .invs__metric strong { font-size: 110px; }
+      .invs__demos { grid-template-columns: 1fr; }
+    }
+
+    /* WHY THIS ZONE */
+    .why { display: grid; grid-template-columns: 1fr 1fr; gap: var(--layout-block); align-items: stretch; }
+    .why__copy { display: grid; gap: var(--spacing-5); align-content: center; }
+    .why__title { font-size: 32px; line-height: 1.25; letter-spacing: -0.01em; font-weight: 400; }
+    .why__lead { color: var(--semantic-on-surface-muted); line-height: 1.65; font-size: 15px; }
+    .why__list { display: grid; gap: 10px; padding-left: 0; list-style: none; margin: 0; }
+    .why__list li {
+      padding: 10px 14px;
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 8px;
+      font-size: 13.5px;
+    }
+    .why__visual {
+      aspect-ratio: 4/5;
+      background: linear-gradient(160deg, #F2E5C5, #D9BD7E);
+      border-radius: 12px;
+      position: relative; overflow: hidden;
+    }
+    .why__visual svg {
+      position: absolute; inset: 8% 18%;
+      width: auto; height: 84%;
+    }
+
+    /* WHY — Part labels & extensions */
+    .part-label {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+      margin: 0;
+    }
+    .why__when {
+      display: grid; gap: var(--spacing-5);
+      margin-bottom: var(--spacing-7);
+    }
+    .why__when-head { display: grid; gap: var(--spacing-2); }
+    .why__when-head h3 { margin: 0; font-size: 30px; line-height: 1.25; font-weight: 400; letter-spacing: -0.01em; }
+    .why__when-head p { margin: 0; color: var(--semantic-on-surface-muted); font-size: 15px; line-height: 1.6; }
+    .why__when-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-3);
+    }
+    .why__when-card {
+      padding: var(--spacing-4);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 10px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--semantic-on-surface);
+    }
+    .why__sensitive {
+      margin-top: var(--spacing-3);
+      padding: var(--spacing-5);
+      background: rgba(177,75,58,0.05);
+      border: 1px solid rgba(177,75,58,0.18);
+      border-radius: 10px;
+    }
+    .why__sensitive h4 {
+      margin: 0 0 var(--spacing-3);
+      font-size: 13px; font-weight: 600;
+      color: #b14b3a;
+      letter-spacing: 0.02em;
+    }
+    .why__sensitive ul {
+      margin: 0; padding-left: 1.1em;
+      display: grid; gap: 6px;
+      font-size: 13px; line-height: 1.6;
+      color: var(--semantic-on-surface);
+    }
+    .why__divider {
+      border: 0;
+      border-top: 1px solid var(--semantic-border-muted);
+      margin: var(--spacing-7) 0;
+    }
+    .why__where-head { margin-bottom: var(--spacing-5); }
+    .why__bridge {
+      margin-top: var(--spacing-7);
+      padding: var(--spacing-6);
+      text-align: center;
+      background: var(--primitive-creme-soft, #FBF8D0);
+      border: 1px solid var(--primitive-creme-line, #D9CF5B);
+      border-radius: 12px;
+    }
+    .why__bridge p {
+      margin: 0;
+      font-size: 17px; line-height: 1.6;
+      color: var(--semantic-on-surface);
+    }
+    .why__bridge p + p { margin-top: var(--spacing-3); }
+    .why__bridge strong { font-weight: 600; }
+
+    /* FILM vs MEMBRANE */
+    .vs__intro { display: grid; gap: var(--spacing-3); margin-bottom: var(--spacing-6); text-align: center; }
+    .vs__title { font-size: 36px; line-height: 1.2; font-weight: 400; letter-spacing: -0.01em; }
+    .vs__title strong { font-weight: 500; }
+    .vs__sub { color: var(--semantic-on-surface-muted); font-size: 14px; }
+    .vs__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-2);
+      border-top: 1px solid var(--semantic-border-muted);
+      border-bottom: 1px solid var(--semantic-border-muted);
+    }
+    .vs__col { padding: var(--spacing-5); }
+    .vs__col--right {
+      background: rgba(187,213,253,0.18);
+    }
+    .vs__col h4 {
+      margin: 0 0 var(--spacing-3);
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted); font-weight: 600;
+    }
+    .vs__col h3 {
+      margin: 0 0 var(--spacing-4);
+      font-size: 22px; font-weight: 500; line-height: 1.3;
+    }
+    .vs__col--right h3 { color: var(--primitive-bleu, #2e3a8a); }
+    .vs__row {
+      display: grid; grid-template-columns: 1fr; gap: 8px;
+      padding: 10px 0;
+      border-top: 1px dashed rgba(0,0,0,0.1);
+      font-size: 13px; line-height: 1.55;
+    }
+    .vs__row:first-child { border-top: 0; padding-top: 0; }
+    .vs__row em {
+      font-style: normal;
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted); font-weight: 600;
+    }
+    .vs__quote {
+      margin-top: var(--spacing-4);
+      padding: var(--spacing-3);
+      border-left: 2px solid var(--semantic-on-surface);
+      font-size: 13px; line-height: 1.5;
+      color: var(--semantic-on-surface);
+    }
+    .vs__col--right .vs__quote { border-left-color: var(--primitive-bleu, #2e3a8a); color: var(--primitive-bleu, #2e3a8a); }
+
+    /* VS — extended (W1 core section) */
+    .vs__question {
+      margin: var(--spacing-6) 0 0;
+      text-align: center;
+      font-size: 15px;
+      color: var(--semantic-on-surface-muted);
+    }
+    .vs__why {
+      margin-top: var(--layout-block);
+      padding: var(--spacing-7);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 14px;
+      text-align: center;
+      display: grid; gap: var(--spacing-4);
+    }
+    .vs__why-lead {
+      margin: 0;
+      font-size: 14px;
+      color: var(--semantic-on-surface-muted);
+      letter-spacing: 0.02em;
+    }
+    .vs__why-statement {
+      margin: 0;
+      font-size: 36px; line-height: 1.25;
+      font-weight: 500; letter-spacing: -0.01em;
+      color: var(--semantic-on-surface);
+    }
+    .vs__why-list {
+      list-style: none; margin: var(--spacing-2) 0 0; padding: 0;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+      max-width: 1000px; margin-inline: auto;
+      width: 100%;
+    }
+    .vs__why-list li {
+      padding: 12px 10px;
+      background: rgba(0,0,0,0.03);
+      border-radius: 8px;
+      font-size: 12.5px; line-height: 1.5;
+      color: var(--semantic-on-surface);
+      text-align: center;
+    }
+    .vs__choice {
+      margin-top: var(--layout-block);
+      padding: var(--layout-block) var(--spacing-7);
+      border-radius: 14px;
+      text-align: center;
+      display: grid; gap: var(--spacing-2);
+    }
+    .vs__choice p {
+      margin: 0;
+      font-size: 16px;
+      opacity: 0.85;
+    }
+    .vs__choice h3 {
+      margin: 0;
+      font-size: 36px; line-height: 1.25;
+      font-weight: 500; letter-spacing: -0.01em;
+    }
+    .vs__choice h3 strong { font-weight: 600; }
+    .vs__closing {
+      margin: var(--spacing-7) 0 0;
+      text-align: center;
+      font-size: 18px; line-height: 1.5;
+      color: var(--semantic-on-surface);
+      font-weight: 500;
+    }
+    .vs__manifesto {
+      margin: var(--spacing-5) 0 0;
+      padding: var(--spacing-5) 0 0;
+      text-align: center;
+      border-top: 1px solid var(--semantic-border-muted);
+      font-size: 22px; line-height: 1.45;
+      font-weight: 500;
+      color: var(--semantic-on-surface);
+      letter-spacing: -0.01em;
+    }
+
+    /* ========================================
+       ORIGIN DRAWER — semantic dialog
+       ======================================== */
+    .bp-drawer-toggle {
+      position: fixed;
+      top: var(--spacing-6); right: var(--spacing-5);
+      z-index: 50;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 16px;
+      background: var(--semantic-on-surface);
+      color: var(--semantic-bg-default);
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+      font-family: inherit;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .bp-drawer-toggle:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+    }
+    .bp-drawer-toggle::before {
+      content: "";
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--primitive-creme, #F4EAD0);
+    }
+
+    .bp-drawer {
+      width: min(100%, 880px);
+      height: 100dvh; max-height: 100dvh;
+      margin: 0 0 0 auto;
+      border: 0;
+      padding: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.18);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .bp-drawer::backdrop { background: rgba(0,0,0,0.42); }
+    .bp-drawer[open] { animation: bp-drawer-in 0.28s ease-out; }
+    @keyframes bp-drawer-in {
+      from { transform: translateX(40px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+
+    .bp-drawer__head {
+      padding: var(--spacing-5) var(--spacing-6);
+      border-bottom: 1px solid var(--semantic-border-muted);
+      display: flex; align-items: baseline; gap: var(--spacing-4);
+      flex-shrink: 0;
+    }
+    .bp-drawer__head-text { flex: 1; min-width: 0; display: grid; gap: 4px; }
+    .bp-drawer__label {
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent);
+      font-weight: 600;
+      margin: 0;
+    }
+    .bp-drawer__head h2 {
+      margin: 0;
+      font-size: 18px; font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .bp-drawer__close {
+      border: 1px solid var(--semantic-border-muted);
+      background: transparent;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--semantic-on-surface);
+      font-family: inherit;
+      letter-spacing: 0.04em;
+    }
+    .bp-drawer__close:hover { background: rgba(0,0,0,0.05); }
+
+    .bp-drawer__body {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: var(--spacing-6);
+      padding: var(--spacing-5) var(--spacing-6);
+      flex: 1;
+      overflow-y: auto;
+      align-items: start;
+    }
+    .bp-drawer__toc {
+      position: sticky; top: 0;
+      align-self: start;
+    }
+    .bp-drawer__toc h3 {
+      margin: 0 0 var(--spacing-2);
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .bp-drawer__toc ol {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; gap: 3px;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .bp-drawer__toc a {
+      display: block;
+      padding: 5px 8px;
+      border-left: 1px solid var(--semantic-border-muted);
+      color: var(--semantic-on-surface-muted);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    .bp-drawer__toc a:hover { color: var(--semantic-on-surface); border-left-color: var(--semantic-on-surface); background: rgba(0,0,0,0.03); }
+
+    .bp-drawer__main { display: grid; gap: var(--spacing-3); min-width: 0; }
+    .bp-drawer-article {
+      padding: var(--spacing-4);
+      background: var(--semantic-bg-subtle, #FBF6EC);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 10px;
+      scroll-margin-top: var(--spacing-3);
+      display: grid; gap: var(--spacing-3);
+    }
+    .bp-drawer-article > header {
+      display: flex; gap: var(--spacing-3); align-items: baseline;
+      flex-wrap: wrap;
+    }
+    .bp-drawer-article > header > p {
+      margin: 0;
+      font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted); font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .bp-drawer-article > header h3 {
+      margin: 0;
+      font-size: 15px; font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .bp-drawer-article > header em {
+      font-style: normal;
+      font-size: 11px;
+      color: var(--semantic-on-surface-muted);
+      margin-left: auto;
+    }
+    .bp-drawer-article blockquote {
+      margin: 0;
+      padding: var(--spacing-3);
+      background: rgba(0,0,0,0.025);
+      border-left: 2px solid var(--semantic-on-surface);
+      border-radius: 0 6px 6px 0;
+      font-size: 12.5px; line-height: 1.65;
+      color: var(--semantic-on-surface);
+    }
+    .bp-drawer-article blockquote + blockquote { margin-top: var(--spacing-2); }
+    .bp-drawer-article p {
+      margin: 0;
+      font-size: 12px; line-height: 1.6;
+      color: var(--semantic-on-surface-muted);
+    }
+    .bp-drawer-article ul,
+    .bp-drawer-article ol.sub {
+      margin: 0; padding-left: 1.2em;
+      font-size: 12px; line-height: 1.6;
+      color: var(--semantic-on-surface);
+      display: grid; gap: 3px;
+    }
+    .bp-drawer-article ul.flat { list-style: none; padding-left: 0; }
+    .bp-drawer-article ul.flat li::before { content: "· "; color: var(--semantic-on-surface-muted); }
+    .bp-drawer-article section {
+      padding: var(--spacing-3);
+      background: rgba(0,0,0,0.02);
+      border-radius: 6px;
+      display: grid; gap: 6px;
+    }
+    .bp-drawer-article section > h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .bp-drawer-article .ra-flag {
+      display: inline-block;
+      padding: 2px 6px;
+      background: rgba(177,75,58,0.12);
+      color: #b14b3a;
+      border-radius: 4px;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 720px) {
+      .bp-drawer { width: 100%; }
+      .bp-drawer__body { grid-template-columns: 1fr; }
+      .bp-drawer__toc { position: static; }
+      .bp-drawer-toggle { top: auto; bottom: var(--spacing-5); right: var(--spacing-5); }
+    }
+
+    /* CONFIDENCE */
+    .conf__intro { display: grid; gap: var(--spacing-2); margin-bottom: var(--spacing-6); }
+    .conf__title { font-size: 28px; line-height: 1.3; font-weight: 400; letter-spacing: -0.01em; }
+    .conf__source { color: var(--semantic-on-surface-muted); font-size: 12.5px; }
+    .conf__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-3); }
+    .conf__card {
+      padding: var(--spacing-5);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+      display: grid; gap: var(--spacing-3);
+    }
+    .conf__card h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .conf__metrics { display: grid; gap: 6px; }
+    .conf__metric {
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 8px;
+      padding: 8px 0;
+      border-top: 1px dashed rgba(0,0,0,0.1);
+      font-size: 13px;
+    }
+    .conf__metric:first-child { border-top: 0; padding-top: 0; }
+    .conf__metric span { color: var(--semantic-on-surface-muted); }
+    .conf__metric strong { font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+    .conf__caption { font-size: 11px; color: var(--semantic-on-surface-muted); margin-top: var(--spacing-2); }
+
+    /* HOW IT WORKS */
+    .how__title { font-size: 30px; line-height: 1.25; font-weight: 400; letter-spacing: -0.01em; margin-bottom: var(--spacing-5); }
+    .how__layers {
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--layout-block); align-items: stretch;
+    }
+    .how__diagram {
+      aspect-ratio: 4/3;
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+      position: relative; padding: var(--spacing-6);
+      display: grid; place-items: center;
+    }
+    .how__diagram svg { width: 100%; max-width: 320px; height: auto; }
+    .how__list { display: grid; gap: var(--spacing-4); }
+    .how__layer {
+      padding: var(--spacing-4);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 10px;
+      display: grid; gap: 6px;
+    }
+    .how__layer h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .how__layer h3 { margin: 0; font-size: 16px; font-weight: 500; }
+    .how__layer p { margin: 0; font-size: 13px; line-height: 1.55; color: var(--semantic-on-surface-muted); }
+
+    .how__bond {
+      margin-top: var(--spacing-7);
+      padding: var(--spacing-5);
+      background: var(--primitive-creme-soft, #FBF8D0);
+      border: 1px solid var(--primitive-creme-line, #D9CF5B);
+      border-radius: 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: var(--layout-block); align-items: center;
+    }
+    .how__bond h3 { font-size: 22px; line-height: 1.3; font-weight: 500; margin: 0 0 var(--spacing-2); }
+    .how__bond p { font-size: 13.5px; line-height: 1.6; color: var(--semantic-on-surface-muted); margin: 0; }
+
+    /* REVERSE AG CODE */
+    .code__intro { display: grid; gap: var(--spacing-3); margin-bottom: var(--spacing-6); }
+    .code__brand {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .code__title { font-size: 28px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.3; }
+    .code__title sup { font-size: 0.4em; vertical-align: super; }
+    .code__tier { margin-bottom: var(--spacing-5); }
+    .code__tier h4 {
+      margin: 0 0 var(--spacing-3);
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .code__core {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-3);
+    }
+    .code__pill {
+      padding: var(--spacing-4);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 10px;
+      display: grid; gap: 4px;
+      text-align: center;
+    }
+    .code__pill strong { font-size: 16px; font-weight: 500; letter-spacing: 0.02em; }
+    .code__pill small { font-size: 11px; color: var(--semantic-on-surface-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .code__synergy {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .code__chip {
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 8px;
+      display: grid; gap: 2px;
+    }
+    .code__chip strong { font-size: 13px; font-weight: 500; }
+    .code__chip small { font-size: 11px; color: var(--semantic-on-surface-muted); }
+
+    /* USE CASES Timeline (mini) */
+    .uc { display: grid; gap: var(--spacing-7); }
+    .uc__hero { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--layout-block); align-items: center; }
+    .uc__hero-img {
+      aspect-ratio: 4/5;
+      background: linear-gradient(155deg, #F4EAD0, #D9BD7E);
+      border-radius: 12px; position: relative; overflow: hidden;
+    }
+    .uc__hero-img::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 78% 22%, rgba(255,255,255,0.55), transparent 35%);
+    }
+    .uc__hero-copy { display: grid; gap: var(--spacing-5); }
+    .uc__time { display: flex; gap: var(--spacing-3); align-items: baseline; font-variant-numeric: tabular-nums; }
+    .uc__time strong { font-size: 56px; font-weight: 300; line-height: 1; letter-spacing: -0.01em; }
+    .uc__time small { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--semantic-on-surface-muted); font-weight: 600; }
+    .uc__moment { font-style: italic; color: var(--semantic-on-surface-muted); }
+    .uc__name { font-size: 24px; font-weight: 500; line-height: 1.25; }
+    .uc__lead { font-size: 16px; line-height: 1.55; color: var(--semantic-on-surface); max-width: 26ch; }
+    .uc__rail {
+      position: relative;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--spacing-3);
+    }
+    .uc__rail::before {
+      content: ""; position: absolute; left: 0; right: 0; top: 22px;
+      height: 1px; background: var(--semantic-border-muted);
+    }
+    .uc__node { display: grid; gap: 8px; padding-top: 0; }
+    .uc__node-time {
+      position: relative; padding-top: 38px;
+      font-size: 12.5px; font-variant-numeric: tabular-nums;
+    }
+    .uc__node-time::before {
+      content: ""; position: absolute; top: 16px; left: 0;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--semantic-bg-subtle, #FBF6EC);
+      border: 1px solid var(--semantic-on-surface);
+    }
+    .uc__node-img {
+      aspect-ratio: 4/5; border-radius: 8px;
+    }
+    .uc__node[data-t="0630"] .uc__node-img { background: linear-gradient(155deg, #C9D2E0, #8FA1BC); }
+    .uc__node[data-t="1000"] .uc__node-img { background: linear-gradient(155deg, #F2E8C8, #E0CC92); }
+    .uc__node[data-t="1100"] .uc__node-img { background: linear-gradient(155deg, #F2DCC0, #E0B98E); }
+    .uc__node[data-t="1600"] .uc__node-img { background: linear-gradient(155deg, #F0DBA8, #D9A864); }
+    .uc__node[data-t="1800"] .uc__node-img { background: linear-gradient(155deg, #E8B898, #B86E54); }
+    .uc__node-copy { display: grid; gap: 4px; }
+    .uc__node-moment { font-size: 11px; font-style: italic; color: var(--semantic-on-surface-muted); }
+    .uc__node-name { font-size: 13.5px; font-weight: 500; }
+    .uc__node-lead { font-size: 12px; line-height: 1.5; color: var(--semantic-on-surface-muted); }
+    .uc__beyond {
+      padding: var(--spacing-5);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+      display: grid; grid-template-columns: 1fr 1.5fr; gap: var(--layout-block); align-items: center;
+    }
+    .uc__beyond h4 { margin: 0 0 4px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--semantic-on-surface-muted); font-weight: 600; }
+    .uc__beyond h3 { margin: 0; font-size: 18px; font-weight: 500; }
+    .uc__beyond .uc__moment { margin-top: 2px; font-size: 12.5px; }
+
+    /* RITUAL */
+    .ritual__title { font-size: 28px; line-height: 1.3; font-weight: 400; letter-spacing: -0.01em; margin-bottom: var(--spacing-5); }
+    .ritual__steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-4); }
+    .ritual__step {
+      padding: var(--spacing-5);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 12px;
+      display: grid; gap: var(--spacing-3);
+    }
+    .ritual__num {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+    }
+    .ritual__step h3 { margin: 0; font-size: 20px; font-weight: 500; }
+    .ritual__step p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--semantic-on-surface-muted); }
+    .ritual__viz {
+      aspect-ratio: 4/3;
+      background: rgba(0,0,0,0.04);
+      border-radius: 8px; margin-top: var(--spacing-2);
+      display: grid; place-items: center;
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+    }
+
+    /* FAQ */
+    .faq__title { font-size: 28px; line-height: 1.3; font-weight: 400; letter-spacing: -0.01em; margin-bottom: var(--spacing-3); }
+    .faq__sub { color: var(--semantic-on-surface-muted); margin-bottom: var(--spacing-6); font-size: 14px; }
+    .faq__group { display: grid; gap: var(--spacing-3); margin-bottom: var(--spacing-6); }
+    .faq__group h4 {
+      margin: 0;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--semantic-on-surface-accent); font-weight: 600;
+      padding-bottom: var(--spacing-2);
+      border-bottom: 1px solid var(--semantic-border-muted);
+    }
+    .faq__item {
+      padding: var(--spacing-4);
+      background: var(--semantic-bg-default);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 8px;
+      display: grid; gap: 8px;
+    }
+    .faq__item summary {
+      list-style: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: var(--spacing-3);
+      font-size: 14px; font-weight: 500;
+    }
+    .faq__item summary::-webkit-details-marker { display: none; }
+    .faq__item summary::after {
+      content: "+";
+      font-size: 18px; font-weight: 300;
+      color: var(--semantic-on-surface-muted);
+    }
+    .faq__item[open] summary::after { content: "−"; }
+    .faq__item p {
+      margin: 0; padding-top: var(--spacing-3);
+      font-size: 13px; line-height: 1.7; color: var(--semantic-on-surface-muted);
+      border-top: 1px dashed rgba(0,0,0,0.1);
+    }
+
+    /* Phone variations */
+    .ph-block {
+      background: rgba(0,0,0,0.04);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 9px; line-height: 1.4;
+      color: var(--semantic-on-surface);
+    }
+    .ph-block--accent { background: var(--primitive-bleu, #2e3a8a); color: #fff; }
+    .ph-block--creme { background: var(--primitive-creme-soft, #FBF8D0); }
+    .ph-block--img {
+      aspect-ratio: 4/5;
+      background: linear-gradient(155deg, #F4EAD0, #D9BD7E);
+      padding: 0;
+    }
+    .ph-block strong { font-weight: 600; font-size: 9.5px; display: block; }
+    .ph-block small { font-size: 8.5px; color: var(--semantic-on-surface-muted); display: block; margin-top: 2px; }
+    .ph-block--accent small { color: rgba(255,255,255,0.7); }
+
+    /* Footer */
+    .bp-foot {
+      margin-top: var(--layout-section-lg);
+      padding-top: var(--spacing-6);
+      border-top: 1px solid var(--semantic-border-muted);
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px; letter-spacing: 0.04em;
+    }
+
+    /* Responsive */
+    @media (max-width: 1440px) {
+      .bp-grid { grid-template-columns: 160px minmax(0, 1fr); gap: var(--spacing-7); }
+      .bp-section__body { grid-template-columns: minmax(0, 1fr) 280px; gap: var(--spacing-7); }
+    }
+    @media (max-width: 1180px) {
+      .bp-section__body { grid-template-columns: minmax(0, 1fr) 260px; }
+    }
+    @media (max-width: 1024px) {
+      .bp-grid { grid-template-columns: 1fr; gap: var(--spacing-8); }
+      .bp-anchornav { position: static; }
+      .bp-section__body { grid-template-columns: 1fr; }
+      .bp-aside { position: static; }
+      .hero, .invs, .why, .how__layers, .how__bond, .uc__hero, .uc__beyond { grid-template-columns: 1fr; }
+      .vs__grid, .conf__grid, .ritual__steps, .code__core, .code__synergy { grid-template-columns: 1fr; }
+      .qfaq__rail { grid-template-columns: repeat(5, minmax(140px, 1fr)); overflow-x: auto; padding-bottom: var(--spacing-3); }
+      .qfaq__rail > * { scroll-snap-align: start; }
+      .uc__rail { grid-template-columns: repeat(5, minmax(150px, 1fr)); overflow-x: auto; padding-bottom: var(--spacing-3); }
+    }
+    @media (max-width: 600px) {
+      .hero__lead { font-size: 30px; }
+      .hero__data { grid-template-columns: repeat(2, 1fr); }
+      .invs__metric strong { font-size: 64px; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="bp-drawer-toggle" type="button" data-drawer-open aria-controls="origin-drawer" aria-expanded="false">
+    원문 보기
+  </button>
+
+  <main class="bp-page">
+    <div class="bp-shell">
+
+      <!-- DOC INTRO -->
+      <section class="bp-doc bp-narrow">
+        <div class="bp-doc__stack">
+          <p class="caption-m bp-kicker">Sun Veil PDP / Design Blueprint</p>
+          <h1 class="heading-xxxl">시안 작업의 출발점이 되는 청사진<br/>11개 섹션, 데스크탑 1280 + 모바일 375</h1>
+          <p class="body-xl bp-muted">
+            AYROW v3 디자인 시스템(CRÈME 메인 + CIEL 서브) 위에 카피와 정보 단위를 얹은 1차 청사진. 카피는 고객사 원문 그대로. 시그니처 자리(Hero / Quick FAQ / Invisible / Use Cases Timeline)는 정성껏, 나머지는 디자인 시스템 톤이 입혀진 단순 컴포지션. 우측 메모에 RA 검수 보류 항목 표기.
+          </p>
+        </div>
+      </section>
+
+      <!-- PDP CONTEXT NOTE -->
+      <div class="bp-buybox-note">
+        <strong style="color: var(--semantic-on-surface);">PDP 컨텍스트 안내</strong>
+        — 본 청사진은 카페24 PDP narrative 영역만 다룬다. 상단 buy box(상품 구매 영역)와 하단 상품정보제공 고시는 카페24 표준 영역에 위임하며 시안 범위 밖. 따라서 별도 CTA 섹션과 Product Spec 섹션은 포함하지 않는다.
+      </div>
+
+      <!-- BLUEPRINT GRID -->
+      <div class="bp-grid">
+
+        <!-- LEFT — anchor nav -->
+        <aside class="bp-anchornav">
+          <h4>Sections</h4>
+          <ol>
+            <li><a href="#sec-hero">01 · Hero</a></li>
+            <li><a href="#sec-vs">02 · Film vs Membrane</a></li>
+            <li><a href="#sec-qfaq">03 · Quick FAQ</a></li>
+            <li><a href="#sec-invs">04 · Invisible</a></li>
+            <li><a href="#sec-why">05 · Why This Zone</a></li>
+            <li><a href="#sec-conf">06 · Confidence</a></li>
+            <li><a href="#sec-how">07 · How It Works</a></li>
+            <li><a href="#sec-code">08 · Reverse AG Code™</a></li>
+            <li><a href="#sec-uc">09 · Use Cases</a></li>
+            <li><a href="#sec-ritual">10 · Ritual</a></li>
+            <li><a href="#sec-faq">11 · Full FAQ</a></li>
+          </ol>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="bp-main">
+
+          <!-- ============ 01 HERO ============ -->
+          <section class="bp-section" id="sec-hero">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>01</strong>HERO</span>
+              <h2 class="bp-section__title heading-xl">필름 vs 멤브레인 — One Promise</h2>
+              <p class="bp-section__sub">사용자 질문: "이게 뭐지?" / 회수 키워드: <strong>Breathable (선언)</strong></p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas bp-canvas--accent surface--creme">
+                <p class="bp-canvas__device">Desktop 1280 · Hero</p>
+                <div class="hero">
+                  <div class="hero__copy">
+                    <p class="hero__brand">AYROW · Reverse AG Code™ Sun Veil</p>
+                    <h3 class="hero__lead">
+                      <span class="hl-line">당신이 붙이고 있던 건 <em style="font-style:normal;">‘필름’</em>입니다.</span>
+                      <span class="hl-line hl-strong">Sun Veil은 ‘숨 쉬는 멤브레인’입니다.</span>
+                    </h3>
+                    <p class="hero__sub">
+                      이제, 막는 보호에서 숨 쉬는 보호로 바뀝니다. 막는 필름과 달리, 열·습기·땀은 배출하고 피부를 가두지 않는 나노 섬유 구조.
+                    </p>
+                    <div class="hero__data">
+                      <div class="hero__data-item"><strong>0.004<span style="font-size:11px;font-weight:400;">mm</span></strong><small>Thickness</small></div>
+                      <div class="hero__data-item"><strong>UPF 50+</strong><small>UV Block</small></div>
+                      <div class="hero__data-item"><strong>99.9%</strong><small>UVB Cut</small></div>
+                      <div class="hero__data-item"><strong>Excellent</strong><small>Dermatest</small></div>
+                    </div>
+                  </div>
+                  <div class="hero__visual">
+                    <p class="hero__visual-label">Hero Image · 5:6<br/>제품 + 광대존 부착 컷</p>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>Sun Veil</span><span>14:00</span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block ph-block--creme"><strong>Reverse AG Code™ Sun Veil</strong></div>
+                      <div class="ph-block ph-block--img"></div>
+                      <div class="ph-block">
+                        <strong>당신이 붙이고 있던 건 ‘필름’입니다.</strong>
+                        <small>Sun Veil은 ‘숨 쉬는 멤브레인’입니다.</small>
+                      </div>
+                      <div class="ph-block" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 6px;">
+                        <small><strong style="font-weight:600;">0.004mm</strong></small>
+                        <small><strong style="font-weight:600;">UPF 50+</strong></small>
+                        <small><strong style="font-weight:600;">99.9% UVB</strong></small>
+                        <small><strong style="font-weight:600;">Dermatest Excellent</strong></small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes</h4>
+                  <ul>
+                    <li>Surface: <strong>CRÈME</strong> (--primitive-creme-soft).</li>
+                    <li>Hero visual은 시그니처 자산 — 정성껏.</li>
+                    <li>키 데이터 4-chip 첫 viewport 안에 노출.</li>
+                    <li>BUY BOX는 상단 카페24 영역에 위치 — narrative는 그 아래.</li>
+                  </ul>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 02 FILM vs MEMBRANE (CORE) ============ -->
+          <section class="bp-section" id="sec-vs">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>02</strong>FILM vs MEMBRANE — CORE</span>
+              <h2 class="bp-section__title heading-xl">막는 것 vs 숨 쉬는 것 — 카테고리 차별의 코어</h2>
+              <p class="bp-section__sub">사용자 질문: "왜 다른가?" / 회수 키워드: <strong>Breathable (구조 근거)</strong> / 페이지 가장 큰 무게</p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas">
+                <p class="bp-canvas__device">Desktop · CORE Section · 가장 큰 무게</p>
+
+                <!-- Intro -->
+                <div class="vs__intro">
+                  <h3 class="vs__title"><strong>Film vs Membrane</strong></h3>
+                  <p class="vs__sub">같은 ‘패치’로 보였다면, 완전히 잘못 보고 있던 겁니다.</p>
+                </div>
+
+                <!-- Compare table -->
+                <div class="vs__grid">
+                  <div class="vs__col">
+                    <h4>Existing</h4>
+                    <h3>기존 선패치</h3>
+                    <div class="vs__row"><em>Form</em><span>필름 = 막 (막힘) · 피부를 덮는 구조</span></div>
+                    <div class="vs__row"><em>Air</em><span>공기 흐름 차단</span></div>
+                    <div class="vs__row"><em>Wear</em><span>장시간 사용 시 답답함</span></div>
+                    <div class="vs__row"><em>Skin</em><span>열·수분 정체</span></div>
+                    <div class="vs__quote">“붙이는 순간, 피부는 막힌다”</div>
+                  </div>
+                  <div class="vs__col vs__col--right">
+                    <h4>AYROW</h4>
+                    <h3>에이로우 선베일</h3>
+                    <div class="vs__row"><em>Form</em><span>나노 섬유 멤브레인 = 선택적 투과 구조</span></div>
+                    <div class="vs__row"><em>Air</em><span>공기 & 수분 흐름 유지</span></div>
+                    <div class="vs__row"><em>Wear</em><span>장시간 부착 가능</span></div>
+                    <div class="vs__row"><em>Skin</em><span>피부 호흡 및 컨디션 유지</span></div>
+                    <div class="vs__quote">“붙여도, 피부는 계속 숨 쉰다”</div>
+                  </div>
+                </div>
+                <p class="vs__question">막는 것 vs 숨 쉬는 것 — 당신의 피부는 어떤 쪽을 선택하나요?</p>
+
+                <!-- The Why (원문 카피 회수) -->
+                <div class="vs__why">
+                  <p class="vs__why-lead">선패치, 불편했던 이유는 단 하나입니다.</p>
+                  <h3 class="vs__why-statement">“숨을 못 쉬기 때문입니다.”</h3>
+                  <ul class="vs__why-list">
+                    <li>땀/열/습기로 답답함</li>
+                    <li>필름 텐션으로 인한 밀폐감, 피부 조임</li>
+                    <li>메이크업 위에서 들뜸</li>
+                    <li>접착 성분으로 인한 뻣뻣함, 잔주름 픽스</li>
+                    <li>오래 붙이면 피부 피로감</li>
+                  </ul>
+                </div>
+
+                <!-- The Choice (BLEU 강조 surface) -->
+                <div class="vs__choice surface--bleu">
+                  <p>그래서 우리는 ‘필름막’을 버리고</p>
+                  <h3>‘<strong>나노 섬유</strong>’를 선택했습니다</h3>
+                </div>
+
+                <!-- Closing (1차 narrative closing) -->
+                <p class="vs__closing">“선베일은 보호하지만, 피부를 가두지 않습니다.”</p>
+
+                <!-- Manifesto (카테고리 statement, 우회 톤 한 줄) -->
+                <p class="vs__manifesto">“숨 쉬는 보호는 선택이 아니라, 기준입니다.”</p>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375 · Core</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>02 · vs (Core)</span><span></span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block"><strong>Film vs Membrane</strong><small>같은 ‘패치’로 보였다면, 잘못 보고 있던 겁니다.</small></div>
+                      <div class="ph-block"><strong>기존 선패치 — 필름</strong><small>막힘 / 공기 차단 / 답답함 / 열·수분 정체</small></div>
+                      <div class="ph-block ph-block--accent"><strong>에이로우 선베일 — 멤브레인</strong><small>다공성 / 공기 유지 / 장시간 / 피부 호흡</small></div>
+                      <div class="ph-block"><strong>"숨을 못 쉬기 때문입니다."</strong><small>· 땀/열/습기 / 필름 텐션 / 메이크업 들뜸 / 접착 자극 / 피부 피로감</small></div>
+                      <div class="ph-block ph-block--accent"><strong>'필름막'을 버리고 '나노 섬유'를 선택</strong></div>
+                      <div class="ph-block ph-block--creme"><strong>선베일은 보호하지만, 피부를 가두지 않습니다.</strong></div>
+                      <div class="ph-block"><strong>"숨 쉬는 보호는 선택이 아니라, 기준입니다."</strong></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes — Core Section</h4>
+                  <ul>
+                    <li>페이지에서 <strong>가장 무거운 섹션</strong>. 시각·서사 비중 최대.</li>
+                    <li>흐름: <strong>비교 표 → 이유 → 선택 → Closing → Manifesto</strong>.</li>
+                    <li>"숨을 못 쉬기 때문입니다." — 36px 큰 타이포 statement.</li>
+                    <li>"나노 섬유를 선택했습니다" — BLEU surface 반전.</li>
+                    <li>"숨 쉬는 보호는 선택이 아니라, 기준입니다." — hairline 분리 후 단일 statement (우회 톤).</li>
+                    <li>전략: Membrane 우위를 직접 자랑 X, 기존 Film 문제 해결로 우회.</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4>카피 회수 (원문)</h4>
+                  <ul>
+                    <li>"선패치, 불편했던 이유는 단 하나입니다."</li>
+                    <li>"숨을 못 쉬기 때문입니다."</li>
+                    <li>5개 불편 list</li>
+                    <li>"필름막을 버리고 나노 섬유를 선택했습니다"</li>
+                    <li>"선베일은 보호하지만, 피부를 가두지 않습니다."</li>
+                    <li>"숨 쉬는 보호는 선택이 아니라, 기준입니다." (manifesto 한 줄)</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4 style="color:#b14b3a;">미노출 — 효능 단정 + 카테고리 단언</h4>
+                  <ul>
+                    <li>"선케어의 방식을 재정의한, Aesthetic Guard" — Hero에 1회 노출, 02에서는 미사용</li>
+                    <li>"Sun Veil은 기존 선케어와 다르게 작동합니다" — 직접 자랑 톤</li>
+                    <li>"덧바름과 가둠의 불편을 해결한 숨 쉬는 멤브레인입니다" — 직접 자랑 톤</li>
+                    <li>"외부 자극이 피부 환경에 미치는 영향을 최소화" — 효능 단정</li>
+                    <li>"피부 컨디션을 정돈하는 케어" — 공산품 표기 충돌</li>
+                  </ul>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 03 QUICK FAQ ============ -->
+          <section class="bp-section" id="sec-qfaq">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>03</strong>QUICK FAQ</span>
+              <h2 class="bp-section__title heading-xl">YES × 4 → NO 반전 (Invisible 진입)</h2>
+              <p class="bp-section__sub">사용자 질문: "빠른 의심 5개 해소" / 회수 키워드: <strong>Invisible (진입)</strong></p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas">
+                <p class="bp-canvas__device">Desktop 1280 · Quick FAQ Rail</p>
+                <div class="qfaq">
+                  <div class="qfaq__intro">
+                    <h3 class="heading-l">붙이기 전, 한 번 더 묻습니다.</h3>
+                    <p class="bp-muted body-xl">고객이 가장 자주 떠올리는 의심 다섯 가지.</p>
+                  </div>
+                  <div class="qfaq__rail">
+                    <div class="qfaq__panel">
+                      <p class="qfaq__q">메이크업 위에<br/>사용해도 되나요?</p>
+                      <p class="qfaq__yn">YES</p>
+                      <p class="qfaq__proof">메이크업 친화 설계</p>
+                      <p class="qfaq__a">쿠션 팩트, 파운데이션 등 메이크업 위에서도 투명하고 들뜸 없이 밀착되어 피부 표현을 방해하지 않습니다.</p>
+                    </div>
+                    <div class="qfaq__panel">
+                      <p class="qfaq__q">일반 필름형 선패치와<br/>다른가요?</p>
+                      <p class="qfaq__yn">YES</p>
+                      <p class="qfaq__proof">나노 섬유 멤브레인 구조</p>
+                      <p class="qfaq__a">Sun Veil은 나노 섬유 기반 멤브레인 구조로, 공기와 수분 흐름을 유지하면서도 자외선은 차단합니다.</p>
+                    </div>
+                    <div class="qfaq__panel">
+                      <p class="qfaq__q">점착 성분 없이도<br/>잘 붙나요?</p>
+                      <p class="qfaq__yn">YES</p>
+                      <p class="qfaq__proof">0.7μm 기공 · Moisture-Bonding</p>
+                      <p class="qfaq__a">멤브레인의 기공 구조와 스킨케어 제형의 점성 기반 ‘Moisture-Bonding’ 방식이 결합되어 자연스럽게 안착됩니다.</p>
+                    </div>
+                    <div class="qfaq__panel">
+                      <p class="qfaq__q">투명한데 자외선<br/>차단이 가능한가요?</p>
+                      <p class="qfaq__yn">YES</p>
+                      <p class="qfaq__proof">원단 UPF 50+</p>
+                      <p class="qfaq__a">멤브레인 내부에 분포된 자외선 대응 구조가 빛에 반응해 자외선을 흡수·산란시킵니다.</p>
+                    </div>
+                    <div class="qfaq__panel qfaq__panel--no surface--bleu">
+                      <p class="qfaq__q">티가 나나요?</p>
+                      <p class="qfaq__yn">NO</p>
+                      <p class="qfaq__proof">0.004mm 멤브레인</p>
+                      <p class="qfaq__a">0.004mm 초박막 투명 멤브레인으로 메이크업 위에서도 식별이 어려울 만큼 자연스럽습니다.</p>
+                    </div>
+                  </div>
+                  <div class="qfaq__progress">
+                    <span class="is-on"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375 · Snap</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>Q · 1 / 5</span><span>━ ─ ─ ─ ─</span></div>
+                    <div class="bp-phone__body">
+                      <div style="aspect-ratio: 9/14; background: var(--semantic-bg-default); border: 1px solid var(--semantic-border-muted); border-radius: 8px; padding: 12px; display: grid; grid-template-rows: auto 1fr auto auto; gap: 6px;">
+                        <small style="font-size: 8.5px; color: var(--semantic-on-surface-muted);">메이크업 위에 사용해도 되나요?</small>
+                        <strong style="align-self: center; text-align: center; font-size: 36px; font-weight: 600; color: var(--primitive-bleu, #2e3a8a);">YES</strong>
+                        <span style="justify-self: center; padding: 3px 7px; background: rgba(0,0,0,0.06); border-radius: 3px; font-size: 7.5px; font-weight: 600; letter-spacing: 0.04em;">메이크업 친화 설계</span>
+                        <small style="font-size: 8px; color: var(--semantic-on-surface-muted); text-align: center;">쿠션 팩트, 파운데이션 등 위에서도 투명하게 밀착.</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes</h4>
+                  <ul>
+                    <li>풀페이지 vertical snap (모바일).</li>
+                    <li>NO 패널만 BLEU 반전 surface.</li>
+                    <li>NO → 다음 섹션(Invisible) 진입 cue 1개.</li>
+                    <li>민감 피부 카드는 Confidence로 이동 (NO 흐름 유지).</li>
+                    <li>YES 4장의 답변 형식 통일 — 1문장.</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4>변명 톤 완화 — Mini-Proof Chip</h4>
+                  <ul>
+                    <li>YES/NO와 답변 사이에 데이터·구조 chip 1줄 삽입.</li>
+                    <li>chip 카피: 메이크업 친화 설계 / 나노 섬유 멤브레인 구조 / 0.7μm 기공 · Moisture-Bonding / 원단 UPF 50+ / 0.004mm 멤브레인.</li>
+                    <li>변명 → "검증된 답변" 인상 전환.</li>
+                    <li>NO 패널의 chip은 흰색 반전 처리.</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4 style="color:#b14b3a;">RA 검수</h4>
+                  <p>3번 카드 "Moisture-Bonding" 표기 — 브랜드 등록상표 확인 필요.</p>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 04 INVISIBLE ============ -->
+          <section class="bp-section" id="sec-invs">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>04</strong>INVISIBLE DEMONSTRATION</span>
+              <h2 class="bp-section__title heading-xl">NO 반전을 받는 0.004mm 시각화</h2>
+              <p class="bp-section__sub">사용자 질문: "정말 안 보이나?" / 회수 키워드: <strong>Invisible (체험)</strong></p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas surface--creme">
+                <p class="bp-canvas__device">Desktop · 3-blocked (impact + ladder + light)</p>
+
+                <div class="invs">
+
+                  <!-- TOP — 숫자 임팩트 + 한 줄 카피 -->
+                  <div class="invs__hero">
+                    <div class="invs__metric">
+                      <strong>0.004</strong>
+                      <small>MM · Ultra-thin Membrane</small>
+                    </div>
+                    <div class="invs__lines">
+                      <p class="invs__line">메이크업 위에서도, 피부 위에서도 — 거의 보이지 않게.</p>
+                      <p class="invs__sub">머리카락의 약 1/17 · 종이의 약 1/25 두께</p>
+                    </div>
+                  </div>
+
+                  <!-- DEMOS — ladder + light -->
+                  <div class="invs__demos">
+
+                    <!-- LEFT — 두께 비교 ladder -->
+                    <div class="invs__demo">
+                      <h4>두께 비교 — 일상 사물과 함께</h4>
+                      <div class="ladder">
+                        <div class="ladder__row">
+                          <span class="ladder__label">머리카락</span>
+                          <div class="ladder__bar-wrap"><div class="ladder__bar" style="--w: 50%;"></div></div>
+                          <span class="ladder__value">0.07 mm</span>
+                        </div>
+                        <div class="ladder__row">
+                          <span class="ladder__label">종이 한 장</span>
+                          <div class="ladder__bar-wrap"><div class="ladder__bar" style="--w: 70%;"></div></div>
+                          <span class="ladder__value">0.1 mm</span>
+                        </div>
+                        <div class="ladder__row">
+                          <span class="ladder__label">일반 필름 선패치</span>
+                          <div class="ladder__bar-wrap"><div class="ladder__bar" style="--w: 35%;"></div></div>
+                          <span class="ladder__value">~ 0.05 mm</span>
+                        </div>
+                        <div class="ladder__row is-target">
+                          <span class="ladder__label">Sun Veil</span>
+                          <div class="ladder__bar-wrap"><div class="ladder__bar" style="--w: 3%;"></div></div>
+                          <span class="ladder__value">0.004 mm</span>
+                        </div>
+                      </div>
+                      <p class="invs__demo-cap">* 일반 필름 선패치는 시장 평균 추정치 / Sun Veil은 자체 시험 기준 <span class="bp-ra">RA 검수</span></p>
+                    </div>
+
+                    <!-- RIGHT — 빛 동작 SVG -->
+                    <div class="invs__demo">
+                      <h4>빛이 작동하는 방식</h4>
+                      <div class="lightdemo">
+                        <div class="lightdemo__col">
+                          <h5>Film</h5>
+                          <div class="lightdemo__viz">
+                            <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; display: block;" aria-label="Film 표면 빛 반사">
+                              <!-- Skin -->
+                              <rect x="10" y="80" width="80" height="14" fill="rgba(217,189,126,0.55)" stroke="rgba(0,0,0,0.2)"/>
+                              <text x="50" y="90" font-size="5" text-anchor="middle" fill="rgba(0,0,0,0.55)" letter-spacing="0.5">SKIN</text>
+                              <!-- Film (thicker) -->
+                              <rect x="10" y="55" width="80" height="22" fill="rgba(255,255,255,0.7)" stroke="rgba(0,0,0,0.5)"/>
+                              <text x="50" y="68" font-size="5" text-anchor="middle" fill="rgba(0,0,0,0.6)" letter-spacing="0.5">FILM</text>
+                              <!-- Incoming light -->
+                              <line x1="28" y1="14" x2="48" y2="55" stroke="rgba(217,140,40,0.9)" stroke-width="1.5"/>
+                              <polygon points="48,55 44,49 51,49" fill="rgba(217,140,40,0.9)"/>
+                              <!-- Reflection -->
+                              <line x1="48" y1="55" x2="68" y2="14" stroke="rgba(217,140,40,0.9)" stroke-width="1.5" stroke-dasharray="3 2"/>
+                              <polygon points="68,14 64,18 71,16" fill="rgba(217,140,40,0.9)"/>
+                              <text x="78" y="38" font-size="5" text-anchor="middle" fill="rgba(0,0,0,0.6)" letter-spacing="0.5">REFLECT</text>
+                            </svg>
+                          </div>
+                          <p>표면에서 반사 — 가장자리가 눈에 띈다</p>
+                        </div>
+                        <div class="lightdemo__col is-target">
+                          <h5>Membrane</h5>
+                          <div class="lightdemo__viz">
+                            <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; display: block;" aria-label="Membrane 빛 통과">
+                              <!-- Skin -->
+                              <rect x="10" y="80" width="80" height="14" fill="rgba(217,189,126,0.55)" stroke="rgba(0,0,0,0.2)"/>
+                              <text x="50" y="90" font-size="5" text-anchor="middle" fill="rgba(0,0,0,0.55)" letter-spacing="0.5">SKIN</text>
+                              <!-- Membrane (very thin line) -->
+                              <line x1="10" y1="78" x2="90" y2="78" stroke="rgba(46,58,138,0.85)" stroke-width="1.2" stroke-dasharray="3 1"/>
+                              <text x="92" y="76" font-size="5" text-anchor="end" fill="rgba(46,58,138,0.85)" letter-spacing="0.5">MEMBRANE</text>
+                              <!-- Incoming light passing through -->
+                              <line x1="28" y1="14" x2="48" y2="78" stroke="rgba(217,140,40,0.9)" stroke-width="1.5"/>
+                              <line x1="48" y1="78" x2="58" y2="92" stroke="rgba(217,140,40,0.9)" stroke-width="1.5"/>
+                              <polygon points="58,92 53,89 56,86" fill="rgba(217,140,40,0.9)"/>
+                              <text x="78" y="38" font-size="5" text-anchor="middle" fill="rgba(46,58,138,0.85)" letter-spacing="0.5">PASS</text>
+                            </svg>
+                          </div>
+                          <p>0.004mm 멤브레인 — 빛이 통과해 거의 보이지 않음</p>
+                        </div>
+                      </div>
+                      <p class="invs__demo-cap">* 가시광선은 통과(투명) / 자외선은 멤브레인 내부 자외선 대응 구조에서 흡수·산란</p>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375 · Stack</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>04 · Invisible</span><span></span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block ph-block--creme" style="text-align: center; padding: 16px 8px;">
+                        <strong style="font-size: 36px; font-weight: 200; line-height: 1; letter-spacing: -0.04em;">0.004</strong>
+                        <small style="margin-top: 4px;">MM · Ultra-thin</small>
+                      </div>
+                      <div class="ph-block"><strong>메이크업 위에서도, 피부 위에서도. 거의 보이지 않게.</strong><small>머리카락의 1/17 · 종이의 1/25</small></div>
+                      <div class="ph-block">
+                        <strong>두께 비교</strong>
+                        <small style="display: grid; gap: 2px; margin-top: 4px; font-variant-numeric: tabular-nums;">
+                          <span>머리카락 ━━━━━━ 0.07</span>
+                          <span>종이 ━━━━━━━━ 0.1</span>
+                          <span>필름 패치 ━━━━ 0.05</span>
+                          <span style="color: var(--primitive-bleu, #2e3a8a); font-weight: 600;">Sun Veil ━ 0.004</span>
+                        </small>
+                      </div>
+                      <div class="ph-block"><strong>빛 동작</strong><small>Film: 표면 반사 / Membrane: 빛 통과</small></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes — 3-blocked</h4>
+                  <ul>
+                    <li>본체는 3-blocked: <strong>숫자 임팩트 + 두께 ladder + 빛 동작 SVG</strong>.</li>
+                    <li>측면 단면은 의미 없음 (실제 척도 = 픽셀 1개) → 관계적 시각화로 대체.</li>
+                    <li>두께 ladder: 일상 사물(머리카락/종이) + 비교 anchor(일반 필름 패치).</li>
+                    <li>빛 동작: Film 반사 vs Membrane 통과 — Pain Point 2(눈에 띔)의 시각 입증.</li>
+                    <li>NO → 0.004mm 메트릭으로 viewport 도착 모먼트.</li>
+                    <li>자산 0 · 즉시 구현 가능. 사진 자산 확보 시 hero에 메이크업 위 부착 컷 추가 가능.</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4 style="color:#b14b3a;">RA 검수</h4>
+                  <ul>
+                    <li>"일반 필름 선패치 ~0.05mm" — 시장 평균 추정치, 출처 표기 필요</li>
+                    <li>"가시광선 통과 / 자외선 흡수·산란" — 멤브레인 작동 원리 표현 검수</li>
+                  </ul>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 05 WHY THIS ZONE ============ -->
+          <section class="bp-section" id="sec-why">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>05</strong>WHY THIS ZONE</span>
+              <h2 class="bp-section__title heading-xl">When + Where — 이런 순간, 그리고 이 자리</h2>
+              <p class="bp-section__sub">사용자 질문: "왜 나에게 필요?" / 2-Part 구성 (When → Where)</p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas">
+                <p class="bp-canvas__device">Desktop · Why This Zone (When + Where)</p>
+
+                <!-- Part 1 — WHEN -->
+                <div class="why__when">
+                  <div class="why__when-head">
+                    <p class="part-label">Part 1 — When</p>
+                    <h3>이런 순간, 필요합니다</h3>
+                    <p>보호는 필요하지만, 드러나고 싶지 않을 때.</p>
+                  </div>
+
+                  <div class="why__when-cards">
+                    <div class="why__when-card">자외선 차단제를 덧바르기 힘들 때</div>
+                    <div class="why__when-card">메이크업 위에 덧바르면 무너질까 봐 손이 멈출 때</div>
+                    <div class="why__when-card">하루 종일, 흐름을 끊지 않고 자외선 대응을 유지하고 싶을 때</div>
+                    <div class="why__when-card">러닝·골프·테니스 등 야외 활동이 많은 날, 더 신경 쓰일 때</div>
+                    <div class="why__when-card">실내에서도 생활 자외선이 계속 신경 쓰일 때</div>
+                    <div class="why__when-card">눈가·광대처럼 특정 부위가 유독 노출될 때</div>
+                  </div>
+
+                  <div class="why__sensitive">
+                    <h4>피부가 예민해졌을 때는 더더욱 <span class="bp-ra">RA 검수</span></h4>
+                    <ul>
+                      <li>피부과 시술 후, 자외선 차단은 중요하지만 직접 바르는 것이 부담스러울 때 / 자외선 차단제를 지워야 하지만 세안을 할 수 없을 때</li>
+                      <li>외부 자극에 붉게 달아올라 떼어내는 순간 피부 자극이 염려될 때</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <hr class="why__divider"/>
+
+                <!-- Part 2 — WHERE -->
+                <div class="why__where-head">
+                  <p class="part-label">Part 2 — Where</p>
+                </div>
+                <div class="why">
+                  <div class="why__copy">
+                    <h3 class="why__title">이 자리,<br/>바르는 선케어만으로<br/>충분할까요?</h3>
+                    <p class="why__lead">선케어가 가장 먼저 무너지는 자리. 눈가 아래 광대 부위는 피부가 얇아 보호막이 약하고, 외부 자극에 가장 먼저 노출되며, 표정 움직임으로 가장 먼저 밀리고, 메이크업이 가장 얇게 올라가는 부위입니다. 그래서 선케어가 가장 먼저 지워집니다.</p>
+                    <ul class="why__list">
+                      <li>피부가 얇아 보호막이 약하고</li>
+                      <li>외부 자극에 가장 먼저 노출되고</li>
+                      <li>표정 움직임으로 가장 먼저 밀리고</li>
+                      <li>메이크업이 가장 얇게 올라가는 부위입니다</li>
+                    </ul>
+                  </div>
+                  <div class="why__visual">
+                    <svg viewBox="0 0 200 240" fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="0.8" style="width:100%;height:100%;">
+                      <ellipse cx="100" cy="120" rx="70" ry="100"/>
+                      <circle cx="78" cy="100" r="5" fill="rgba(0,0,0,0.18)" stroke="none"/>
+                      <circle cx="122" cy="100" r="5" fill="rgba(0,0,0,0.18)" stroke="none"/>
+                      <path d="M70 130 Q80 145 95 142" />
+                      <path d="M130 130 Q120 145 105 142" />
+                      <ellipse cx="78" cy="135" rx="14" ry="9" fill="rgba(177,75,58,0.25)" stroke="rgba(177,75,58,0.6)" stroke-dasharray="2 2"/>
+                      <ellipse cx="122" cy="135" rx="14" ry="9" fill="rgba(177,75,58,0.25)" stroke="rgba(177,75,58,0.6)" stroke-dasharray="2 2"/>
+                      <text x="100" y="200" fill="rgba(0,0,0,0.55)" font-size="9" text-anchor="middle" stroke="none" letter-spacing="1.5">광대 / 눈 아래 ZONE</text>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Bridge — 다음 섹션으로 -->
+                <div class="why__bridge">
+                  <p>그래서 우리는, 보호의 방식을 바꿨습니다.</p>
+                  <p>보호는 필요하지만, 방식이 달라야 할 때 — 이럴 때 필요한 건,<br/>선케어가 아니라 <strong>선베일입니다.</strong></p>
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>04 · Why</span><span>1/2</span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block"><strong>이런 순간, 필요합니다</strong><small>보호는 필요하지만, 드러나고 싶지 않을 때</small></div>
+                      <div class="ph-block"><small>· 자외선 차단제 덧바르기 힘들 때<br/>· 메이크업 위에 덧바르면 무너질까 봐<br/>· 흐름을 끊지 않고 유지하고 싶을 때<br/>· 야외 활동이 많은 날<br/>· 실내 생활 자외선<br/>· 눈가·광대 노출</small></div>
+                      <div class="ph-block" style="background: rgba(177,75,58,0.06); border: 1px solid rgba(177,75,58,0.2);"><strong style="color:#b14b3a;">예민해졌을 때는 더더욱</strong><small>시술 후 / 외부 자극</small></div>
+                      <div class="ph-block ph-block--img" style="aspect-ratio: 4/4; background: linear-gradient(160deg,#F2E5C5,#D9BD7E);"></div>
+                      <div class="ph-block"><strong>이 자리, 충분할까요?</strong><small>선케어가 가장 먼저 무너지는 자리</small></div>
+                      <div class="ph-block ph-block--creme"><strong>선케어가 아니라 선베일입니다</strong></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes</h4>
+                  <ul>
+                    <li>2-Part 구성: <strong>When (이런 순간) → Where (이 자리)</strong>.</li>
+                    <li>Part 1: 6 카드 그리드 + 예민 피부 강조 박스(빨간 톤).</li>
+                    <li>Part 2: 광대존 통찰 + 얼굴 hotspot SVG.</li>
+                    <li>Bridge: CRÈME strip — "선케어가 아니라 선베일" 한 줄로 다음 섹션 진입.</li>
+                    <li>인지 순서: 자기 상황 인식 → 부위 통찰 → 해결 방식 전환.</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4 style="color:#b14b3a;">RA 검수</h4>
+                  <ul>
+                    <li>"피부가 예민해졌을 때는 더더욱" 블록 — 시술 후 사용 표현 노출 범위 확인.</li>
+                    <li>"세안을 할 수 없을 때" — 자외선 차단제 제거 어려움 묘사. 공산품 표기와 충돌 여부 검토.</li>
+                  </ul>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 06 CONFIDENCE ============ -->
+          <section class="bp-section" id="sec-conf">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>06</strong>CONFIDENCE</span>
+              <h2 class="bp-section__title heading-xl">데이터로 확인되는 구조</h2>
+              <p class="bp-section__sub">사용자 질문: "믿을 수 있나?" / 회수 키워드: <strong>Breathable (수치)</strong></p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas">
+                <p class="bp-canvas__device">Desktop 1280 · Data 3-tier</p>
+                <div class="conf__intro">
+                  <h3 class="conf__title">보이지 않지만, 데이터로 확인됩니다.</h3>
+                  <p class="conf__source">Dermatest® · FITI 시험 연구원 데이터 기반</p>
+                </div>
+
+                <div class="conf__grid">
+                  <div class="conf__card">
+                    <h4>UV Protection</h4>
+                    <div class="conf__metrics">
+                      <div class="conf__metric"><span>UVB 차단율</span><strong>99.9%</strong></div>
+                      <div class="conf__metric"><span>UVA 차단율</span><strong>95.3%</strong></div>
+                      <div class="conf__metric"><span>UVR 차단율</span><strong>96.3%</strong></div>
+                      <div class="conf__metric"><span>UPF 지수</span><strong>UPF 50+</strong></div>
+                    </div>
+                    <p class="conf__caption">* 원단 시험 기준 · FITI 시험연구원</p>
+                  </div>
+
+                  <div class="conf__card">
+                    <h4>Breathable Structure</h4>
+                    <div class="conf__metrics">
+                      <div class="conf__metric"><span>공기 투과도</span><strong>1.0 미만 mm/s</strong></div>
+                      <div class="conf__metric"><span>투습도</span><strong>12,356 g/m²·24h</strong></div>
+                      <div class="conf__metric"><span>평균 기공 크기</span><strong>0.7 μm</strong></div>
+                      <div class="conf__metric"><span>두께</span><strong>0.004 mm</strong></div>
+                    </div>
+                    <p class="conf__caption">* 물성 시험 기준 · FITI 시험연구원</p>
+                  </div>
+
+                  <div class="conf__card">
+                    <h4>Sensitive Skin & Ethics</h4>
+                    <div class="conf__metrics">
+                      <div class="conf__metric"><span>피부 자극 지수</span><strong>0.00</strong></div>
+                      <div class="conf__metric"><span>더마테스트 등급</span><strong>EXCELLENT</strong></div>
+                      <div class="conf__metric"><span>피부 친화 소재</span><strong>충족</strong></div>
+                      <div class="conf__metric"><span>비건 포뮬러 <span class="bp-ra">RA 검수</span></span><strong>The Vegan Society</strong></div>
+                      <div class="conf__metric"><span>중량 (1 piece)</span><strong>0.05 g</strong></div>
+                    </div>
+                    <p class="conf__caption">* 민감 피부 첩포 + 2주 임상 시험 기준 · Dermatest® / 비건 인증서·사용 승인 자료 확인 후 노출 범위 확정</p>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>06 · Data</span><span></span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block"><strong>UV Protection</strong><small>UVB 99.9% / UVA 95.3% / UVR 96.3% / UPF 50+</small></div>
+                      <div class="ph-block"><strong>Breathable</strong><small>공기 1.0&lt; / 투습 12,356 / 기공 0.7μm / 두께 0.004mm</small></div>
+                      <div class="ph-block"><strong>Sensitive</strong><small>자극 0.00 / Dermatest Excellent / 중량 0.05g</small></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes</h4>
+                  <ul>
+                    <li>3-tier 카드 (UV / Breathable / Sensitive).</li>
+                    <li>수치 → 의미(카드 제목) 위계.</li>
+                    <li>출처 caption은 카드 하단 12px.</li>
+                    <li>시험성적서 원본 이미지 노출 X.</li>
+                    <li>중량 0.05g — 패키지 기준 최종 확정 필요.</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4 style="color:#b14b3a;">RA 검수</h4>
+                  <ul>
+                    <li>FITI/Dermatest 출처 표기 사용 범위 확인.</li>
+                    <li>"중량 0.05g" — 1 piece vs 1회분(2매) 0.1g vs 좌우 한 쌍 0.3g 정합성.</li>
+                  </ul>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 07 HOW IT WORKS ============ -->
+          <section class="bp-section" id="sec-how">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>07</strong>HOW IT WORKS</span>
+              <h2 class="bp-section__title heading-xl">두 개의 레이어 + Moisture-Bonding</h2>
+              <p class="bp-section__sub">사용자 질문: "어떻게 작동?"</p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas">
+                <p class="bp-canvas__device">Desktop 1280 · Layer + Bonding</p>
+                <h3 class="how__title">두 개의 레이어가<br/>하나의 피부처럼 작동합니다</h3>
+
+                <div class="how__layers">
+                  <div class="how__diagram">
+                    <svg viewBox="0 0 320 240" fill="none" stroke="currentColor">
+                      <!-- skin -->
+                      <rect x="20" y="180" width="280" height="40" rx="4" fill="rgba(217,189,126,0.35)" stroke="rgba(0,0,0,0.2)"/>
+                      <text x="160" y="205" font-size="9" text-anchor="middle" fill="rgba(0,0,0,0.6)" stroke="none" letter-spacing="1">SKIN</text>
+                      <!-- layer 2: care formula -->
+                      <rect x="20" y="140" width="280" height="32" rx="4" fill="rgba(187,213,253,0.4)" stroke="rgba(46,58,138,0.4)"/>
+                      <text x="160" y="160" font-size="9" text-anchor="middle" fill="rgba(46,58,138,0.85)" stroke="none" letter-spacing="1">LAYER 2 · CARE FORMULA</text>
+                      <!-- layer 1: membrane -->
+                      <rect x="20" y="106" width="280" height="26" rx="4" fill="rgba(255,255,255,0.7)" stroke="rgba(0,0,0,0.45)" stroke-dasharray="3 2"/>
+                      <text x="160" y="124" font-size="9" text-anchor="middle" fill="rgba(0,0,0,0.7)" stroke="none" letter-spacing="1">LAYER 1 · ULTRA-THIN MEMBRANE</text>
+                      <!-- UV arrows blocked -->
+                      <line x1="80" y1="40" x2="80" y2="100" stroke="rgba(177,75,58,0.6)" stroke-width="1.2"/>
+                      <line x1="160" y1="40" x2="160" y2="100" stroke="rgba(177,75,58,0.6)" stroke-width="1.2"/>
+                      <line x1="240" y1="40" x2="240" y2="100" stroke="rgba(177,75,58,0.6)" stroke-width="1.2"/>
+                      <text x="160" y="30" font-size="9" text-anchor="middle" fill="rgba(177,75,58,0.85)" stroke="none" letter-spacing="1.5">UV</text>
+                      <!-- air dots -->
+                      <circle cx="60" cy="119" r="1.5" fill="rgba(46,58,138,0.6)" stroke="none"/>
+                      <circle cx="120" cy="119" r="1.5" fill="rgba(46,58,138,0.6)" stroke="none"/>
+                      <circle cx="200" cy="119" r="1.5" fill="rgba(46,58,138,0.6)" stroke="none"/>
+                      <circle cx="260" cy="119" r="1.5" fill="rgba(46,58,138,0.6)" stroke="none"/>
+                    </svg>
+                  </div>
+                  <div class="how__list">
+                    <div class="how__layer">
+                      <h4>LAYER 1</h4>
+                      <h3>초박막 투명 멤브레인</h3>
+                      <p>0.004mm 투명 나노 섬유로 피부 결과 메이크업 질감을 해치지 않는 자외선 보호 층.</p>
+                    </div>
+                    <div class="how__layer">
+                      <h4>LAYER 2 <span class="bp-ra">RA 검수</span></h4>
+                      <h3>약액층 (Care Formula)</h3>
+                      <p>멤브레인 내부 활성 성분층으로 외부 자극 환경에서 피부 컨디션 유지 서포트 층.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="how__bond">
+                  <div>
+                    <h3>접착하지 않고<br/>수분으로 안착한다</h3>
+                    <p>화학 접착 성분 없이 구조적 물성으로 구현한 물리적 밀착 — Moisture-Bonding.</p>
+                  </div>
+                  <p class="bp-muted" style="font-size:13px; line-height:1.65;">선베일의 보습 성분과 피부 표면이 만나, 표면 장력으로 피부 위에 자연스럽게 안착합니다.</p>
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>07 · How</span><span></span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block"><strong>두 개의 레이어가 하나의 피부처럼</strong></div>
+                      <div class="ph-block" style="aspect-ratio: 4/3; background: var(--semantic-bg-default); border:1px solid var(--semantic-border-muted);"></div>
+                      <div class="ph-block"><strong>Layer 1 · Membrane</strong><small>0.004mm 자외선 보호 층</small></div>
+                      <div class="ph-block"><strong>Layer 2 · Care Formula</strong><small>피부 컨디션 서포트 층</small></div>
+                      <div class="ph-block ph-block--creme"><strong>Moisture-Bonding</strong><small>접착하지 않고 수분으로 안착</small></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes</h4>
+                  <ul>
+                    <li>레이어 split 다이어그램 + 텍스트.</li>
+                    <li>Moisture-Bonding은 CRÈME strip으로 분리.</li>
+                    <li>3D asset 준비 시 정적 → exploded view 단계.</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4 style="color:#b14b3a;">RA 검수</h4>
+                  <p>"Layer 2 · 약액층 / 피부 컨디션 유지 서포트 층" — 공산품 표기와 충돌 가능. 노출 표현 검토.</p>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 08 REVERSE AG CODE ============ -->
+          <section class="bp-section" id="sec-code">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>08</strong>REVERSE AG CODE™</span>
+              <h2 class="bp-section__title heading-xl">TM · 성분 팩트 (효능 단정 X)</h2>
+              <p class="bp-section__sub">사용자 질문: "무엇이 들었나?"</p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas surface--creme">
+                <p class="bp-canvas__device">Desktop 1280 · Formula identity</p>
+                <div class="code__intro">
+                  <p class="code__brand">AYROW Registered Trademark</p>
+                  <h3 class="code__title">Reverse AG Code<sup>™</sup> 포뮬라</h3>
+                  <p class="bp-muted body-xl" style="margin: 0;">태양이 강렬할수록, 더 치밀하게 작동합니다. <span class="bp-ra">RA 검수</span></p>
+                </div>
+
+                <div class="code__tier">
+                  <h4>Core Three</h4>
+                  <div class="code__core">
+                    <div class="code__pill"><strong>NMN</strong><small>Nicotinamide Mononucleotide</small></div>
+                    <div class="code__pill"><strong>Resveratrol</strong><small>Stilbene 계열</small></div>
+                    <div class="code__pill"><strong>Pterostilbene</strong><small>차세대 Stilbene 계열</small></div>
+                  </div>
+                </div>
+
+                <div class="code__tier">
+                  <h4>Synergy Modules</h4>
+                  <div class="code__synergy">
+                    <div class="code__chip"><strong>Vegan PRN</strong><small>화이트 트러플 유산균</small></div>
+                    <div class="code__chip"><strong>Phyto PDRN</strong><small>생 어린 병풀</small></div>
+                    <div class="code__chip"><strong>CICA ROSIA 2.0</strong><small>다닥냉이씨 · 망고잎</small></div>
+                    <div class="code__chip"><strong>Quercetin</strong><small>퀘르세틴</small></div>
+                    <div class="code__chip"><strong>Vegan LAB</strong><small>미역 유래 유산균</small></div>
+                    <div class="code__chip"><strong>Aero-flow Membrane™</strong><small>3D 에어 메쉬 구조</small></div>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>08 · Code™</span><span></span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block ph-block--creme"><strong>Reverse AG Code™ Formula</strong><small>AYROW 등록상표</small></div>
+                      <div class="ph-block"><strong>Core Three</strong><small>NMN · Resveratrol · Pterostilbene</small></div>
+                      <div class="ph-block"><strong>Synergy</strong><small>Vegan PRN · Phyto PDRN · CICA ROSIA 2.0 · Quercetin · Vegan LAB</small></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes</h4>
+                  <ul>
+                    <li>섹션 정체성: 효능이 아니라 <strong>기술 정체성·구성 공개</strong>.</li>
+                    <li>Core 3 + Synergy 6 = TM 자산 9개 카드.</li>
+                    <li>각 성분 카드는 이름 + 분류만, 효능 단정 X.</li>
+                    <li>섹션 위치 옵션 A — 단독 섹션 유지.</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4 style="color:#b14b3a;">RA 검수</h4>
+                  <ul>
+                    <li>"태양이 강렬할수록, 더 치밀하게 작동합니다" — 효능 단정 가능성.</li>
+                    <li>원문의 효능 카피(NAD⁺ 공급, SIRT1 활성화, DNA 수선, 브라이트닝 등)는 <strong>전부 미노출</strong>.</li>
+                    <li>Aero-flow Membrane™ — TM 등록 여부 확인.</li>
+                  </ul>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 09 USE CASES ============ -->
+          <section class="bp-section" id="sec-uc">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>09</strong>USE CASES</span>
+              <h2 class="bp-section__title heading-xl">하루의 흐름 위에 얹는 Whereable Beauty</h2>
+              <p class="bp-section__sub">사용자 질문: "언제 쓰지?" / 회수 키워드: <strong>Seamless</strong></p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas">
+                <p class="bp-canvas__device">Desktop 1280 · Timeline (B안)</p>
+                <div class="uc">
+                  <div class="uc__hero">
+                    <div class="uc__hero-img"></div>
+                    <div class="uc__hero-copy">
+                      <div class="uc__time"><strong>14:00</strong><small>Signature</small></div>
+                      <p class="uc__moment heading-m">A Quiet Moment</p>
+                      <h3 class="uc__name">오후 2시 창가</h3>
+                      <p class="uc__lead">빛이 들어오는 자리를 포기하지 않아도 됩니다.</p>
+                      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <span class="bp-tag">메이크업 위 부착</span>
+                        <span class="bp-tag">티 나지 않는 밀착</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="uc__rail">
+                    <div class="uc__node" data-t="0630">
+                      <p class="uc__node-time">06:30</p>
+                      <div class="uc__node-img"></div>
+                      <div class="uc__node-copy">
+                        <p class="uc__node-moment">A Social Moment</p>
+                        <p class="uc__node-name">러닝 크루</p>
+                        <p class="uc__node-lead">하루의 흐름을 멈추지 않는 선케어</p>
+                      </div>
+                    </div>
+                    <div class="uc__node" data-t="1000">
+                      <p class="uc__node-time">10:00</p>
+                      <div class="uc__node-img"></div>
+                      <div class="uc__node-copy">
+                        <p class="uc__node-moment">A Flow Moment</p>
+                        <p class="uc__node-name">멀티 태스킹</p>
+                        <p class="uc__node-lead">무의식의 흐름대로 지속적인 케어</p>
+                      </div>
+                    </div>
+                    <div class="uc__node" data-t="1100">
+                      <p class="uc__node-time">11:00</p>
+                      <div class="uc__node-img"></div>
+                      <div class="uc__node-copy">
+                        <p class="uc__node-moment">A Lifestyle Moment</p>
+                        <p class="uc__node-name">테라스 브런치</p>
+                        <p class="uc__node-lead">햇살을 피하지 않는 사람의 SUN 리추얼</p>
+                      </div>
+                    </div>
+                    <div class="uc__node" data-t="1600">
+                      <p class="uc__node-time">16:00</p>
+                      <div class="uc__node-img"></div>
+                      <div class="uc__node-copy">
+                        <p class="uc__node-moment">A Free Moment</p>
+                        <p class="uc__node-name">기분 좋은 햇살 산책</p>
+                        <p class="uc__node-lead">햇살을 그대로 즐기는 시간</p>
+                      </div>
+                    </div>
+                    <div class="uc__node" data-t="1800">
+                      <p class="uc__node-time">18:00</p>
+                      <div class="uc__node-img"></div>
+                      <div class="uc__node-copy">
+                        <p class="uc__node-moment">A Drive Moment</p>
+                        <p class="uc__node-name">드라이브 케어</p>
+                        <p class="uc__node-lead">빛이 오래 머무는 이동 시간에도 이어지는 보호</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="uc__beyond">
+                    <div>
+                      <h4>Beyond the hours</h4>
+                      <h3>시간을 넘어서는 순간</h3>
+                      <p class="uc__moment">A Calm Moment</p>
+                    </div>
+                    <div>
+                      <p style="margin:0 0 6px;font-weight:500;">시술 후 케어</p>
+                      <p style="margin:0;color:var(--semantic-on-surface-muted);font-size:13px;">예민해진 피부 컨디션을 위한 얇은 보호 레이어</p>
+                      <span class="bp-ra" style="margin-top:6px;">RA 검수</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375 · Vertical timeline</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>09 · Day Flow</span><span></span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block ph-block--img" style="aspect-ratio: 4/4;"></div>
+                      <div class="ph-block"><strong>14:00 · 오후 2시 창가</strong><small>A Quiet Moment · 시그니처</small></div>
+                      <div class="ph-block"><strong>06:30</strong><small>러닝 크루 · A Social Moment</small></div>
+                      <div class="ph-block"><strong>10:00</strong><small>멀티 태스킹 · A Flow Moment</small></div>
+                      <div class="ph-block"><strong>11:00</strong><small>테라스 브런치 · A Lifestyle</small></div>
+                      <div class="ph-block"><strong>16:00</strong><small>햇살 산책 · A Free Moment</small></div>
+                      <div class="ph-block"><strong>18:00</strong><small>드라이브 · A Drive Moment</small></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes</h4>
+                  <ul>
+                    <li>B안 — 시간축 리프레임.</li>
+                    <li>14:00 시그니처 1장만 풀 사진.</li>
+                    <li>5 노드는 시간대별 컬러 그라데이션 placeholder.</li>
+                    <li>시간축 외 1개(시술 후)는 hairline 박스로 분리.</li>
+                    <li>인터랙션: 자동재생 X, scroll-snap.</li>
+                  </ul>
+                </div>
+                <div class="bp-memo">
+                  <h4 style="color:#b14b3a;">RA 검수</h4>
+                  <p>시술 후 케어 — 공산품 표기 충돌 가능성. 카피 노출 전 확인.</p>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 10 RITUAL ============ -->
+          <section class="bp-section" id="sec-ritual">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>10</strong>RITUAL · USAGE GUIDE</span>
+              <h2 class="bp-section__title heading-xl">Ready / Set / Go</h2>
+              <p class="bp-section__sub">사용자 질문: "어떻게 붙이지?" / 회수 키워드: <strong>Seamless (사용 흐름)</strong></p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas">
+                <p class="bp-canvas__device">Desktop 1280 · 3-step</p>
+                <h3 class="ritual__title">햇살을 만나기 전,<br/>3단계로 부착합니다.</h3>
+                <div class="ritual__steps">
+                  <div class="ritual__step">
+                    <p class="ritual__num">01 · Ready</p>
+                    <h3>파우치 개봉 · L/R 확인</h3>
+                    <p>파우치를 열고 L/R 방향을 확인합니다.</p>
+                    <div class="ritual__viz">파우치 + L/R 인디케이터</div>
+                  </div>
+                  <div class="ritual__step">
+                    <p class="ritual__num">02 · Set</p>
+                    <h3>광대존에 안착</h3>
+                    <p>햇살이 먼저 닿는 광대존에 올린 뒤 가볍게 눌러 안착시켜 줍니다.</p>
+                    <div class="ritual__viz">광대존 부착 동작</div>
+                  </div>
+                  <div class="ritual__step">
+                    <p class="ritual__num">03 · Go</p>
+                    <h3>일상으로 이어짐</h3>
+                    <p>피부와 하나가 된 듯한 피팅감으로 일상을 이어갑니다.</p>
+                    <div class="ritual__viz">착용 상태 부착 컷</div>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>10 · Ritual</span><span></span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block"><strong>01 · Ready</strong><small>파우치 개봉 · L/R 확인</small></div>
+                      <div class="ph-block"><strong>02 · Set</strong><small>광대존에 안착</small></div>
+                      <div class="ph-block"><strong>03 · Go</strong><small>일상으로 이어짐</small></div>
+                      <div class="ph-block ph-block--img" style="aspect-ratio: 4/3;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes</h4>
+                  <ul>
+                    <li>Stepper 또는 tab. 모바일은 stack.</li>
+                    <li>각 step viz는 사진 / 영상 / 일러스트 선택.</li>
+                    <li>10초 이하 muted loop 영상 가능.</li>
+                  </ul>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+          <!-- ============ 11 FULL FAQ ============ -->
+          <section class="bp-section" id="sec-faq">
+            <header class="bp-section__head">
+              <span class="bp-section__index"><strong>11</strong>FULL FAQ</span>
+              <h2 class="bp-section__title heading-xl">자주 묻는 질문 · 그룹화</h2>
+              <p class="bp-section__sub">사용자 질문: "마지막 의심" / narrative 종결</p>
+            </header>
+            <div class="bp-section__body">
+
+              <div class="bp-canvas">
+                <p class="bp-canvas__device">Desktop 1280 · Accordion</p>
+                <h3 class="faq__title">자주 묻는 질문</h3>
+                <p class="faq__sub">납득 강화 / 기술 신뢰 / 깊이 설명</p>
+
+                <div class="faq__group">
+                  <h4>이해</h4>
+                  <details class="faq__item" open>
+                    <summary>Sun Veil은 정확히 어떤 제품인가요?</summary>
+                    <p>Sun Veil은 피부 위에 안착되는 초박막 멤브레인(나노 섬유)과 스킨케어 성분을 담은 케어층이 결합된 반건식(hybrid dry-to-wet) 구조의 이중 레이어 패치형 제품입니다. <span class="bp-ra">RA 검수</span></p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>투명한데 자외선 차단이 가능한 이유는 무엇인가요?</summary>
+                    <p>멤브레인 내부에 자외선 대응 구조가 균일하게 분포되어 있습니다. 가시광선은 통과시키고, 자외선은 흡수·산란시키도록 설계되어 있습니다.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>일반 필름형 선패치와 무엇이 다른가요?</summary>
+                    <p>일반 투명 선패치는 필름 형태로 피부를 덮고 가두는 구조입니다. Sun Veil은 나노 섬유 기반 멤브레인 구조로 피부를 가두지 않고 밀착되며, 공기와 수분 흐름을 유지합니다.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>점착 성분 없이 어떻게 밀착되나요?</summary>
+                    <p>초박막 멤브레인의 기공 구조와 스킨케어 제형의 점성 기반 Moisture-Bonding 방식이 결합되어 피부에 자연스럽게 안착됩니다. 일반 점착 패치 대비 자극·잔류 부담을 최소화했습니다.</p>
+                  </details>
+                </div>
+
+                <div class="faq__group">
+                  <h4>신뢰</h4>
+                  <details class="faq__item">
+                    <summary>민감한 피부나 시술 후에도 사용할 수 있나요? <span class="bp-ra">RA 검수</span></summary>
+                    <p>독일 Dermatest®에서 민감 피부 대상 첩포 시험 및 2주 임상 시험 결과 EXCELLENT 등급을 받았습니다. 시술 후 사용 표현은 별도 검수 후 확정됩니다.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>UPF와 SPF의 차이는 무엇인가요?</summary>
+                    <p>SPF는 자외선 차단제를 피부에 바른 후 주로 UVB로부터 보호하는 지표, UPF는 원단·소재 자체가 자외선을 얼마나 차단하는지를 나타내는 지표입니다. Sun Veil은 원단 기준 시험에서 UPF 50+ 결과를 확인했습니다.</p>
+                  </details>
+                </div>
+
+                <div class="faq__group">
+                  <h4>사용 경험</h4>
+                  <details class="faq__item">
+                    <summary>촉감이 어떤가요? 붙어 있는 게 느껴지나요?</summary>
+                    <p>0.004mm 초박막 구조로 거의 촉감이 느껴지지 않으며, 시간이 지나면 붙어 있는 사실조차 잊기 쉬운 착용감을 구현했습니다.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>표정을 지어도 어색하거나 거슬리지 않나요?</summary>
+                    <p>웃고 말하는 순간에도 이질감 없이 자연스럽게 따라 움직이며, 피부 움직임을 방해하지 않는 편안한 착용감을 구현했습니다.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>거울 없이도 부착 가능한가요?</summary>
+                    <p>L/R 방향 구분과 직관적 위치 설계를 통해 손끝 감각만으로도 비교적 쉽게 부착할 수 있습니다.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>재사용 가능한가요?</summary>
+                    <p>위생과 기능 유지를 고려해 1회 사용을 권장합니다.</p>
+                  </details>
+                </div>
+
+                <div class="faq__group">
+                  <h4>최종</h4>
+                  <details class="faq__item">
+                    <summary>그래서, 왜 선베일인가요?</summary>
+                    <p>눈가 아래·광대 부위는 자외선 노출이 높으면서도 피부가 얇고 민감해 보호가 가장 까다로운 영역입니다. Sun Veil은 클린 무점착 밀착 구조와 초박막 멤브레인 구조로, 피부를 가두지 않으면서 자외선이 먼저 차단되는 방식의 보호를 구현합니다.</p>
+                  </details>
+                </div>
+              </div>
+
+              <aside class="bp-aside">
+                <div class="bp-canvas">
+                  <p class="bp-canvas__device">Mobile 375 · Stacked</p>
+                  <div class="bp-phone">
+                    <div class="bp-phone__bar"><span>11 · FAQ</span><span></span></div>
+                    <div class="bp-phone__body">
+                      <div class="ph-block"><strong>이해</strong><small>4 questions</small></div>
+                      <div class="ph-block"><strong>신뢰</strong><small>2 questions</small></div>
+                      <div class="ph-block"><strong>사용 경험</strong><small>4 questions</small></div>
+                      <div class="ph-block"><strong>최종</strong><small>1 question</small></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bp-memo">
+                  <h4>Design Notes</h4>
+                  <ul>
+                    <li>4-group accordion (이해 / 신뢰 / 경험 / 최종).</li>
+                    <li>첫 번째 질문만 default open.</li>
+                    <li>narrative 종결 — 사용자가 상단 buy box로 회귀.</li>
+                  </ul>
+                </div>
+              </aside>
+
+            </div>
+          </section>
+
+        </main>
+
+      </div>
+
+      <!-- FOOTER NOTE -->
+      <footer class="bp-foot">
+        <p>Sun Veil PDP Blueprint v1 · 11 sections · CRÈME + CIEL · 카피는 고객사 원문 그대로 · RA 검수 보류 항목은 우측 메모 참조</p>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- ========================================
+       ORIGIN DRAWER — 고객사 원문 구조
+       시맨틱: dialog > header + (nav + main(article*))
+       ======================================== -->
+  <dialog id="origin-drawer" class="bp-drawer" aria-labelledby="origin-drawer-title">
+    <header class="bp-drawer__head">
+      <div class="bp-drawer__head-text">
+        <p class="bp-drawer__label">Original Source · Notion Export</p>
+        <h2 id="origin-drawer-title">고객사 원문 구조 (11 섹션)</h2>
+      </div>
+      <form method="dialog" style="margin:0;">
+        <button class="bp-drawer__close" type="submit" data-drawer-close autofocus aria-label="원문 드로어 닫기">닫기 (ESC)</button>
+      </form>
+    </header>
+
+    <div class="bp-drawer__body">
+
+      <nav class="bp-drawer__toc" aria-label="원문 섹션 목차">
+        <h3>Sections</h3>
+        <ol>
+          <li><a href="#og-1">01 · HERO SECTION</a></li>
+          <li><a href="#og-2">02 · CATEGORY REFRAMING</a></li>
+          <li><a href="#og-3">03 · WHY SUN VEIL EXISTS</a></li>
+          <li><a href="#og-4">04 · USE CASES</a></li>
+          <li><a href="#og-5">05 · HOW IT WORKS</a></li>
+          <li><a href="#og-6">06 · TECHNOLOGY</a></li>
+          <li><a href="#og-7">07 · KEY EXPERIENCE</a></li>
+          <li><a href="#og-8">08 · PROOF / EVIDENCE</a></li>
+          <li><a href="#og-9">09 · FULL FAQ</a></li>
+          <li><a href="#og-10">10 · PRODUCT SPEC</a></li>
+          <li><a href="#og-11">11 · CTA FOOTER</a></li>
+        </ol>
+      </nav>
+
+      <main class="bp-drawer__main">
+
+        <!-- 01 HERO -->
+        <article class="bp-drawer-article" id="og-1">
+          <header>
+            <p>01</p>
+            <h3>HERO SECTION</h3>
+            <em>카테고리 포지셔닝</em>
+          </header>
+          <blockquote>“당신이 붙이고 있던 건 ‘필름’입니다.<br/>Sun Veil은 ‘숨 쉬는 멤브레인 (나노 섬유)’입니다.<br/>이제, 막는 보호에서 숨 쉬는 보호로 바뀝니다.”</blockquote>
+          <ul class="flat">
+            <li>숨 쉬는 멤브레인 (Membrane) — 막는 필름과 달리, 열·습기·땀은 배출하고 피부를 가두지 않는 나노 섬유 구조</li>
+            <li>A New Kind of Aesthetic Guard <span class="ra-flag">카테고리 정의</span></li>
+            <li>Reverse AG Code™ Sun Veil — 보이지 않게, 그러나 막지 않고 보호합니다.</li>
+            <li>0.004mm — 피부 위에 얹히는 숨 쉬는 초박막 보호 레이어</li>
+          </ul>
+        </article>
+
+        <!-- 02 CATEGORY REFRAMING -->
+        <article class="bp-drawer-article" id="og-2">
+          <header>
+            <p>02</p>
+            <h3>NEW CATEGORY DEFINITION / CATEGORY REFRAMING</h3>
+            <em>전환을 만드는 공격적 리프레이밍</em>
+          </header>
+          <p>Reverse AG Code™ Sun Veil — 피부 위에 숨 쉬는 보호 레이어, <span class="ra-flag">선케어의 방식을 재정의한, Aesthetic Guard</span></p>
+          <blockquote><strong>Film vs Membrane</strong><br/>같은 ‘패치’로 보였다면, 완전히 잘못 보고 있던 겁니다.</blockquote>
+
+          <section>
+            <h4>막는 것 vs 숨 쉬는 것 — 비교 표</h4>
+            <ul class="flat">
+              <li>피부를 덮는 구조 ↔ 섬유 기반 다공성 구조</li>
+              <li>공기 흐름 차단 ↔ 공기 & 수분 흐름 유지</li>
+              <li>장시간 답답함 ↔ 장시간 부착 가능</li>
+              <li>열·수분 정체 ↔ 피부 호흡 및 컨디션 유지</li>
+              <li>“붙이는 순간, 피부는 막힌다” ↔ “붙여도, 피부는 계속 숨 쉰다”</li>
+            </ul>
+          </section>
+
+          <blockquote>“선패치, 불편했던 이유는 단 하나입니다.<br/>‘숨을 못 쉬기 때문입니다.’”</blockquote>
+          <ul>
+            <li>땀/열/습기로 답답함</li>
+            <li>필름 텐션으로 인한 밀폐감, 피부 조임</li>
+            <li>메이크업 위에서 들뜸</li>
+            <li>접착 성분으로 인한 뻣뻣함, 잔주름 픽스</li>
+            <li>오래 붙이면 피부 피로감</li>
+          </ul>
+          <blockquote>“그래서 우리는 ‘필름막’을 버리고 ‘나노 섬유’를 선택했습니다”<br/>“선베일은 보호하지만, 피부를 가두지 않습니다.”</blockquote>
+
+          <section>
+            <h4>데이터 블록 — 숨 쉼은 데이터로 증명됩니다</h4>
+            <ul class="flat">
+              <li>투습도 12,356 g/m²·24h</li>
+              <li>공기 투과도 1.0 미만 mm/s</li>
+              <li>평균 기공 크기 0.7 μm</li>
+              <li>출처 — FITI 시험연구원 물성 테스트 리포트</li>
+            </ul>
+          </section>
+
+          <section>
+            <h4>UV 데이터 — 숨 쉬면서도 제대로 차단합니다</h4>
+            <ul class="flat">
+              <li>UVB 99.9% / UVA 95.3% / UVR 96.3% / UPF 50+</li>
+              <li>출처 — FITI 시험연구원 자외선 차단 테스트 리포트</li>
+            </ul>
+          </section>
+
+          <blockquote>“숨 쉬는 보호는 선택이 아니라, 기준입니다.”</blockquote>
+          <p><span class="ra-flag">직접 자랑 톤</span> Sun Veil은 기존 선케어와 다르게 작동합니다. 선크림처럼 덧발라야 하지도, 선패치처럼 필름 형태로 피부를 답답하게 가두지도 않습니다.</p>
+          <p><span class="ra-flag">효능 단정</span> “덧바름과 가둠의 불편을 해결한 숨 쉬는 멤브레인입니다.” / 외부 자극이 피부 환경에 미치는 영향을 최소화 / 피부 컨디션을 정돈하는 케어</p>
+
+          <section>
+            <h4>Spec line</h4>
+            <p>99.9% 자외선 차단ㅣ민감 피부 자극 지수 0.00ㅣ숨 쉬는 멤브레인(나노 섬유) 적용ㅣ0.004mm 초박막ㅣ비건 포뮬러 <span class="ra-flag">RA</span></p>
+          </section>
+        </article>
+
+        <!-- 03 WHY SUN VEIL EXISTS -->
+        <article class="bp-drawer-article" id="og-3">
+          <header>
+            <p>03</p>
+            <h3>WHY SUN VEIL EXISTS</h3>
+            <em>3개 하위 섹션</em>
+          </header>
+
+          <blockquote>“이런 순간, 필요합니다 — 보호는 필요하지만, 드러나고 싶지 않을 때”</blockquote>
+          <ul>
+            <li>자외선 차단제를 덧바르기 힘들 때</li>
+            <li>메이크업 위에 덧바르면 무너질까 봐 손이 멈출 때</li>
+            <li>하루 종일, 흐름을 끊지 않고 자외선 대응을 유지하고 싶을 때</li>
+            <li>러닝·골프·테니스 등 야외 활동이 많은 날, 더 신경 쓰일 때</li>
+            <li>실내에서도 생활 자외선이 계속 신경 쓰일 때</li>
+            <li>눈가·광대처럼 특정 부위가 유독 노출될 때</li>
+          </ul>
+          <p><span class="ra-flag">예민 피부 강조</span> 🔥 피부가 예민해졌을 때는 더더욱 — 시술 후 / 외부 자극 / 떼어내는 자극 염려</p>
+          <blockquote>“그래서 우리는, 보호의 방식을 바꿨습니다.<br/>이럴 때 필요한 건, 선케어가 아니라 선베일입니다.”</blockquote>
+
+          <section>
+            <h4>3-1 · Quick FAQ — Before You Scroll</h4>
+            <ul>
+              <li>메이크업 위에 사용해도 되나요? → YES</li>
+              <li>일반 필름형 선패치와 다른가요? → YES</li>
+              <li>점착 성분 없이도 잘 붙나요? → YES</li>
+              <li>투명한데 자외선 차단이 가능한가요? → YES</li>
+              <li>민감한 피부에도 사용할 수 있나요? → YES</li>
+              <li>티가 나나요? → NO</li>
+            </ul>
+          </section>
+
+          <section>
+            <h4>3-2 · Problem / Pain Point</h4>
+            <p>이 자리, 바르는 선케어만으로 충분할까요? — 선케어가 가장 먼저 무너지는 자리. 광대존 통찰 + 6 Pain Point 카테고리 (메이크업 / 시간 타이밍 / 땀·환경 / 감성 라이프스타일 / 피부 컨디션 / 예민 문제)</p>
+          </section>
+
+          <section>
+            <h4>3-3 · At a Glance — What Changes With Sun Veil</h4>
+            <ul class="flat">
+              <li>Invisible & Seamless — 보이지 않는 0.004mm</li>
+              <li>Effortless Fit — 점착제 없이 Moisture-Bonding</li>
+              <li>Whereable Beauty™ — 일상의 흐름을 끊지 않는 뷰티</li>
+            </ul>
+          </section>
+        </article>
+
+        <!-- 04 USE CASES -->
+        <article class="bp-drawer-article" id="og-4">
+          <header>
+            <p>04</p>
+            <h3>USE CASES (SLIDER) + RITUAL / USAGE GUIDE</h3>
+            <em>Whereable Beauty 7 시나리오</em>
+          </header>
+          <blockquote>“Wherever + Able — 언제, 어디서든 가능한 뷰티 에이전트”</blockquote>
+          <ul>
+            <li>1 · 오후 2시 창가 — A Quiet Moment — 메이크업 위 부착 / 티 나지 않는 밀착</li>
+            <li>2 · 러닝 크루 — A Social Moment — 운동 환경 / 빠른 부착</li>
+            <li>3 · 테라스 브런치 — A Lifestyle Moment — 레이어드 선케어 / 우아한 선루틴</li>
+            <li>4 · 기분 좋은 햇살 산책 — A Free Moment — 장시간 착용</li>
+            <li>5 · 멀티 태스킹 — A Flow Moment</li>
+            <li>6 · 드라이브 케어</li>
+            <li>7 · 시술 후 케어 <span class="ra-flag">RA</span></li>
+          </ul>
+          <section>
+            <h4>04-2 · RITUAL / USAGE GUIDE</h4>
+            <ul class="flat">
+              <li>01 · Ready — 파우치를 열고 L/R 방향을 확인합니다</li>
+              <li>02 · Set — 햇살이 먼저 닿는 광대존에 올린 뒤 가볍게 눌러 안착시켜 줍니다</li>
+              <li>03 · Go — 피부와 하나가 된 듯한 피팅감으로 일상을 이어갑니다</li>
+            </ul>
+          </section>
+        </article>
+
+        <!-- 05 HOW IT WORKS -->
+        <article class="bp-drawer-article" id="og-5">
+          <header>
+            <p>05</p>
+            <h3>HOW IT WORKS</h3>
+            <em>Layer + Bonding</em>
+          </header>
+          <blockquote>“두 개의 레이어가 하나의 피부처럼 작동합니다”</blockquote>
+          <p>Sun Veil은 자외선 차단 필름이 아니라 기능이 다른 두 레이어가 결합된 컴포지트 나노 섬유입니다.</p>
+          <section>
+            <h4>5-1 · How It Protects (레이어)</h4>
+            <ul class="flat">
+              <li>Layer 1 — 초박막 투명 멤브레인: 0.004mm 투명 나노 섬유 / 자외선 보호 층</li>
+              <li>Layer 2 — 약액층: 멤브레인 내부 활성 성분층 / 외부 자극 환경에서 피부 컨디션 유지 서포트 층 <span class="ra-flag">RA</span></li>
+            </ul>
+          </section>
+          <section>
+            <h4>5-2 · How It Bonds (밀착)</h4>
+            <ul class="flat">
+              <li>점착제 없는 클린 밀착 — 화학 접착 성분 없이 구조적 물성으로 구현</li>
+              <li>Moisture-Bonding — 보습 성분과 피부 표면이 만나 표면 장력으로 자연스럽게 안착</li>
+            </ul>
+          </section>
+        </article>
+
+        <!-- 06 TECHNOLOGY -->
+        <article class="bp-drawer-article" id="og-6">
+          <header>
+            <p>06</p>
+            <h3>TECHNOLOGY</h3>
+            <em>Reverse AG Code™ + Aero-flow Membrane™</em>
+          </header>
+          <blockquote>“태양이 강렬할수록, 더 치밀하게 작동합니다.” <span class="ra-flag">효능 단정</span></blockquote>
+          <section>
+            <h4>6-1 · Reverse AG Code™ 포뮬라</h4>
+            <ul class="flat">
+              <li>Core 3 — NMN · Resveratrol · Pterostilbene</li>
+              <li>Synergy Modules — Vegan PRN(화이트 트러플 유산균) · Phyto PDRN(생 어린 병풀)</li>
+              <li>CICA ROSIA 2.0 — 다닥냉이씨 · 망고잎</li>
+              <li>퀘르세틴 · 미역 유래 비건 유산균</li>
+              <li><span class="ra-flag">미노출</span> NAD⁺ 공급 / SIRT1 활성화 / DNA 수선 / 브라이트닝 등 효능 단정</li>
+            </ul>
+          </section>
+          <section>
+            <h4>6-2 · 에어로플로우 멤브레인™</h4>
+            <ul class="flat">
+              <li>Skin-Breathing — 0.004mm 숨 쉬는 나노바이오 섬유 · 3D 에어 메쉬 구조</li>
+              <li>Stealth Fit — 메이크업 위에서도 자연스러운 스텔스 피팅</li>
+              <li>Zero-Gravity — 0.004mm의 초경량 존재감</li>
+              <li>Even Release — 상호 작용</li>
+            </ul>
+          </section>
+        </article>
+
+        <!-- 07 KEY EXPERIENCE -->
+        <article class="bp-drawer-article" id="og-7">
+          <header>
+            <p>07</p>
+            <h3>KEY EXPERIENCE</h3>
+            <em>4 Pillars</em>
+          </header>
+          <ul class="flat">
+            <li>1️⃣ Invisible Veil — 거의 보이지 않는 투명 구조</li>
+            <li>2️⃣ Aero Flow™ — 다공성 멤브레인 / 답답함 없음</li>
+            <li>3️⃣ Seamless Fit — 피부 굴곡에 자연스럽게 밀착</li>
+            <li>3️⃣ Gentle Removal — 솜털 하나 건들이지 않고 섬세하게 분리</li>
+          </ul>
+        </article>
+
+        <!-- 08 PROOF -->
+        <article class="bp-drawer-article" id="og-8">
+          <header>
+            <p>08</p>
+            <h3>PROOF / EVIDENCE</h3>
+            <em>Dermatest® · FITI 시험연구원</em>
+          </header>
+          <blockquote>“보이지 않지만, 데이터로 확인됩니다.”</blockquote>
+          <section>
+            <h4>UV Protection</h4>
+            <p>UVB 99.9% / UVA 96.4% <span class="ra-flag">원문 — 리포트 95.3% 정정</span> / UVR 96.3% / UPF 50+</p>
+          </section>
+          <section>
+            <h4>Skin Tolerability</h4>
+            <p>피부 자극 지수 0.00 / Dermatest EXCELLENT / Skin-friendly Material 충족</p>
+          </section>
+          <section>
+            <h4>Breathable Structure</h4>
+            <p>공기 투과도 1.0 미만 mm/s / 투습도 12,356 g/m²·24h / 평균 기공 크기 0.7 μm</p>
+          </section>
+          <section>
+            <h4>Spec & Design</h4>
+            <p>중량 0.05 g (1 piece) <span class="ra-flag">정합성 검토</span> / 두께 0.004 mm / 구조 — 숨 쉬는 나노 멤브레인</p>
+          </section>
+          <section>
+            <h4>Ethics</h4>
+            <p>비건 인증 (The Vegan Society) <span class="ra-flag">RA</span> — 인증서·사용 승인 자료 확인 필요</p>
+          </section>
+        </article>
+
+        <!-- 09 FULL FAQ -->
+        <article class="bp-drawer-article" id="og-9">
+          <header>
+            <p>09</p>
+            <h3>FULL FAQ</h3>
+            <em>10 Questions / 4 Groups</em>
+          </header>
+          <ul>
+            <li>[이해] Sun Veil은 정확히 어떤 제품인가요? — 정의 <span class="ra-flag">반건식 dry-to-wet 표현</span></li>
+            <li>[이해] 투명한데 자외선 차단이 가능한 이유는 무엇인가요? — 원리</li>
+            <li>[이해] 일반 필름형 선패치와 무엇이 다른가요? — 차별</li>
+            <li>[이해] 점착 성분 없이 어떻게 밀착되나요? — 구조</li>
+            <li>[신뢰] 민감한 피부나 시술 후에도 사용할 수 있나요? — 안전성 <span class="ra-flag">시술 후</span></li>
+            <li>[신뢰] UPF와 SPF의 차이는 무엇인가요? — 지표</li>
+            <li>[경험] 촉감이 어떤가요? 붙어 있는 게 느껴지나요?</li>
+            <li>[경험] 표정을 지어도 어색하거나 거슬리지 않나요?</li>
+            <li>[경험] 거울 없이도 부착 가능한가요?</li>
+            <li>[경험] 재사용 가능한가요?</li>
+            <li>[최종] 그래서, 왜 선베일인가요? — 결론</li>
+          </ul>
+        </article>
+
+        <!-- 10 PRODUCT SPEC -->
+        <article class="bp-drawer-article" id="og-10">
+          <header>
+            <p>10</p>
+            <h3>PRODUCT SPEC</h3>
+            <em>상품정보제공 고시 <span class="ra-flag">Cafe24 자동 영역 위임</span></em>
+          </header>
+          <ul class="flat">
+            <li>제품명 — 에이로우 리버스 AG 코드™ 선베일</li>
+            <li>내용물 — 1회분(2매) 0.1g / 3회분(2매×3) 0.3g <span class="ra-flag">중량 정합성</span></li>
+            <li>피부 타입 — 모든 피부 타입</li>
+            <li>사용기한 — 제조일로부터 30개월 / 개봉 후 즉시 사용</li>
+            <li>사용방법 / 주의사항 / 품질보증 / 소비자 상담 070-4250-0312</li>
+            <li>기획·판매원 — ㈜씽크앤플로우 / 제조국 — 대한민국</li>
+            <li><strong>본 제품은 화장품 또는 의약품이 아닌 공산품입니다.</strong></li>
+          </ul>
+        </article>
+
+        <!-- 11 CTA FOOTER -->
+        <article class="bp-drawer-article" id="og-11">
+          <header>
+            <p>11</p>
+            <h3>CTA FOOTER</h3>
+            <em>Cafe24 buy box 위임</em>
+          </header>
+          <blockquote>“햇살을 포기하지 않는 가장 앞선 방식<br/>Aesthetic Guard, AYROW Reverse AG Code™ Sun-Veil”</blockquote>
+          <p>제품 보기 / Experience Sun Veil! (지금 구매하기)</p>
+        </article>
+
+      </main>
+
+    </div>
+  </dialog>
+
+  <script>
+    (function() {
+      const drawer = document.getElementById('origin-drawer');
+      if (!drawer) return;
+
+      // Open
+      document.addEventListener('click', (e) => {
+        const opener = e.target.closest('[data-drawer-open]');
+        if (opener) {
+          if (typeof drawer.showModal === 'function') {
+            drawer.showModal();
+          } else {
+            drawer.setAttribute('open', '');
+          }
+          opener.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      // Close — event delegation on drawer (handles button clicks even if children intercept)
+      drawer.addEventListener('click', (e) => {
+        // Close on close-button or backdrop
+        if (e.target.closest('[data-drawer-close]')) {
+          drawer.close();
+          return;
+        }
+        if (e.target === drawer) {
+          drawer.close();
+        }
+      });
+
+      // Sync aria-expanded on close
+      drawer.addEventListener('close', () => {
+        document.querySelectorAll('[data-drawer-open]').forEach(btn => {
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

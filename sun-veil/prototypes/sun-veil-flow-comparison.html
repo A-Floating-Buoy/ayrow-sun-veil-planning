@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP Flow Comparison</title>
+  <style>
+    :root {
+      --bleu: #0077bf;
+      --bleu-deep: #003c60;
+      --creme: #f7f1a0;
+      --creme-soft: #fffce4;
+      --ciel: #bbd5fd;
+      --ciel-soft: #edf5ff;
+      --merlot: #802727;
+      --ink: #1f2933;
+      --body: #42464d;
+      --muted: #73777f;
+      --line: #d9dee6;
+      --surface: #fffdf1;
+      --white: #ffffff;
+      --shadow: 0 18px 42px rgba(0, 60, 96, 0.12);
+      --radius: 8px;
+      --page-x: clamp(20px, 5vw, 80px);
+      --max: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--surface);
+      color: var(--body);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .prototype-shell {
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .prototype-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: center;
+      padding: 12px var(--page-x);
+      background: rgba(255, 253, 241, 0.92);
+      border-bottom: 1px solid rgba(0, 119, 191, 0.18);
+      backdrop-filter: blur(14px);
+    }
+
+    .prototype-toolbar__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      width: min(100%, var(--max));
+    }
+
+    .prototype-kicker {
+      margin: 0;
+      color: var(--bleu);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .prototype-switch {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px;
+      padding: 4px;
+      background: var(--white);
+      border: 1px solid rgba(0, 119, 191, 0.22);
+      border-radius: 999px;
+      box-shadow: 0 8px 20px rgba(0, 60, 96, 0.08);
+    }
+
+    .prototype-switch__button {
+      min-width: 156px;
+      padding: 9px 16px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--bleu);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 160ms ease, color 160ms ease;
+    }
+
+    [data-concept="snap"] .prototype-switch__button[data-target="snap"],
+    [data-concept="reversal"] .prototype-switch__button[data-target="reversal"] {
+      background: var(--bleu);
+      color: var(--white);
+    }
+
+    .section {
+      padding: clamp(64px, 10vw, 128px) var(--page-x);
+    }
+
+    .section--hero {
+      min-height: calc(100vh - 65px);
+      display: grid;
+      align-items: center;
+      background:
+        linear-gradient(90deg, rgba(255, 253, 241, 0.96), rgba(255, 253, 241, 0.78)),
+        linear-gradient(135deg, rgba(187, 213, 253, 0.34), rgba(247, 241, 160, 0));
+    }
+
+    .section--ciel {
+      background: var(--ciel-soft);
+    }
+
+    .section--bleu {
+      background: var(--bleu-deep);
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .section--white {
+      background: var(--white);
+    }
+
+    .section__inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--bleu);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .section--bleu .eyebrow {
+      color: var(--creme);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: clamp(40px, 7vw, 96px);
+      align-items: center;
+    }
+
+    .hero-title {
+      max-width: 760px;
+      margin-bottom: 24px;
+      color: var(--bleu-deep);
+      font-size: clamp(42px, 8vw, 92px);
+      font-weight: 650;
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 560px;
+      margin-bottom: 32px;
+      color: var(--body);
+      font-size: clamp(17px, 2vw, 22px);
+      font-weight: 500;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 8px 13px;
+      border: 1px solid rgba(0, 119, 191, 0.22);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--bleu);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .veil-visual {
+      position: relative;
+      min-height: 520px;
+      isolation: isolate;
+    }
+
+    .veil-visual__skin {
+      position: absolute;
+      inset: 8% 6% 4% 12%;
+      border: 1px solid rgba(0, 119, 191, 0.18);
+      border-radius: 46% 42% 48% 45%;
+      background:
+        repeating-linear-gradient(12deg, rgba(0, 119, 191, 0.08) 0 1px, transparent 1px 16px),
+        linear-gradient(135deg, rgba(247, 241, 160, 0.6), rgba(255, 255, 255, 0.88));
+      box-shadow: var(--shadow);
+    }
+
+    .veil-visual__membrane {
+      position: absolute;
+      right: 10%;
+      bottom: 13%;
+      width: 58%;
+      aspect-ratio: 1.5 / 1;
+      border: 1px solid rgba(0, 119, 191, 0.22);
+      border-radius: 54% 46% 52% 48%;
+      background:
+        repeating-linear-gradient(90deg, rgba(0, 119, 191, 0.16) 0 1px, transparent 1px 12px),
+        repeating-linear-gradient(0deg, rgba(0, 119, 191, 0.12) 0 1px, transparent 1px 12px),
+        rgba(255, 255, 255, 0.58);
+      backdrop-filter: blur(4px);
+      transform: rotate(-8deg);
+    }
+
+    .veil-visual__label {
+      position: absolute;
+      right: 0;
+      top: 18%;
+      max-width: 180px;
+      padding: 14px 16px;
+      border-left: 1px solid var(--bleu);
+      color: var(--bleu-deep);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .flow-note {
+      max-width: 720px;
+      margin: 0 auto 42px;
+      text-align: center;
+    }
+
+    .flow-note h2 {
+      margin-bottom: 16px;
+      color: var(--bleu-deep);
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 650;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .flow-note p {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .confidence-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .confidence-item {
+      min-height: 220px;
+      padding: 28px;
+      border-right: 1px solid var(--line);
+    }
+
+    .confidence-item:last-child {
+      border-right: 0;
+    }
+
+    .confidence-item__label {
+      margin-bottom: 30px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .confidence-item__value {
+      margin-bottom: 12px;
+      color: var(--bleu);
+      font-size: clamp(30px, 4.5vw, 54px);
+      font-weight: 750;
+      line-height: 1;
+    }
+
+    .confidence-item__copy {
+      max-width: 240px;
+      margin: 0;
+      color: var(--body);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .concept-panel {
+      display: none;
+    }
+
+    [data-concept="snap"] .concept-panel--snap,
+    [data-concept="reversal"] .concept-panel--reversal {
+      display: block;
+    }
+
+    .comparison-meta {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: clamp(28px, 5vw, 72px);
+      align-items: start;
+      margin-bottom: 42px;
+    }
+
+    .comparison-meta h2 {
+      margin-bottom: 14px;
+      color: var(--bleu-deep);
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .comparison-meta p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .compare-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .compare-list li {
+      display: flex;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 119, 191, 0.16);
+      color: var(--body);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .compare-list span {
+      color: var(--bleu);
+      font-weight: 850;
+    }
+
+    .snap-track {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(280px, 34%);
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 4px var(--page-x) 28px;
+      margin: 0 calc(var(--page-x) * -1);
+      scrollbar-width: thin;
+    }
+
+    .snap-card {
+      min-height: 330px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      scroll-snap-align: center;
+      padding: 26px;
+      border: 1px solid rgba(0, 119, 191, 0.2);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: 0 10px 28px rgba(0, 60, 96, 0.08);
+    }
+
+    .snap-card__question {
+      margin: 0;
+      color: var(--bleu-deep);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .snap-card__answer {
+      margin: 0;
+    }
+
+    .snap-card__mark {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--bleu);
+      font-size: 42px;
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    .snap-card--no .snap-card__mark {
+      color: var(--merlot);
+      font-size: 64px;
+    }
+
+    .snap-card__copy {
+      margin: 0;
+      color: var(--body);
+      font-weight: 600;
+    }
+
+    .reversal-stage {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+      min-height: 460px;
+    }
+
+    .reversal-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 380px;
+      padding: clamp(18px, 2vw, 28px);
+      border: 1px solid rgba(0, 119, 191, 0.18);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      overflow: hidden;
+    }
+
+    .reversal-card::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: calc(var(--scale, 1) * 18%);
+      background: rgba(187, 213, 253, 0.28);
+      z-index: 0;
+    }
+
+    .reversal-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .reversal-card__word {
+      color: var(--bleu);
+      font-size: clamp(42px, calc(var(--scale, 1) * 4.8vw), 102px);
+      font-weight: 850;
+      line-height: 0.9;
+    }
+
+    .reversal-card--no {
+      background: var(--bleu-deep);
+      color: var(--white);
+      transform: translateY(18px);
+    }
+
+    .reversal-card--no::after {
+      background: rgba(247, 241, 160, 0.14);
+      height: 100%;
+    }
+
+    .reversal-card--no .reversal-card__word {
+      color: var(--creme);
+      font-size: clamp(76px, 10vw, 150px);
+    }
+
+    .reversal-card__question {
+      margin: 24px 0 0;
+      color: inherit;
+      font-size: 18px;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .reversal-card__copy {
+      margin: 14px 0 0;
+      color: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.78;
+    }
+
+    .bridge {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(300px, 1.1fr);
+      gap: clamp(32px, 6vw, 84px);
+      align-items: center;
+    }
+
+    .bridge h2 {
+      margin-bottom: 18px;
+      color: var(--creme);
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .bridge p {
+      max-width: 560px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .invisible-demo {
+      position: relative;
+      min-height: 340px;
+      border: 1px solid rgba(247, 241, 160, 0.35);
+      background:
+        repeating-linear-gradient(12deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 18px),
+        rgba(255, 255, 255, 0.06);
+    }
+
+    .invisible-demo__veil {
+      position: absolute;
+      inset: 22% 12%;
+      border: 1px solid rgba(247, 241, 160, 0.44);
+      border-radius: 50%;
+      background:
+        repeating-linear-gradient(90deg, rgba(247, 241, 160, 0.18) 0 1px, transparent 1px 11px),
+        rgba(255, 255, 255, 0.08);
+      transform: rotate(-8deg);
+    }
+
+    .plain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+
+    .plain-cell {
+      min-height: 220px;
+      padding: 26px;
+      background: var(--white);
+    }
+
+    .plain-cell h3 {
+      margin-bottom: 14px;
+      color: var(--bleu-deep);
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    .plain-cell p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .section-title {
+      max-width: 720px;
+      margin-bottom: 40px;
+    }
+
+    .section-title h2 {
+      margin-bottom: 14px;
+      color: var(--bleu-deep);
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .cta-band {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: end;
+      padding: clamp(32px, 6vw, 64px);
+      background: var(--bleu);
+      color: var(--white);
+    }
+
+    .cta-band h2 {
+      max-width: 720px;
+      margin-bottom: 12px;
+      color: var(--creme);
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1.08;
+    }
+
+    .cta-band p {
+      margin-bottom: 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-weight: 500;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 13px 22px;
+      border: 1px solid var(--creme);
+      border-radius: 999px;
+      background: var(--creme);
+      color: var(--bleu-deep);
+      font-weight: 850;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 900px) {
+      .prototype-toolbar__inner,
+      .hero-grid,
+      .comparison-meta,
+      .bridge,
+      .cta-band {
+        grid-template-columns: 1fr;
+      }
+
+      .prototype-toolbar__inner {
+        display: grid;
+      }
+
+      .prototype-switch {
+        width: 100%;
+      }
+
+      .prototype-switch__button {
+        min-width: 0;
+      }
+
+      .veil-visual {
+        min-height: 360px;
+      }
+
+      .confidence-grid,
+      .plain-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .confidence-item {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .confidence-item:last-child {
+        border-bottom: 0;
+      }
+
+      .snap-track {
+        grid-auto-columns: minmax(280px, 82%);
+      }
+
+      .reversal-stage {
+        grid-template-columns: 1fr;
+        min-height: 0;
+      }
+
+      .reversal-card,
+      .reversal-card--no {
+        min-height: 220px;
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body data-concept="snap">
+  <div class="prototype-shell">
+    <header class="prototype-toolbar" aria-label="Prototype controls">
+      <div class="prototype-toolbar__inner">
+        <p class="prototype-kicker">Sun Veil PDP Flow Prototype</p>
+        <div class="prototype-switch" role="group" aria-label="비교할 FAQ 흐름 선택">
+          <button class="prototype-switch__button" type="button" data-target="snap" aria-pressed="true">A. 카드 snap</button>
+          <button class="prototype-switch__button" type="button" data-target="reversal" aria-pressed="false">B. YES / NO 반전</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section section--hero" id="overview">
+        <div class="section__inner hero-grid">
+          <div>
+            <p class="eyebrow">Reverse AG Code™ Sun Veil</p>
+            <h1 class="hero-title">피부를 가두지 않는 선케어 레이어.</h1>
+            <p class="hero-copy">Sun Veil은 필름처럼 덮는 선패치가 아니라 0.004 mm 초박막 멤브레인이 피부 위에 얹히는 새로운 방식의 Aesthetic Guard입니다.</p>
+            <div class="chip-row" aria-label="핵심 안심 포인트">
+              <span class="chip">0.004 mm</span>
+              <span class="chip">UPF 50+</span>
+              <span class="chip">UVB 99.9%</span>
+              <span class="chip">Dermatest Excellent</span>
+            </div>
+          </div>
+          <div class="veil-visual" aria-label="Sun Veil membrane abstract visual">
+            <div class="veil-visual__skin"></div>
+            <div class="veil-visual__membrane"></div>
+            <p class="veil-visual__label">Thin translucent membrane over the skin zone</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--white" id="difference">
+        <div class="section__inner">
+          <div class="flow-note">
+            <p class="eyebrow">Difference</p>
+            <h2>같은 패치처럼 보여도, 피부 위에서 작동하는 방식은 다릅니다.</h2>
+            <p>필름은 피부를 덮고, 멤브레인은 흐름을 고려합니다.</p>
+          </div>
+          <div class="plain-grid">
+            <article class="plain-cell">
+              <h3>덮는 막 구조에서</h3>
+              <p>피부 위에 얇은 필름이 올라가면 열과 습기가 머무르기 쉽습니다.</p>
+            </article>
+            <article class="plain-cell">
+              <h3>다공성 멤브레인으로</h3>
+              <p>Sun Veil은 섬유 기반 구조로 공기와 습기 흐름을 고려합니다.</p>
+            </article>
+            <article class="plain-cell">
+              <h3>점착보다 안착</h3>
+              <p>일반적인 점착제 대신 Moisture-Bonding 방식으로 피부 위에 자리 잡습니다.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--ciel" id="confidence">
+        <div class="section__inner">
+          <div class="flow-note">
+            <p class="eyebrow">Confidence</p>
+            <h2>보이지 않을 만큼 얇지만, 필요한 정보는 분명하게.</h2>
+            <p>시험 화면을 보여주기보다 고객이 이해하기 쉬운 안심 포인트로 정리합니다.</p>
+          </div>
+          <div class="confidence-grid">
+            <article class="confidence-item">
+              <p class="confidence-item__label">자외선 차단</p>
+              <div class="confidence-item__value">UPF 50+</div>
+              <p class="confidence-item__copy">UVB 99.9%, UVA 95.3%, UVR 96.3% 원단 기준 시험 결과.</p>
+            </article>
+            <article class="confidence-item">
+              <p class="confidence-item__label">습기 흐름</p>
+              <div class="confidence-item__value">12,356</div>
+              <p class="confidence-item__copy">g/(m²·24h) 기준 투습도. 숫자보다 의미가 먼저 보이게 정리.</p>
+            </article>
+            <article class="confidence-item">
+              <p class="confidence-item__label">민감 피부 테스트</p>
+              <div class="confidence-item__value">Excellent</div>
+              <p class="confidence-item__copy">Dermatest 민감 피부 대상 시험 기준의 안심 정보로 표현.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--white" id="quick-faq">
+        <div class="section__inner">
+          <div class="concept-panel concept-panel--snap">
+            <div class="comparison-meta">
+              <div>
+                <p class="eyebrow">Concept A</p>
+                <h2>카드 snap으로 빠르게 넘겨보는 Quick FAQ.</h2>
+                <p>질문과 답변의 밀도를 고르게 유지합니다. 사용자가 궁금한 카드를 스스로 넘겨보는 안정적인 구조입니다.</p>
+              </div>
+              <ul class="compare-list">
+                <li><span>Good</span> 정보가 균일하고 설명형 콘텐츠에 강함</li>
+                <li><span>Risk</span> 기억에 남는 장면은 B안보다 약함</li>
+                <li><span>Flow</span> Confidence 다음에 자연스럽게 정보 정리로 이어짐</li>
+              </ul>
+            </div>
+            <div class="snap-track" tabindex="0" aria-label="카드 snap FAQ">
+              <article class="snap-card">
+                <p class="snap-card__question">메이크업 위에 사용해도 되나요?</p>
+                <div class="snap-card__answer">
+                  <span class="snap-card__mark">YES</span>
+                  <p class="snap-card__copy">쿠션 팩트, 파운데이션 등 메이크업 위에서도 자연스럽게 안착하도록 설계되었습니다.</p>
+                </div>
+              </article>
+              <article class="snap-card">
+                <p class="snap-card__question">일반 필름형 선패치와 다른가요?</p>
+                <div class="snap-card__answer">
+                  <span class="snap-card__mark">YES</span>
+                  <p class="snap-card__copy">필름처럼 피부를 덮는 방식이 아니라 나노 섬유 기반 멤브레인 구조입니다.</p>
+                </div>
+              </article>
+              <article class="snap-card">
+                <p class="snap-card__question">점착 성분 없이도 잘 붙나요?</p>
+                <div class="snap-card__answer">
+                  <span class="snap-card__mark">YES</span>
+                  <p class="snap-card__copy">멤브레인 구조와 제형의 점성을 활용한 Moisture-Bonding 방식으로 안착합니다.</p>
+                </div>
+              </article>
+              <article class="snap-card">
+                <p class="snap-card__question">투명한데 자외선 차단이 가능한가요?</p>
+                <div class="snap-card__answer">
+                  <span class="snap-card__mark">YES</span>
+                  <p class="snap-card__copy">원단 기준 시험에서 UPF 50+ 결과를 확인했습니다.</p>
+                </div>
+              </article>
+              <article class="snap-card snap-card--no">
+                <p class="snap-card__question">티가 나나요?</p>
+                <div class="snap-card__answer">
+                  <span class="snap-card__mark">NO</span>
+                  <p class="snap-card__copy">0.004 mm 초박막 투명 멤브레인이 피부 위에 얇게 자리 잡습니다.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="concept-panel concept-panel--reversal">
+            <div class="comparison-meta">
+              <div>
+                <p class="eyebrow">Concept B</p>
+                <h2>YES를 쌓고, 마지막 NO로 보이지 않음을 각인.</h2>
+                <p>답변보다 리듬이 먼저 느껴지는 구조입니다. 마지막 반전이 다음 Invisible Veil 섹션으로 직접 이어집니다.</p>
+              </div>
+              <ul class="compare-list">
+                <li><span>Good</span> 기억점이 강하고 제품 특성이 선명함</li>
+                <li><span>Risk</span> 설명량이 줄어들어 보조 FAQ가 필요함</li>
+                <li><span>Flow</span> 마지막 NO가 Invisible 메시지로 자연스럽게 연결됨</li>
+              </ul>
+            </div>
+            <div class="reversal-stage" aria-label="YES crescendo and NO reversal">
+              <article class="reversal-card" style="--scale: 0.9">
+                <div class="reversal-card__word">YES</div>
+                <p class="reversal-card__question">메이크업 위에도.</p>
+                <p class="reversal-card__copy">자연스럽게 안착하도록.</p>
+              </article>
+              <article class="reversal-card" style="--scale: 1.05">
+                <div class="reversal-card__word">YES</div>
+                <p class="reversal-card__question">필름형 패치와 다르게.</p>
+                <p class="reversal-card__copy">피부를 덮는 방식에서 멤브레인으로.</p>
+              </article>
+              <article class="reversal-card" style="--scale: 1.2">
+                <div class="reversal-card__word">YES</div>
+                <p class="reversal-card__question">점착제 없이도.</p>
+                <p class="reversal-card__copy">Moisture-Bonding 방식으로 안착.</p>
+              </article>
+              <article class="reversal-card" style="--scale: 1.35">
+                <div class="reversal-card__word">YES</div>
+                <p class="reversal-card__question">투명하지만 차단되게.</p>
+                <p class="reversal-card__copy">UPF 50+ 원단 기준 시험 결과.</p>
+              </article>
+              <article class="reversal-card reversal-card--no">
+                <div class="reversal-card__word">NO</div>
+                <p class="reversal-card__question">눈에 띄지 않게.</p>
+                <p class="reversal-card__copy">0.004 mm 초박막 투명 멤브레인.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--bleu" id="invisible">
+        <div class="section__inner bridge">
+          <div>
+            <p class="eyebrow">Invisible Veil</p>
+            <h2>보이지 않게, 그러나 보호하도록.</h2>
+            <p>두 컨셉 모두 여기로 이어집니다. A안은 정보 정리 뒤 자연스럽게 넘어오고, B안은 큰 NO의 반전이 바로 invisible 특성으로 연결됩니다.</p>
+          </div>
+          <div class="invisible-demo" aria-label="Invisible membrane visual">
+            <div class="invisible-demo__veil"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--white" id="why">
+        <div class="section__inner">
+          <div class="section-title">
+            <p class="eyebrow">Why This Zone</p>
+            <h2>선케어가 가장 먼저 무너지는 자리.</h2>
+            <p>눈가 아래와 광대는 빛이 먼저 닿고, 표정과 메이크업이 자주 움직이는 영역입니다.</p>
+          </div>
+          <div class="plain-grid">
+            <article class="plain-cell">
+              <h3>메이크업 위</h3>
+              <p>다시 바르고 싶지만 피부 표현을 무너뜨리고 싶지 않을 때.</p>
+            </article>
+            <article class="plain-cell">
+              <h3>햇살이 드는 자리</h3>
+              <p>통창, 테라스, 산책처럼 햇살을 피하고 싶지 않을 때.</p>
+            </article>
+            <article class="plain-cell">
+              <h3>이동 중</h3>
+              <p>손으로 덧바르기 애매하지만 보호는 이어가고 싶을 때.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--ciel" id="use">
+        <div class="section__inner">
+          <div class="section-title">
+            <p class="eyebrow">Whearable Beauty</p>
+            <h2>햇살이 머무는 순간마다.</h2>
+            <p>클라이언트 원고의 Use Case는 유지하고, 실제 제작에서는 이미지 중심 editorial slider로 확장합니다.</p>
+          </div>
+          <div class="plain-grid">
+            <article class="plain-cell">
+              <h3>오후 2시 창가</h3>
+              <p>빛이 들어오는 자리를 포기하지 않아도 됩니다.</p>
+            </article>
+            <article class="plain-cell">
+              <h3>테라스 브런치</h3>
+              <p>햇살을 피하지 않는 사람의 선 리추얼.</p>
+            </article>
+            <article class="plain-cell">
+              <h3>드라이브 케어</h3>
+              <p>빛이 오래 머무는 이동 시간에도 이어지는 보호.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--white" id="how">
+        <div class="section__inner">
+          <div class="section-title">
+            <p class="eyebrow">How It Works</p>
+            <h2>얇게 보호하고, 수분으로 안착합니다.</h2>
+            <p>Layer diagram과 3-step usage는 전체 흐름의 후반에서 제품 이해를 마무리합니다.</p>
+          </div>
+          <div class="plain-grid">
+            <article class="plain-cell">
+              <h3>Ultra-thin Membrane</h3>
+              <p>0.004 mm 투명 나노 섬유가 피부 위에 가벼운 보호 레이어를 형성합니다.</p>
+            </article>
+            <article class="plain-cell">
+              <h3>Moisture-Bonding</h3>
+              <p>일반적인 점착제가 아니라 제형의 점성을 활용해 자연스럽게 자리 잡습니다.</p>
+            </article>
+            <article class="plain-cell">
+              <h3>Ready, Set, Go</h3>
+              <p>L/R 방향을 확인하고 광대존에 올린 뒤 일상을 이어갑니다.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--white" id="cta">
+        <div class="section__inner">
+          <div class="cta-band">
+            <div>
+              <h2>햇살을 포기하지 않는 가장 얇고 새로운 보호 방식.</h2>
+              <p>AYROW Reverse AG Code™ Sun Veil</p>
+            </div>
+            <a class="cta-button" href="#overview">다시 비교하기</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var body = document.body;
+      var buttons = Array.prototype.slice.call(document.querySelectorAll(".prototype-switch__button"));
+
+      function setConcept(concept) {
+        body.setAttribute("data-concept", concept);
+        buttons.forEach(function (button) {
+          var active = button.getAttribute("data-target") === concept;
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+      }
+
+      buttons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          setConcept(button.getAttribute("data-target"));
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

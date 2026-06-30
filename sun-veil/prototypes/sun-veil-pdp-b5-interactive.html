@@ -1,0 +1,2015 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP — B-5 Integrated (Wireframe + Interactions)</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    :root { --bleu: var(--primitive-bleu, #2e3a8a); }
+    body { margin: 0; background: var(--semantic-bg-default); color: var(--semantic-on-surface); }
+    code { font-family: 'Soehne Mono', monospace; font-size: 0.9em; }
+
+    /* ---- Doc layout ---- */
+    .doc-page { padding: var(--layout-page-md, 32px) var(--layout-page-x, 24px); }
+    .doc-shell { width: min(100%, 1200px); margin: 0 auto; }
+    .doc-narrow { max-width: 880px; margin: 0 auto; }
+
+    .doc-hero {
+      min-height: 50vh;
+      display: grid; align-content: center;
+      padding: 8vh 0;
+    }
+    .doc-hero h1 { margin: 0 0 0.6em; font-size: clamp(28px, 4vw, 44px); }
+    .doc-hero p { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+    .doc-hero .kicker {
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.4em;
+    }
+
+    /* ---- Section ---- */
+    .sec {
+      padding: 8vh 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .sec__head {
+      display: grid; gap: 8px;
+      margin-bottom: 32px;
+      max-width: 880px; margin-left: auto; margin-right: auto;
+    }
+    .sec__index {
+      color: var(--semantic-on-surface-muted);
+      font-size: 13px; letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    .sec__title {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .sec__lead {
+      margin: 0;
+      color: var(--semantic-on-surface-muted);
+      font-size: clamp(15px, 1.6vw, 18px);
+      line-height: 1.55;
+      max-width: 720px;
+    }
+    .sec__delta {
+      display: inline-block; padding: 3px 8px;
+      background: rgba(58, 87, 143, 0.12); color: #3a578f;
+      border-radius: 4px; font-size: 11px; letter-spacing: 0.04em;
+      align-self: start;
+    }
+
+    .sec__body {
+      max-width: 880px; margin: 0 auto;
+    }
+
+    /* ---- Block primitives ---- */
+    .block {
+      background: white;
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 16px;
+      padding: 32px clamp(20px, 3vw, 36px);
+    }
+    .block + .block { margin-top: 24px; }
+
+    .block__h {
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+      margin: 0 0 16px;
+      font-weight: 500;
+    }
+
+    /* ---- Visual placeholder ---- */
+    .vis {
+      aspect-ratio: 4 / 3;
+      background:
+        repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0 8px, transparent 8px 16px),
+        rgba(0,0,0,0.04);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px;
+      text-align: center;
+      padding: 20px;
+    }
+    .vis--tall { aspect-ratio: 3 / 4; }
+    .vis--wide { aspect-ratio: 16 / 9; }
+    .vis--pill { aspect-ratio: 21 / 9; }
+
+    /* ---- Chip / Card / Toggle ---- */
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .chip {
+      background: rgba(0,0,0,0.05);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      text-align: center;
+      color: var(--semantic-on-surface-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .chip--solid { background: var(--bleu); color: white; }
+
+    .cards { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+    .cards--3 { grid-template-columns: repeat(3, 1fr); }
+    .cards--4 { grid-template-columns: repeat(4, 1fr); }
+    .card {
+      background: rgba(0,0,0,0.03);
+      border-radius: 10px; padding: 14px;
+      display: grid; gap: 6px;
+      font-size: 12.5px;
+    }
+    .card strong { font-size: 13px; color: var(--semantic-on-surface); }
+    .card span { color: var(--semantic-on-surface-muted); }
+    .card--accent { background: var(--bleu); color: white; }
+    .card--accent strong { color: white; }
+    .card--accent span { color: rgba(255,255,255,0.85); }
+
+    .toggle {
+      display: inline-grid; grid-template-columns: repeat(var(--n, 2), 1fr);
+      background: rgba(0,0,0,0.05); border-radius: 999px; padding: 4px;
+      font-size: 12px; text-align: center; gap: 0;
+    }
+    .toggle span { padding: 8px 16px; border-radius: 999px; cursor: default; }
+    .toggle span.is-on { background: var(--semantic-on-surface); color: var(--semantic-bg-default); }
+
+    .acc {
+      background: rgba(0,0,0,0.03);
+      border-radius: 8px; padding: 12px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px;
+    }
+    .acc + .acc { margin-top: 6px; }
+    .acc::after { content: "+"; color: var(--semantic-on-surface-muted); }
+
+    .stepdots {
+      display: flex; gap: 6px; justify-content: center;
+      margin: 12px 0;
+    }
+    .stepdots span {
+      width: 24px; height: 4px; border-radius: 2px;
+      background: rgba(0,0,0,0.15);
+    }
+    .stepdots span.is-on { background: var(--semantic-on-surface); }
+
+    /* ============================================
+       SVG common
+       ============================================ */
+    .svg { display: block; width: 100%; height: auto; color: var(--semantic-on-surface); overflow: visible; }
+    .svg-bar { fill: currentColor; opacity: 0.78; }
+    .svg-bar--accent { fill: var(--bleu); opacity: 1; }
+    .svg-name { font-size: 13px; fill: currentColor; font-weight: 600; }
+    .svg-name--accent { fill: var(--bleu); }
+    .svg-num { font-size: 12px; fill: currentColor; opacity: 0.7; font-variant-numeric: tabular-nums; }
+    .svg-num--accent { fill: var(--bleu); opacity: 1; }
+    .svg-cap { font-size: 11px; fill: currentColor; opacity: 0.55; letter-spacing: 0.02em; }
+    .svg-leader { stroke: currentColor; stroke-width: 0.6; opacity: 0.4; stroke-dasharray: 2 3; }
+
+    /* ============================================
+       02 BIS Signature (SVG icons + reveal)
+       ============================================ */
+    .bis-wrap {
+      display: grid; gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+      margin-top: 8px;
+    }
+    .bis-cell {
+      padding: 22px 12px;
+      background: rgba(0,0,0,0.03);
+      border-radius: 12px;
+      display: grid; gap: 10px; justify-items: center;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .sec.is-on .bis-cell { opacity: 1; transform: translateY(0); }
+    .sec.is-on .bis-cell:nth-child(1) { transition-delay: 100ms; }
+    .sec.is-on .bis-cell:nth-child(2) { transition-delay: 280ms; }
+    .sec.is-on .bis-cell:nth-child(3) { transition-delay: 460ms; }
+    .bis-icon { width: 56px; height: 56px; }
+    .bis-cell strong { font-size: 14px; color: var(--semantic-on-surface); }
+    .bis-cell span  { font-size: 11px; color: var(--semantic-on-surface-muted); }
+
+    /* ============================================
+       03-1 Thickness Comparison (Experiment C — 실물 단면)
+       ============================================ */
+    .draw-stagger { transition-delay: calc(var(--i, 0) * 280ms); }
+    .draw-scale {
+      transform: scale(0); transform-origin: center;
+      transform-box: fill-box; opacity: 0;
+      transition: transform 1100ms cubic-bezier(0.2, 0.8, 0.4, 1), opacity 600ms ease;
+    }
+    .sec.is-on .draw-scale { transform: scale(1); opacity: 1; }
+    .draw-fade {
+      opacity: 0; transform: translateY(6px);
+      transform-box: fill-box;
+      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .sec.is-on .draw-fade { opacity: 1; transform: translateY(0); }
+
+    .sec.is-on .sv-pulse {
+      animation: sv-pulse 1.4s ease-in-out 1.4s 1;
+    }
+    @keyframes sv-pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.5; }
+    }
+
+    @media (hover: hover) {
+      .sec.is-on .thickness-svg:hover .sv-highlight {
+        filter: drop-shadow(0 0 6px var(--bleu));
+      }
+    }
+
+    /* ============================================
+       03-2 Air Flow (Film 튕김 + Membrane 통과)
+       ============================================ */
+    /* Membrane 양방향 통과 — 위→아래(배출) + 아래→위(유입) */
+    .particle-flow {
+      animation: particle-down 4.2s linear infinite;
+      transform-box: fill-box;
+    }
+    @keyframes particle-down {
+      0%   { transform: translateY(-12px); opacity: 0; }
+      10%  { opacity: 0.85; }
+      90%  { opacity: 0.85; }
+      100% { transform: translateY(258px); opacity: 0; }
+    }
+    .particle-flow-up {
+      animation: particle-up 4.6s linear infinite;
+      transform-box: fill-box;
+    }
+    @keyframes particle-up {
+      0%   { transform: translateY(258px); opacity: 0; }
+      10%  { opacity: 0.55; }
+      90%  { opacity: 0.55; }
+      100% { transform: translateY(-12px); opacity: 0; }
+    }
+    .particle-flow--a { animation-delay: 0s; }
+    .particle-flow--b { animation-delay: 1.4s; }
+    .particle-flow--c { animation-delay: 2.8s; }
+    .particle-flow--d { animation-delay: 0.7s; }
+    .particle-flow--e { animation-delay: 2.1s; }
+    .particle-flow--f { animation-delay: 3.5s; }
+
+    /* Film 튕김 */
+    .particle-bounce {
+      animation: film-bounce 3.2s infinite;
+      transform-box: fill-box;
+    }
+    @keyframes film-bounce {
+      0%   { transform: translateY(-30px); opacity: 0; animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0); }
+      15%  { opacity: 0.85; }
+      48%  { transform: translateY(80px); opacity: 0.95; animation-timing-function: cubic-bezier(0.2, 0.8, 0.4, 1); }
+      100% { transform: translate(var(--bx, -40px), 0px); opacity: 0; }
+    }
+    .particle-bounce--a { animation-delay: 0s; }
+    .particle-bounce--b { animation-delay: 0.6s; }
+    .particle-bounce--c { animation-delay: 1.2s; }
+    .particle-bounce--d { animation-delay: 1.8s; }
+    .particle-bounce--e { animation-delay: 2.4s; }
+
+    /* 다공성 점 */
+    .pore-pulse {
+      animation: pore-pulse 2.4s ease-in-out infinite alternate;
+    }
+    @keyframes pore-pulse {
+      from { opacity: 0.7; }
+      to   { opacity: 1; }
+    }
+
+    @media (hover: hover) {
+      .airflow-membrane:hover .particle-flow { animation-duration: 2.4s; }
+      .airflow-membrane:hover .pore-pulse { animation-duration: 1.2s; }
+      .airflow-film:hover .particle-bounce { animation-duration: 2.0s; }
+    }
+
+    /* ============================================
+       05 Layer Split + Moisture-Bonding
+       ============================================ */
+    .layer-l1-group, .layer-l2-group {
+      transform-box: fill-box;
+      transition: transform 1100ms cubic-bezier(0.2, 0.8, 0.4, 1), opacity 800ms ease;
+    }
+    .layer-l1-group { transform: translateY(28px); opacity: 0; }
+    .layer-l2-group { transform: translateY(-22px); opacity: 0; }
+    .sec.is-on .layer-l1-group { transform: translateY(0); opacity: 1; }
+    .sec.is-on .layer-l2-group { transform: translateY(0); opacity: 1; transition-delay: 200ms; }
+
+    .layer-pore {
+      transform-box: fill-box; transform-origin: center;
+      transform: scale(0); opacity: 0;
+      transition: transform 500ms cubic-bezier(0.34, 1.3, 0.64, 1), opacity 400ms ease;
+    }
+    .sec.is-on .layer-pore { transform: scale(1); opacity: 1; transition-delay: calc(900ms + var(--i, 0) * 60ms); }
+
+    .layer-divider {
+      opacity: 0;
+      transition: opacity 700ms ease 1500ms;
+    }
+    .sec.is-on .layer-divider { opacity: 0.5; }
+
+    .layer-label {
+      transform-box: fill-box;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 600ms ease, transform 600ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .sec.is-on .layer-label { opacity: 1; transform: translateY(0); transition-delay: calc(400ms + var(--i, 0) * 200ms); }
+
+    @media (hover: hover) {
+      .sec.is-on .layer-svg:hover .layer-l1-group { transform: translateY(-6px); transition-duration: 600ms; }
+      .sec.is-on .layer-svg:hover .layer-l2-group { transform: translateY(6px); transition-duration: 600ms; }
+    }
+
+	    /* Moisture-Bonding */
+	    .moisture-story {
+	      position: relative;
+	      overflow: hidden;
+	      background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(235,242,254,0.34) 100%);
+	    }
+	    .moisture-copy {
+	      position: relative;
+	      max-width: 620px;
+	      margin: 0 auto 24px;
+	      text-align: center;
+	      display: grid;
+	      justify-items: center;
+	      gap: 10px;
+	    }
+	    .moisture-eyebrow {
+	      margin: 0;
+	      color: var(--bleu);
+	      font-size: 12px;
+	      font-weight: 600;
+	      letter-spacing: 0.14em;
+	      text-transform: uppercase;
+	    }
+	    .moisture-rule {
+	      margin: 0;
+	      color: var(--semantic-on-surface-muted);
+	      font-size: 13px;
+	      letter-spacing: 0.08em;
+	    }
+	    .moisture-title {
+	      margin: 0;
+	      color: var(--semantic-on-surface);
+	      font-size: clamp(24px, 3.4vw, 40px);
+	      font-weight: 500;
+	      line-height: 1.22;
+	      letter-spacing: -0.015em;
+	    }
+	    .moisture-subtitle {
+	      margin: 0;
+	      color: var(--semantic-on-surface-muted);
+	      font-size: clamp(14px, 1.6vw, 17px);
+	      line-height: 1.65;
+	    }
+	    .moisture-visual {
+	      position: relative;
+	      display: grid;
+	      gap: 20px;
+	      margin-top: 8px;
+	      z-index: 1;
+	    }
+	    .moisture-copy { z-index: 1; }
+	    .moisture-svg {
+	      border-radius: 10px;
+	      background: rgba(255,255,255,0.42);
+	      box-shadow: inset 0 0 0 1px rgba(0, 119, 191, 0.06);
+	    }
+	    .moisture-bond-grid {
+	      display: grid;
+	      grid-template-columns: repeat(2, minmax(0, 1fr));
+	      gap: 12px;
+	    }
+	    .moisture-bond-card {
+	      position: relative;
+	      display: grid;
+	      gap: 10px;
+	      min-height: 156px;
+	      padding: 18px 0 0;
+	      border-top: 1px solid rgba(0, 119, 191, 0.16);
+	      background: transparent;
+	      opacity: 0;
+	      transform: translateY(8px);
+	      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1);
+	    }
+	    .moisture-story.is-on .moisture-bond-card {
+	      opacity: 1;
+	      transform: translateY(0);
+	      transition-delay: calc(1150ms + var(--i, 0) * 160ms);
+	    }
+	    .moisture-bond-card strong {
+	      color: var(--bleu);
+	      font-size: 13px;
+	      font-weight: 600;
+	      letter-spacing: 0.02em;
+	    }
+	    .moisture-bond-card p {
+	      margin: 0;
+	      color: var(--semantic-on-surface);
+	      font-size: 15px;
+	      line-height: 1.72;
+	    }
+	    .moisture-bond-card span {
+	      color: var(--semantic-on-surface-muted);
+	    }
+	    .moist-skin-curve {
+	      stroke-dasharray: 720; stroke-dashoffset: 720;
+	      stroke-width: 1.4;
+	      transition: stroke-dashoffset 1500ms cubic-bezier(0.4, 0, 0.2, 1);
+	    }
+	    .moisture-story.is-on .moist-skin-curve { stroke-dashoffset: 0; }
+	    .moist-skin-fill {
+	      opacity: 0;
+	      transition: opacity 800ms ease 1000ms;
+	    }
+	    .moisture-story.is-on .moist-skin-fill { opacity: 0.045; }
+	    .moist-formula-curve,
+	    .moist-membrane-curve {
+	      stroke-dasharray: 720; stroke-dashoffset: 720;
+	      transition: stroke-dashoffset 1200ms cubic-bezier(0.4, 0, 0.2, 1) 350ms;
+	    }
+	    .moist-membrane-core {
+	      fill: var(--bleu);
+	      stroke: none;
+	      opacity: 0.12;
+	    }
+	    .moist-membrane-edge {
+	      stroke: var(--bleu);
+	      stroke-width: 1.4;
+	      fill: none;
+	      opacity: 0.52;
+	      stroke-linecap: round;
+	    }
+	    .moist-contact-pad {
+	      fill: var(--bleu);
+	      opacity: 0.1;
+	    }
+	    .moist-contact-line {
+	      stroke: var(--bleu);
+	      stroke-width: 1.3;
+	      fill: none;
+	      stroke-linecap: round;
+	      opacity: 0.62;
+	    }
+	    .moist-anchor-line {
+	      opacity: 0;
+	      stroke: var(--bleu);
+	      stroke-width: 1;
+	      stroke-linecap: round;
+	      transform: translateY(-6px);
+	      transform-box: fill-box;
+	      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1);
+	    }
+	    .moisture-story.is-on .moist-anchor-line {
+	      opacity: 0.34;
+	      transform: translateY(0);
+	      transition-delay: calc(950ms + var(--i, 0) * 90ms);
+	    }
+	    .moisture-story.is-on .moist-formula-curve,
+	    .moisture-story.is-on .moist-membrane-curve { stroke-dashoffset: 0; }
+	    .moist-membrane-sheet {
+	      opacity: 0;
+	      transform: translateY(-8px);
+	      transform-box: fill-box;
+	      transition: opacity 800ms ease 650ms, transform 900ms cubic-bezier(0.2, 0.8, 0.4, 1) 650ms;
+	    }
+	    .moisture-story.is-on .moist-membrane-sheet {
+	      opacity: 1;
+	      transform: translateY(0);
+	    }
+	    .moist-contact-zone {
+	      opacity: 0;
+	      transform: scaleX(0.94);
+	      transform-origin: center;
+	      transform-box: fill-box;
+	      transition: opacity 700ms ease 900ms, transform 900ms cubic-bezier(0.2, 0.8, 0.4, 1) 900ms;
+	    }
+	    .moisture-story.is-on .moist-contact-zone {
+	      opacity: 1;
+	      transform: scaleX(1);
+	    }
+	    .moist-pore {
+	      transform-box: fill-box;
+	      transform-origin: center;
+	      opacity: 0;
+	      transform: scale(0);
+	      transition: opacity 450ms ease, transform 500ms cubic-bezier(0.34, 1.3, 0.64, 1);
+	    }
+	    .moisture-story.is-on .moist-pore {
+	      opacity: 1;
+	      transform: scale(1);
+	      transition-delay: calc(650ms + var(--i, 0) * 70ms);
+	    }
+	    .moisture-flow {
+	      opacity: 0;
+	      transform: translateY(-6px);
+	      transform-box: fill-box;
+	      transition: opacity 650ms ease, transform 750ms cubic-bezier(0.2, 0.8, 0.4, 1);
+	    }
+	    .moisture-story.is-on .moisture-flow {
+	      opacity: 1;
+	      transform: translateY(0);
+	      transition-delay: calc(850ms + var(--i, 0) * 120ms);
+	    }
+
+	    .moist-water {
+	      transform-box: fill-box; transform-origin: center;
+	      transform: scale(0); opacity: 0;
+	      transition: transform 500ms cubic-bezier(0.34, 1.3, 0.64, 1), opacity 400ms ease;
+	    }
+	    .moisture-story.is-on .moist-water {
+	      transform: scale(1); opacity: 0.62;
+	      transition-delay: calc(850ms + var(--i, 0) * 90ms);
+	    }
+	    .moist-label {
+	      transform-box: fill-box;
+	      opacity: 0; transform: translateY(6px);
+	      transition: opacity 600ms ease, transform 600ms cubic-bezier(0.2, 0.8, 0.4, 1);
+	    }
+	    .moisture-story.is-on .moist-label { opacity: 1; transform: translateY(0); transition-delay: calc(650ms + var(--i, 0) * 170ms); }
+
+	    @media (hover: hover) {
+	      .moisture-story.is-on:hover .moisture-bond-card {
+	        transform: translateY(-1px);
+	        transition-delay: 0ms;
+	      }
+	    }
+
+	    /* Reverse AG Code Formula */
+	    .reverse-formula {
+	      display: grid;
+	      gap: 26px;
+	    }
+	    .formula-intro {
+	      display: grid;
+	      gap: 8px;
+	      text-align: center;
+	      max-width: 660px;
+	      margin: 0 auto;
+	    }
+	    .formula-kicker,
+	    .formula-label {
+	      margin: 0;
+	      color: var(--semantic-on-surface-muted);
+	      font-size: 12px;
+	      letter-spacing: 0.08em;
+	      text-transform: uppercase;
+	    }
+	    .formula-label {
+	      color: var(--bleu);
+	      font-weight: 600;
+	    }
+	    .formula-title {
+	      margin: 0;
+	      color: var(--semantic-on-surface);
+	      font-size: clamp(22px, 3vw, 36px);
+	      font-weight: 500;
+	      line-height: 1.24;
+	      letter-spacing: -0.015em;
+	    }
+	    .formula-core-grid,
+	    .formula-module-grid {
+	      display: grid;
+	      gap: 18px;
+	    }
+	    .formula-core-grid {
+	      grid-template-columns: repeat(3, minmax(0, 1fr));
+	    }
+	    .formula-ingredient,
+	    .formula-module {
+	      display: grid;
+	      gap: 8px;
+	      padding-top: 14px;
+	      border-top: 1px solid rgba(0, 119, 191, 0.16);
+	    }
+	    .formula-ingredient h4,
+	    .formula-section h4,
+	    .formula-base h4 {
+	      margin: 0;
+	      color: var(--semantic-on-surface);
+	      font-weight: 500;
+	      letter-spacing: -0.015em;
+	    }
+	    .formula-ingredient h4 { font-size: 18px; }
+	    .formula-ingredient p,
+	    .formula-base p {
+	      margin: 0;
+	      color: var(--semantic-on-surface-muted);
+	      font-size: 13px;
+	      line-height: 1.65;
+	    }
+	    .formula-ingredient strong {
+	      color: var(--bleu);
+	      font-size: 13px;
+	      font-weight: 600;
+	    }
+	    .formula-section {
+	      display: grid;
+	      gap: 14px;
+	      padding-top: 22px;
+	      border-top: 1px solid rgba(0, 119, 191, 0.1);
+	    }
+	    .formula-section h4 { font-size: 20px; }
+	    .formula-module-grid {
+	      grid-template-columns: repeat(2, minmax(0, 1fr));
+	    }
+	    .formula-module span {
+	      color: var(--semantic-on-surface);
+	      font-size: 13px;
+	      font-weight: 600;
+	    }
+	    .formula-module strong {
+	      color: var(--semantic-on-surface-muted);
+	      font-size: 13px;
+	      font-weight: 400;
+	      line-height: 1.55;
+	    }
+	    .formula-base {
+	      display: grid;
+	      grid-template-columns: minmax(220px, 0.8fr) 1fr;
+	      gap: 22px;
+	      padding-top: 22px;
+	      border-top: 1px solid rgba(0, 119, 191, 0.1);
+	    }
+	    .formula-base h4 {
+	      margin-top: 6px;
+	      font-size: 22px;
+	    }
+	    .formula-base__copy {
+	      display: grid;
+	      gap: 6px;
+	      align-content: start;
+	    }
+	    .formula-base__copy strong {
+	      color: var(--bleu);
+	      font-weight: 600;
+	    }
+	    .formula-disclaimer {
+	      margin: 0;
+	      padding-top: 14px;
+	      border-top: 1px solid rgba(0,0,0,0.06);
+	      color: var(--semantic-on-surface-muted);
+	      font-size: 11px;
+	      line-height: 1.6;
+	    }
+
+    /* ============================================
+       06 Proof — count-up
+       ============================================ */
+    .num-count { font-variant-numeric: tabular-nums; }
+    .proof-data {
+      display: grid;
+      gap: 18px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+    }
+    .proof-intro {
+      display: grid;
+      gap: 8px;
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    .proof-source {
+      margin: 0;
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    .proof-modules {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .proof-module,
+    .proof-clean {
+      display: grid;
+      gap: 18px;
+      min-height: 260px;
+      padding: 22px;
+      border: 1px solid rgba(0, 119, 191, 0.1);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.78);
+    }
+    .proof-module__head {
+      display: grid;
+      gap: 6px;
+    }
+    .proof-module__eyebrow {
+      color: var(--bleu);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .proof-module h3,
+    .proof-clean h3 {
+      margin: 0;
+      color: var(--semantic-on-surface);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+    }
+    .proof-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 18px;
+      align-items: end;
+    }
+    .proof-metrics--three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .proof-stat {
+      display: grid;
+      gap: 4px;
+      align-content: end;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0, 119, 191, 0.12);
+    }
+    .proof-stat strong {
+      color: var(--semantic-on-surface);
+      font-size: clamp(19px, 2.3vw, 28px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+    }
+    .proof-stat span:last-child {
+      color: var(--semantic-on-surface-muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .proof-points {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--semantic-on-surface-muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .proof-points strong {
+      color: var(--semantic-on-surface);
+      font-weight: 600;
+    }
+    .proof-note {
+      margin: auto 0 0;
+      color: var(--semantic-on-surface-muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+    .proof-clean {
+      min-height: 0;
+      gap: 8px;
+    }
+    .proof-clean p {
+      margin: 0;
+      color: var(--semantic-on-surface-muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .proof-clean strong {
+      color: var(--bleu);
+      font-weight: 600;
+    }
+
+    /* ============================================
+       07 Why & When — 광대존 SVG 인터랙션
+       ============================================ */
+    .face-outline {
+      stroke-dasharray: 1100;
+      stroke-dashoffset: 1100;
+      transition: stroke-dashoffset 1500ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sec.is-on .face-outline { stroke-dashoffset: 0; }
+
+    .face-feature {
+      opacity: 0;
+      transform-box: fill-box;
+      transform: translateY(4px);
+      transition: opacity 600ms ease, transform 600ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .sec.is-on .face-feature {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: calc(800ms + var(--i, 0) * 120ms);
+    }
+
+    .cheek-zone {
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+      transform: scale(0.7);
+    }
+    .sec.is-on .cheek-zone {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.34, 1.3, 0.64, 1);
+      transition-delay: calc(1500ms + var(--i, 0) * 200ms);
+      animation: cheek-pulse 3s ease-in-out 2.5s infinite;
+    }
+    @keyframes cheek-pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.7; }
+    }
+
+    .cheek-label {
+      opacity: 0;
+      transform-box: fill-box;
+      transform: translateY(4px);
+      transition: opacity 600ms ease, transform 600ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .sec.is-on .cheek-label {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 2200ms;
+    }
+
+    /* ============================================
+       08 Ritual Guide — Step Card 인터랙션
+       ============================================ */
+    .step-card {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .sec.is-on .step-card { opacity: 1; transform: translateY(0); }
+    .sec.is-on .step-card:nth-child(1) { transition-delay: 100ms; }
+    .sec.is-on .step-card:nth-child(2) { transition-delay: 280ms; }
+    .sec.is-on .step-card:nth-child(3) { transition-delay: 460ms; }
+
+    @media (hover: hover) {
+      .sec.is-on .step-card {
+        transition: opacity 700ms ease,
+                    transform 350ms cubic-bezier(0.2, 0.8, 0.4, 1),
+                    box-shadow 350ms ease;
+      }
+      .sec.is-on .step-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      }
+    }
+
+    /* ============================================
+       01 Hero — Chip stagger reveal
+       ============================================ */
+    .hero-chip {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 600ms ease, transform 600ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .sec.is-on .hero-chip { opacity: 1; transform: translateY(0); }
+    .sec.is-on .hero-chip:nth-child(1) { transition-delay: 200ms; }
+    .sec.is-on .hero-chip:nth-child(2) { transition-delay: 320ms; }
+    .sec.is-on .hero-chip:nth-child(3) { transition-delay: 440ms; }
+    .sec.is-on .hero-chip:nth-child(4) { transition-delay: 560ms; }
+
+    /* reduced motion — 모든 추가 인터랙션 정적 fallback */
+    @media (prefers-reduced-motion: reduce) {
+      .face-outline, .face-feature, .cheek-zone, .cheek-label,
+      .step-card, .hero-chip {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+      }
+      .face-outline { stroke-dashoffset: 0 !important; }
+    }
+
+    /* ============================================
+       Quick FAQ — Signature Sticky Scroll Stage
+       ============================================ */
+    .qfaq {
+      position: relative;
+      height: calc(100vh * 6 + 80vh);
+      background: var(--semantic-bg-default);
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .qfaq__stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+    .qfaq__progress {
+      position: absolute;
+      top: 16px; left: 0; right: 0;
+      display: flex; gap: 6px;
+      padding: 0 max(5vw, 24px);
+      pointer-events: none;
+      z-index: 4;
+    }
+    .qfaq__progress span {
+      flex: 1; height: 2px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 1px; overflow: hidden;
+      position: relative;
+    }
+    .qfaq__progress span::after {
+      content: ""; position: absolute; inset: 0;
+      background: var(--semantic-on-surface);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 200ms linear;
+    }
+    .qfaq__progress span.is-on::after { transform: scaleX(var(--p, 0)); }
+    .qfaq__progress span.is-done::after { transform: scaleX(1); }
+
+    .qfaq__panel {
+      position: absolute; inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 280ms ease;
+      display: grid;
+      place-items: center;
+      padding: 10vh max(5vw, 24px);
+      gap: clamp(12px, 2vh, 24px);
+    }
+    .qfaq__panel.is-active { opacity: 1; pointer-events: auto; }
+    .qfaq__qa { display: contents; }
+
+    /* Q + YN + A를 한 grid 그룹으로 — order로 시각 순서 */
+    .qfaq__q {
+      order: 1;
+      max-width: 720px;
+      text-align: center;
+      font-size: clamp(18px, 2.4vw, 26px);
+      font-weight: 500;
+      color: var(--semantic-on-surface-muted);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 600ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .qfaq__panel.is-active .qfaq__q { opacity: 1; transform: translateY(0); }
+
+    .qfaq__yn {
+      order: 2;
+      text-align: center;
+      font-size: clamp(96px, 16vw, 220px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 0.9;
+      color: var(--bleu);
+      pointer-events: none;
+    }
+
+    .qfaq__a {
+      order: 3;
+      max-width: 640px;
+      text-align: center;
+      font-size: clamp(16px, 1.9vw, 21px);
+      font-weight: 400;
+      line-height: 1.55;
+      color: var(--semantic-on-surface);
+    }
+    .qfaq__a span { opacity: 0; transition: opacity 240ms ease; white-space: pre; }
+    .qfaq__a span.is-on { opacity: 1; }
+    .qfaq__yn span { display: inline-block; opacity: 0; }
+    .qfaq__yn--yes span {
+      transform: translateY(-18px);
+      transition: opacity 380ms cubic-bezier(0.2, 0.8, 0.4, 1),
+                  transform 520ms cubic-bezier(0.2, 1.3, 0.4, 1);
+    }
+    .qfaq__panel.is-active .qfaq__yn--yes span:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 140ms; }
+    .qfaq__panel.is-active .qfaq__yn--yes span:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 200ms; }
+    .qfaq__panel.is-active .qfaq__yn--yes span:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 260ms; }
+
+    .qfaq__yn--no span {
+      transform: translateY(28px);
+      transition: opacity 480ms cubic-bezier(0.2, 0.8, 0.4, 1),
+                  transform 700ms cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    .qfaq__panel.is-active .qfaq__yn--no span:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 220ms; }
+    .qfaq__panel.is-active .qfaq__yn--no span:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 340ms; }
+
+    @media (max-width: 700px) {
+      .qfaq__panel { padding: 6vh max(5vw, 24px); gap: 14px; }
+      .qfaq__yn { font-size: clamp(72px, 26vw, 140px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .qfaq { height: auto; }
+      .qfaq__stage { position: static; height: auto; padding: 8vh 0; }
+      .qfaq__panel { position: static; opacity: 1; padding: 6vh max(5vw, 24px); border-top: 1px solid rgba(0,0,0,0.08); }
+      .qfaq__panel:first-of-type { border-top: 0; }
+      .qfaq__q { position: static; transform: none; opacity: 1; }
+      .qfaq__a { position: static; transform: none; opacity: 1; }
+      .qfaq__a span { opacity: 1; }
+      .qfaq__yn { position: static; transform: none; opacity: 1; font-size: clamp(64px, 12vw, 120px); margin-top: 24px; }
+      .qfaq__yn span { opacity: 1; transform: none; }
+      .qfaq__progress { display: none; }
+    }
+
+    /* ============================================
+       Reduced motion
+       ============================================ */
+	    @media (prefers-reduced-motion: reduce) {
+	      .bis-cell, .draw-scale, .draw-fade,
+	      .layer-l1-group, .layer-l2-group, .layer-pore, .layer-divider, .layer-label,
+	      .moist-skin-fill, .moist-water, .moist-label,
+	      .moisture-bond-card, .moist-membrane-sheet, .moist-contact-zone, .moist-pore,
+	      .moist-anchor-line, .moisture-flow {
+	        opacity: 1 !important;
+	        transform: none !important;
+	        transition: none !important;
+	      }
+	      .moist-skin-curve, .moist-membrane-curve, .moist-formula-curve { stroke-dashoffset: 0 !important; transition: none !important; }
+	      .particle-flow, .particle-bounce, .pore-pulse, .moist-water, .moisture-flow,
+	      .moist-membrane-sheet, .moist-contact-zone, .sv-pulse {
+	        animation: none !important;
+	      }
+      .layer-divider { opacity: 0.5 !important; }
+      .moist-skin-fill { opacity: 0.06 !important; }
+      .moist-water { opacity: 0.65 !important; }
+    }
+
+	    @media (max-width: 700px) {
+	      .chips { grid-template-columns: repeat(2, 1fr); }
+	      .cards--3, .cards--4 { grid-template-columns: 1fr 1fr; }
+	      .moisture-story { padding-left: 20px; padding-right: 20px; }
+	      .moisture-bond-grid { grid-template-columns: 1fr; }
+	      .moisture-bond-card { min-height: 0; }
+	      .formula-core-grid,
+	      .formula-module-grid,
+	      .formula-base {
+	        grid-template-columns: 1fr;
+	      }
+	      .proof-modules,
+	      .proof-metrics,
+	      .proof-metrics--three {
+	        grid-template-columns: 1fr;
+	      }
+	      .proof-module,
+	      .proof-clean {
+	        min-height: 0;
+	        padding: 20px;
+	      }
+	    }
+  </style>
+</head>
+<body>
+  <main class="doc-page">
+    <div class="doc-shell">
+
+      <!-- INTRO -->
+      <section class="doc-hero doc-narrow">
+        <p class="kicker">Sun Veil PDP / B-5 Integrated · Wireframe + Interactions</p>
+        <h1>9 섹션 흐름 + 작동 인터랙션 임베드.</h1>
+        <p>B-5 결정 흐름(Hero → BIS → Film vs Membrane → Quick FAQ → How It Works + Tech → Proof → Why & When → Ritual → 마무리)에 핵심 인터랙션을 모두 임베드한 통합 prototype. 두께 비교는 Experiment C(실물 단면), 공기 통과는 Film 입자 튕김 + Membrane 통과 무한 loop, How It Works는 Layer 분리 + Moisture-Bonding 미니멀 라인 다이어그램.</p>
+        <p>Quick FAQ 시그니처 모먼트는 페이지 길이 부담을 분산하기 위해 placeholder + 별도 prototype 링크로 처리.</p>
+      </section>
+
+      <!-- 01 HERO -->
+      <section class="sec" data-sec="hero">
+        <div class="sec__head">
+          <p class="sec__index">01 / 9 · Hero</p>
+          <h2 class="sec__title">필름이 아닌, 숨 쉬는 멤브레인.</h2>
+          <p class="sec__lead">카테고리 재정의 선언 + 신뢰 chip 4종 동반 노출.</p>
+        </div>
+
+        <div class="sec__body">
+          <div class="block">
+            <div class="vis vis--tall" style="max-width: 480px; margin: 0 auto;">Hero Visual · 모델 광대존 close-up · 자연광</div>
+            <div style="text-align: center; margin-top: 24px;">
+              <p style="margin: 0 0 8px; font-size: clamp(20px, 2.4vw, 28px); font-weight: 500;">필름이 아닌, 숨 쉬는 멤브레인.</p>
+              <p style="margin: 0; color: var(--semantic-on-surface-muted); font-size: 14px;">피부 위에 얹히는 0.004mm 보호 레이어</p>
+            </div>
+            <div class="chips">
+              <div class="chip hero-chip">0.004 mm</div>
+              <div class="chip hero-chip">UPF 50+</div>
+              <div class="chip hero-chip">UVB 99.9%</div>
+              <div class="chip hero-chip">Dermatest</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 AT A GLANCE — BIS SIGNATURE -->
+      <section class="sec" data-sec="bis" id="secBis">
+        <div class="sec__head">
+          <p class="sec__index">02 / 9 · At a Glance</p>
+          <h2 class="sec__title">세 가지 축으로 작동합니다.</h2>
+          <p class="sec__lead">BIS 시그니처 — Breathable · Invisible · Seamless. 페이지 전체 메시지의 닻.</p>
+        </div>
+
+        <div class="sec__body">
+          <div class="block">
+            <div class="bis-wrap">
+              <div class="bis-cell">
+                <svg viewBox="0 0 80 80" class="bis-icon" role="img" aria-label="Breathable">
+                  <line x1="10" y1="40" x2="70" y2="40" stroke="currentColor" stroke-width="1.5"/>
+                  <circle cx="25" cy="40" r="2.5" fill="white" stroke="currentColor"/>
+                  <circle cx="40" cy="40" r="2.5" fill="white" stroke="currentColor"/>
+                  <circle cx="55" cy="40" r="2.5" fill="white" stroke="currentColor"/>
+                  <path d="M 40 14 L 40 32 M 35 28 L 40 33 L 45 28" stroke="currentColor" stroke-width="1.2" fill="none"/>
+                  <path d="M 40 48 L 40 66 M 35 62 L 40 67 L 45 62" stroke="currentColor" stroke-width="1.2" fill="none"/>
+                </svg>
+                <strong>Breathable</strong>
+                <span>공기·습기 통과</span>
+              </div>
+              <div class="bis-cell">
+                <svg viewBox="0 0 80 80" class="bis-icon" role="img" aria-label="Invisible">
+                  <rect x="14" y="28" width="52" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" rx="2"/>
+                  <line x1="40" y1="14" x2="40" y2="22" stroke="currentColor" stroke-width="1"/>
+                  <line x1="40" y1="58" x2="40" y2="66" stroke="currentColor" stroke-width="1"/>
+                  <line x1="14" y1="40" x2="6" y2="40" stroke="currentColor" stroke-width="1"/>
+                  <line x1="66" y1="40" x2="74" y2="40" stroke="currentColor" stroke-width="1"/>
+                </svg>
+                <strong>Invisible</strong>
+                <span>0.004mm 투명</span>
+              </div>
+              <div class="bis-cell">
+                <svg viewBox="0 0 80 80" class="bis-icon" role="img" aria-label="Seamless">
+                  <path d="M 10 50 Q 28 35 40 50 T 70 50" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                  <path d="M 10 46 Q 28 31 40 46 T 70 46" stroke="var(--bleu)" stroke-width="1.2" fill="none"/>
+                </svg>
+                <strong>Seamless</strong>
+                <span>잊는 착용감</span>
+              </div>
+            </div>
+
+            <div class="cards cards--3" style="margin-top: 24px;">
+              <div class="card"><strong>피부 자극 0.00</strong><span>Dermatest Excellent</span></div>
+              <div class="card"><strong>UPF 50+</strong><span>UVB 99.9% 차단</span></div>
+              <div class="card"><strong>비건</strong><span>Vegan Society</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 FILM vs MEMBRANE -->
+      <section class="sec" data-sec="film-membrane" id="secFM">
+        <div class="sec__head">
+          <p class="sec__index">03 / 9 · Film vs Membrane</p>
+          <h2 class="sec__title">같은 ‘패치’처럼 보여도, 작동 방식은 다릅니다.</h2>
+          <p class="sec__lead">두께 비교(실물 단면)와 공기 통과(시각 시연)로 카테고리 차별성을 시각 증명. 페이지의 첫 번째 클라이맥스.</p>
+        </div>
+
+        <div class="sec__body">
+          <!-- 두께 비교 (Experiment C) -->
+          <div class="block">
+            <h3 class="block__h">두께 비교 · 실물 단면</h3>
+            <svg viewBox="0 0 600 280" class="svg thickness-svg" role="img" aria-label="실물 단면 비교">
+              <text x="0" y="14" class="svg-cap draw-fade" style="--i: 0;">실물 단면 · 동일 가로 100px 기준</text>
+
+              <g transform="translate(120, 150)">
+                <text x="0" y="-80" class="svg-name draw-fade" text-anchor="middle" style="--i: 0;">머리카락 단면</text>
+                <circle cx="0" cy="0" r="25.5" class="svg-bar draw-scale draw-stagger" style="--i: 0;"/>
+                <text x="0" y="78" class="svg-num num-count draw-fade" text-anchor="middle"
+                      data-target="0.07" data-prefix="직경 " data-suffix=" mm" style="--i: 0;">직경 0.00 mm</text>
+                <line x1="-25.5" y1="0" x2="-40" y2="0" class="svg-leader draw-fade" style="--i: 0;"/>
+                <line x1="25.5" y1="0" x2="40" y2="0" class="svg-leader draw-fade" style="--i: 0;"/>
+              </g>
+
+              <g transform="translate(300, 150)">
+                <text x="0" y="-80" class="svg-name draw-fade" text-anchor="middle" style="--i: 1;">비닐랩</text>
+                <rect x="-50" y="-4.4" width="100" height="8.7" class="svg-bar draw-scale draw-stagger" style="--i: 1;" rx="1"/>
+                <text x="0" y="78" class="svg-num num-count draw-fade" text-anchor="middle"
+                      data-target="0.012" data-prefix="두께 " data-suffix=" mm" style="--i: 1;">두께 0.000 mm</text>
+                <line x1="-50" y1="-4.4" x2="-65" y2="-4.4" class="svg-leader draw-fade" style="--i: 1;"/>
+                <line x1="-50" y1="4.3" x2="-65" y2="4.3" class="svg-leader draw-fade" style="--i: 1;"/>
+              </g>
+
+              <g transform="translate(480, 150)">
+                <text x="0" y="-80" class="svg-name svg-name--accent draw-fade" text-anchor="middle" style="--i: 2;">Sun Veil</text>
+                <rect x="-50" y="-1.5" width="100" height="2.9" class="svg-bar svg-bar--accent draw-scale draw-stagger sv-pulse sv-highlight"
+                      style="--i: 2;" rx="1"/>
+                <text x="0" y="78" class="svg-num svg-num--accent num-count draw-fade" text-anchor="middle"
+                      data-target="0.004" data-prefix="두께 " data-suffix=" mm" style="--i: 2;">두께 0.000 mm</text>
+                <line x1="-50" y1="-1.5" x2="-65" y2="-1.5" class="svg-leader draw-fade" style="--i: 2;"/>
+                <line x1="-50" y1="1.4" x2="-65" y2="1.4" class="svg-leader draw-fade" style="--i: 2;"/>
+              </g>
+            </svg>
+          </div>
+
+          <!-- 공기 통과 -->
+          <div class="block">
+            <h3 class="block__h">공기 통과 · Film 정체 vs Membrane 통과</h3>
+            <svg viewBox="0 0 600 320" class="svg" role="img" aria-label="공기 통과 비교">
+              <defs>
+                <marker id="arr" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 0 L 10 0 L 5 9 z" fill="var(--bleu)"/>
+                </marker>
+              </defs>
+
+              <!-- Film -->
+              <g transform="translate(20, 20)" class="airflow-film">
+                <text x="0" y="0" class="svg-name">FILM</text>
+                <text x="0" y="16" class="svg-cap">정체 · 입자가 막힘</text>
+
+                <g fill="var(--bleu)" opacity="0.85">
+                  <circle cx="50"  cy="40" r="4" class="particle-bounce particle-bounce--a" style="--bx: -32px;"/>
+                  <circle cx="100" cy="40" r="4" class="particle-bounce particle-bounce--b" style="--bx:  22px;"/>
+                  <circle cx="150" cy="40" r="4" class="particle-bounce particle-bounce--c" style="--bx: -18px;"/>
+                  <circle cx="200" cy="40" r="4" class="particle-bounce particle-bounce--d" style="--bx:  35px;"/>
+                  <circle cx="80"  cy="35" r="4" class="particle-bounce particle-bounce--e" style="--bx: -42px;"/>
+                  <circle cx="160" cy="35" r="4" class="particle-bounce particle-bounce--a" style="--bx:  30px;"/>
+                  <circle cx="220" cy="40" r="4" class="particle-bounce particle-bounce--b" style="--bx:  12px;"/>
+                </g>
+
+                <line x1="20" y1="116" x2="240" y2="116" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2 3" opacity="0.5"/>
+                <rect x="20" y="124" width="220" height="38" class="svg-bar"/>
+                <text x="130" y="210" class="svg-cap" text-anchor="middle">공기 도달 ✕</text>
+              </g>
+
+              <!-- Membrane — 양방향 통과 + dense 다공성 -->
+              <g transform="translate(340, 20)" class="airflow-membrane">
+                <text x="0" y="0" class="svg-name svg-name--accent">MEMBRANE</text>
+                <text x="0" y="16" class="svg-cap">↕ 양방향 통과 · 다공성 구조</text>
+
+                <!-- 위→아래 입자 (열·습기 배출) — 6 트랙, dense -->
+                <g fill="var(--bleu)">
+                  <circle cx="30"  cy="0" r="3" class="particle-flow particle-flow--a"/>
+                  <circle cx="30"  cy="0" r="3" class="particle-flow particle-flow--d"/>
+                  <circle cx="65"  cy="0" r="3" class="particle-flow particle-flow--b"/>
+                  <circle cx="65"  cy="0" r="3" class="particle-flow particle-flow--e"/>
+                  <circle cx="100" cy="0" r="3" class="particle-flow particle-flow--c"/>
+                  <circle cx="100" cy="0" r="3" class="particle-flow particle-flow--f"/>
+                  <circle cx="135" cy="0" r="3" class="particle-flow particle-flow--a"/>
+                  <circle cx="170" cy="0" r="3" class="particle-flow particle-flow--b"/>
+                  <circle cx="170" cy="0" r="3" class="particle-flow particle-flow--e"/>
+                  <circle cx="205" cy="0" r="3" class="particle-flow particle-flow--c"/>
+                  <circle cx="240" cy="0" r="3" class="particle-flow particle-flow--d"/>
+                  <circle cx="240" cy="0" r="3" class="particle-flow particle-flow--f"/>
+                </g>
+
+                <!-- 멤브레인 단면 (다공성 dense — 3행 × 13열 = 39개) -->
+                <g transform="translate(20, 124)">
+                  <line x1="0" y1="0" x2="220" y2="0" stroke="currentColor" stroke-width="1"/>
+                  <line x1="0" y1="38" x2="220" y2="38" stroke="currentColor" stroke-width="1"/>
+                  <rect x="0" y="0" width="220" height="38" fill="currentColor" opacity="0.18"/>
+                  <g fill="white" stroke="currentColor" stroke-width="0.5">
+                    <!-- 행 1 (y=8) -->
+                    <circle cx="12"  cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.0s;"/>
+                    <circle cx="28"  cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.1s;"/>
+                    <circle cx="44"  cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.2s;"/>
+                    <circle cx="60"  cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.3s;"/>
+                    <circle cx="76"  cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.4s;"/>
+                    <circle cx="92"  cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.5s;"/>
+                    <circle cx="108" cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.6s;"/>
+                    <circle cx="124" cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.7s;"/>
+                    <circle cx="140" cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.8s;"/>
+                    <circle cx="156" cy="8" r="1.4" class="pore-pulse" style="animation-delay: 0.9s;"/>
+                    <circle cx="172" cy="8" r="1.4" class="pore-pulse" style="animation-delay: 1.0s;"/>
+                    <circle cx="188" cy="8" r="1.4" class="pore-pulse" style="animation-delay: 1.1s;"/>
+                    <circle cx="204" cy="8" r="1.4" class="pore-pulse" style="animation-delay: 1.2s;"/>
+                    <!-- 행 2 (y=19) — 8px 오프셋 (벽돌 패턴) -->
+                    <circle cx="20"  cy="19" r="1.4" class="pore-pulse" style="animation-delay: 0.15s;"/>
+                    <circle cx="36"  cy="19" r="1.4" class="pore-pulse" style="animation-delay: 0.25s;"/>
+                    <circle cx="52"  cy="19" r="1.4" class="pore-pulse" style="animation-delay: 0.35s;"/>
+                    <circle cx="68"  cy="19" r="1.4" class="pore-pulse" style="animation-delay: 0.45s;"/>
+                    <circle cx="84"  cy="19" r="1.4" class="pore-pulse" style="animation-delay: 0.55s;"/>
+                    <circle cx="100" cy="19" r="1.4" class="pore-pulse" style="animation-delay: 0.65s;"/>
+                    <circle cx="116" cy="19" r="1.4" class="pore-pulse" style="animation-delay: 0.75s;"/>
+                    <circle cx="132" cy="19" r="1.4" class="pore-pulse" style="animation-delay: 0.85s;"/>
+                    <circle cx="148" cy="19" r="1.4" class="pore-pulse" style="animation-delay: 0.95s;"/>
+                    <circle cx="164" cy="19" r="1.4" class="pore-pulse" style="animation-delay: 1.05s;"/>
+                    <circle cx="180" cy="19" r="1.4" class="pore-pulse" style="animation-delay: 1.15s;"/>
+                    <circle cx="196" cy="19" r="1.4" class="pore-pulse" style="animation-delay: 1.25s;"/>
+                    <!-- 행 3 (y=30) -->
+                    <circle cx="12"  cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.05s;"/>
+                    <circle cx="28"  cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.15s;"/>
+                    <circle cx="44"  cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.25s;"/>
+                    <circle cx="60"  cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.35s;"/>
+                    <circle cx="76"  cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.45s;"/>
+                    <circle cx="92"  cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.55s;"/>
+                    <circle cx="108" cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.65s;"/>
+                    <circle cx="124" cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.75s;"/>
+                    <circle cx="140" cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.85s;"/>
+                    <circle cx="156" cy="30" r="1.4" class="pore-pulse" style="animation-delay: 0.95s;"/>
+                    <circle cx="172" cy="30" r="1.4" class="pore-pulse" style="animation-delay: 1.05s;"/>
+                    <circle cx="188" cy="30" r="1.4" class="pore-pulse" style="animation-delay: 1.15s;"/>
+                    <circle cx="204" cy="30" r="1.4" class="pore-pulse" style="animation-delay: 1.25s;"/>
+                  </g>
+                </g>
+
+                <!-- 아래→위 입자 (공기 유입) — 5 트랙, 더 옅게 -->
+                <g fill="var(--bleu)" opacity="0.85">
+                  <circle cx="50"  cy="0" r="2.5" class="particle-flow-up particle-flow--a"/>
+                  <circle cx="50"  cy="0" r="2.5" class="particle-flow-up particle-flow--c"/>
+                  <circle cx="90"  cy="0" r="2.5" class="particle-flow-up particle-flow--b"/>
+                  <circle cx="120" cy="0" r="2.5" class="particle-flow-up particle-flow--e"/>
+                  <circle cx="155" cy="0" r="2.5" class="particle-flow-up particle-flow--d"/>
+                  <circle cx="155" cy="0" r="2.5" class="particle-flow-up particle-flow--f"/>
+                  <circle cx="190" cy="0" r="2.5" class="particle-flow-up particle-flow--c"/>
+                  <circle cx="220" cy="0" r="2.5" class="particle-flow-up particle-flow--a"/>
+                </g>
+
+                <text x="130" y="295" class="svg-cap" text-anchor="middle">열·습기 배출 ↓ + 공기 유입 ↑</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- 비교 카드 -->
+          <div class="block">
+            <h3 class="block__h">한 줄 비교</h3>
+            <div class="cards">
+              <div class="card">
+                <strong>기존 선패치 · 필름 = 막</strong>
+                <span>공기 차단 / 열·습기 정체</span>
+              </div>
+              <div class="card card--accent">
+                <strong>선베일 · 나노 섬유 멤브레인</strong>
+                <span>공기·수분 흐름 유지</span>
+              </div>
+            </div>
+            <div class="acc" style="margin-top: 16px;"><span>더 자세한 비교 5항목</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 QUICK FAQ — 헤더 -->
+      <section class="sec" data-sec="qfaq-head">
+        <div class="sec__head">
+          <p class="sec__index">04 / 9 · Quick FAQ</p>
+          <h2 class="sec__title">스크롤하며 한 글자씩.</h2>
+          <p class="sec__lead">Yes-Yes-…-Yes-No 시그니처 모먼트. 페이지의 두 번째 클라이맥스.</p>
+          <span class="sec__delta">600vh sticky stage · 페이지 가장 큰 모먼트</span>
+        </div>
+      </section>
+
+      <!-- 04 QUICK FAQ — Sticky Scroll Stage (작동 인터랙션) -->
+      <section class="qfaq" id="qfaq" aria-label="Quick FAQ">
+        <div class="qfaq__stage">
+          <div class="qfaq__progress" id="qfaqProgress">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+
+          <div class="qfaq__panel" data-stage="0">
+            <div class="qfaq__qa">
+              <p class="qfaq__q">메이크업 위에 사용해도 되나요?</p>
+              <p class="qfaq__a" data-text="네, 가능합니다."></p>
+            </div>
+            <div class="qfaq__yn qfaq__yn--yes"><span>Y</span><span>E</span><span>S</span></div>
+          </div>
+
+          <div class="qfaq__panel" data-stage="1">
+            <div class="qfaq__qa">
+              <p class="qfaq__q">일반 필름형 선패치와 다른가요?</p>
+              <p class="qfaq__a" data-text="네, 다릅니다."></p>
+            </div>
+            <div class="qfaq__yn qfaq__yn--yes"><span>Y</span><span>E</span><span>S</span></div>
+          </div>
+
+          <div class="qfaq__panel" data-stage="2">
+            <div class="qfaq__qa">
+              <p class="qfaq__q">점착 성분 없이도 잘 붙나요?</p>
+              <p class="qfaq__a" data-text="네, 잘 밀착됩니다."></p>
+            </div>
+            <div class="qfaq__yn qfaq__yn--yes"><span>Y</span><span>E</span><span>S</span></div>
+          </div>
+
+          <div class="qfaq__panel" data-stage="3">
+            <div class="qfaq__qa">
+              <p class="qfaq__q">투명한데 자외선 차단이 가능한가요?</p>
+              <p class="qfaq__a" data-text="네, 투명하지만 차단됩니다."></p>
+            </div>
+            <div class="qfaq__yn qfaq__yn--yes"><span>Y</span><span>E</span><span>S</span></div>
+          </div>
+
+          <div class="qfaq__panel" data-stage="4">
+            <div class="qfaq__qa">
+              <p class="qfaq__q">민감한 피부에도 사용할 수 있나요?</p>
+              <p class="qfaq__a" data-text="네, 가능합니다."></p>
+            </div>
+            <div class="qfaq__yn qfaq__yn--yes"><span>Y</span><span>E</span><span>S</span></div>
+          </div>
+
+          <div class="qfaq__panel" data-stage="5">
+            <div class="qfaq__qa">
+              <p class="qfaq__q">티가 나나요?</p>
+              <p class="qfaq__a" data-text="아니요, 거의 보이지 않습니다."></p>
+            </div>
+            <div class="qfaq__yn qfaq__yn--no"><span>N</span><span>O</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 HOW IT WORKS + REVERSE AG CODE -->
+      <section class="sec" data-sec="how" id="secHow">
+        <div class="sec__head">
+          <p class="sec__index">05 / 9 · How It Works + Reverse AG Code™</p>
+          <h2 class="sec__title">0.004mm. 보이지 않는 이유.</h2>
+          <p class="sec__lead">NO("거의 보이지 않습니다")의 답을 받는 시각 도입부 + 구조·기술 깊이 설명. 두 레이어 분리 + Moisture-Bonding stroke 그려짐 + 핵심 3성분.</p>
+        </div>
+
+        <div class="sec__body">
+          <!-- NO bridge 도입부 -->
+          <div class="block">
+            <h3 class="block__h">NO Bridge — 시각 회수</h3>
+            <div class="vis vis--wide" style="margin-bottom: 16px;">메이크업 위 부착 close-up · "정말 보이지 않음" 시각 증명</div>
+            <p style="margin: 0; text-align: center; font-size: clamp(18px, 2vw, 22px); font-weight: 500;">0.004mm. 보이지 않는 이유.</p>
+            <p style="margin: 8px 0 0; text-align: center; color: var(--semantic-on-surface-muted); font-size: 13px;">Quick FAQ NO의 답을 다음 깊이로 잇는 다리</p>
+          </div>
+
+          <!-- Tab toggle -->
+          <div style="text-align: center; margin: 24px 0;">
+            <div class="toggle" style="--n: 3;">
+              <span class="is-on">Structure</span>
+              <span>Bonding</span>
+              <span>Formula</span>
+            </div>
+          </div>
+
+          <!-- Structure: Layer Split -->
+          <div class="block">
+            <h3 class="block__h">Structure · 두 레이어가 분리되며 등장</h3>
+            <svg viewBox="0 0 600 380" class="svg layer-svg" role="img" aria-label="2-Layer 구조">
+              <g class="layer-l2-group">
+                <text x="60" y="56" class="svg-name svg-name--accent layer-label" style="--i: 0;">Layer 1 · 멤브레인</text>
+                <text x="540" y="56" class="svg-num layer-label" text-anchor="end" style="--i: 0;">0.004 mm</text>
+                <rect x="60" y="68" width="480" height="22" fill="var(--bleu)" rx="3"/>
+                <g fill="white">
+                  <circle cx="100" cy="79" r="1.5" class="layer-pore" style="--i: 0;"/>
+                  <circle cx="160" cy="79" r="1.5" class="layer-pore" style="--i: 1;"/>
+                  <circle cx="220" cy="79" r="1.5" class="layer-pore" style="--i: 2;"/>
+                  <circle cx="280" cy="79" r="1.5" class="layer-pore" style="--i: 3;"/>
+                  <circle cx="340" cy="79" r="1.5" class="layer-pore" style="--i: 4;"/>
+                  <circle cx="400" cy="79" r="1.5" class="layer-pore" style="--i: 5;"/>
+                  <circle cx="460" cy="79" r="1.5" class="layer-pore" style="--i: 6;"/>
+                  <circle cx="520" cy="79" r="1.5" class="layer-pore" style="--i: 7;"/>
+                </g>
+                <text x="60" y="108" class="svg-cap layer-label" style="--i: 1;">자외선 보호 층 · 공기·수분 흐름 유지</text>
+              </g>
+
+              <g class="layer-divider">
+                <line x1="300" y1="150" x2="300" y2="220" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M 295 158 L 300 150 L 305 158" fill="none" stroke="currentColor" stroke-width="1"/>
+                <path d="M 295 212 L 300 220 L 305 212" fill="none" stroke="currentColor" stroke-width="1"/>
+              </g>
+
+              <g class="layer-l1-group">
+                <text x="60" y="246" class="svg-name layer-label" style="--i: 2;">Layer 2 · 약액층</text>
+                <rect x="60" y="258" width="480" height="32" fill="var(--bleu)" opacity="0.5" rx="3"/>
+                <text x="60" y="312" class="svg-cap layer-label" style="--i: 3;">멤브레인 내부 활성 성분층</text>
+              </g>
+
+              <line x1="60" y1="350" x2="540" y2="350" stroke="currentColor" stroke-dasharray="2 4" stroke-width="1" opacity="0.4"/>
+              <text x="60" y="370" class="svg-cap layer-label" style="--i: 4;">피부 표면</text>
+            </svg>
+          </div>
+
+	          <!-- Bonding: Moisture-Bonding -->
+	          <div class="block moisture-story">
+	            <h3 class="block__h">Moisture-Bonding · 수분 기반 밀착 구조</h3>
+	            <div class="moisture-copy">
+	              <p class="moisture-eyebrow">Moisture-Bonding</p>
+	              <p class="moisture-rule">ㅡ 수분 기반 밀착 구조 ㅡ</p>
+	              <h4 class="moisture-title">접착하지 않고 수분으로 안착한다</h4>
+	              <p class="moisture-subtitle">화학 점착제 없이 구현한 밀착 구조</p>
+	            </div>
+
+	            <div class="moisture-visual">
+	              <svg viewBox="0 0 600 320" class="svg moisture-svg" role="img" aria-label="수분 기반 밀착 구조">
+	                <text x="46" y="44" class="svg-name svg-name--accent moist-label" style="--i: 0;">초박막 멤브레인</text>
+	                <text x="554" y="44" class="svg-num moist-label" text-anchor="end" style="--i: 0;">0.004 mm</text>
+
+	                <g class="moist-membrane-sheet">
+	                  <path class="moist-membrane-core" d="M 44 76 Q 150 60 300 76 T 556 76 L 556 104 Q 430 91 300 104 T 44 104 Z"/>
+	                  <path class="moist-membrane-edge moist-membrane-curve" d="M 44 76 Q 150 60 300 76 T 556 76"/>
+	                  <path class="moist-membrane-edge" d="M 44 104 Q 170 91 300 104 T 556 104" opacity="0.3"/>
+	                  <g fill="var(--bleu)">
+	                    <circle cx="112" cy="89" r="1.8" class="moist-pore" style="--i: 0;"/>
+	                    <circle cx="176" cy="85" r="1.8" class="moist-pore" style="--i: 1;"/>
+	                    <circle cx="240" cy="88" r="1.8" class="moist-pore" style="--i: 2;"/>
+	                    <circle cx="304" cy="90" r="1.8" class="moist-pore" style="--i: 3;"/>
+	                    <circle cx="368" cy="88" r="1.8" class="moist-pore" style="--i: 4;"/>
+	                    <circle cx="432" cy="85" r="1.8" class="moist-pore" style="--i: 5;"/>
+	                    <circle cx="496" cy="89" r="1.8" class="moist-pore" style="--i: 6;"/>
+	                  </g>
+	                </g>
+
+	                <text x="46" y="122" class="svg-cap moist-label" style="--i: 1;">기공 구조 · 피부를 누르지 않는 얇은 지지층</text>
+	                <path class="moist-formula-curve" d="M 102 151 L 498 151" stroke="var(--bleu)" stroke-width="1" fill="none" opacity="0.26"/>
+	                <g fill="none" stroke="var(--bleu)" stroke-linecap="round" stroke-linejoin="round">
+	                  <g class="moisture-flow" style="--i: 0;">
+	                    <circle cx="190" cy="151" r="12" opacity="0.32"/>
+	                    <line x1="190" y1="164" x2="190" y2="203" class="moist-anchor-line" style="--i: 0;"/>
+	                  </g>
+	                  <g class="moisture-flow" style="--i: 1;">
+	                    <circle cx="300" cy="151" r="16" opacity="0.38"/>
+	                    <line x1="300" y1="168" x2="300" y2="211" class="moist-anchor-line" style="--i: 1;"/>
+	                  </g>
+	                  <g class="moisture-flow" style="--i: 2;">
+	                    <circle cx="410" cy="151" r="12" opacity="0.32"/>
+	                    <line x1="410" y1="164" x2="410" y2="203" class="moist-anchor-line" style="--i: 2;"/>
+	                  </g>
+	                </g>
+	                <g fill="var(--bleu)">
+	                  <circle cx="122" cy="151" r="2.4" class="moist-water" style="--i: 0;"/>
+	                  <circle cx="478" cy="151" r="2.4" class="moist-water" style="--i: 1;"/>
+	                </g>
+	                <text x="46" y="182" class="svg-cap moist-label" style="--i: 2;">스킨케어 포뮬러 점성 + 수분감</text>
+
+	                <g class="moist-contact-zone">
+	                  <path class="moist-contact-pad" d="M 44 174 Q 156 160 300 174 T 556 174 L 556 214 Q 430 198 300 214 T 44 214 Z"/>
+	                  <path class="moist-contact-line" d="M 44 174 Q 156 160 300 174 T 556 174"/>
+	                  <path class="moist-contact-line" d="M 44 214 Q 170 198 300 214 T 556 214" opacity="0.34"/>
+	                </g>
+	                <text x="300" y="247" class="svg-cap moist-label" text-anchor="middle" style="--i: 3;">수분 접촉면 · 점착제 없이 부드럽게 밀착</text>
+
+	                <path class="moist-skin-curve" d="M 48 267 Q 300 252 552 267" stroke="currentColor" fill="none"/>
+	                <path class="moist-skin-fill" d="M 48 267 Q 300 252 552 267 L 552 306 L 48 306 Z" fill="currentColor"/>
+	                <text x="46" y="294" class="svg-name moist-label" style="--i: 4;">피부 표면</text>
+	              </svg>
+
+	              <div class="moisture-bond-grid">
+	                <div class="moisture-bond-card" style="--i: 0;">
+	                  <strong>Bonding 1 · 구조적 물성</strong>
+	                  <p>피부를 압박하지 않고,<br>초박막 기공 구조를 통해 피부 위에 자연스럽게 안착되는 메커니즘</p>
+	                </div>
+	                <div class="moisture-bond-card" style="--i: 1;">
+	                  <strong>Bonding 2 · 포뮬러 점성 밀착</strong>
+	                  <p>스킨케어 포뮬러의 점성과 초박막 멤브레인 구조가 만나,<br>별도의 점착제 없이도 피부에 부드럽게 밀착되는 구조</p>
+	                </div>
+	              </div>
+	            </div>
+	          </div>
+
+          <!-- Formula: Reverse AG Code -->
+          <div class="block reverse-formula">
+            <h3 class="block__h">Formula · Reverse AG Code™</h3>
+
+            <div class="formula-intro">
+              <p class="formula-kicker">06 · Reverse AG Code™ 포뮬러</p>
+              <p class="formula-label">코어 포뮬러</p>
+              <h4 class="formula-title">NMN + Resveratrol + Pterostilbene</h4>
+            </div>
+
+            <div class="formula-core-grid">
+              <div class="formula-ingredient">
+                <h4>NMN</h4>
+                <p>원료 기준 순도 <strong>99.5% 이상의 NMN</strong></p>
+                <strong>에너지 밸런스 서포트</strong>
+              </div>
+              <div class="formula-ingredient">
+                <h4>Resveratrol</h4>
+                <p>외부 자극 환경 대응 폴리페놀</p>
+                <strong>피부 환경 밸런스 케어</strong>
+              </div>
+              <div class="formula-ingredient">
+                <h4>Pterostilbene</h4>
+                <p>안정성을 고려한 차세대 폴리페놀</p>
+                <strong>포뮬러 안정성 서포트</strong>
+              </div>
+            </div>
+
+            <div class="formula-section">
+              <p class="formula-label">서포트 비건 포뮬러</p>
+              <h4>Synergy Modules</h4>
+              <div class="formula-module-grid">
+                <div class="formula-module">
+                  <span>Vegan PRN</span>
+                  <strong>화이트 트러플 유래 효모 RNA</strong>
+                </div>
+                <div class="formula-module">
+                  <span>Phyto PDRN</span>
+                  <strong>생어린 병풀 유래 DNA</strong>
+                </div>
+                <div class="formula-module">
+                  <span>Quercetin</span>
+                  <strong>다마스크 장미 유래</strong>
+                </div>
+                <div class="formula-module">
+                  <span>OPT-anti UV</span>
+                  <strong>미역 유래 비건 유산균</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="formula-base">
+              <div>
+                <p class="formula-label">포뮬러 베이스</p>
+                <h4>Eco-LTVE™</h4>
+                <p>저온진공 추출 블랙사파이어 포도수</p>
+              </div>
+              <div class="formula-base__copy">
+                <p>정제수 대신, 블랙사파이어 포도를 저온·진공 방식으로 응축한 <strong>Eco-LTVE™</strong>를 포뮬러 베이스로 설계했습니다.</p>
+              </div>
+            </div>
+
+            <p class="formula-disclaimer">*상기 내용은 포뮬러 구성 및 설계 방향에 대한 설명이며, 제품의 효능·효과를 의미하지 않습니다.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 PROOF -->
+      <section class="sec" data-sec="proof" id="secProof">
+        <div class="sec__head">
+          <p class="sec__index">06 / 9 · Proof</p>
+          <h2 class="sec__title">보이지 않지만,<br>데이터로 확인됩니다.</h2>
+          <p class="sec__lead">Dermatest® · FITI 시험연구원 데이터 기반. 자외선 차단, 피부 적합성, 숨 쉬는 구조, 물성 설계 기준을 한 화면에서 확인합니다.</p>
+        </div>
+
+        <div class="sec__body">
+          <div class="block proof-data">
+            <div class="proof-intro">
+              <p class="proof-source">Dermatest® · FITI 시험연구원 데이터 기반</p>
+            </div>
+
+            <div class="proof-modules">
+              <article class="proof-module">
+                <div class="proof-module__head">
+                  <span class="proof-module__eyebrow">UV Protection</span>
+                  <h3>자외선 차단 성능</h3>
+                </div>
+                <div class="proof-metrics proof-metrics--three">
+                  <div class="proof-stat">
+                    <strong><span class="num-count" data-target="99.9" data-suffix="% CUT" style="--i: 0;">0.0% CUT</span></strong>
+                    <span>UVB 차단율</span>
+                  </div>
+                  <div class="proof-stat">
+                    <strong><span class="num-count" data-target="96.4" data-suffix="% CUT" style="--i: 1;">0.0% CUT</span></strong>
+                    <span>UVA 차단율</span>
+                  </div>
+                  <div class="proof-stat">
+                    <strong>UPF 50+</strong>
+                    <span>원단 시험 기준</span>
+                  </div>
+                </div>
+                <ul class="proof-points">
+                  <li><strong>UVR 차단율 96.3% CUT</strong></li>
+                  <li>FITI 시험연구원 데이터 기반</li>
+                </ul>
+                <p class="proof-note">*원단 시험 기준</p>
+              </article>
+
+              <article class="proof-module">
+                <div class="proof-module__head">
+                  <span class="proof-module__eyebrow">Skin Tolerability</span>
+                  <h3>피부 적합성</h3>
+                </div>
+                <div class="proof-metrics">
+                  <div class="proof-stat">
+                    <strong>0.00</strong>
+                    <span>피부 자극 지수</span>
+                  </div>
+                  <div class="proof-stat">
+                    <strong>EXCELLENT</strong>
+                    <span>Dermatest® 등급</span>
+                  </div>
+                </div>
+                <ul class="proof-points">
+                  <li><strong>자극 반응 없음</strong></li>
+                  <li>Skin-friendly Material 기준 충족</li>
+                </ul>
+                <p class="proof-note">*민감 피부 대상 첩포 시험 및 2주 임상 시험 기준</p>
+              </article>
+
+              <article class="proof-module">
+                <div class="proof-module__head">
+                  <span class="proof-module__eyebrow">Breathable Structure</span>
+                  <h3>숨 쉬는 구조 데이터</h3>
+                </div>
+                <div class="proof-metrics proof-metrics--three">
+                  <div class="proof-stat">
+                    <strong><span class="num-count" data-target="12356" data-suffix="" style="--i: 2;">0</span></strong>
+                    <span>g/m²·24h 투습도</span>
+                  </div>
+                  <div class="proof-stat">
+                    <strong>&lt; 1.0</strong>
+                    <span>mm/s 공기 투과도</span>
+                  </div>
+                  <div class="proof-stat">
+                    <strong><span class="num-count" data-target="0.7" data-suffix="μm" style="--i: 3;">0.0μm</span></strong>
+                    <span>초미세 기공</span>
+                  </div>
+                </div>
+                <ul class="proof-points">
+                  <li><strong>공기 흐름 유지</strong></li>
+                  <li>습기 배출 가능한 물성 시험 측정 기준</li>
+                </ul>
+                <p class="proof-note">*물성 시험 측정 기준</p>
+              </article>
+
+              <article class="proof-module">
+                <div class="proof-module__head">
+                  <span class="proof-module__eyebrow">Physical Design</span>
+                  <h3>물성 & 설계</h3>
+                </div>
+                <div class="proof-metrics">
+                  <div class="proof-stat">
+                    <strong><span class="num-count" data-target="0.004" data-suffix="mm" style="--i: 4;">0.000mm</span></strong>
+                    <span>초박막 두께</span>
+                  </div>
+                  <div class="proof-stat">
+                    <strong><span class="num-count" data-target="0.05" data-suffix="g" style="--i: 5;">0.00g</span></strong>
+                    <span>1 piece 기준 중량</span>
+                  </div>
+                </div>
+                <ul class="proof-points">
+                  <li><strong>숨 쉬는 나노 멤브레인</strong></li>
+                  <li>완제품 기준 초경량 설계</li>
+                </ul>
+                <p class="proof-note">*완제품 기준</p>
+              </article>
+            </div>
+
+            <div class="proof-clean">
+              <h3>✔ 윤리 & 포뮬러 기준 (Clean Formula Standard)</h3>
+              <p><strong>비건 인증 (The Vegan Society)</strong>: 동물성 원료 무첨가 비건 포뮬러</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 WHY & WHEN -->
+      <section class="sec" data-sec="why">
+        <div class="sec__head">
+          <p class="sec__index">07 / 9 · Why & When</p>
+          <h2 class="sec__title">선케어가 가장 먼저 무너지는 자리.</h2>
+          <p class="sec__lead">광대존 + 일상 4 모먼트. 라이프스타일 fit.</p>
+        </div>
+
+        <div class="sec__body">
+          <div class="block">
+            <h3 class="block__h">광대존 · 자외선 노출 ↑ · 메이크업 무너짐 ↑</h3>
+            <svg viewBox="0 0 400 480" class="svg" style="max-width: 320px; margin: 0 auto;" role="img" aria-label="광대존">
+              <ellipse class="face-outline" cx="200" cy="240" rx="140" ry="200" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path class="face-feature" style="--i: 0;" d="M 80 130 Q 200 60 320 130" stroke="currentColor" stroke-width="1.2" fill="none"/>
+              <ellipse class="face-feature" style="--i: 1;" cx="150" cy="220" rx="18" ry="6" fill="none" stroke="currentColor" stroke-width="1"/>
+              <ellipse class="face-feature" style="--i: 1;" cx="250" cy="220" rx="18" ry="6" fill="none" stroke="currentColor" stroke-width="1"/>
+              <path class="face-feature" style="--i: 2;" d="M 200 240 L 192 295 Q 200 302 208 295" stroke="currentColor" stroke-width="1" fill="none"/>
+              <path class="face-feature" style="--i: 3;" d="M 175 350 Q 200 365 225 350" stroke="currentColor" stroke-width="1" fill="none"/>
+              <ellipse class="cheek-zone" style="--i: 0;" cx="135" cy="280" rx="42" ry="28" fill="var(--bleu)" opacity="0.16" stroke="var(--bleu)" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <ellipse class="cheek-zone" style="--i: 1;" cx="265" cy="280" rx="42" ry="28" fill="var(--bleu)" opacity="0.16" stroke="var(--bleu)" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <text class="svg-name svg-name--accent cheek-label" x="135" y="285" text-anchor="middle">광대존</text>
+              <text class="svg-name svg-name--accent cheek-label" x="265" y="285" text-anchor="middle">광대존</text>
+            </svg>
+          </div>
+
+          <div class="block">
+            <h3 class="block__h">일상 4 모먼트</h3>
+            <div class="vis vis--wide">에디토리얼 컷 1 · 창가 / 러닝 / 브런치 / 산책</div>
+            <div class="stepdots" style="margin-top: 16px;">
+              <span class="is-on"></span><span></span><span></span><span></span>
+            </div>
+            <div class="cards cards--4" style="margin-top: 12px;">
+              <div class="chip">창가</div>
+              <div class="chip">러닝</div>
+              <div class="chip">브런치</div>
+              <div class="chip">산책</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 RITUAL -->
+      <section class="sec" data-sec="ritual">
+        <div class="sec__head">
+          <p class="sec__index">08 / 9 · Ritual Guide</p>
+          <h2 class="sec__title">Ready · Set · Go.</h2>
+          <p class="sec__lead">사용 진입 장벽 제거. 3단계로 단순화.</p>
+        </div>
+
+        <div class="sec__body">
+          <div class="block">
+            <div class="cards cards--3">
+              <div class="card step-card">
+                <strong>01 Ready</strong>
+                <div class="vis" style="aspect-ratio: 1;">파우치 · L/R 확인</div>
+              </div>
+              <div class="card step-card">
+                <strong>02 Set</strong>
+                <div class="vis" style="aspect-ratio: 1;">광대존 안착</div>
+              </div>
+              <div class="card step-card">
+                <strong>03 Go</strong>
+                <div class="vis" style="aspect-ratio: 1;">일상 이어가기</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 09 FAQ + SPEC + CTA -->
+      <section class="sec" data-sec="end">
+        <div class="sec__head">
+          <p class="sec__index">09 / 9 · FAQ + Spec + CTA</p>
+          <h2 class="sec__title">남은 질문, 의무 정보, 마무리.</h2>
+          <p class="sec__lead">Full FAQ + 상품정보 고시 + Closing CTA.</p>
+        </div>
+
+        <div class="sec__body">
+          <div class="block">
+            <h3 class="block__h">Full FAQ · 심화 질문</h3>
+            <div class="acc"><span>점착 성분 없이 어떻게 붙나요?</span></div>
+            <div class="acc"><span>UPF와 SPF의 차이는?</span></div>
+            <div class="acc"><span>촉감이 어떤가요?</span></div>
+            <div class="acc"><span>거울 없이도 부착 가능?</span></div>
+            <div class="acc"><span>재사용 가능?</span></div>
+            <div class="acc"><span>시술 후에도 사용 가능?</span></div>
+            <div class="acc"><span>왜 선베일을 사용해야 하나요?</span></div>
+          </div>
+
+          <div class="block">
+            <h3 class="block__h">상품정보 고시</h3>
+            <div class="acc"><span>제품명 / 용량 / 사용기한</span></div>
+            <div class="acc"><span>사용방법 (의무)</span></div>
+            <div class="acc"><span>사용 시 주의사항 (의무)</span></div>
+            <div class="acc"><span>품질보증 / 소비자상담 / 제조국</span></div>
+          </div>
+
+          <div class="block" style="text-align: center; padding: 48px 28px;">
+            <div class="vis vis--wide" style="margin-bottom: 24px;">Mood Visual · 닫는 한 컷</div>
+            <p style="margin: 0 0 12px; font-size: clamp(20px, 2.4vw, 28px); font-weight: 500;">햇살을 포기하지 않는 가장 앞선 방식.</p>
+            <p style="margin: 0 0 24px; color: var(--semantic-on-surface-muted); font-size: 13px;">Aesthetic Guard · AYROW Reverse AG Code™ Sun Veil</p>
+            <button style="background: var(--bleu); color: white; border: none; padding: 14px 32px; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;">Sun Veil 경험하기</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SUMMARY -->
+      <section class="sec doc-narrow">
+        <p class="kicker" style="color: var(--semantic-on-surface-muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4em;">B-5 Integrated · 정리</p>
+        <h2 style="margin: 0 0 0.6em; font-size: clamp(22px, 2.4vw, 28px);">9 섹션 흐름 + 핵심 인터랙션 임베드 완료.</h2>
+        <p style="margin: 0 0 0.6em; color: var(--semantic-on-surface-muted); line-height: 1.6;">
+          02 BIS 시그니처 stagger reveal · 03 두께 비교(Experiment C) stagger draw + count-up + Sun Veil pulse + hover 강조 · 03 공기 통과 Film 입자 튕김 + Membrane 통과 무한 loop + 다공성 fade pulse + hover 가속 · 05 Layer 분리 모션 + Moisture-Bonding 미니멀 라인 다이어그램 · 06 Proof 카드 모듈 + count-up · 04 Quick FAQ는 별도 작동 prototype 링크.
+        </p>
+        <p style="margin: 0 0 0.6em; color: var(--semantic-on-surface-muted); line-height: 1.6;">
+          다음 작업 후보 — (1) 카피 라이팅 다듬기 · (2) 비주얼 애셋 촬영 spec · (3) 카페24 구현 task 분해 · (4) 모바일 fine-tuning · (5) Quick FAQ 04 자리에 작동 인터랙션 직접 임베드 여부 결정.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Count-up
+      function countUp(el) {
+        const target = parseFloat(el.dataset.target);
+        const prefix = el.dataset.prefix || '';
+        const suffix = el.dataset.suffix || '';
+        const decimals = (target.toString().split('.')[1] || '').length;
+        if (reduce) {
+          el.textContent = prefix + target.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix;
+          return;
+        }
+        const duration = 1100;
+        const start = performance.now();
+        function tick(now) {
+          const t = Math.max(0, Math.min(1, (now - start) / duration));
+          const eased = 1 - Math.pow(1 - t, 2);
+          const value = target * eased;
+          el.textContent = prefix + value.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      function activate(sec) {
+        sec.classList.remove('is-on');
+        // reset count-up displays
+        sec.querySelectorAll('.num-count').forEach((el) => {
+          const target = parseFloat(el.dataset.target);
+          const prefix = el.dataset.prefix || '';
+          const suffix = el.dataset.suffix || '';
+          const decimals = (target.toString().split('.')[1] || '').length;
+          el.textContent = prefix + (0).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix;
+        });
+        void sec.offsetWidth;
+        sec.classList.add('is-on');
+        // count-up with stagger
+        sec.querySelectorAll('.num-count').forEach((el, idx) => {
+          const i = parseInt(el.style.getPropertyValue('--i') || idx, 10) || idx;
+          setTimeout(() => countUp(el), 200 + i * 200);
+        });
+      }
+
+	      const sections = document.querySelectorAll('.sec[data-sec]');
+	      sections.forEach((sec) => {
+	        if (reduce) {
+	          sec.classList.add('is-on');
+	          sec.querySelectorAll('.num-count').forEach((el) => countUp(el));
+          return;
+        }
+        let played = false;
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !played) {
+              played = true;
+              activate(sec);
+              io.disconnect();
+            }
+          });
+	        }, { threshold: 0.35, rootMargin: '-8% 0px -8% 0px' });
+	        io.observe(sec);
+	      });
+
+	      document.querySelectorAll('.moisture-story').forEach((block) => {
+	        if (reduce) {
+	          block.classList.add('is-on');
+	          return;
+	        }
+	        let played = false;
+	        const io = new IntersectionObserver((entries) => {
+	          entries.forEach((entry) => {
+	            if (entry.isIntersecting && !played) {
+	              played = true;
+	              block.classList.add('is-on');
+	              io.disconnect();
+	            }
+	          });
+	        }, { threshold: 0.45, rootMargin: '-12% 0px -12% 0px' });
+	        io.observe(block);
+	      });
+	    })();
+
+    // ============================================
+    // Quick FAQ — Sticky Scroll Signature
+    // ============================================
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+
+      const section = document.getElementById('qfaq');
+      if (!section) return;
+      const panels = section.querySelectorAll('.qfaq__panel');
+      const dots = document.getElementById('qfaqProgress').children;
+      const totalStages = panels.length;
+
+      // 답변 카피를 글자 단위 span으로 분리
+      panels.forEach((panel) => {
+        const a = panel.querySelector('.qfaq__a');
+        const text = a.dataset.text || '';
+        a.textContent = '';
+        for (const ch of text) {
+          const span = document.createElement('span');
+          span.textContent = ch;
+          a.appendChild(span);
+        }
+      });
+
+      function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const scrolled = -rect.top;
+        const denom = Math.max(1, total);
+        const totalSlots = totalStages + 1; // 마지막 핸드오프 슬롯
+        const rawProgress = clamp(scrolled / denom, 0, 1) * totalSlots;
+        const currentStage = Math.min(totalStages, Math.floor(rawProgress));
+        const stageProgress = clamp(rawProgress - currentStage, 0, 1);
+
+        panels.forEach((panel, i) => {
+          const active = (i === currentStage) && (currentStage < totalStages);
+          panel.classList.toggle('is-active', active);
+          if (active) {
+            panel.style.setProperty('--p', stageProgress.toFixed(3));
+            // 답변 글자 reveal (stage 진행 8%~70% 구간에 균등 분배)
+            const chars = panel.querySelectorAll('.qfaq__a span');
+            const start = 0.08, end = 0.70;
+            const charProgress = clamp((stageProgress - start) / (end - start), 0, 1) * chars.length;
+            chars.forEach((c, idx) => c.classList.toggle('is-on', idx < charProgress));
+          }
+        });
+
+        // Progress dots
+        for (let i = 0; i < dots.length; i++) {
+          const dot = dots[i];
+          if (i < currentStage) {
+            dot.classList.add('is-done'); dot.classList.remove('is-on');
+            dot.style.removeProperty('--p');
+          } else if (i === currentStage && currentStage < totalStages) {
+            dot.classList.add('is-on'); dot.classList.remove('is-done');
+            dot.style.setProperty('--p', stageProgress.toFixed(3));
+          } else {
+            dot.classList.remove('is-on'); dot.classList.remove('is-done');
+            dot.style.removeProperty('--p');
+          }
+        }
+      }
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => { update(); ticking = false; });
+          ticking = true;
+        }
+      }, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+  </script>
+</body>
+</html>

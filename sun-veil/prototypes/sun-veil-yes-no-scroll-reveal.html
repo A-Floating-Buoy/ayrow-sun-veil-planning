@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil YES / NO Scroll-Triggered Reveal Prototype</title>
+  <style>
+    :root {
+      --bleu: #0077bf;
+      --bleu-deep: #003c60;
+      --creme: #f7f1a0;
+      --creme-soft: #fffce4;
+      --ciel: #bbd5fd;
+      --ciel-soft: #edf5ff;
+      --ink: #1f2933;
+      --body: #4a4f57;
+      --muted: #747a83;
+      --line: rgba(0, 119, 191, 0.18);
+      --white: #ffffff;
+      --page-x: clamp(22px, 5vw, 80px);
+      --max: 1080px;
+      --header-h: 58px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--creme-soft);
+      color: var(--body);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    /* ─── Prototype Header ─── */
+    .prototype-header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 20;
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 var(--page-x);
+      background: rgba(255, 252, 228, 0.92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+      transition: background 400ms ease, border-color 400ms ease;
+    }
+
+    .prototype-header__inner {
+      width: min(100%, var(--max));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .prototype-title {
+      margin: 0;
+      color: var(--bleu);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: color 400ms ease;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 2px 8px;
+      background: rgba(0, 119, 191, 0.1);
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--bleu);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: min(420px, 42vw);
+    }
+
+    .progress__track {
+      flex: 1;
+      height: 2px;
+      background: rgba(0, 119, 191, 0.18);
+      transition: background 400ms ease;
+    }
+
+    .progress__bar {
+      width: 0%;
+      height: 100%;
+      background: var(--bleu);
+      transition: width 340ms ease, background 400ms ease;
+    }
+
+    .progress__label {
+      min-width: 48px;
+      color: var(--bleu);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: right;
+      transition: color 400ms ease;
+    }
+
+    /* ─── Sections ─── */
+    .section-wrapper {
+      position: relative;
+    }
+
+    /* Answer Stage — sticky within .qa-zone */
+    .qa-zone {
+      position: relative;
+    }
+
+    .answer-stage {
+      position: sticky;
+      top: calc(var(--header-h) + 48px);
+      z-index: 10;
+      pointer-events: none;
+      padding: 0 var(--page-x);
+      height: 0;
+      overflow: visible;
+    }
+
+    .answer-stage__inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+    }
+
+    .answer-stage__word {
+      margin: 0;
+      color: var(--bleu);
+      font-size: clamp(72px, 11vw, 140px);
+      font-weight: 780;
+      letter-spacing: 0;
+      line-height: 0.88;
+      white-space: nowrap;
+      transition: color 360ms ease;
+    }
+
+    .answer-stage__letter {
+      display: inline-block;
+      opacity: 0;
+      transform: translate3d(0, 24px, 0) scale(0);
+      transform-origin: bottom center;
+      will-change: transform, opacity;
+    }
+
+    .answer-stage.is-animating .answer-stage__letter {
+      animation: letterPop 780ms cubic-bezier(0.18, 0.82, 0.22, 1) both;
+      animation-delay: calc(var(--letter-index, 0) * 52ms);
+    }
+
+    .answer-stage__letter:nth-child(odd) {
+      --letter-rotate-pop: -4deg;
+      --letter-rotate-bounce: 1.6deg;
+    }
+    .answer-stage__letter:nth-child(even) {
+      --letter-rotate-pop: 4deg;
+      --letter-rotate-bounce: -1.6deg;
+    }
+    .answer-stage__letter:nth-child(3) {
+      --letter-rotate-pop: -2.5deg;
+      --letter-rotate-bounce: 1deg;
+    }
+
+    .answer-stage__meta {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 360ms ease, opacity 260ms ease;
+    }
+
+    .answer-stage__rule {
+      display: block;
+      width: 42px;
+      height: 1px;
+      margin-top: 16px;
+      background: currentColor;
+      color: var(--bleu);
+      opacity: 0.42;
+      transition: width 360ms ease, color 360ms ease, opacity 360ms ease;
+    }
+
+    /* ─── Q&A Panel (scroll-triggered, NOT snap) ─── */
+    .qa-panel {
+      min-height: 80vh;
+      display: grid;
+      grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+      gap: clamp(32px, 7vw, 96px);
+      align-items: center;
+      padding: 0 var(--page-x);
+      transition: background 400ms ease;
+    }
+
+    .qa-panel__inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      display: contents;
+    }
+
+    .qa-panel__spacer {
+      /* Holds space for the sticky answer stage */
+      min-height: 1px;
+    }
+
+    .qa-panel__content {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 500ms ease, transform 500ms ease;
+    }
+
+    .qa-panel.is-visible .qa-panel__content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .qa-panel--no {
+      background: var(--bleu-deep);
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--bleu);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .panel-question {
+      margin: 0 0 20px;
+      max-width: 680px;
+      color: var(--bleu-deep);
+      font-size: clamp(30px, 4.2vw, 54px);
+      font-weight: 650;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .panel-copy {
+      max-width: 540px;
+      margin: 0;
+      color: var(--body);
+      font-size: clamp(16px, 1.7vw, 19px);
+      font-weight: 500;
+    }
+
+    .qa-panel--no .panel-question,
+    .qa-panel--no .panel-copy {
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    /* ─── Closing panel: Invisible ─── */
+    .closing-panel {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      padding: 80px var(--page-x);
+      background: var(--ciel-soft);
+    }
+
+    .closing-panel__inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(300px, 1.08fr);
+      gap: clamp(36px, 7vw, 96px);
+      align-items: center;
+    }
+
+    .closing-title {
+      margin: 0;
+      max-width: 760px;
+      color: var(--bleu-deep);
+      font-size: clamp(38px, 6vw, 72px);
+      font-weight: 650;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .closing-copy {
+      max-width: 560px;
+      margin: 22px 0 0;
+      color: var(--body);
+      font-size: clamp(17px, 1.8vw, 20px);
+      font-weight: 500;
+    }
+
+    .veil-demo {
+      min-height: 380px;
+      position: relative;
+      border: 1px solid rgba(0, 119, 191, 0.18);
+      background:
+        repeating-linear-gradient(0deg, rgba(0, 119, 191, 0.08) 0 1px, transparent 1px 18px),
+        repeating-linear-gradient(90deg, rgba(0, 119, 191, 0.08) 0 1px, transparent 1px 18px),
+        rgba(255, 255, 255, 0.7);
+      overflow: hidden;
+    }
+
+    .veil-demo::before {
+      content: "";
+      position: absolute;
+      inset: 26% 13% 22% 18%;
+      border: 1px solid rgba(0, 119, 191, 0.2);
+      border-radius: 52% 48% 50% 46%;
+      background: rgba(255, 255, 255, 0.32);
+      backdrop-filter: blur(2px);
+      transform: rotate(-6deg);
+    }
+
+    /* ─── Next section placeholder ─── */
+    .next-section {
+      min-height: 72vh;
+      padding: 90px var(--page-x);
+      background: var(--white);
+    }
+
+    .next-section__inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+    }
+
+    .next-section h2 {
+      margin: 0 0 18px;
+      color: var(--bleu-deep);
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.1;
+      letter-spacing: 0;
+      font-weight: 650;
+    }
+
+    .next-section p {
+      max-width: 620px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    /* ─── Hero ─── */
+    .hero-panel {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: calc(var(--header-h) + 40px) var(--page-x) 56px;
+      background:
+        linear-gradient(90deg, rgba(255, 252, 228, 0.97), rgba(255, 252, 228, 0.76)),
+        linear-gradient(135deg, rgba(187, 213, 253, 0.46), rgba(247, 241, 160, 0));
+    }
+
+    .hero-panel__inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 0.7fr);
+      gap: clamp(36px, 7vw, 90px);
+      align-items: center;
+    }
+
+    .hero-title {
+      margin: 0;
+      max-width: 780px;
+      color: var(--bleu-deep);
+      font-size: clamp(42px, 7vw, 78px);
+      font-weight: 650;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 560px;
+      margin: 24px 0 0;
+      color: var(--body);
+      font-size: clamp(17px, 2vw, 20px);
+      font-weight: 500;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 420px;
+      border: 1px solid rgba(0, 119, 191, 0.18);
+      background:
+        repeating-linear-gradient(14deg, rgba(0, 119, 191, 0.1) 0 1px, transparent 1px 16px),
+        rgba(255, 255, 255, 0.54);
+      overflow: hidden;
+    }
+
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      inset: 22% 8% 14% 26%;
+      border: 1px solid rgba(0, 119, 191, 0.28);
+      border-radius: 50%;
+      background:
+        repeating-linear-gradient(90deg, rgba(0, 119, 191, 0.13) 0 1px, transparent 1px 12px),
+        rgba(255, 255, 255, 0.38);
+      transform: rotate(-8deg);
+    }
+
+    /* Divider between Hero and Q&A */
+    .qa-intro {
+      padding: 80px var(--page-x) 40px;
+      text-align: center;
+    }
+
+    .qa-intro__title {
+      margin: 0;
+      color: var(--bleu-deep);
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 650;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .qa-intro__sub {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    /* ─── Dark state (NO panel active) ─── */
+    body.is-on-no .prototype-header {
+      background: rgba(0, 60, 96, 0.92);
+      border-color: rgba(247, 241, 160, 0.22);
+    }
+
+    body.is-on-no .prototype-title,
+    body.is-on-no .progress__label {
+      color: var(--creme);
+    }
+
+    body.is-on-no .progress__track {
+      background: rgba(247, 241, 160, 0.2);
+    }
+
+    body.is-on-no .progress__bar {
+      background: var(--creme);
+    }
+
+    body.is-on-no .answer-stage__word {
+      color: var(--creme);
+    }
+
+    body.is-on-no .answer-stage__meta {
+      color: rgba(247, 241, 160, 0.78);
+    }
+
+    body.is-on-no .answer-stage__rule {
+      width: 110px;
+      color: var(--creme);
+      opacity: 0.7;
+    }
+
+    /* Variant progression for answer-stage__rule width */
+    .answer-stage[data-variant="2"] .answer-stage__rule { width: 58px; }
+    .answer-stage[data-variant="3"] .answer-stage__rule { width: 74px; opacity: 0.55; }
+    .answer-stage[data-variant="4"] .answer-stage__rule { width: 90px; }
+
+    /* ─── Keyframes ─── */
+    @keyframes letterPop {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0) rotateZ(0deg) scale(0);
+      }
+      36% {
+        opacity: 1;
+        transform: translate3d(0, 8px, 0) rotateZ(0deg) scale(0.76);
+      }
+      58% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) rotateZ(var(--letter-rotate-pop, 0deg)) scale(1.045);
+      }
+      78% {
+        transform: translate3d(0, 0, 0) rotateZ(var(--letter-rotate-bounce, 0deg)) scale(0.995);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) rotateZ(0deg) scale(1);
+      }
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 860px) {
+      .hero-panel__inner,
+      .closing-panel__inner {
+        grid-template-columns: 1fr;
+      }
+
+      .qa-panel {
+        grid-template-columns: 1fr;
+        gap: 0;
+        min-height: 70vh;
+        padding-top: clamp(180px, 28vh, 260px);
+        align-items: start;
+      }
+
+      .qa-panel__spacer { display: none; }
+
+      .answer-stage {
+        padding: 0 var(--page-x);
+      }
+
+      .answer-stage__word {
+        font-size: clamp(68px, 22vw, 120px);
+      }
+
+      .hero-visual, .veil-demo {
+        min-height: 300px;
+      }
+
+      .progress__label { display: none; }
+      .progress { flex: 1; min-width: 96px; }
+
+      .prototype-title {
+        max-width: 48vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    @media (max-width: 640px) {
+      :root {
+        --header-h: 52px;
+        --page-x: clamp(18px, 5.4vw, 24px);
+      }
+
+      .hero-panel {
+        padding: calc(var(--header-h) + 30px) var(--page-x) 40px;
+        align-items: start;
+      }
+
+      .hero-title {
+        font-size: clamp(38px, 12vw, 52px);
+      }
+
+      .hero-visual, .veil-demo {
+        min-height: 220px;
+      }
+
+      .answer-stage {
+        top: calc(var(--header-h) + 30px);
+      }
+
+      .answer-stage__word {
+        font-size: clamp(68px, 24vw, 96px);
+      }
+
+      .qa-panel {
+        padding-top: clamp(164px, 32vh, 230px);
+        min-height: 65vh;
+      }
+
+      .panel-question {
+        font-size: clamp(28px, 8.4vw, 40px);
+        margin-bottom: 14px;
+      }
+
+      .panel-copy {
+        font-size: 16px;
+        max-width: none;
+      }
+
+      .qa-intro {
+        padding: 60px var(--page-x) 30px;
+      }
+
+      .qa-intro__title {
+        font-size: clamp(24px, 7vw, 34px);
+      }
+
+      .closing-title {
+        font-size: clamp(34px, 10.4vw, 48px);
+      }
+
+      .next-section {
+        min-height: auto;
+        padding: 64px var(--page-x);
+      }
+    }
+
+    @media (max-width: 390px) {
+      .answer-stage__word {
+        font-size: clamp(64px, 24vw, 86px);
+      }
+
+      .qa-panel {
+        padding-top: 160px;
+      }
+
+      .panel-question {
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 860px) and (max-height: 700px) {
+      .answer-stage {
+        top: calc(var(--header-h) + 18px);
+      }
+
+      .answer-stage__word {
+        font-size: clamp(60px, 18vw, 80px);
+      }
+
+      .qa-panel {
+        padding-top: 150px;
+        min-height: 60vh;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+
+      .qa-panel__content {
+        opacity: 1;
+        transform: none;
+      }
+
+      .answer-stage__letter {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="prototype-header">
+    <div class="prototype-header__inner">
+      <p class="prototype-title">
+        Sun Veil / YES-NO
+        <span class="badge">Scroll Reveal</span>
+      </p>
+      <div class="progress" aria-hidden="true">
+        <div class="progress__track">
+          <div class="progress__bar" id="progressBar"></div>
+        </div>
+        <span class="progress__label" id="progressLabel">— / 6</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Hero ─── -->
+  <section class="hero-panel" id="hero">
+    <div class="hero-panel__inner">
+      <div>
+        <p class="eyebrow">Reverse AG Code™ Sun Veil</p>
+        <h1 class="hero-title">피부를 가두지 않는 선케어 레이어.</h1>
+        <p class="hero-copy">
+          필름형 선패치에서 멤브레인으로.
+          사용 가능성 질문을 자연 스크롤로 통과시키고,
+          마지막 반전으로 보이지 않는 특성을 각인합니다.
+        </p>
+      </div>
+      <div class="hero-visual" aria-label="Transparent membrane visual"></div>
+    </div>
+  </section>
+
+  <!-- ─── Q&A Intro ─── -->
+  <div class="qa-intro">
+    <h2 class="qa-intro__title">그전에 먼저 궁금한 것들.</h2>
+    <p class="qa-intro__sub">스크롤하며 확인하세요.</p>
+  </div>
+
+  <!-- ─── Q&A Zone: sticky answer + scroll-triggered panels ─── -->
+  <div class="qa-zone" id="qaZone">
+
+    <!-- Sticky YES/NO -->
+    <div class="answer-stage" id="answerStage">
+      <div class="answer-stage__inner">
+        <p class="answer-stage__word" id="answerWord">YES</p>
+        <p class="answer-stage__meta" id="answerMeta"></p>
+        <span class="answer-stage__rule" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <!-- Panel 1: Makeup -->
+    <section
+      class="qa-panel js-qa"
+      data-step="1"
+      data-answer="YES"
+      data-meta="01 / Make-up"
+      data-variant="1"
+    >
+      <div class="qa-panel__spacer"></div>
+      <div class="qa-panel__content">
+        <h2 class="panel-question">메이크업 위에도.</h2>
+        <p class="panel-copy">
+          쿠션 팩트, 파운데이션 등 메이크업 위에서도
+          자연스럽게 안착하도록 설계되었습니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- Panel 2: Film difference -->
+    <section
+      class="qa-panel js-qa"
+      data-step="2"
+      data-answer="YES"
+      data-meta="02 / Difference"
+      data-variant="2"
+    >
+      <div class="qa-panel__spacer"></div>
+      <div class="qa-panel__content">
+        <h2 class="panel-question">필름형 선패치와 다르게.</h2>
+        <p class="panel-copy">
+          피부를 덮는 필름이 아니라,
+          공기와 습기 흐름을 고려한 나노 섬유 기반 멤브레인 구조입니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- Panel 3: Bonding -->
+    <section
+      class="qa-panel js-qa"
+      data-step="3"
+      data-answer="YES"
+      data-meta="03 / Bonding"
+      data-variant="3"
+    >
+      <div class="qa-panel__spacer"></div>
+      <div class="qa-panel__content">
+        <h2 class="panel-question">점착제 없이도.</h2>
+        <p class="panel-copy">
+          멤브레인 구조와 제형의 점성을 활용한
+          Moisture-Bonding 방식으로 피부 위에 자리 잡습니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- Panel 4: UV -->
+    <section
+      class="qa-panel js-qa"
+      data-step="4"
+      data-answer="YES"
+      data-meta="04 / UV Protection"
+      data-variant="4"
+    >
+      <div class="qa-panel__spacer"></div>
+      <div class="qa-panel__content">
+        <h2 class="panel-question">투명하지만 차단되게.</h2>
+        <p class="panel-copy">
+          원단 기준 시험에서 UPF 50+ 결과를 확인했습니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- Panel 5: Sensitive -->
+    <section
+      class="qa-panel js-qa"
+      data-step="5"
+      data-answer="YES"
+      data-meta="05 / Skin Safety"
+      data-variant="4"
+    >
+      <div class="qa-panel__spacer"></div>
+      <div class="qa-panel__content">
+        <h2 class="panel-question">민감한 피부에도.</h2>
+        <p class="panel-copy">
+          Dermatest 민감 피부 대상 시험에서
+          Excellent 평가를 받았습니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- Panel 6: NO — Visibility -->
+    <section
+      class="qa-panel qa-panel--no js-qa"
+      data-step="6"
+      data-answer="NO"
+      data-meta="06 / Visibility"
+      data-variant="5"
+    >
+      <div class="qa-panel__spacer"></div>
+      <div class="qa-panel__content">
+        <h2 class="panel-question">눈에 띄지 않게.</h2>
+        <p class="panel-copy">
+          0.004 mm 초박막 투명 멤브레인이
+          메이크업과 피부 위에 얇게 자리 잡습니다.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─── Closing: Invisible Veil ─── -->
+  <section class="closing-panel" id="closing">
+    <div class="closing-panel__inner">
+      <div>
+        <p class="eyebrow">Invisible Veil</p>
+        <h2 class="closing-title">보이지 않게,<br>그러나 보호하도록.</h2>
+        <p class="closing-copy">
+          YES로 가능성을 쌓고, 마지막 NO로 "티 나지 않음"을 각인한 뒤,
+          보이지 않는 보호 레이어 이야기로 자연스럽게 이어집니다.
+        </p>
+      </div>
+      <div class="veil-demo" aria-label="Invisible veil visual"></div>
+    </div>
+  </section>
+
+  <!-- ─── Next flow placeholder ─── -->
+  <section class="next-section" id="next-flow">
+    <div class="next-section__inner">
+      <p class="eyebrow">Next Flow</p>
+      <h2>여기서부터 Why This Zone, Use Cases,<br>How It Works로 이어집니다.</h2>
+      <p>
+        Quick Q&A의 YES/NO가 자연 스크롤 안에서
+        리듬감 있게 전환되는 scroll-triggered reveal 방식입니다.
+        페이지 통제권을 유지하면서 같은 각인 효과를 줍니다.
+      </p>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var panels = Array.prototype.slice.call(document.querySelectorAll('.js-qa'));
+      var answerStage = document.getElementById('answerStage');
+      var answerWord = document.getElementById('answerWord');
+      var answerMeta = document.getElementById('answerMeta');
+      var progressBar = document.getElementById('progressBar');
+      var progressLabel = document.getElementById('progressLabel');
+      var total = panels.length;
+      var currentStep = -1;
+
+      // Render letters for pop animation
+      function renderLetters(word) {
+        answerWord.textContent = '';
+        word.split('').forEach(function (ch, i) {
+          var span = document.createElement('span');
+          span.className = 'answer-stage__letter';
+          span.textContent = ch;
+          span.style.setProperty('--letter-index', i);
+          answerWord.appendChild(span);
+        });
+      }
+
+      function activatePanel(panel) {
+        var step = Number(panel.dataset.step);
+        if (step === currentStep) return;
+        currentStep = step;
+
+        var word = panel.dataset.answer;
+        var meta = panel.dataset.meta;
+        var variant = panel.dataset.variant || '1';
+        var isNo = word === 'NO';
+
+        // Update answer stage
+        answerStage.classList.remove('is-animating');
+        renderLetters(word);
+        answerMeta.textContent = meta || '';
+        answerStage.setAttribute('data-variant', variant);
+
+        // Trigger pop animation on next frame
+        requestAnimationFrame(function () {
+          answerStage.classList.add('is-animating');
+        });
+
+        // Dark mode for NO
+        document.body.classList.toggle('is-on-no', isNo);
+
+        // Progress
+        if (progressBar) {
+          progressBar.style.width = (step / total * 100) + '%';
+        }
+        if (progressLabel) {
+          progressLabel.textContent = step + ' / ' + total;
+        }
+      }
+
+      // IntersectionObserver — triggers when panel enters viewport
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            activatePanel(entry.target);
+          }
+        });
+      }, {
+        // rootMargin: trigger when panel is 40% from top
+        rootMargin: '-30% 0px -50% 0px',
+        threshold: 0
+      });
+
+      panels.forEach(function (panel) {
+        observer.observe(panel);
+      });
+
+      // Closing panel: exit NO state
+      var closingPanel = document.getElementById('closing');
+      if (closingPanel) {
+        var closingObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              document.body.classList.remove('is-on-no');
+              currentStep = -1; // reset so re-entering Q&A re-triggers
+            }
+          });
+        }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+        closingObs.observe(closingPanel);
+      }
+    })();
+  </script>
+</body>
+</html>

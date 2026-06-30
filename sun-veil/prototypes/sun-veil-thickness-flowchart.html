@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil — Thickness Flow Chart (CFD style)</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    :root {
+      --bleu: var(--primitive-bleu, #2e3a8a);
+      --bleu-soft: color-mix(in srgb, var(--primitive-bleu, #2e3a8a) 40%, white);
+      --bleu-faint: color-mix(in srgb, var(--primitive-bleu, #2e3a8a) 12%, white);
+    }
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+
+    .intro {
+      max-width: 880px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+    }
+    .intro h1 { margin: 0 0 0.6em; font-size: clamp(28px, 4vw, 44px); }
+    .intro p { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+    .kicker {
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.4em;
+    }
+
+    .stage {
+      min-height: 100vh;
+      display: grid; place-items: center;
+      padding: 6vh max(5vw, 24px);
+      background: white;
+      border-top: 1px solid var(--semantic-border-muted);
+      border-bottom: 1px solid var(--semantic-border-muted);
+    }
+    .chart-wrap {
+      width: min(1080px, 96vw);
+    }
+
+    /* SVG 차트 */
+    .chart {
+      display: block; width: 100%; height: auto;
+      overflow: visible;
+    }
+
+    /* 그리드 / 축 */
+    .axis-line { stroke: currentColor; stroke-width: 0.6; opacity: 0.18; }
+    .grid-line { stroke: currentColor; stroke-width: 0.4; opacity: 0.08; stroke-dasharray: 3 4; }
+    .axis-text { font-size: 11px; fill: currentColor; opacity: 0.55; font-variant-numeric: tabular-nums; }
+    .axis-label { font-size: 12px; fill: currentColor; opacity: 0.7; font-weight: 500; }
+
+    /* 영역 */
+    .flow-area {
+      fill: var(--bleu);
+      opacity: 0.85;
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 6.2s cubic-bezier(0.5, 0, 0.5, 1);
+    }
+    .stage.is-on .flow-area { clip-path: inset(0 0 0 0); }
+
+    /* 영역 위쪽 라인 (stroke) */
+    .flow-stroke {
+      fill: none;
+      stroke: var(--bleu);
+      stroke-width: 1.5;
+      stroke-dasharray: 2400;
+      stroke-dashoffset: 2400;
+      transition: stroke-dashoffset 6.2s cubic-bezier(0.5, 0, 0.5, 1);
+    }
+    .stage.is-on .flow-stroke { stroke-dashoffset: 0; }
+
+    /* 마커 그룹 */
+    .marker {
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: opacity 500ms ease;
+    }
+    .stage.is-on .marker { opacity: 1; }
+
+    .marker-dot { fill: var(--bleu); }
+    .marker-dot-ring {
+      fill: none;
+      stroke: var(--bleu);
+      stroke-width: 1.4;
+      opacity: 0.5;
+    }
+    .marker-leader {
+      stroke: currentColor;
+      stroke-width: 0.8;
+      opacity: 0.45;
+      stroke-dasharray: 2 3;
+    }
+
+    .marker-tooltip-bg {
+      fill: white;
+      stroke: rgba(0,0,0,0.08);
+      stroke-width: 1;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+    }
+    .marker-tooltip-name {
+      font-size: 13px;
+      font-weight: 600;
+      fill: var(--semantic-on-surface);
+    }
+    .marker-tooltip-value {
+      font-size: 11px;
+      fill: var(--semantic-on-surface);
+      opacity: 0.6;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* stagger delay (영역 reveal과 동기) */
+    .stage.is-on .marker[data-step="0"] { transition-delay: 1.0s; }
+    .stage.is-on .marker[data-step="1"] { transition-delay: 2.0s; }
+    .stage.is-on .marker[data-step="2"] { transition-delay: 3.0s; }
+    .stage.is-on .marker[data-step="3"] { transition-delay: 4.0s; }
+    .stage.is-on .marker[data-step="4"] { transition-delay: 5.0s; }
+
+    /* 마지막 Sun Veil 마커 강조 */
+    .marker--final .marker-tooltip-bg {
+      fill: var(--bleu);
+      stroke: none;
+    }
+    .marker--final .marker-tooltip-name {
+      fill: white;
+      font-size: 16px;
+    }
+    .marker--final .marker-tooltip-value {
+      fill: white;
+      opacity: 0.85;
+      font-size: 12px;
+    }
+    .marker--final .marker-dot { fill: white; stroke: var(--bleu); stroke-width: 2; }
+    .stage.is-on .marker--final {
+      animation: final-pop 1s cubic-bezier(0.34, 1.4, 0.64, 1) 5.0s 1;
+      animation-fill-mode: both;
+    }
+    @keyframes final-pop {
+      0%   { opacity: 0; transform: scale(0.85); }
+      55%  { opacity: 1; transform: scale(1.06); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* 우측 mini-legend */
+    .legend {
+      position: absolute;
+      top: 0; right: 0;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      display: grid;
+      gap: 6px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .legend__title {
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+      margin-bottom: 2px;
+    }
+    .legend__item {
+      display: grid;
+      grid-template-columns: 8px 1fr auto;
+      gap: 8px; align-items: center;
+      color: var(--semantic-on-surface-muted);
+      transition: color 300ms;
+    }
+    .legend__item.is-on {
+      color: var(--semantic-on-surface);
+    }
+    .legend__item.is-on--final { color: var(--bleu); font-weight: 600; }
+    .legend__item-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--bleu);
+      opacity: 0.4;
+      transition: opacity 300ms;
+    }
+    .legend__item.is-on .legend__item-dot { opacity: 1; }
+    .legend__item-value {
+      font-variant-numeric: tabular-nums;
+      font-size: 11px; opacity: 0.7;
+    }
+
+    .chart-frame {
+      position: relative;
+    }
+
+    .controls {
+      display: flex; justify-content: center;
+      gap: 8px; margin-top: 4vh;
+    }
+    .controls button {
+      background: transparent;
+      border: 1px solid var(--semantic-on-surface);
+      color: var(--semantic-on-surface);
+      padding: 8px 16px; border-radius: 999px;
+      font: inherit; font-size: 13px; cursor: pointer;
+    }
+
+    .notes-section {
+      max-width: 880px; margin: 0 auto;
+      padding: 8vh max(5vw, 24px);
+    }
+    .notes-section h2 { margin: 0 0 0.6em; font-size: clamp(22px, 2.4vw, 28px); }
+    .notes-section p { margin: 0 0 0.6em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .flow-area { clip-path: none !important; transition: none !important; }
+      .flow-stroke { stroke-dashoffset: 0 !important; transition: none !important; }
+      .marker { opacity: 1 !important; transition: none !important; animation: none !important; }
+    }
+
+    @media (max-width: 640px) {
+      .legend { font-size: 10.5px; padding: 8px 10px; }
+      .legend__item { grid-template-columns: 8px auto auto; }
+    }
+  </style>
+</head>
+<body>
+  <section class="intro">
+    <p class="kicker">Sun Veil PDP / Thickness Flow Chart · CFD style</p>
+    <h1>두께가 흐름으로 줄어드는 영역 차트.</h1>
+    <p>X축 progress 0% → 100%, Y축 두께. 영역이 좌→우로 부드럽게 채워지며 곡선이 점진적으로 얇아짐. 친숙한 사물(신용카드 → 종이 → 머리카락 → 비닐랩) 마커가 시점에 도달할 때 라벨 박스로 등장하고, 마지막 우측 끝에 Sun Veil이 강조 등장.</p>
+    <p>아래 차트로 스크롤하면 자동 시작.</p>
+  </section>
+
+  <section class="stage" id="chartStage">
+    <div class="chart-wrap">
+      <div class="chart-frame">
+        <svg viewBox="0 0 1080 520" class="chart" role="img" aria-label="두께 흐름 차트 — 신용카드 0.76mm에서 Sun Veil 0.004mm까지">
+          <!-- 그리드 -->
+          <g class="grid">
+            <line class="grid-line" x1="80" y1="100" x2="1040" y2="100"/>
+            <line class="grid-line" x1="80" y1="200" x2="1040" y2="200"/>
+            <line class="grid-line" x1="80" y1="300" x2="1040" y2="300"/>
+            <line class="grid-line" x1="80" y1="400" x2="1040" y2="400"/>
+          </g>
+
+          <!-- Y축 라벨 (두께) -->
+          <text x="70" y="60" class="axis-label" text-anchor="end">두께</text>
+          <text x="70" y="105" class="axis-text" text-anchor="end">두꺼움</text>
+          <text x="70" y="445" class="axis-text" text-anchor="end">얇음</text>
+
+          <!-- X축 라벨 (progress) -->
+          <text x="80" y="490" class="axis-text" text-anchor="start">0%</text>
+          <text x="560" y="490" class="axis-text" text-anchor="middle">두께 감소 흐름 →</text>
+          <text x="1040" y="490" class="axis-text" text-anchor="end">100%</text>
+
+          <!-- 축선 -->
+          <line class="axis-line" x1="80" y1="50" x2="80" y2="450"/>
+          <line class="axis-line" x1="80" y1="450" x2="1040" y2="450"/>
+
+          <!-- 영역 path (단일 단면 stream) -->
+          <!--
+            cubic Bezier:
+            M 80,80  → 시작점 (큰 두께)
+            C 280,90, 460,200, 600,290
+            C 740,380, 880,440, 1040,448
+            L 1040,450 L 80,450 Z
+          -->
+          <path
+            class="flow-area"
+            d="M 80,80 C 280,90 460,200 600,290 C 740,380 880,440 1040,448 L 1040,450 L 80,450 Z"/>
+          <path
+            class="flow-stroke"
+            d="M 80,80 C 280,90 460,200 600,290 C 740,380 880,440 1040,448"/>
+
+          <!-- 마커 그룹 -->
+          <!-- 마커 1: 신용카드 (x=210, y on curve ≈ 92) -->
+          <g class="marker" data-step="0">
+            <line class="marker-leader" x1="210" y1="92" x2="210" y2="40"/>
+            <circle class="marker-dot" cx="210" cy="92" r="3.5"/>
+            <circle class="marker-dot-ring" cx="210" cy="92" r="6.5"/>
+            <g transform="translate(210, 12)">
+              <rect class="marker-tooltip-bg" x="-58" y="-12" width="116" height="36" rx="6"/>
+              <text class="marker-tooltip-name" x="0" y="3" text-anchor="middle">신용카드</text>
+              <text class="marker-tooltip-value" x="0" y="18" text-anchor="middle">0.76 mm</text>
+            </g>
+          </g>
+
+          <!-- 마커 2: 종이 (x=380, y ≈ 145) -->
+          <g class="marker" data-step="1">
+            <line class="marker-leader" x1="380" y1="145" x2="380" y2="80"/>
+            <circle class="marker-dot" cx="380" cy="145" r="3.5"/>
+            <circle class="marker-dot-ring" cx="380" cy="145" r="6.5"/>
+            <g transform="translate(380, 52)">
+              <rect class="marker-tooltip-bg" x="-58" y="-12" width="116" height="36" rx="6"/>
+              <text class="marker-tooltip-name" x="0" y="3" text-anchor="middle">종이 1장</text>
+              <text class="marker-tooltip-value" x="0" y="18" text-anchor="middle">0.1 mm</text>
+            </g>
+          </g>
+
+          <!-- 마커 3: 머리카락 (x=560, y ≈ 260) -->
+          <g class="marker" data-step="2">
+            <line class="marker-leader" x1="560" y1="260" x2="560" y2="200"/>
+            <circle class="marker-dot" cx="560" cy="260" r="3.5"/>
+            <circle class="marker-dot-ring" cx="560" cy="260" r="6.5"/>
+            <g transform="translate(560, 172)">
+              <rect class="marker-tooltip-bg" x="-58" y="-12" width="116" height="36" rx="6"/>
+              <text class="marker-tooltip-name" x="0" y="3" text-anchor="middle">머리카락</text>
+              <text class="marker-tooltip-value" x="0" y="18" text-anchor="middle">0.07 mm</text>
+            </g>
+          </g>
+
+          <!-- 마커 4: 비닐랩 (x=760, y ≈ 395) -->
+          <g class="marker" data-step="3">
+            <line class="marker-leader" x1="760" y1="395" x2="760" y2="335"/>
+            <circle class="marker-dot" cx="760" cy="395" r="3.5"/>
+            <circle class="marker-dot-ring" cx="760" cy="395" r="6.5"/>
+            <g transform="translate(760, 307)">
+              <rect class="marker-tooltip-bg" x="-58" y="-12" width="116" height="36" rx="6"/>
+              <text class="marker-tooltip-name" x="0" y="3" text-anchor="middle">비닐랩</text>
+              <text class="marker-tooltip-value" x="0" y="18" text-anchor="middle">0.012 mm</text>
+            </g>
+          </g>
+
+          <!-- 마커 5: Sun Veil (x=1010, y ≈ 447) — 강조 -->
+          <g class="marker marker--final" data-step="4">
+            <line class="marker-leader" x1="1010" y1="447" x2="1010" y2="395"/>
+            <circle class="marker-dot" cx="1010" cy="447" r="4.5"/>
+            <circle class="marker-dot-ring" cx="1010" cy="447" r="9" stroke-width="1.8" opacity="0.7"/>
+            <g transform="translate(1010, 365)">
+              <rect class="marker-tooltip-bg" x="-72" y="-15" width="144" height="46" rx="8"/>
+              <text class="marker-tooltip-name" x="0" y="3" text-anchor="middle">Sun Veil</text>
+              <text class="marker-tooltip-value" x="0" y="20" text-anchor="middle">0.004 mm ≈ 1 px</text>
+            </g>
+          </g>
+        </svg>
+
+        <!-- 우측 mini-legend -->
+        <div class="legend" id="legend">
+          <p class="legend__title">참조 비교</p>
+          <div class="legend__item" data-step="0">
+            <span class="legend__item-dot"></span>
+            <span>신용카드</span>
+            <span class="legend__item-value">0.76 mm</span>
+          </div>
+          <div class="legend__item" data-step="1">
+            <span class="legend__item-dot"></span>
+            <span>종이 1장</span>
+            <span class="legend__item-value">0.1 mm</span>
+          </div>
+          <div class="legend__item" data-step="2">
+            <span class="legend__item-dot"></span>
+            <span>머리카락</span>
+            <span class="legend__item-value">0.07 mm</span>
+          </div>
+          <div class="legend__item" data-step="3">
+            <span class="legend__item-dot"></span>
+            <span>비닐랩</span>
+            <span class="legend__item-value">0.012 mm</span>
+          </div>
+          <div class="legend__item is-on--final" data-step="4">
+            <span class="legend__item-dot"></span>
+            <span>Sun Veil</span>
+            <span class="legend__item-value">0.004 mm</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="replay">▶ 다시 보기</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="notes-section">
+    <h2>인터랙션 검증 포인트</h2>
+    <p><strong>영역 reveal</strong> — 6.2초 동안 좌→우 clip-path inset(0 100% 0 0) → inset(0). cubic-bezier(0.5, 0, 0.5, 1)로 시작·끝 빠르고 중간 균일.</p>
+    <p><strong>외곽선 stroke</strong> — 영역과 동기로 stroke-dashoffset 2400 → 0. 영역과 같이 좌→우 그려지는 시각.</p>
+    <p><strong>마커 stagger</strong> — 영역 reveal 시작 후 1.0s, 2.0s, 3.0s, 4.0s, 5.0s 시점에 마커가 차례로 fade-in. 영역 곡선이 그 X 위치에 도달하는 시점과 동기.</p>
+    <p><strong>마지막 Sun Veil 마커</strong> — Bleu 배경 박스 + 큰 흰색 텍스트 + 등장 시 scale 0.85 → 1.06 → 1.0 미세 overshoot pop.</p>
+    <p><strong>우측 mini-legend</strong> — 항상 표시, Sun Veil은 기본 강조. 추후 마커 도달 시 해당 legend 아이템도 강조하는 동기 가능.</p>
+    <p><strong>접근성</strong> — prefers-reduced-motion 시 영역과 마커 즉시 표기.</p>
+  </section>
+
+  <script>
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const stage = document.getElementById('chartStage');
+      const legendItems = document.querySelectorAll('.legend__item');
+
+      function reset() {
+        stage.classList.remove('is-on');
+        legendItems.forEach((it) => {
+          if (!it.classList.contains('is-on--final')) it.classList.remove('is-on');
+        });
+      }
+
+      let timers = [];
+      function clearTimers() {
+        timers.forEach((t) => clearTimeout(t));
+        timers = [];
+      }
+
+      function play() {
+        clearTimers();
+        reset();
+        if (reduce) {
+          stage.classList.add('is-on');
+          legendItems.forEach((it) => it.classList.add('is-on'));
+          return;
+        }
+
+        // 다음 frame에서 시작 (transition reset)
+        requestAnimationFrame(() => {
+          stage.classList.add('is-on');
+          // legend stagger (마커 stagger와 동기)
+          legendItems.forEach((it) => {
+            const step = parseInt(it.dataset.step, 10);
+            const delay = 1000 + step * 1000;
+            timers.push(setTimeout(() => it.classList.add('is-on'), delay));
+          });
+        });
+      }
+
+      let played = false;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !played) {
+            played = true;
+            play();
+          }
+        });
+      }, { threshold: 0.3 });
+      io.observe(stage);
+
+      document.getElementById('replay').addEventListener('click', () => {
+        played = true;
+        play();
+      });
+    })();
+  </script>
+</body>
+</html>

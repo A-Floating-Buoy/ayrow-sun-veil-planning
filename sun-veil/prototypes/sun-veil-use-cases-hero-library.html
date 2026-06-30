@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil PDP — Use Cases / 1 Hero Story + 6 Library</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    body { margin: 0; background: var(--semantic-bg-default); color: var(--semantic-on-surface); }
+    .uc-page { padding: var(--layout-page-md) var(--layout-page-x); }
+    .uc-shell { width: min(100%, var(--layout-max-w-wide)); margin: 0 auto; }
+    .uc-narrow { max-width: var(--layout-max-w); }
+
+    /* DOC INTRO */
+    .uc-doc {
+      min-height: 36svh;
+      display: grid; align-content: center;
+      padding-bottom: var(--layout-section-md);
+    }
+    .uc-doc__stack { display: grid; gap: var(--spacing-4); }
+    .uc-kicker { color: var(--semantic-on-surface-accent); }
+    .uc-muted  { color: var(--semantic-on-surface-muted); }
+
+    /* SPLIT: main + side notes */
+    .uc-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.6fr);
+      gap: var(--layout-block);
+      align-items: start;
+      padding: var(--layout-section-md) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+
+    .uc-note {
+      position: sticky; top: var(--spacing-8);
+      display: grid; gap: var(--spacing-5);
+      padding-left: var(--layout-block);
+      border-left: 1px solid var(--semantic-border-muted);
+    }
+    .uc-note h3 {
+      margin: 0 0 var(--spacing-2);
+      color: var(--semantic-on-surface-accent);
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    .uc-note ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--spacing-1); font-size: 13px; line-height: 1.55; }
+    .uc-note p  { margin: 0; color: var(--semantic-on-surface-muted); line-height: 1.65; font-size: 13px; }
+    .uc-note > div { padding-bottom: var(--spacing-4); border-bottom: 1px dashed var(--semantic-border-muted); }
+    .uc-note > div:last-child { border-bottom: 0; padding-bottom: 0; }
+
+    /* SECTION HEAD (the page section header itself) */
+    .uc-head {
+      display: grid; gap: var(--spacing-4);
+      margin-bottom: var(--layout-block);
+    }
+    .uc-head__index { color: var(--semantic-on-surface-muted); font-variant-numeric: tabular-nums; }
+    .uc-head__sub { color: var(--semantic-on-surface-muted); }
+
+    /* HERO STORY (signature, full editorial) */
+    .uc-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: var(--layout-block);
+      align-items: stretch;
+      margin-bottom: var(--layout-section-md);
+    }
+    .uc-hero__visual {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      background: linear-gradient(155deg, #F4EAD0 0%, #EAD8B0 60%, #D9BD7E 100%);
+      border-radius: 12px;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+    .uc-hero__visual::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(255,255,255,0.55), transparent 35%),
+        radial-gradient(circle at 25% 70%, rgba(187,213,253,0.35), transparent 50%);
+    }
+    .uc-hero__placeholder {
+      position: relative; z-index: 1;
+      color: rgba(0,0,0,0.45);
+      font-size: 11.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      display: grid; gap: 4px;
+    }
+    .uc-hero__placeholder svg { width: 56px; height: 56px; opacity: 0.55; margin: 0 auto; }
+
+    .uc-hero__copy {
+      display: grid;
+      align-content: space-between;
+      padding: var(--spacing-2) 0;
+      gap: var(--spacing-6);
+    }
+    .uc-hero__index {
+      display: flex; gap: var(--spacing-3); align-items: baseline;
+      color: var(--semantic-on-surface-muted);
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .uc-hero__index strong {
+      font-size: 13px;
+      color: var(--semantic-on-surface);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+    .uc-hero__title {
+      display: grid; gap: var(--spacing-3);
+    }
+    .uc-hero__moment { color: var(--semantic-on-surface-muted); font-style: italic; }
+    .uc-hero__lead { color: var(--semantic-on-surface); }
+    .uc-hero__tags {
+      display: flex; gap: var(--spacing-2); flex-wrap: wrap;
+    }
+    .uc-tag {
+      display: inline-flex; align-items: center;
+      padding: 6px 12px;
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--semantic-on-surface-muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* LIBRARY — 6 cards horizontal scroll-snap */
+    .uc-library {
+      position: relative;
+    }
+    .uc-library__head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: var(--spacing-4);
+      margin-bottom: var(--spacing-6);
+    }
+    .uc-library__title {
+      display: grid; gap: 4px;
+    }
+    .uc-library__nav {
+      display: flex; gap: var(--spacing-2);
+    }
+    .uc-navbtn {
+      width: 36px; height: 36px;
+      border: 1px solid var(--semantic-border-muted);
+      background: transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      display: grid; place-items: center;
+      color: var(--semantic-on-surface);
+    }
+    .uc-navbtn:hover { background: rgba(0,0,0,0.04); }
+    .uc-navbtn svg { width: 14px; height: 14px; }
+
+    .uc-track {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(260px, 28%);
+      gap: var(--spacing-4);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      padding-bottom: var(--spacing-3);
+    }
+    .uc-track::-webkit-scrollbar { display: none; }
+
+    .uc-card {
+      scroll-snap-align: start;
+      display: grid;
+      gap: var(--spacing-3);
+    }
+    .uc-card__visual {
+      aspect-ratio: 4 / 5;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      display: grid; place-items: center;
+    }
+    .uc-card__visual::before {
+      content: "";
+      position: absolute; inset: 0;
+      mix-blend-mode: multiply; opacity: 0.4;
+      background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.5), transparent 45%);
+    }
+    .uc-card__placeholder {
+      color: rgba(0,0,0,0.45);
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      position: relative; z-index: 1;
+    }
+    .uc-card[data-theme="social"]    .uc-card__visual { background: linear-gradient(150deg, #DCE6F2, #B7C7DC); }
+    .uc-card[data-theme="lifestyle"] .uc-card__visual { background: linear-gradient(150deg, #F2E0CE, #E0BFA0); }
+    .uc-card[data-theme="free"]      .uc-card__visual { background: linear-gradient(150deg, #F0E6CE, #C9D9B4); }
+    .uc-card[data-theme="flow"]      .uc-card__visual { background: linear-gradient(150deg, #E8E5F2, #C5BFD8); }
+    .uc-card[data-theme="drive"]     .uc-card__visual { background: linear-gradient(150deg, #D8DEE6, #ACB5C2); }
+    .uc-card[data-theme="calm"]      .uc-card__visual { background: linear-gradient(150deg, #F0E4E0, #D9C3BC); }
+
+    .uc-card__index {
+      display: flex; gap: var(--spacing-2); align-items: baseline;
+      font-variant-numeric: tabular-nums;
+      font-size: 11.5px;
+      color: var(--semantic-on-surface-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .uc-card__index strong { color: var(--semantic-on-surface); font-weight: 600; }
+    .uc-card__title { display: grid; gap: 2px; }
+    .uc-card__moment { color: var(--semantic-on-surface-muted); font-style: italic; font-size: 12px; }
+    .uc-card__lead { color: var(--semantic-on-surface); font-size: 14px; line-height: 1.55; }
+    .uc-card__tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .uc-card__tags .uc-tag { padding: 4px 9px; font-size: 11px; }
+
+    /* Library progress */
+    .uc-progress {
+      margin-top: var(--spacing-6);
+      display: flex; gap: 6px;
+    }
+    .uc-progress span {
+      flex: 1; height: 2px; background: rgba(0,0,0,0.1); border-radius: 2px;
+    }
+    .uc-progress span.is-on { background: var(--semantic-on-surface); }
+
+    /* Mini mobile preview */
+    .uc-mobile {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--layout-block);
+      align-items: start;
+      padding: var(--layout-section-md) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+    }
+    .uc-phone {
+      width: 100%; max-width: 320px;
+      aspect-ratio: 9 / 18;
+      background: var(--semantic-bg-subtle, #f6f4ef);
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 28px;
+      padding: 14px 12px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      margin: 0 auto;
+    }
+    .uc-phone__head {
+      font-size: 10px; color: var(--semantic-on-surface-muted);
+      display: flex; justify-content: space-between;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .uc-phone__hero {
+      aspect-ratio: 4 / 5;
+      background: linear-gradient(155deg, #F4EAD0, #D9BD7E);
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      display: grid; align-content: end;
+      padding: 10px;
+      color: rgba(0,0,0,0.7);
+    }
+    .uc-phone__hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 75% 22%, rgba(255,255,255,0.55), transparent 40%);
+    }
+    .uc-phone__hero strong {
+      position: relative; z-index: 1;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      display: block;
+    }
+    .uc-phone__hero span {
+      position: relative; z-index: 1;
+      font-size: 10px; opacity: 0.7;
+    }
+    .uc-phone__rail {
+      display: grid; grid-auto-flow: column; gap: 6px;
+      grid-auto-columns: 70%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 4px 0;
+      scrollbar-width: none;
+    }
+    .uc-phone__rail::-webkit-scrollbar { display: none; }
+    .uc-phone__rail > div {
+      scroll-snap-align: start;
+      aspect-ratio: 4 / 5;
+      border-radius: 6px;
+      display: grid; align-content: end; padding: 6px;
+      font-size: 9px; color: rgba(0,0,0,0.65);
+    }
+    .uc-phone__rail > div:nth-child(1) { background: linear-gradient(150deg,#DCE6F2,#B7C7DC); }
+    .uc-phone__rail > div:nth-child(2) { background: linear-gradient(150deg,#F2E0CE,#E0BFA0); }
+    .uc-phone__rail > div:nth-child(3) { background: linear-gradient(150deg,#F0E6CE,#C9D9B4); }
+    .uc-phone__rail > div:nth-child(4) { background: linear-gradient(150deg,#E8E5F2,#C5BFD8); }
+    .uc-phone__rail > div:nth-child(5) { background: linear-gradient(150deg,#D8DEE6,#ACB5C2); }
+    .uc-phone__rail > div:nth-child(6) { background: linear-gradient(150deg,#F0E4E0,#D9C3BC); }
+    .uc-phone__progress {
+      display: flex; gap: 4px;
+    }
+    .uc-phone__progress span {
+      flex: 1; height: 2px; background: rgba(0,0,0,0.1); border-radius: 2px;
+    }
+    .uc-phone__progress span.is-on { background: var(--semantic-on-surface); }
+
+    @media (max-width: 1024px) {
+      .uc-hero { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      .uc-split { grid-template-columns: 1fr; }
+      .uc-note {
+        position: static; padding-left: 0; padding-top: var(--layout-block);
+        border-left: 0; border-top: 1px solid var(--semantic-border-muted);
+      }
+      .uc-track { grid-auto-columns: 78%; }
+      .uc-mobile { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="uc-page">
+    <div class="uc-shell">
+
+      <!-- DOC INTRO -->
+      <section class="uc-doc uc-narrow">
+        <div class="uc-doc__stack">
+          <p class="caption-m uc-kicker">Sun Veil PDP / Use Cases · 1 Hero Story + 6 Library</p>
+          <h1 class="heading-xxxl">시그니처 1 + 라이브러리 6 구성으로,<br/>한 장면을 깊이 박고 나머지로 폭을 넓힌다.</h1>
+          <p class="body-xl uc-muted">
+            7개 시나리오를 평등하게 깔지 않는다. 가장 AYROW스러운 한 장면(오후 2시 창가 / A Quiet Moment)을 풀 에디토리얼 풀씬으로 두고, 나머지 6개는 라이브러리 카드 슬라이더로 운영한다. 카피는 모두 고객사 원문 그대로.
+          </p>
+        </div>
+      </section>
+
+      <!-- USE CASES SECTION -->
+      <section class="uc-split">
+        <div>
+
+          <!-- Section header -->
+          <header class="uc-head">
+            <p class="uc-head__index caption-m">04 · USE CASES</p>
+            <h2 class="heading-xxl">당신의 하루 속,<br/>Sun Veil이 함께하는 순간</h2>
+            <p class="uc-head__sub body-xl">Whereable Beauty — Wherever + Able</p>
+          </header>
+
+          <!-- HERO STORY -->
+          <article class="uc-hero" data-role="signature">
+            <div class="uc-hero__visual" aria-hidden="true">
+              <div class="uc-hero__placeholder">
+                <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <rect x="6" y="10" width="52" height="44" rx="2"/>
+                  <line x1="32" y1="10" x2="32" y2="54"/>
+                  <line x1="6" y1="32" x2="58" y2="32"/>
+                  <circle cx="48" cy="20" r="4"/>
+                </svg>
+                <span>Hero Image · 4 : 5</span>
+                <span style="font-size: 10px; opacity: 0.7;">창가 / 오후의 빛 / 메이크업 위 부착 컷</span>
+              </div>
+            </div>
+
+            <div class="uc-hero__copy">
+              <div>
+                <p class="uc-hero__index"><strong>01</strong><span>Signature Moment</span></p>
+              </div>
+
+              <div class="uc-hero__title">
+                <p class="uc-hero__moment heading-m">A Quiet Moment</p>
+                <h3 class="heading-xl">오후 2시 창가</h3>
+                <p class="uc-hero__lead body-xl">
+                  빛이 들어오는 자리를 포기하지 않아도 됩니다.
+                </p>
+              </div>
+
+              <div>
+                <div class="uc-hero__tags">
+                  <span class="uc-tag">메이크업 위 부착</span>
+                  <span class="uc-tag">티 나지 않는 밀착</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- LIBRARY -->
+          <section class="uc-library" aria-label="Use cases library">
+            <header class="uc-library__head">
+              <div class="uc-library__title">
+                <p class="caption-m uc-muted">More Moments · 6 Library</p>
+                <p class="heading-m">햇살이 머무는 다른 장면들</p>
+              </div>
+              <div class="uc-library__nav" aria-hidden="true">
+                <button class="uc-navbtn" type="button" aria-label="이전">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="15 6 9 12 15 18"/></svg>
+                </button>
+                <button class="uc-navbtn" type="button" aria-label="다음">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="9 6 15 12 9 18"/></svg>
+                </button>
+              </div>
+            </header>
+
+            <div class="uc-track" role="list">
+              <article class="uc-card" data-theme="social" role="listitem">
+                <div class="uc-card__visual"><span class="uc-card__placeholder">02 · Running</span></div>
+                <p class="uc-card__index"><strong>02</strong><span>A Social Moment</span></p>
+                <div class="uc-card__title">
+                  <p class="uc-card__moment">러닝 크루</p>
+                  <p class="uc-card__lead">하루의 흐름을 멈추지 않는 선케어</p>
+                </div>
+                <div class="uc-card__tags">
+                  <span class="uc-tag">운동 환경 고려</span>
+                  <span class="uc-tag">빠른 부착</span>
+                </div>
+              </article>
+
+              <article class="uc-card" data-theme="lifestyle" role="listitem">
+                <div class="uc-card__visual"><span class="uc-card__placeholder">03 · Brunch</span></div>
+                <p class="uc-card__index"><strong>03</strong><span>A Lifestyle Moment</span></p>
+                <div class="uc-card__title">
+                  <p class="uc-card__moment">테라스 브런치</p>
+                  <p class="uc-card__lead">햇살을 피하지 않는 사람의 SUN 리추얼</p>
+                </div>
+                <div class="uc-card__tags">
+                  <span class="uc-tag">레이어드 선케어</span>
+                  <span class="uc-tag">우아한 선루틴</span>
+                </div>
+              </article>
+
+              <article class="uc-card" data-theme="free" role="listitem">
+                <div class="uc-card__visual"><span class="uc-card__placeholder">04 · Walk</span></div>
+                <p class="uc-card__index"><strong>04</strong><span>A Free Moment</span></p>
+                <div class="uc-card__title">
+                  <p class="uc-card__moment">기분 좋은 햇살 산책</p>
+                  <p class="uc-card__lead">햇살을 그대로 즐기는 시간</p>
+                </div>
+                <div class="uc-card__tags">
+                  <span class="uc-tag">장시간 착용</span>
+                  <span class="uc-tag">생활 밀착</span>
+                </div>
+              </article>
+
+              <article class="uc-card" data-theme="flow" role="listitem">
+                <div class="uc-card__visual"><span class="uc-card__placeholder">05 · Multitask</span></div>
+                <p class="uc-card__index"><strong>05</strong><span>A Flow Moment</span></p>
+                <div class="uc-card__title">
+                  <p class="uc-card__moment">멀티 태스킹</p>
+                  <p class="uc-card__lead">무의식의 흐름대로 지속적인 케어</p>
+                </div>
+                <div class="uc-card__tags">
+                  <span class="uc-tag">장시간 착용</span>
+                  <span class="uc-tag">생활 밀착</span>
+                </div>
+              </article>
+
+              <article class="uc-card" data-theme="drive" role="listitem">
+                <div class="uc-card__visual"><span class="uc-card__placeholder">06 · Drive</span></div>
+                <p class="uc-card__index"><strong>06</strong><span>A Drive Moment</span></p>
+                <div class="uc-card__title">
+                  <p class="uc-card__moment">드라이브 케어</p>
+                  <p class="uc-card__lead">빛이 오래 머무는 이동 시간에도 이어지는 보호</p>
+                </div>
+                <div class="uc-card__tags">
+                  <span class="uc-tag">장시간 착용</span>
+                  <span class="uc-tag">생활 밀착</span>
+                </div>
+              </article>
+
+              <article class="uc-card" data-theme="calm" role="listitem">
+                <div class="uc-card__visual"><span class="uc-card__placeholder">07 · Calm</span></div>
+                <p class="uc-card__index"><strong>07</strong><span>A Calm Moment</span></p>
+                <div class="uc-card__title">
+                  <p class="uc-card__moment">시술 후 케어</p>
+                  <p class="uc-card__lead">예민해진 피부 컨디션을 위한 얇은 보호 레이어</p>
+                </div>
+                <div class="uc-card__tags">
+                  <span class="uc-tag">장시간 착용</span>
+                  <span class="uc-tag">생활 밀착</span>
+                </div>
+              </article>
+            </div>
+
+            <div class="uc-progress" aria-hidden="true">
+              <span class="is-on"></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- DESIGN NOTES -->
+        <aside class="uc-note">
+          <div>
+            <h3>구성 원칙</h3>
+            <ul>
+              <li>7개 시나리오를 평등하게 깔지 않는다.</li>
+              <li>시그니처 1개를 풀 에디토리얼 풀씬으로 깊이 박는다.</li>
+              <li>나머지 6개는 라이브러리 카드 슬라이더로 폭을 넓힌다.</li>
+              <li>카피는 고객사 원문 그대로 — 윤문하지 않는다.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>시그니처 후보</h3>
+            <p>가장 AYROW스러운 무드 = 빛 · 실내 · 정적인 일상. 광대존에 부착된 메이크업 위 컷이 시그니처 비주얼의 중심.</p>
+            <ul>
+              <li>오후 2시 창가 / A Quiet Moment <strong>(현재 선택)</strong></li>
+              <li>대안: 테라스 브런치 / A Lifestyle Moment</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>라이브러리 인터랙션</h3>
+            <ul>
+              <li>horizontal scroll-snap. 자동재생 X.</li>
+              <li>progress bar 1개 (현재 위치만 표시).</li>
+              <li>hover 효과 최소 — 카드 전체를 꾸미지 않는다.</li>
+              <li>모바일은 카드 폭 78%로 1.x 카드 노출.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>비주얼 자산 우선순위</h3>
+            <ul>
+              <li>시그니처 1컷 — 4 : 5, 메이크업 위 부착 컷이 보여야 함.</li>
+              <li>라이브러리 6컷 — 4 : 5 통일. 무드 일관성이 핵심.</li>
+              <li>자산 미확보 시 컬러 그라데이션 placeholder로 영역 잡기.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>법무 / RA 검수 보류</h3>
+            <ul>
+              <li>07 · 시술 후 케어 — 공산품 표기 충돌 가능. 카피 노출 전 확인.</li>
+            </ul>
+          </div>
+        </aside>
+      </section>
+
+      <!-- MOBILE PREVIEW -->
+      <section class="uc-mobile">
+        <div>
+          <header class="uc-head">
+            <p class="uc-head__index caption-m">Mobile Preview</p>
+            <h2 class="heading-l">시그니처는 첫 viewport,<br/>라이브러리는 가로 스크롤</h2>
+            <p class="uc-muted body-xl">모바일에서도 시그니처를 먼저 보여주고, 라이브러리는 1.x 카드 미리보기로 가로 스크롤 cue를 만든다.</p>
+          </header>
+
+          <div style="display: grid; gap: 8px; font-size: 13px; color: var(--semantic-on-surface-muted); line-height: 1.6;">
+            <p>· 시그니처 hero는 화면 폭의 75-80%, 4 : 5 비율 유지.</p>
+            <p>· 라이브러리는 카드 폭 70-78%로 다음 카드 일부가 보이게 노출.</p>
+            <p>· 진행감은 가는 progress bar 1줄.</p>
+            <p>· hero와 library 사이 spacing은 layout-section-sm 정도.</p>
+          </div>
+        </div>
+
+        <div class="uc-phone" aria-hidden="true">
+          <div class="uc-phone__head">
+            <span>Use Cases</span>
+            <span>1 / 7</span>
+          </div>
+          <div style="display: grid; gap: 10px; align-content: start;">
+            <div class="uc-phone__hero">
+              <strong>오후 2시 창가</strong>
+              <span>A Quiet Moment</span>
+            </div>
+            <div class="uc-phone__rail">
+              <div><strong style="font-size:9px; display:block; opacity:0.85;">02 Running</strong></div>
+              <div><strong style="font-size:9px; display:block; opacity:0.85;">03 Brunch</strong></div>
+              <div><strong style="font-size:9px; display:block; opacity:0.85;">04 Walk</strong></div>
+              <div><strong style="font-size:9px; display:block; opacity:0.85;">05 Multitask</strong></div>
+              <div><strong style="font-size:9px; display:block; opacity:0.85;">06 Drive</strong></div>
+              <div><strong style="font-size:9px; display:block; opacity:0.85;">07 Calm</strong></div>
+            </div>
+            <div class="uc-phone__progress">
+              <span class="is-on"></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</body>
+</html>

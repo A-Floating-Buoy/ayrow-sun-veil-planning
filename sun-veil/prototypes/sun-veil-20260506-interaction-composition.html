@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil 20260506 Interaction Composition</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    :root {
+      --sv-blue: var(--primitive-bleu);
+      --sv-cream: var(--primitive-creme);
+      --sv-ciel: var(--semantic-ciel);
+      --sv-merlot: var(--primitive-merlot);
+      --sv-oscar: var(--primitive-oscar);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .sv-page {
+      position: relative;
+    }
+
+    .sv-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      gap: var(--spacing-2);
+      align-items: center;
+      overflow-x: auto;
+      padding: var(--spacing-3) var(--layout-page-x);
+      border-bottom: 1px solid var(--semantic-border-muted);
+      background: color-mix(in srgb, var(--semantic-bg-default) 88%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .sv-nav__link,
+    .sv-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 0 var(--spacing-3);
+      border: 1px solid var(--semantic-border-muted);
+      background: transparent;
+      color: var(--semantic-on-surface-muted);
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .sv-nav__link.is-active,
+    .sv-toggle.is-active {
+      border-color: var(--sv-blue);
+      color: var(--sv-blue);
+    }
+
+    .sv-toggle {
+      margin-left: auto;
+    }
+
+    .sv-section {
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: minmax(220px, 0.34fr) minmax(0, 1fr);
+      gap: var(--layout-block);
+      padding: var(--layout-section-lg) var(--layout-page-x);
+      border-bottom: 1px solid var(--semantic-border-muted);
+    }
+
+    .sv-section__head {
+      position: sticky;
+      top: calc(var(--spacing-8) + 48px);
+      align-self: start;
+      display: grid;
+      gap: var(--spacing-3);
+    }
+
+    .sv-section__body {
+      display: grid;
+      gap: var(--layout-block);
+      min-width: 0;
+    }
+
+    .sv-hero {
+      min-height: calc(100svh - 61px);
+      grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.76fr);
+      align-items: center;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--sv-ciel) 28%, transparent), transparent 42%),
+        var(--semantic-bg-default);
+    }
+
+    .sv-hero__copy {
+      display: grid;
+      gap: var(--spacing-5);
+      max-width: 760px;
+    }
+
+    .sv-hero__media {
+      position: relative;
+      min-height: 520px;
+      display: grid;
+      place-items: center;
+    }
+
+    .sv-product {
+      width: min(100%, 560px);
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      filter: drop-shadow(24px 34px 28px rgba(0, 0, 0, 0.12));
+    }
+
+    .sv-orbit {
+      position: absolute;
+      inset: 12%;
+      border: 1px solid color-mix(in srgb, var(--sv-blue) 28%, transparent);
+      border-radius: 50%;
+      transform: rotate(-18deg);
+      pointer-events: none;
+    }
+
+    .sv-orbit::after {
+      content: "";
+      position: absolute;
+      top: 20%;
+      left: 12%;
+      width: 7px;
+      height: 7px;
+      background: var(--sv-blue);
+      border-radius: 999px;
+    }
+
+    .sv-kicker,
+    .sv-index,
+    .sv-label {
+      color: var(--semantic-on-surface-accent);
+    }
+
+    .sv-muted {
+      color: var(--semantic-on-surface-muted);
+    }
+
+    .sv-copy,
+    .sv-stack {
+      display: grid;
+      gap: var(--spacing-4);
+    }
+
+    .sv-copy h2,
+    .sv-copy h3,
+    .sv-copy h4,
+    .sv-copy p,
+    .sv-copy ul,
+    .sv-copy ol,
+    .sv-copy blockquote {
+      margin: 0;
+    }
+
+    .sv-copy ul,
+    .sv-copy ol {
+      display: grid;
+      gap: var(--spacing-2);
+      padding-left: 1.2em;
+    }
+
+    .sv-copy blockquote {
+      padding-left: var(--spacing-5);
+      border-left: 1px solid var(--semantic-border-default);
+      color: var(--sv-blue);
+    }
+
+    .sv-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--layout-block);
+    }
+
+    .sv-grid--3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .sv-card,
+    .sv-accordion__item,
+    .sv-data-card {
+      display: grid;
+      gap: var(--spacing-3);
+      padding: var(--spacing-5);
+      background: var(--semantic-surface-subtle);
+    }
+
+    .sv-card--cream {
+      background: color-mix(in srgb, var(--sv-cream) 52%, var(--semantic-bg-default));
+    }
+
+    .sv-draft {
+      display: grid;
+      gap: var(--spacing-2);
+      padding: var(--spacing-4) 0 var(--spacing-4) var(--spacing-5);
+      border-left: 1px solid var(--semantic-border-default);
+      color: var(--semantic-on-surface-muted);
+    }
+
+    body:not(.is-draft-visible) .sv-draft {
+      display: none;
+    }
+
+    .sv-compare {
+      display: grid;
+      gap: 1px;
+      background: var(--semantic-border-muted);
+    }
+
+    .sv-compare__row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+      background: var(--semantic-bg-default);
+    }
+
+    .sv-compare__cell {
+      min-height: 70px;
+      display: grid;
+      align-content: center;
+      padding: var(--spacing-4);
+    }
+
+    .sv-compare__cell:nth-child(2) {
+      justify-content: center;
+      color: var(--semantic-on-surface-muted);
+      background: var(--semantic-surface-subtle);
+    }
+
+    .sv-compare__cell:last-child {
+      color: var(--sv-blue);
+    }
+
+    .sv-airflow {
+      position: relative;
+      min-height: 360px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--sv-ciel) 28%, var(--semantic-bg-default));
+    }
+
+    .sv-airflow__surface {
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      top: 48%;
+      height: 8px;
+      background: var(--sv-blue);
+    }
+
+    .sv-airflow__surface::before,
+    .sv-airflow__surface::after {
+      content: "";
+      position: absolute;
+      inset: -28px 0;
+      background-image: radial-gradient(var(--sv-blue) 1px, transparent 1px);
+      background-size: 18px 18px;
+      opacity: 0.24;
+    }
+
+    .sv-airflow__surface::after {
+      animation: sv-flow 4.8s linear infinite;
+    }
+
+    .sv-airflow__label {
+      position: absolute;
+      left: var(--spacing-5);
+      bottom: var(--spacing-5);
+      max-width: 280px;
+    }
+
+    @keyframes sv-flow {
+      from { transform: translateY(-28px); }
+      to { transform: translateY(28px); }
+    }
+
+    .sv-thickness {
+      display: grid;
+      gap: var(--spacing-4);
+    }
+
+    .sv-meter {
+      display: grid;
+      gap: var(--spacing-2);
+    }
+
+    .sv-meter__bar {
+      height: 10px;
+      background: var(--semantic-surface-subtle);
+      overflow: hidden;
+    }
+
+    .sv-meter__bar span {
+      display: block;
+      width: var(--w);
+      height: 100%;
+      background: var(--semantic-on-surface-muted);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1000ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+
+    .sv-meter--accent .sv-meter__bar span {
+      background: var(--sv-blue);
+    }
+
+    .is-in-view .sv-meter__bar span {
+      transform: scaleX(1);
+    }
+
+    .sv-steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--semantic-border-muted);
+    }
+
+    .sv-step {
+      min-height: 260px;
+      display: grid;
+      align-content: end;
+      gap: var(--spacing-3);
+      padding: var(--spacing-5);
+      background: var(--semantic-bg-default);
+      transition: background 180ms ease, color 180ms ease;
+    }
+
+    .sv-step.is-active {
+      background: var(--sv-blue);
+      color: var(--semantic-bg-default);
+    }
+
+    .sv-accordion {
+      display: grid;
+      gap: 1px;
+      background: var(--semantic-border-muted);
+    }
+
+    .sv-accordion__item {
+      background: var(--semantic-bg-default);
+      padding: 0;
+    }
+
+    .sv-accordion__button {
+      width: 100%;
+      display: flex;
+      gap: var(--spacing-4);
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-5);
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sv-accordion__answer {
+      display: none;
+      gap: var(--spacing-3);
+      padding: 0 var(--spacing-5) var(--spacing-5);
+    }
+
+    .sv-accordion__item.is-open .sv-accordion__answer {
+      display: grid;
+    }
+
+    .sv-accordion__icon {
+      flex: 0 0 auto;
+      color: var(--semantic-on-surface-muted);
+    }
+
+    .sv-accordion__item.is-open .sv-accordion__icon {
+      transform: rotate(45deg);
+    }
+
+    .sv-data {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--semantic-border-muted);
+    }
+
+    .sv-data-card {
+      min-height: 160px;
+      background: var(--semantic-bg-default);
+    }
+
+    .sv-data-card strong {
+      color: var(--sv-blue);
+    }
+
+    .sv-spec {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .sv-spec th,
+    .sv-spec td {
+      padding: var(--spacing-4) var(--spacing-4) var(--spacing-4) 0;
+      border-top: 1px solid var(--semantic-border-muted);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    @media (max-width: 900px) {
+      .sv-section,
+      .sv-hero,
+      .sv-grid,
+      .sv-grid--3,
+      .sv-steps,
+      .sv-data {
+        grid-template-columns: 1fr;
+      }
+
+      .sv-section {
+        min-height: auto;
+      }
+
+      .sv-section__head {
+        position: static;
+      }
+
+      .sv-hero__media {
+        min-height: 360px;
+      }
+
+      .sv-toggle {
+        margin-left: 0;
+      }
+
+      .sv-compare__row {
+        grid-template-columns: 1fr;
+      }
+
+      .sv-compare__cell:nth-child(2) {
+        justify-content: start;
+      }
+
+      .sv-spec {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .sv-airflow__surface::after {
+        animation: none;
+      }
+
+      .sv-meter__bar span {
+        transform: scaleX(1);
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="sv-page">
+    <nav class="sv-nav caption-m" aria-label="Sun Veil section navigation">
+      <a class="sv-nav__link is-active" href="#hero">Hero</a>
+      <a class="sv-nav__link" href="#reframing">Film vs Membrane</a>
+      <a class="sv-nav__link" href="#faq">Quick FAQ</a>
+      <a class="sv-nav__link" href="#ritual">Ritual</a>
+      <a class="sv-nav__link" href="#works">How It Works</a>
+      <a class="sv-nav__link" href="#proof">Proof</a>
+      <a class="sv-nav__link" href="#full-faq">Full FAQ</a>
+      <button class="sv-toggle" type="button" data-draft-toggle>삭제 가능 표시</button>
+    </nav>
+
+    <section class="sv-section sv-hero" id="hero" data-section>
+      <div class="sv-hero__copy">
+        <p class="caption-m sv-kicker">Reverse AG Code™ Sun Veil</p>
+        <h1 class="heading-xxxl">당신이 붙이고 있던 건 ‘필름’입니다.</h1>
+        <div class="sv-copy">
+          <h2 class="heading-xxl">Sun Veil은 ‘숨 쉬는 멤브레인 (나노 섬유)’입니다.</h2>
+          <p class="body-xl">이제, 막는 보호에서</p>
+          <h2 class="heading-xxl">숨 쉬는 보호로 바뀝니다.</h2>
+          <h3 class="heading-m">숨 쉬는 멤브레인 (Membrane)</h3>
+          <p class="body-l">막는 필름과 달리, 열·습기·땀은 배출하고 피부를 가두지 않는 나노 섬유 구조</p>
+          <h3 class="heading-m">A New Kind of Aesthetic Guard</h3>
+          <p class="body-xl">보이지 않게</p>
+          <h3 class="heading-l">그러나막지 않고 보호합니다.</h3>
+          <h3 class="heading-l">0.004mm</h3>
+          <p class="body-l">피부 위에 얹히는 숨 쉬는 초박막 보호 레이어</p>
+        </div>
+        <div class="sv-draft">
+          <p class="caption-m sv-label">삭제 가능 표시</p>
+          <p class="body-m">카테고리 포지셔닝을 완전히 바꾸는 헤드라인</p>
+          <p class="body-m">→ 카테고리 정의</p>
+        </div>
+      </div>
+      <div class="sv-hero__media" aria-hidden="true">
+        <span class="sv-orbit"></span>
+        <img class="sv-product" src="../sun-veil-20260506/선베일 상세페이지/image.png" alt="">
+      </div>
+    </section>
+
+    <section class="sv-section" id="reframing" data-section>
+      <div class="sv-section__head">
+        <p class="caption-m sv-index">02</p>
+        <h2 class="heading-l">Category Reframing</h2>
+        <p class="body-s sv-muted">비교표는 기능적으로 명확하게, 공기 흐름은 브랜드 감도에 맞춰 절제된 모션으로 처리합니다.</p>
+      </div>
+      <div class="sv-section__body">
+        <div class="sv-draft">
+          <p class="caption-m sv-label">삭제 가능 표시</p>
+          <p class="body-m">전환을 만드는 공격적인 리프레이밍</p>
+        </div>
+        <div class="sv-copy">
+          <h3 class="heading-m">Reverse AG Code™ Sun Veil</h3>
+          <blockquote class="body-xl">피부 위에 숨 쉬는 보호 레이어,선케어의 방식을 재정의한, Aesthetic Guard</blockquote>
+          <h3 class="heading-xxl">Film vs Membrane</h3>
+          <p class="body-l">같은 ‘패치’로 보였다면, 완전히 잘못 보고 있던 겁니다.</p>
+          <h3 class="heading-xl">막는 것 vs 숨 쉬는 것</h3>
+          <p class="body-l">당신의 피부는 어떤 쪽을 선택하나요?</p>
+        </div>
+
+        <div class="sv-compare body-m">
+          <div class="sv-compare__row"><div class="sv-compare__cell">기존 선패치</div><div class="sv-compare__cell">vs</div><div class="sv-compare__cell">에이로우 선베일</div></div>
+          <div class="sv-compare__row"><div class="sv-compare__cell">필름 = 막 (막힘)</div><div class="sv-compare__cell"></div><div class="sv-compare__cell">나노 섬유 멤브레인 = 선택적 투과 구조 (숨 쉬는 구조)</div></div>
+          <div class="sv-compare__row"><div class="sv-compare__cell">피부를 덮는 구조</div><div class="sv-compare__cell"></div><div class="sv-compare__cell">섬유 기반 다공성 구조</div></div>
+          <div class="sv-compare__row"><div class="sv-compare__cell">공기 흐름 차단</div><div class="sv-compare__cell"></div><div class="sv-compare__cell">공기 &amp; 수분 흐름 유지</div></div>
+          <div class="sv-compare__row"><div class="sv-compare__cell">장시간 사용 시 답답함</div><div class="sv-compare__cell"></div><div class="sv-compare__cell">장시간 부착 가능</div></div>
+          <div class="sv-compare__row"><div class="sv-compare__cell">“붙이는 순간, 피부는 막힌다”</div><div class="sv-compare__cell"></div><div class="sv-compare__cell">“붙여도, 피부는 계속 숨 쉰다”</div></div>
+        </div>
+
+        <div class="sv-grid">
+          <div class="sv-airflow">
+            <div class="sv-airflow__surface"></div>
+            <div class="sv-airflow__label sv-copy">
+              <p class="caption-m sv-label">Aero Flow™</p>
+              <h3 class="heading-m">“숨을 못 쉬기 때문입니다.”</h3>
+              <p class="body-m">선베일은 보호하지만, 피부를 가두지 않습니다.</p>
+            </div>
+          </div>
+          <div class="sv-card sv-card--cream">
+            <h3 class="heading-m">선패치, 불편했던 이유는 단 하나입니다.</h3>
+            <ul class="body-m">
+              <li>땀/열/습기로 답답함</li>
+              <li>필름 텐션으로 인한 밀폐감, 피부 조임</li>
+              <li>메이크업 위에서 들뜸</li>
+              <li>접착 성분으로 인한 뻣뻣함, 잔주름 픽스</li>
+              <li>오래 붙이면 피부 피로감</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="sv-thickness" data-animate>
+          <div class="sv-meter">
+            <div class="body-m">투습도: 12,356 g/m²·24h</div>
+            <div class="sv-meter__bar"><span style="--w: 92%;"></span></div>
+          </div>
+          <div class="sv-meter">
+            <div class="body-m">공기 투과도: 1.0 미만 mm/s</div>
+            <div class="sv-meter__bar"><span style="--w: 26%;"></span></div>
+          </div>
+          <div class="sv-meter sv-meter--accent">
+            <div class="body-m">0.004mm 숨 쉬는 나노바이오 섬유</div>
+            <div class="sv-meter__bar"><span style="--w: 8%;"></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sv-section" id="faq" data-section>
+      <div class="sv-section__head">
+        <p class="caption-m sv-index">03-1</p>
+        <h2 class="heading-l">Quick FAQ</h2>
+        <p class="body-s sv-muted">구매 전 의심을 빠르게 줄이는 영역입니다. 모바일에서는 접힘 구조가 더 안정적입니다.</p>
+      </div>
+      <div class="sv-section__body">
+        <div class="sv-accordion" data-accordion>
+          <article class="sv-accordion__item is-open">
+            <button class="sv-accordion__button" type="button"><span class="heading-m">✔ 메이크업 위에 사용해도 되나요?</span><span class="sv-accordion__icon">+</span></button>
+            <div class="sv-accordion__answer body-m"><p>YES</p><p>네, 가능합니다.</p><p>쿠션 팩트, 파운데이션 등 대부분의 메이크업 위에서도 투명하고 들뜸 없이 밀착되어 피부 표현을 방해하지 않습니다.</p></div>
+          </article>
+          <article class="sv-accordion__item">
+            <button class="sv-accordion__button" type="button"><span class="heading-m">✔ 일반 필름형 선패치와 다른가요?</span><span class="sv-accordion__icon">+</span></button>
+            <div class="sv-accordion__answer body-m"><p>YES</p><p>네, 다릅니다.</p><p>일반 투명 선패치는 필름 형태로 피부를 덮고 가두는 구조입니다.</p><p>Sun Veil은 나노 섬유 기반 멤브레인으로 공기와 수분 흐름을 유지하면서도 자외선은 차단하는 방식으로, 붙여도 피부가 계속 숨 쉴 수 있도록 설계되었습니다.</p></div>
+          </article>
+          <article class="sv-accordion__item">
+            <button class="sv-accordion__button" type="button"><span class="heading-m">✔ 점착 성분 없이도 잘 붙나요?</span><span class="sv-accordion__icon">+</span></button>
+            <div class="sv-accordion__answer body-m"><p>YES</p><p>네, 잘 밀착됩니다.</p><p>초박막 멤브레인의 기공 구조와 스킨케어 제형의 점성 기반 ‘Moisture-Bonding’ 방식이 결합되어 피부에 자연스럽게 안착됩니다.</p></div>
+          </article>
+          <article class="sv-accordion__item">
+            <button class="sv-accordion__button" type="button"><span class="heading-m">✔ 투명한데 자외선 차단이 가능한가요?</span><span class="sv-accordion__icon">+</span></button>
+            <div class="sv-accordion__answer body-m"><p>YES</p><p>네, 투명하지만 차단됩니다.</p><p>멤브레인 내부에 분포된 자외선 대응 구조가 빛에 반응해 자외선 파장을 흡수하거나 산란시키도록 설계되어 있기 때문입니다.</p></div>
+          </article>
+          <article class="sv-accordion__item">
+            <button class="sv-accordion__button" type="button"><span class="heading-m">✔ 민감한 피부에도 사용할 수 있나요?</span><span class="sv-accordion__icon">+</span></button>
+            <div class="sv-accordion__answer body-m"><p>YES</p><p>네, 가능합니다.</p><p>민감 피부 대상 첩포 및 2주 임상 테스트를 완료했으며, 자극 및 알레르기 반응 없이 Dermatest® ‘Excellent’ 등급을 획득했습니다.</p></div>
+          </article>
+          <article class="sv-accordion__item">
+            <button class="sv-accordion__button" type="button"><span class="heading-m">✔ 티가 나나요?</span><span class="sv-accordion__icon">+</span></button>
+            <div class="sv-accordion__answer body-m">
+              <div class="sv-draft"><p class="caption-m sv-label">삭제 가능 표시</p><p>NO.</p></div>
+              <p>아니요, 거의 보이지 않습니다.</p>
+              <p>0.004mm 초박막 투명 멤브레인으로 메이크업 위에서도 식별이 어려울 만큼 자연스럽습니다.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sv-section" id="ritual" data-section>
+      <div class="sv-section__head">
+        <p class="caption-m sv-index">04-2</p>
+        <h2 class="heading-l">Ritual / Usage Guide</h2>
+      </div>
+      <div class="sv-section__body">
+        <div class="sv-steps" data-steps>
+          <button class="sv-step is-active" type="button">
+            <span class="caption-m">01 · Ready</span>
+            <span class="heading-m">파우치를 열고 L/R 방향을 확인합니다</span>
+          </button>
+          <button class="sv-step" type="button">
+            <span class="caption-m">02 · Set</span>
+            <span class="heading-m">햇살이 먼저 닿는 광대존에 올린 뒤 가볍게 눌러 안착시켜 줍니다</span>
+          </button>
+          <button class="sv-step" type="button">
+            <span class="caption-m">03 · Go</span>
+            <span class="heading-m">피부와 하나가 된 듯한 피팅감으로 일상을 이어갑니다</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="sv-section" id="works" data-section>
+      <div class="sv-section__head">
+        <p class="caption-m sv-index">05-06</p>
+        <h2 class="heading-l">How It Works / Technology</h2>
+      </div>
+      <div class="sv-section__body">
+        <div class="sv-draft">
+          <p class="caption-m sv-label">삭제 가능 표시</p>
+          <p class="body-m">두 개의 레이어+브리더블까지 포함된 3D 이미지 → 홍성우 작가 3d 개발 중(5월 4주 업로드 가능)</p>
+        </div>
+        <div class="sv-grid">
+          <div class="sv-card">
+            <p class="caption-m sv-label">5-1. How It Protects (레이어)</p>
+            <h3 class="heading-l">두 개의 레이어가 하나의 피부처럼 작동합니다</h3>
+            <p class="body-m">Sun Veil은 자외선 차단 필름이 아니라</p>
+            <p class="body-m">기능이 다른 두 레이어가 결합된 컴포지트 나노 섬유입니다.</p>
+            <p class="body-m">Layer 1</p>
+            <p class="body-m">초박막 투명 멤브레인</p>
+            <p class="body-m">Layer 2</p>
+            <p class="body-m">약액층</p>
+          </div>
+          <div class="sv-card">
+            <p class="caption-m sv-label">5-2. How It Bonds (밀착)</p>
+            <h3 class="heading-l">접착하지 않고 수분으로 안착한다</h3>
+            <p class="body-m">점착제 없는 클린 밀착</p>
+            <p class="body-m">화학 접착 성분 없이</p>
+            <p class="body-m">구조적 물성으로 구현한 물리적 밀착</p>
+            <p class="body-m">Moisture-Bonding</p>
+            <p class="body-m">선베일의 보습 성분과 피부 표면이 만나</p>
+            <p class="body-m">표면 장력으로 피부 위에 자연스럽게 안착</p>
+          </div>
+        </div>
+        <div class="sv-grid">
+          <div class="sv-card sv-card--cream">
+            <h3 class="heading-m">6-1. Reverse AG Code™ 포뮬라</h3>
+            <ul class="body-m">
+              <li>NMN: 세포 NAD⁺ 공급, 에너지 회복¹</li>
+              <li>Resveratrol: SIRT1 활성화, 항산화·DNA 수선²</li>
+              <li>Pterostilbene: 차세대 스틸벤, 안정성↑, 항산화·브라이트닝³</li>
+              <li>Vegan PRN(화이트 트러플 유산균)</li>
+              <li>Phyto PDRN(생 어린 병풀)</li>
+              <li>CICA ROSIA 2.0</li>
+            </ul>
+          </div>
+          <div class="sv-card sv-card--cream">
+            <h3 class="heading-m">6-2. 에어로플로우 멤브레인™</h3>
+            <p class="body-m">공기 흐름을 지속적으로 유지하며(피부 호흡을 방해하지 않으며) 피부에 정밀하게 밀착되는</p>
+            <p class="body-l">‘숨 쉬는’ 초경량 멤브레인</p>
+            <p class="body-m">Skin-Breathing</p>
+            <p class="body-m">3D 에어 메쉬 구조로 답답함을 줄인 에어로플로우 설계</p>
+            <p class="body-m">Stealth Fit</p>
+            <p class="body-m">메이크업 위에서도 자연스러운 스텔스 피팅</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sv-section" id="proof" data-section>
+      <div class="sv-section__head">
+        <p class="caption-m sv-index">08</p>
+        <h2 class="heading-l">Proof / Evidence</h2>
+      </div>
+      <div class="sv-section__body">
+        <div class="sv-copy">
+          <h3 class="heading-xxl">보이지 않지만,</h3>
+          <h3 class="heading-xxl">데이터로 확인됩니다.</h3>
+        </div>
+        <div class="sv-data">
+          <div class="sv-data-card"><p class="caption-m sv-label">자외선 차단 성능</p><p class="body-m">UVB 차단율 <strong>99.9% CUT</strong></p><p class="body-m">UVA 차단율 <strong>96.4% CUT</strong></p><p class="body-m">UVR 차단율 <strong>96.3% CUT</strong></p><p class="body-m">UPF 지수 <strong>UPF 50+</strong></p></div>
+          <div class="sv-data-card"><p class="caption-m sv-label">피부 적합성</p><p class="body-m">피부 자극 지수 <strong>0.00</strong> (자극 반응 없음)</p><p class="body-m">더마테스트 <strong>EXCELLENT</strong> 등급</p></div>
+          <div class="sv-data-card"><p class="caption-m sv-label">숨 쉬는 구조 데이터</p><p class="body-m">공기 투과도 <strong>1.0 미만 mm/s</strong></p><p class="body-m">투습도 <strong>12,356 g/m²·24h</strong></p><p class="body-m">기공 크기 <strong>0.7μm</strong></p></div>
+          <div class="sv-data-card"><p class="caption-m sv-label">물성 &amp; 설계</p><p class="body-m">중량 <strong>0.05g</strong></p><p class="body-m">두께 <strong>0.004mm</strong></p><p class="body-m">구조 <strong>숨 쉬는 나노 멤브레인</strong></p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sv-section" id="full-faq" data-section>
+      <div class="sv-section__head">
+        <p class="caption-m sv-index">09</p>
+        <h2 class="heading-l">Full FAQ</h2>
+        <p class="body-s sv-muted">삭제 가능 표시가 질문에 걸린 원고는 질문 자체를 편집 후보로 별도 표시합니다.</p>
+      </div>
+      <div class="sv-section__body">
+        <div class="sv-accordion" data-accordion>
+          <article class="sv-accordion__item is-open">
+            <button class="sv-accordion__button" type="button"><span class="heading-m">✔ Sun Veil은 정확히 어떤 제품인가요? → 정의</span><span class="sv-accordion__icon">+</span></button>
+            <div class="sv-accordion__answer body-m">
+              <div class="sv-draft"><p class="caption-m sv-label">삭제 가능 표시</p><p>질문 라벨</p></div>
+              <p>Sun Veil은 피부 위에 안착되는 초박막 멤브레인(나노 섬유)과 스킨케어 성분을 담은 케어층이 결합된 반건식(hybrid dry-to-wet) 구조의 이중 레이어 패치형 제품입니다.</p>
+              <p>초박막 기공형 멤브레인은 피부 호흡을 방해하지 않고 편안하게 밀착되며, 투명한 보호 레이어로 작동하도록 설계되었습니다.</p>
+              <p>동시에, 케어층에는 Reverse AG Code™ 기반의 스킨케어 성분이 담겨외부 자극으로 흔들린 피부 컨디션을 정돈하는 케어가 함께 이루어집니다.</p>
+            </div>
+          </article>
+          <article class="sv-accordion__item">
+            <button class="sv-accordion__button" type="button"><span class="heading-m">✔ 일반 필름형 선패치와 무엇이 다른가요? → 차별</span><span class="sv-accordion__icon">+</span></button>
+            <div class="sv-accordion__answer body-m">
+              <div class="sv-draft"><p class="caption-m sv-label">삭제 가능 표시</p><p>질문 라벨</p></div>
+              <p>일반 투명 선패치는 필름 형태로 피부를 덮고 가두는 구조입니다. 대부분의 필름형 선패치는 사실상 ‘차단막(occlusive film)’에 가깝습니다.</p>
+              <p>Sun Veil은 나노 섬유 기반 멤브레인 구조로 피부를 가두지 않고 밀착됩니다.</p>
+              <p>공기와 수분 흐름을 유지하면서도 자외선은 차단하도록 설계되어,</p>
+              <p>붙여도 피부가 계속 숨 쉴 수 있습니다.</p>
+            </div>
+          </article>
+          <article class="sv-accordion__item">
+            <button class="sv-accordion__button" type="button"><span class="heading-m">✔ 그래서, 왜 선베일인가요? → 결론</span><span class="sv-accordion__icon">+</span></button>
+            <div class="sv-accordion__answer body-m">
+              <div class="sv-draft"><p class="caption-m sv-label">삭제 가능 표시</p><p>질문 라벨</p></div>
+              <p>눈가 아래·광대 부위는 자외선 노출이 높으면서도피부가 얇고 민감해, 보호가 가장 까다로운 영역입니다.</p>
+              <p>선크림 등 기존 도포형 제형은 물리적 지워짐 또는 땀 등으로 인해 덧바르는 과정이 필요하고, 필름형 패치는 피부를 답답하게 만들고 자극을 줄 수 있습니다.</p>
+              <p>투명하게, 느껴지지 않게, 일상 속 어디서든 부담 없이 이어지는 보호.</p>
+              <p>Sun Veil은, 어디에서든 피부 위에서 자연스럽게 지속되는 Whereable Beauty™를 구현합니다.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sv-section" id="spec" data-section>
+      <div class="sv-section__head">
+        <p class="caption-m sv-index">10-11</p>
+        <h2 class="heading-l">Product Spec / CTA</h2>
+      </div>
+      <div class="sv-section__body">
+        <table class="sv-spec body-m">
+          <tbody>
+            <tr><th>제품명</th><td>에이로우 리버스 AG 코드™ 선베일</td></tr>
+            <tr><th>내용물의 용량 및 중량</th><td>1회분(2매): 0.1g3회분(2매 × 3세트): 0.3 g</td></tr>
+            <tr><th>제품 주요 사양</th><td>모든 피부 타입</td></tr>
+            <tr><th>사용기한 또는 개봉 후 사용기간</th><td>사용기한과 제조번호는 제품 패키지의 표시사항을 참고하세요.제조일로부터 30개월 / 개봉 후 즉시 사용</td></tr>
+            <tr><th>소비자 상담 관련 전화번호</th><td>070-4250-0312</td></tr>
+            <tr><th>기획·판매원</th><td>㈜씽크앤플로우 (Think &amp; flow Inc.)</td></tr>
+            <tr><th>제조국</th><td>대한민국</td></tr>
+          </tbody>
+        </table>
+        <div class="sv-copy">
+          <h3 class="heading-xxl">햇살을 포기하지 않는 가장 앞선 방식</h3>
+          <p class="body-xl">Aesthetic Guard,AYROW Reverse AG Code™ Sun-Veil</p>
+          <p class="body-m">Experience Sun Veil! (지금 구매하기)</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var draftToggle = document.querySelector('[data-draft-toggle]');
+      if (draftToggle) {
+        draftToggle.addEventListener('click', function () {
+          document.body.classList.toggle('is-draft-visible');
+          draftToggle.classList.toggle('is-active', document.body.classList.contains('is-draft-visible'));
+        });
+      }
+
+      document.querySelectorAll('[data-accordion]').forEach(function (accordion) {
+        accordion.addEventListener('click', function (event) {
+          var button = event.target.closest('.sv-accordion__button');
+          if (!button || !accordion.contains(button)) return;
+          var item = button.closest('.sv-accordion__item');
+          item.classList.toggle('is-open');
+        });
+      });
+
+      document.querySelectorAll('[data-steps]').forEach(function (steps) {
+        steps.addEventListener('click', function (event) {
+          var step = event.target.closest('.sv-step');
+          if (!step || !steps.contains(step)) return;
+          steps.querySelectorAll('.sv-step').forEach(function (item) {
+            item.classList.toggle('is-active', item === step);
+          });
+        });
+      });
+
+      var navLinks = Array.prototype.slice.call(document.querySelectorAll('.sv-nav__link'));
+      var sections = Array.prototype.slice.call(document.querySelectorAll('[data-section]'));
+      var animated = Array.prototype.slice.call(document.querySelectorAll('[data-animate]'));
+      if ('IntersectionObserver' in window) {
+        var sectionObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            navLinks.forEach(function (link) {
+              link.classList.toggle('is-active', link.getAttribute('href') === '#' + entry.target.id);
+            });
+          });
+        }, { rootMargin: '-42% 0px -52% 0px', threshold: 0.01 });
+
+        sections.forEach(function (section) {
+          sectionObserver.observe(section);
+        });
+
+        var animationObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-in-view');
+            }
+          });
+        }, { threshold: 0.28 });
+
+        animated.forEach(function (item) {
+          animationObserver.observe(item);
+        });
+      } else {
+        animated.forEach(function (item) {
+          item.classList.add('is-in-view');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

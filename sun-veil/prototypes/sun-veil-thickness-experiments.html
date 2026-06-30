@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sun Veil — Thickness Visualization Experiments (Interactive)</title>
+  <link rel="stylesheet" href="../../../fonts/fonts.css">
+  <link rel="stylesheet" href="../../../css/core/tokens.css">
+  <link rel="stylesheet" href="../../../css/core/tokens-ayrow-v3.css">
+  <link rel="stylesheet" href="../../../css/core/typography.css">
+  <style>
+    :root { --bleu: var(--primitive-bleu, #2e3a8a); }
+    body {
+      margin: 0;
+      background: var(--semantic-bg-default);
+      color: var(--semantic-on-surface);
+    }
+    .page { max-width: 1080px; margin: 0 auto; padding: 8vh max(5vw, 24px); }
+    .intro h1 { margin: 0 0 0.6em; font-size: clamp(28px, 4vw, 44px); }
+    .intro p { margin: 0 0 0.4em; color: var(--semantic-on-surface-muted); line-height: 1.6; }
+    .kicker {
+      color: var(--semantic-on-surface-muted);
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.4em;
+    }
+
+    .experiment {
+      margin: 6vh 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.55fr);
+      gap: 32px; align-items: start;
+    }
+    .experiment__card {
+      padding: 36px 28px;
+      background: white;
+      border: 1px solid var(--semantic-border-muted);
+      border-radius: 16px;
+    }
+    .experiment__index {
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--semantic-on-surface-muted);
+      margin-bottom: 8px;
+    }
+    .experiment__title {
+      margin: 0 0 6px;
+      font-size: clamp(20px, 2.2vw, 26px);
+      font-weight: 500;
+    }
+    .experiment__concept {
+      margin: 0 0 24px;
+      color: var(--semantic-on-surface-muted);
+      font-size: 14px; line-height: 1.55;
+    }
+    .experiment__svg { max-width: 700px; margin: 0 auto; }
+    .experiment__controls { margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .experiment__controls button {
+      background: transparent;
+      border: 1px solid var(--semantic-on-surface);
+      color: var(--semantic-on-surface);
+      padding: 6px 12px; border-radius: 999px;
+      font: inherit; font-size: 12px; cursor: pointer;
+    }
+
+    .notes {
+      position: sticky; top: 24px;
+      display: grid; gap: 16px;
+      padding-left: 28px;
+      border-left: 1px solid var(--semantic-border-muted);
+    }
+    .notes h4 {
+      margin: 0 0 4px;
+      font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--semantic-on-surface-accent);
+    }
+    .notes p { margin: 0; color: var(--semantic-on-surface-muted); font-size: 13px; line-height: 1.55; }
+    .notes .good { color: #3a6b4a; }
+    .notes .warn { color: #b14b3a; }
+
+    .svg { display: block; width: 100%; height: auto; color: var(--semantic-on-surface); }
+    .svg-bar { fill: currentColor; opacity: 0.78; }
+    .svg-bar--accent { fill: var(--bleu); opacity: 1; }
+    .svg-name { font-size: 13px; fill: currentColor; font-weight: 600; }
+    .svg-name--accent { fill: var(--bleu); }
+    .svg-num { font-size: 12px; fill: currentColor; opacity: 0.7; font-variant-numeric: tabular-nums; }
+    .svg-num--accent { fill: var(--bleu); opacity: 1; }
+    .svg-cap { font-size: 11px; fill: currentColor; opacity: 0.55; letter-spacing: 0.02em; }
+    .svg-baseline { stroke: currentColor; stroke-width: 0.6; opacity: 0.4; }
+    .svg-leader { stroke: currentColor; stroke-width: 0.6; opacity: 0.4; stroke-dasharray: 2 3; }
+
+    /* ============ 인터랙션 클래스 ============ */
+    /* 공통 stagger delay */
+    .draw-stagger { transition-delay: calc(var(--i, 0) * 280ms); }
+
+    /* draw-x: scaleX 좌→우 (가로 막대) */
+    .draw-x {
+      transform: scaleX(0);
+      transform-origin: left center;
+      transform-box: fill-box;
+      transition: transform 1100ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .experiment.is-in-view .draw-x { transform: scaleX(1); }
+
+    /* draw-y: scaleY 위→아래 (세로 fade) */
+    .draw-y {
+      transform: scaleY(0);
+      transform-origin: bottom center;
+      transform-box: fill-box;
+      transition: transform 1000ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .experiment.is-in-view .draw-y { transform: scaleY(1); }
+
+    /* draw-scale: scale 0→1 (원/메인 강조) */
+    .draw-scale {
+      transform: scale(0);
+      transform-origin: center;
+      transform-box: fill-box;
+      opacity: 0;
+      transition: transform 1100ms cubic-bezier(0.2, 0.8, 0.4, 1), opacity 600ms ease;
+    }
+    .experiment.is-in-view .draw-scale { transform: scale(1); opacity: 1; }
+
+    /* draw-fade: opacity + translateY (텍스트, 보조 요소) */
+    .draw-fade {
+      opacity: 0;
+      transform: translateY(6px);
+      transform-box: fill-box;
+      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .experiment.is-in-view .draw-fade { opacity: 1; transform: translateY(0); }
+
+    /* sv-pulse: Sun Veil 강조 (모든 stagger 끝난 후 한 번) */
+    .experiment.is-in-view .sv-pulse {
+      animation: sv-pulse 1.4s ease-in-out 1.4s 1;
+    }
+    @keyframes sv-pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.5; }
+    }
+
+    /* hover 강조 (데스크탑) */
+    @media (hover: hover) {
+      .experiment.is-in-view .experiment__card:hover .sv-highlight {
+        filter: drop-shadow(0 0 6px var(--bleu));
+        opacity: 1;
+      }
+    }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .draw-x, .draw-y, .draw-scale, .draw-fade {
+        transform: none !important; opacity: 1 !important;
+        transition: none !important;
+      }
+      .sv-pulse { animation: none !important; }
+    }
+
+    @media (max-width: 900px) {
+      .experiment { grid-template-columns: 1fr; }
+      .notes {
+        position: static;
+        padding-left: 0; padding-top: 24px;
+        border-left: 0; border-top: 1px solid var(--semantic-border-muted);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="intro">
+      <p class="kicker">Sun Veil PDP / Thickness Experiments · Interactive</p>
+      <h1>4가지 시각화 + 동일 인터랙션 — 메타포 비교.</h1>
+      <p>각 안에 메타포에 맞는 stagger draw 모션 + 수치 count-up + Sun Veil 강조 pulse를 적용. 진입 시 자동 작동, "다시 보기" 버튼으로 재현 가능.</p>
+      <p>안 A는 scaleX(데이터 차트 메타포), B는 scaleY(베이스라인 위로 솟음), C는 scale(실물 단면 등장), D는 scaleX(피부 위 적층), E는 scale(메인 강조). 모두 동일 280ms stagger.</p>
+    </section>
+
+    <!-- ===== 실험 A: Original (가로 긴 막대 — scaleX) ===== -->
+    <section class="experiment" data-exp="A">
+      <div class="experiment__card">
+        <p class="experiment__index">Experiment A · Baseline</p>
+        <h3 class="experiment__title">현재 안 — 가로 긴 막대 (scaleX 좌→우)</h3>
+        <p class="experiment__concept">막대가 좌→우로 길게 그려지는 데이터 시각화 정석. 진입 시 머리카락 → 비닐랩 → Sun Veil 순서로 stagger draw + 수치 count-up + Sun Veil pulse.</p>
+        <div class="experiment__svg">
+          <svg viewBox="0 0 600 250" class="svg" role="img">
+            <text x="0" y="14" class="svg-cap draw-fade" style="--i: 0;">참조 비교 · 실측 비례</text>
+
+            <text x="0" y="58" class="svg-name draw-fade" style="--i: 0;">머리카락</text>
+            <text x="540" y="58" class="svg-num num-count draw-fade" text-anchor="end" data-target="0.07" data-suffix=" mm" style="--i: 0;">0.00 mm</text>
+            <rect x="0" y="68" width="540" height="51" class="svg-bar draw-x draw-stagger" style="--i: 0;" rx="2"/>
+
+            <text x="0" y="148" class="svg-name draw-fade" style="--i: 1;">비닐랩</text>
+            <text x="540" y="148" class="svg-num num-count draw-fade" text-anchor="end" data-target="0.012" data-suffix=" mm" style="--i: 1;">0.000 mm</text>
+            <rect x="0" y="158" width="540" height="8.7" class="svg-bar draw-x draw-stagger" style="--i: 1;" rx="1"/>
+
+            <text x="0" y="200" class="svg-name svg-name--accent draw-fade" style="--i: 2;">Sun Veil</text>
+            <text x="540" y="200" class="svg-num svg-num--accent num-count draw-fade" text-anchor="end" data-target="0.004" data-suffix=" mm" style="--i: 2;">0.000 mm</text>
+            <rect x="0" y="210" width="540" height="2.9" class="svg-bar svg-bar--accent draw-x draw-stagger sv-pulse sv-highlight" style="--i: 2;" rx="1"/>
+
+            <text x="0" y="238" class="svg-cap draw-fade" style="--i: 3;">머리카락 두께의 약 1/17</text>
+          </svg>
+        </div>
+        <div class="experiment__controls"><button class="replay">▶ 다시 보기</button></div>
+      </div>
+      <aside class="notes">
+        <div><h4>강점</h4><p>데이터 시각화 정석. stagger draw 인터랙션이 자연스럽게 어울림.</p></div>
+        <div><h4>약점</h4><p class="warn">막대 = "길이" 메타포. 같은 길이 3개를 보면 시선이 길이 차이부터 찾음.</p></div>
+      </aside>
+    </section>
+
+    <!-- ===== 실험 B: Cross-section (가로 배치 — scaleY 위로 솟음) ===== -->
+    <section class="experiment" data-exp="B">
+      <div class="experiment__card">
+        <p class="experiment__index">Experiment B · Cross-Section</p>
+        <h3 class="experiment__title">짧은 단면 가로 배치 — scaleY (베이스라인에서 위로 솟음)</h3>
+        <p class="experiment__concept">같은 베이스라인 위에 단면이 위로 솟아오르는 모션. "두께가 자란다"의 시각.</p>
+        <div class="experiment__svg">
+          <svg viewBox="0 0 600 250" class="svg" role="img">
+            <text x="0" y="14" class="svg-cap draw-fade" style="--i: 0;">단면도 · 동일 길이 80px · 베이스라인 = 피부 표면</text>
+
+            <line x1="40" y1="200" x2="560" y2="200" class="svg-baseline draw-fade" style="--i: 0;"/>
+            <text x="40" y="220" class="svg-cap draw-fade" style="--i: 0;">↑ 두께</text>
+
+            <g transform="translate(120, 0)">
+              <text x="0" y="135" class="svg-name draw-fade" text-anchor="middle" style="--i: 0;">머리카락</text>
+              <rect x="-50" y="149" width="100" height="51" class="svg-bar draw-y draw-stagger" style="--i: 0;" rx="1"/>
+              <text x="0" y="245" class="svg-num num-count draw-fade" text-anchor="middle" data-target="0.07" data-suffix=" mm" style="--i: 0;">0.00 mm</text>
+            </g>
+
+            <g transform="translate(300, 0)">
+              <text x="0" y="177" class="svg-name draw-fade" text-anchor="middle" style="--i: 1;">비닐랩</text>
+              <rect x="-50" y="191.3" width="100" height="8.7" class="svg-bar draw-y draw-stagger" style="--i: 1;" rx="1"/>
+              <text x="0" y="245" class="svg-num num-count draw-fade" text-anchor="middle" data-target="0.012" data-suffix=" mm" style="--i: 1;">0.000 mm</text>
+            </g>
+
+            <g transform="translate(480, 0)">
+              <text x="0" y="183" class="svg-name svg-name--accent draw-fade" text-anchor="middle" style="--i: 2;">Sun Veil</text>
+              <rect x="-50" y="197.1" width="100" height="2.9" class="svg-bar svg-bar--accent draw-y draw-stagger sv-pulse sv-highlight" style="--i: 2;" rx="1"/>
+              <text x="0" y="245" class="svg-num svg-num--accent num-count draw-fade" text-anchor="middle" data-target="0.004" data-suffix=" mm" style="--i: 2;">0.000 mm</text>
+            </g>
+          </svg>
+        </div>
+        <div class="experiment__controls"><button class="replay">▶ 다시 보기</button></div>
+      </div>
+      <aside class="notes">
+        <div><h4>강점</h4><p class="good">길이 변수 짧고 동일. 시선이 두께(세로)로 집중. scaleY 모션이 "두께가 자란다"의 의미와 일치.</p></div>
+        <div><h4>약점</h4><p>Sun Veil(2.9px)이 너무 얇아 거의 선처럼 보임.</p></div>
+      </aside>
+    </section>
+
+    <!-- ===== 실험 C: Real-life metaphor (원 + 띠 — scale + scaleX) ===== -->
+    <section class="experiment" data-exp="C">
+      <div class="experiment__card">
+        <p class="experiment__index">Experiment C · Real-Life Metaphor</p>
+        <h3 class="experiment__title">실물 단면 — 원은 scale 등장, 띠는 fade</h3>
+        <p class="experiment__concept">머리카락 원형 단면은 scale 0→1로 등장(현미경 줌 메타포), 띠는 자연스러운 fade.</p>
+        <div class="experiment__svg">
+          <svg viewBox="0 0 600 280" class="svg" role="img">
+            <text x="0" y="14" class="svg-cap draw-fade" style="--i: 0;">실물 단면 · 동일 가로 100px 기준</text>
+
+            <g transform="translate(120, 150)">
+              <text x="0" y="-80" class="svg-name draw-fade" text-anchor="middle" style="--i: 0;">머리카락 단면</text>
+              <circle cx="0" cy="0" r="25.5" class="svg-bar draw-scale draw-stagger" style="--i: 0;"/>
+              <text x="0" y="78" class="svg-num num-count draw-fade" text-anchor="middle" data-target="0.07" data-prefix="직경 " data-suffix=" mm" style="--i: 0;">직경 0.00 mm</text>
+              <line x1="-25.5" y1="0" x2="-40" y2="0" class="svg-leader draw-fade" style="--i: 0;"/>
+              <line x1="25.5" y1="0" x2="40" y2="0" class="svg-leader draw-fade" style="--i: 0;"/>
+            </g>
+
+            <g transform="translate(300, 150)">
+              <text x="0" y="-80" class="svg-name draw-fade" text-anchor="middle" style="--i: 1;">비닐랩</text>
+              <rect x="-50" y="-4.4" width="100" height="8.7" class="svg-bar draw-scale draw-stagger" style="--i: 1;" rx="1"/>
+              <text x="0" y="78" class="svg-num num-count draw-fade" text-anchor="middle" data-target="0.012" data-prefix="두께 " data-suffix=" mm" style="--i: 1;">두께 0.000 mm</text>
+              <line x1="-50" y1="-4.4" x2="-65" y2="-4.4" class="svg-leader draw-fade" style="--i: 1;"/>
+              <line x1="-50" y1="4.3" x2="-65" y2="4.3" class="svg-leader draw-fade" style="--i: 1;"/>
+            </g>
+
+            <g transform="translate(480, 150)">
+              <text x="0" y="-80" class="svg-name svg-name--accent draw-fade" text-anchor="middle" style="--i: 2;">Sun Veil</text>
+              <rect x="-50" y="-1.5" width="100" height="2.9" class="svg-bar svg-bar--accent draw-scale draw-stagger sv-pulse sv-highlight" style="--i: 2;" rx="1"/>
+              <text x="0" y="78" class="svg-num svg-num--accent num-count draw-fade" text-anchor="middle" data-target="0.004" data-prefix="두께 " data-suffix=" mm" style="--i: 2;">두께 0.000 mm</text>
+              <line x1="-50" y1="-1.5" x2="-65" y2="-1.5" class="svg-leader draw-fade" style="--i: 2;"/>
+              <line x1="-50" y1="1.4" x2="-65" y2="1.4" class="svg-leader draw-fade" style="--i: 2;"/>
+            </g>
+          </svg>
+        </div>
+        <div class="experiment__controls"><button class="replay">▶ 다시 보기</button></div>
+      </div>
+      <aside class="notes">
+        <div><h4>강점</h4><p class="good">원 scale 등장이 "현미경 줌" 메타포와 어울림. 형태 다양성으로 시각 흥미.</p></div>
+        <div><h4>약점</h4><p class="warn">머리카락만 원형, 다른 둘은 띠 — 시각 일관성 부족.</p></div>
+      </aside>
+    </section>
+
+    <!-- ===== 실험 D: Stacked on Skin (피부 위 적층 — scaleX) ===== -->
+    <section class="experiment" data-exp="D">
+      <div class="experiment__card">
+        <p class="experiment__index">Experiment D · Stacked on Skin</p>
+        <h3 class="experiment__title">피부 위 적층 — scaleX (피부 위에 얹히는 메타포)</h3>
+        <p class="experiment__concept">피부 표면 위에 세 항목이 차례로 얹히는 시각. scaleX로 좌→우 그려지면서 "올려진다"의 모션.</p>
+        <div class="experiment__svg">
+          <svg viewBox="0 0 600 280" class="svg" role="img">
+            <text x="0" y="14" class="svg-cap draw-fade" style="--i: 0;">피부 위 적층 비교 · 같은 시작점</text>
+
+            <line x1="40" y1="220" x2="560" y2="220" class="svg-baseline draw-fade" style="--i: 0;"/>
+            <path d="M 40 220 L 560 220 L 560 270 L 40 270 Z" fill="currentColor" opacity="0.06" class="draw-fade" style="--i: 0;"/>
+            <text x="40" y="260" class="svg-cap draw-fade" style="--i: 0;">피부 표면</text>
+
+            <g transform="translate(120, 0)">
+              <text x="0" y="160" class="svg-name draw-fade" text-anchor="middle" style="--i: 0;">머리카락</text>
+              <rect x="-60" y="169" width="120" height="51" class="svg-bar draw-x draw-stagger" style="--i: 0;" rx="1"/>
+              <text x="-90" y="200" class="svg-num num-count draw-fade" text-anchor="end" data-target="0.07" data-suffix=" mm" style="--i: 0;">0.00 mm</text>
+              <line x1="-60" y1="169" x2="-85" y2="169" class="svg-leader draw-fade" style="--i: 0;"/>
+              <line x1="-60" y1="220" x2="-85" y2="220" class="svg-leader draw-fade" style="--i: 0;"/>
+            </g>
+
+            <g transform="translate(300, 0)">
+              <text x="0" y="200" class="svg-name draw-fade" text-anchor="middle" style="--i: 1;">비닐랩</text>
+              <rect x="-60" y="211.3" width="120" height="8.7" class="svg-bar draw-x draw-stagger" style="--i: 1;" rx="1"/>
+              <text x="80" y="218" class="svg-num num-count draw-fade" data-target="0.012" data-suffix=" mm" style="--i: 1;">0.000 mm</text>
+            </g>
+
+            <g transform="translate(480, 0)">
+              <text x="0" y="208" class="svg-name svg-name--accent draw-fade" text-anchor="middle" style="--i: 2;">Sun Veil</text>
+              <rect x="-60" y="217.1" width="120" height="2.9" class="svg-bar svg-bar--accent draw-x draw-stagger sv-pulse sv-highlight" style="--i: 2;" rx="1"/>
+              <text x="80" y="222" class="svg-num svg-num--accent num-count draw-fade" data-target="0.004" data-suffix=" mm" style="--i: 2;">0.000 mm</text>
+            </g>
+          </svg>
+        </div>
+        <div class="experiment__controls"><button class="replay">▶ 다시 보기</button></div>
+      </div>
+      <aside class="notes">
+        <div><h4>강점</h4><p class="good">"피부 위 얹힘" 제품 본질 메타포. scaleX 모션이 "올려진다" 의미와 일치.</p></div>
+        <div><h4>약점</h4><p>가로 폭 120px이 여전히 길어 길이 인지 일부 잔존.</p></div>
+      </aside>
+    </section>
+
+    <!-- ===== 실험 E: Magnified Detail (메인 scale + 비교 fade) ===== -->
+    <section class="experiment" data-exp="E">
+      <div class="experiment__card">
+        <p class="experiment__index">Experiment E · Magnified Detail</p>
+        <h3 class="experiment__title">확대 단면 — 메인 scale 등장 + 작은 비교 fade</h3>
+        <p class="experiment__concept">Sun Veil 확대 단면이 scale로 메인 등장 (임팩트), 작은 비교 카드들은 fade로 따라 등장. 메시지 위계 명확.</p>
+        <div class="experiment__svg">
+          <svg viewBox="0 0 600 320" class="svg" role="img">
+            <text x="0" y="14" class="svg-cap draw-fade" style="--i: 0;">Sun Veil 단면 · 800배 확대</text>
+
+            <g transform="translate(160, 80)">
+              <text x="0" y="-30" class="svg-name svg-name--accent draw-fade" text-anchor="middle" style="--i: 0;">Sun Veil</text>
+              <text x="0" y="-12" class="svg-num svg-num--accent num-count draw-fade" text-anchor="middle" data-target="0.004" data-suffix=" mm" style="--i: 0;">0.000 mm</text>
+              <rect x="-140" y="0" width="280" height="23" class="svg-bar svg-bar--accent draw-scale draw-stagger sv-pulse sv-highlight" style="--i: 0;" rx="2"/>
+              <line x1="-140" y1="0" x2="-160" y2="0" class="svg-leader draw-fade" style="--i: 0;"/>
+              <line x1="-140" y1="23" x2="-160" y2="23" class="svg-leader draw-fade" style="--i: 0;"/>
+              <text x="-170" y="16" class="svg-num svg-num--accent draw-fade" text-anchor="end" style="--i: 0;">3.2 mm
+                <tspan class="svg-cap" fill="currentColor" opacity="0.55"> · 800x</tspan>
+              </text>
+              <text x="0" y="55" class="svg-cap draw-fade" text-anchor="middle" style="--i: 0;">실물은 이 크기의 1/800</text>
+            </g>
+
+            <g transform="translate(120, 220)">
+              <text x="0" y="-10" class="svg-name draw-fade" text-anchor="middle" style="--i: 1;">머리카락</text>
+              <rect x="-30" y="0" width="60" height="33" class="svg-bar draw-fade draw-stagger" style="--i: 1;" rx="1"/>
+              <text x="0" y="55" class="svg-num num-count draw-fade" text-anchor="middle" data-target="0.07" data-suffix=" mm" style="--i: 1;">0.00 mm</text>
+            </g>
+
+            <g transform="translate(300, 220)">
+              <text x="0" y="-10" class="svg-name draw-fade" text-anchor="middle" style="--i: 2;">비닐랩</text>
+              <rect x="-30" y="0" width="60" height="6" class="svg-bar draw-fade draw-stagger" style="--i: 2;" rx="1"/>
+              <text x="0" y="55" class="svg-num num-count draw-fade" text-anchor="middle" data-target="0.012" data-suffix=" mm" style="--i: 2;">0.000 mm</text>
+            </g>
+
+            <g transform="translate(480, 220)">
+              <text x="0" y="-10" class="svg-name svg-name--accent draw-fade" text-anchor="middle" style="--i: 3;">Sun Veil</text>
+              <rect x="-30" y="0" width="60" height="2" class="svg-bar svg-bar--accent draw-fade draw-stagger" style="--i: 3;" rx="1"/>
+              <text x="0" y="55" class="svg-num svg-num--accent num-count draw-fade" text-anchor="middle" data-target="0.004" data-suffix=" mm" style="--i: 3;">0.000 mm</text>
+            </g>
+          </svg>
+        </div>
+        <div class="experiment__controls"><button class="replay">▶ 다시 보기</button></div>
+      </div>
+      <aside class="notes">
+        <div><h4>강점</h4><p class="good">Sun Veil 메인 자리 + scale 등장으로 임팩트 집중. "800배 확대" 변환이 두께 감각을 구체화.</p></div>
+        <div><h4>약점</h4><p class="warn">"800배 확대" 개념 이해 비용. 비교 카드 3개 추가가 다소 많음.</p></div>
+      </aside>
+    </section>
+
+    <section class="intro" style="margin-top: 8vh;">
+      <p class="kicker">Discussion</p>
+      <p>같은 데이터 + 다른 메타포 + 메타포에 맞는 모션. 진입 시 자동 작동, "다시 보기" 버튼으로 재현. 모든 안에 동일한 280ms stagger와 Sun Veil pulse 적용.</p>
+      <p>안 비교 후 선호 안 알려주시면, 그 안에 디테일(hover 강조, 추가 caption fade 등) 보강 → B-5 wireframe 03 섹션에 통합.</p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function countUp(el) {
+        const target = parseFloat(el.dataset.target);
+        const prefix = el.dataset.prefix || '';
+        const suffix = el.dataset.suffix || '';
+        const decimals = (target.toString().split('.')[1] || '').length;
+        if (reduce) {
+          el.textContent = prefix + target.toFixed(decimals) + suffix;
+          return;
+        }
+        const duration = 1100;
+        const start = performance.now();
+        function tick(now) {
+          const t = Math.max(0, Math.min(1, (now - start) / duration));
+          const eased = 1 - Math.pow(1 - t, 2);
+          const value = target * eased;
+          el.textContent = prefix + value.toFixed(decimals) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      function activate(experiment) {
+        experiment.classList.remove('is-in-view');
+        // reset count-up displays
+        experiment.querySelectorAll('.num-count').forEach((el) => {
+          const target = parseFloat(el.dataset.target);
+          const prefix = el.dataset.prefix || '';
+          const suffix = el.dataset.suffix || '';
+          const decimals = (target.toString().split('.')[1] || '').length;
+          el.textContent = prefix + (0).toFixed(decimals) + suffix;
+        });
+        // force reflow
+        void experiment.offsetWidth;
+        experiment.classList.add('is-in-view');
+        // count-up with same stagger as draw
+        experiment.querySelectorAll('.num-count').forEach((el) => {
+          const i = parseInt(el.style.getPropertyValue('--i') || '0', 10);
+          setTimeout(() => countUp(el), i * 280);
+        });
+      }
+
+      const experiments = document.querySelectorAll('.experiment');
+      experiments.forEach((exp) => {
+        if (reduce) {
+          exp.classList.add('is-in-view');
+          exp.querySelectorAll('.num-count').forEach((el) => countUp(el));
+        } else {
+          const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting && !exp.classList.contains('is-in-view')) {
+                activate(exp);
+                io.disconnect();
+              }
+            });
+          }, { threshold: 0.35 });
+          io.observe(exp);
+        }
+        const replayBtn = exp.querySelector('.replay');
+        if (replayBtn) replayBtn.addEventListener('click', () => activate(exp));
+      });
+    })();
+  </script>
+</body>
+</html>
