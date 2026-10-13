@@ -123,8 +123,9 @@ d = c
 assert f"{study}\n\n      {safety}" in d, "D study/safety order"
 d = d.replace(f"{study}\n\n      {safety}", f"{safety}\n\n      {study}", 1)
 for old, new in [
+    # 배경 띠(--band)는 원본처럼 유지 — 안쪽 카드 · Safety 박스는 흰색 (pdp-elixir-proto.css)
     ("pdp__section--band pdp-clinical pdp-clinical--timepoints pdp-clinical--labels",
-     "pdp-clinical pdp-clinical--timepoints pdp-clinical--labels pdp-clinical--sv"),
+     "pdp__section--band pdp-clinical pdp-clinical--timepoints pdp-clinical--labels pdp-clinical--sv"),
     ('class="pdp-clinical__hydration-title heading-xxl"', 'class="pdp-clinical__hydration-title sm--heading-l heading-xl"'),
     ('class="pdp-timepoints__qualifier body-s"', 'class="pdp-timepoints__qualifier body-xs"'),
     ('<p class="pdp-timepoints__note">', '<p class="pdp-timepoints__note body-xs">'),
@@ -246,10 +247,68 @@ page_d = sub_once(
 )
 # D안만: FORMULA SUPPORT의 + 표시 제거(기능 없는 장식 — 눌러야 할 것처럼 보임). 제목의 + · 카드별 + 아이콘
 page_d = sub_once(r'(<p class="pdp__eyebrow">FORMULA SUPPORT) \+(</p>)', r"\1\2", page_d)
-page_d, n = re.subn(r'<span class="pdp-support__plus" aria-hidden="true">\+</span>', "", page_d)
-assert n == 4, f"D support plus: {n}"
 page_d = sub_once(r'\n\s*<img class="pdp-harmony__photo"[^>]*>', "", page_d)
+# D안만: FORMULA SUPPORT는 container--md(886px)
+page_d = sub_once(r'<div class="container container--lg">(\s*<div class="pdp-support")',
+                  r'<div class="container container--md">\1', page_d)
 page_d = sub_once(r'class="(pdp__section pdp__section--full pdp-harmony)"', r'class="\1 pdp-harmony--grid"', page_d)
+
+# D안만: 임상 카드 차트를 정사각(1:1)으로 — 세로 좌표만 W/H배로 늘려 다시 배치한다.
+#   글자 크기 · 점 반지름은 그대로(찌그러짐 없음). 수치 라벨은 바로 앞 점과의 간격을 원래대로 유지.
+#   24H 차트는 카드가 아니라 수분 블록이라 제외.
+SQUARE_CHARTS = ("now",)  # 4 WEEKS 차트(elastic · texture · wrinkle)는 원래 가로형 비율 — 패널을 NOW 높이에 맞추며 남는 높이를 채운다
+# 24H 차트(수분 블록)는 NOW 카드 줄 높이에 맞춘 영역을 채우도록 가로:세로 = 1.25:1
+CHART_RATIO = {"24h": 1.25}
+
+
+def square_chart(m):
+    w, h, key, body = float(m.group(1)), float(m.group(2)), m.group(3), m.group(4)
+    new_h = round(w / CHART_RATIO.get(key, 1))
+    k = new_h / h
+    fmt = lambda v: f"{v:.1f}".rstrip("0").rstrip(".")
+    out, last = [], None  # last = (원래 cy, 새 cy)
+    for tag in re.split(r"(<[^>]+>)", body):
+        if tag.startswith("<circle"):
+            cy = float(re.search(r' cy="([\d.]+)"', tag).group(1))
+            last = (cy, cy * k)
+            tag = re.sub(r' cy="[\d.]+"', f' cy="{fmt(cy * k)}"', tag)
+        elif tag.startswith("<text") and "pdp-chart__value" in tag and last:
+            y = float(re.search(r' y="([\d.]+)"', tag).group(1))
+            tag = re.sub(r' y="[\d.]+"', f' y="{fmt(last[1] + (y - last[0]))}"', tag)
+        elif tag.startswith(("<line", "<text")):
+            tag = re.sub(r' (y|y1|y2)="([\d.]+)"', lambda a: f' {a.group(1)}="{fmt(float(a.group(2)) * k)}"', tag)
+        elif tag.startswith("<polyline"):
+            tag = re.sub(r'points="([^"]+)"', lambda a: 'points="' + " ".join(
+                f"{x},{fmt(float(y) * k)}" for x, y in (p.split(",") for p in a.group(1).split())) + '"', tag)
+        out.append(tag)
+    return (f'<svg class="pdp-chart" viewBox="0 0 {m.group(1)} {new_h}" role="img" '
+            f'aria-labelledby="pdp-chart-{key}-title">' + "".join(out) + "</svg>")
+
+
+page_d, n = re.subn(
+    r'<svg class="pdp-chart" viewBox="0 0 ([\d.]+) ([\d.]+)" role="img" aria-labelledby="pdp-chart-(%s)-title">(.*?)</svg>'
+    % "|".join(SQUARE_CHARTS + tuple(CHART_RATIO)), square_chart, page_d, flags=re.S)
+assert n == len(SQUARE_CHARTS) + len(CHART_RATIO), f"D chart relayout: {n}"
+
+# ---- 원본 전용 변경 — A–D에는 반영하지 않는다 (원본 HTML에서 바뀐 것을 테스트안에서만 되돌림) ----
+# (원본 문자열, 테스트안 문자열, 적용할 안)
+ORIGINAL_ONLY = [
+    # 2026-10-14 STECHA™ heading-xl → heading-l (원본 · A만 — B–D는 heading-xl 유지)
+    ('<strong class="heading-l">STECHA™</strong>', '<strong class="heading-xl">STECHA™</strong>', "bcd"),
+]
+
+
+def revert_original_only(html, key):
+    for original, variant, targets in ORIGINAL_ONLY:
+        if key not in targets:
+            continue
+        assert html.count(original) == 1, f"original-only ({key}): {original}"
+        html = html.replace(original, variant)
+    return html
+
+
+page_a, page_b, page_c, page_d = (revert_original_only(h, k) for h, k in
+                                  ((page_a, "a"), (page_b, "b"), (page_c, "c"), (page_d, "d")))
 
 OUT.mkdir(exist_ok=True)
 (OUT / "bio-elixir-pdp-test-d-sunveil.html").write_text(page_d, encoding="utf-8")
