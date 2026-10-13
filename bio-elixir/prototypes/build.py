@@ -74,10 +74,10 @@ safety = re.search(r'<div class="pdp-safety".*?\n      </div>', clinical, flags=
 b = (HERE / "_clinical-recommended.html").read_text(encoding="utf-8")
 for i, svg in enumerate(svgs):
     b = b.replace("{{svg:%d}}" % i, svg)
-b = b.replace("{{study}}", study.replace(" open>", ">", 1))  # 연구 개요는 기본 접힘
+b = b.replace("{{study}}", study)  # 연구 개요는 원본처럼 기본 펼침
 b = b.replace("{{safety}}", safety)
 assert "{{" not in b, "B placeholders left"
-rest = src[end:].replace('<details class="pdp-disclosure pdp-ltve__more" open>', '<details class="pdp-disclosure pdp-ltve__more">')
+rest = src[end:]  # LEARN ABOUT LTVE™도 원본처럼 기본 펼침
 page_b = add_proto_assets(src[:start] + b + rest, "B · 타임라인 탭(수치 노출) + 1회 재생")
 
 # ---- C: B와 같은 구조, 탭에는 효과 라벨만 · 수치는 근거 카드에서 ----
@@ -120,9 +120,8 @@ page_c = add_proto_assets(src[:start] + c + rest, "C · 타임라인 탭(효과 
 # ---- D: C와 같은 구조 · Sun Veil 디자인 시스템(타입 토큰·container--md·spacing 토큰·서피스) 적용 ----
 d = c
 # D안만: 안전성(일차자극) 배지를 연구 개요(VIEW THE STUDY) 위로
-study_closed = study.replace(" open>", ">", 1)
-assert f"{study_closed}\n\n      {safety}" in d, "D study/safety order"
-d = d.replace(f"{study_closed}\n\n      {safety}", f"{safety}\n\n      {study_closed}", 1)
+assert f"{study}\n\n      {safety}" in d, "D study/safety order"
+d = d.replace(f"{study}\n\n      {safety}", f"{safety}\n\n      {study}", 1)
 for old, new in [
     ("pdp__section--band pdp-clinical pdp-clinical--timepoints pdp-clinical--labels",
      "pdp-clinical pdp-clinical--timepoints pdp-clinical--labels pdp-clinical--sv"),
@@ -150,8 +149,8 @@ for old, new in [
     d = d.replace(old, new, 1)
 qualifier = re.search(r'\n\s*<p class="pdp-timepoints__qualifier body-xs">[^<]+</p>', d).group(0)
 d = d.replace(qualifier, "", 1)
-assert f"{safety}\n\n      {study_closed}" in d, "D safety/study"
-d = d.replace(f"{safety}\n\n      {study_closed}", f"{safety}{qualifier}\n\n      {study_closed}", 1)
+assert f"{safety}\n\n      {study}" in d, "D safety/study"
+d = d.replace(f"{safety}\n\n      {study}", f"{safety}{qualifier}\n\n      {study}", 1)
 page_d = add_proto_assets(src[:start] + d + rest, "D · 텍스트형 + Sun Veil 디자인 시스템")
 # D안 페이지 단위 조정용 루트 클래스 (.pdp--proto-d)
 assert page_d.count('class="pdp pdp--elixir"') == 1, "D root"
