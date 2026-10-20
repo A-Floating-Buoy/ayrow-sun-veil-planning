@@ -30,18 +30,18 @@
   <script>document.querySelectorAll('.proto-bar nav a').forEach(function (a) { a.href = a.href.replace('%7Bq%7D', location.search); });</script>
 <!-- BIO Elixir PDP — UX TEST A · 원본 탭 + 자동 회전 (테스트 상품 전용 · bio-elixir/prototypes/build.py로 생성, 직접 수정 금지) -->
 <!-- Framework: .pdp / .pdp--elixir  ·  styles: /css/module/product/pdp.css + pdp-elixir.css  ·  behaviour: /js/module/product/pdp.js + pdp-elixir.js  ·  CSS/JS 수정 후 ?ver= 값을 올려 캐시 갱신 -->
-<!-- Images: /ayrow-sun-veil-planning/bio-elixir/assets/ (upload bio-elixir/assets/* to that folder) -->
+<!-- Images: bio-elixir/assets/* → 관리자 ../assets/ 업로드 · HTML에는 CDN 절대경로(../assets/...)로 적는다 — 상대경로(/web/...)는 카페24가 모바일용 사본(NNEditor)으로 바꾸며 SVG가 404가 됨(Sun Veil과 같은 방식) · CSS mask는 CDN이 CORS를 막아 data URI로 넣는다 -->
 <link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp.css?ver=20261013000024">
-<link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp-elixir.css?ver=20261013000034">
-<link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp-elixir-proto.css?ver=20261013000044">
+<link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp-elixir.css?ver=20261020000070">
+<link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp-elixir-proto.css?ver=20261020000077">
 <div class="pdp pdp--elixir" data-pdp itemscope itemtype="https://schema.org/Product">
   <h1 class="visually-hidden" itemprop="name">에이로우 바이오 엘릭서</h1>
   <p class="visually-hidden" itemprop="description">에이로우 바이오 엘릭서는 피뿌리풀수 74%를 베이스로 설계해 쉽게 뿌리고, 얇게 쌓고, 필요한 순간 다시 레이어링하는 스킨 롱제비티 컨센트레이트입니다.</p>
 
   <!-- 1. Hero -->
   <section class="pdp__section pdp__section--full pdp-elixir-hero" data-pdp-section="hero">
-    <img class="pdp-elixir-hero__bg" src="/ayrow-sun-veil-planning/bio-elixir/assets/hero-bg.png" alt="" width="1672" height="941" loading="eager" fetchpriority="high">
-    <img class="pdp-elixir-hero__glow" src="/ayrow-sun-veil-planning/bio-elixir/assets/hero-image.png" alt="" width="924" height="1260" loading="eager" aria-hidden="true">
+    <img class="pdp-elixir-hero__bg" src="../assets/hero-bg.png" alt="" width="1672" height="941" loading="eager" fetchpriority="high">
+    <img class="pdp-elixir-hero__glow" src="../assets/hero-image.png" alt="" width="924" height="1260" loading="eager" aria-hidden="true">
     <div class="pdp-elixir-hero__content" data-scroll-reveal>
       <p class="pdp-elixir-hero__lead sm--body-l body-mega">피부를 위한 시간을 다시 설계하는<br>바이오 컨센트레이트</p>
       <p class="pdp__eyebrow">Skin Longevity Concentrate</p>
@@ -55,9 +55,9 @@
     <div class="container container--lg">
       <div class="pdp-concentrate__grid">
         <figure class="pdp-concentrate__visual" data-scroll-reveal data-scroll-direction="none">
-          <img class="pdp-concentrate__layer pdp-concentrate__layer--crop" src="/ayrow-sun-veil-planning/bio-elixir/assets/concentrate-crop.png" alt="" width="1024" height="1536" loading="lazy" aria-hidden="true">
-          <img class="pdp-concentrate__layer pdp-concentrate__layer--back" src="/ayrow-sun-veil-planning/bio-elixir/assets/concentrate-0347.png" alt="" width="1677" height="1950" loading="lazy" aria-hidden="true">
-          <img class="pdp-concentrate__layer pdp-concentrate__layer--front" src="/ayrow-sun-veil-planning/bio-elixir/assets/concentrate-0275.jpg" alt="바이오 엘릭서 제품 이미지" width="1300" height="1950" loading="lazy" itemprop="image">
+          <img class="pdp-concentrate__layer pdp-concentrate__layer--crop" src="../assets/concentrate-crop.png" alt="" width="1024" height="1536" loading="lazy" aria-hidden="true">
+          <img class="pdp-concentrate__layer pdp-concentrate__layer--back" src="../assets/concentrate-0347.png" alt="" width="1677" height="1950" loading="lazy" aria-hidden="true">
+          <img class="pdp-concentrate__layer pdp-concentrate__layer--front" src="../assets/concentrate-0275.jpg" alt="바이오 엘릭서 제품 이미지" width="1300" height="1950" loading="lazy" itemprop="image">
         </figure>
         <div class="pdp-concentrate__copy" data-scroll-reveal>
           <p class="pdp__eyebrow">LAYERABLE Skin Longevity Concentrate</p>
@@ -130,20 +130,20 @@
           </figure>
 
           <figure class="pdp-clinical__visual pdp-compare" data-pdp-result-visual="puffiness" data-proto-visual="puffiness" data-pdp-compare hidden style="--pdp-compare: 51.07%;">
-            <img class="pdp-compare__img pdp-compare__img--thermal-before" src="/ayrow-sun-veil-planning/bio-elixir/assets/thermal-before.jpg" alt="사용 전 열화상 이미지" width="960" height="960" loading="lazy" draggable="false">
+            <img class="pdp-compare__img pdp-compare__img--thermal-before" src="../assets/thermal-before.jpg" alt="사용 전 열화상 이미지" width="960" height="960" loading="lazy" draggable="false">
             <div class="pdp-compare__after">
-              <img class="pdp-compare__img pdp-compare__img--thermal-after" src="/ayrow-sun-veil-planning/bio-elixir/assets/thermal-after.jpg" alt="사용 직후 열화상 이미지" width="960" height="960" loading="lazy" draggable="false">
+              <img class="pdp-compare__img pdp-compare__img--thermal-after" src="../assets/thermal-after.jpg" alt="사용 직후 열화상 이미지" width="960" height="960" loading="lazy" draggable="false">
             </div>
-            <span class="pdp-compare__handle" aria-hidden="true"><img src="/ayrow-sun-veil-planning/bio-elixir/assets/ba-indicator.svg" alt="" width="56" height="56" draggable="false"></span>
+            <span class="pdp-compare__handle" aria-hidden="true"><img src="../assets/ba-indicator.svg" alt="" width="56" height="56" draggable="false"></span>
             <input class="pdp-compare__range" type="range" min="0" max="100" step="0.5" value="51.07" aria-label="사용 전·사용 직후 열화상 비교" data-pdp-compare-range>
           </figure>
 
           <figure class="pdp-clinical__visual pdp-compare" data-pdp-result-visual="redness" data-proto-visual="redness" data-pdp-compare hidden style="--pdp-compare: 51.07%;">
-            <img class="pdp-compare__img pdp-compare__img--redness-before" src="/ayrow-sun-veil-planning/bio-elixir/assets/redness-before.jpg" alt="외부 자극 직후 피부 붉은기" width="458" height="458" loading="lazy" draggable="false">
+            <img class="pdp-compare__img pdp-compare__img--redness-before" src="../assets/redness-before.jpg" alt="외부 자극 직후 피부 붉은기" width="458" height="458" loading="lazy" draggable="false">
             <div class="pdp-compare__after">
-              <img class="pdp-compare__img pdp-compare__img--redness-after" src="/ayrow-sun-veil-planning/bio-elixir/assets/redness-after.jpg" alt="사용 직후 피부 붉은기" width="458" height="458" loading="lazy" draggable="false">
+              <img class="pdp-compare__img pdp-compare__img--redness-after" src="../assets/redness-after.jpg" alt="사용 직후 피부 붉은기" width="458" height="458" loading="lazy" draggable="false">
             </div>
-            <span class="pdp-compare__handle" aria-hidden="true"><img src="/ayrow-sun-veil-planning/bio-elixir/assets/ba-indicator.svg" alt="" width="56" height="56" draggable="false"></span>
+            <span class="pdp-compare__handle" aria-hidden="true"><img src="../assets/ba-indicator.svg" alt="" width="56" height="56" draggable="false"></span>
             <input class="pdp-compare__range" type="range" min="0" max="100" step="0.5" value="51.07" aria-label="외부 자극 직후·사용 직후 붉은기 비교" data-pdp-compare-range>
           </figure>
         </div>
@@ -273,7 +273,7 @@
       </details>
 
       <div class="pdp-safety" data-scroll-reveal>
-        <img class="pdp-safety__icon" src="/ayrow-sun-veil-planning/bio-elixir/assets/safety-check.svg" alt="" width="56" height="56" loading="lazy">
+        <img class="pdp-safety__icon" src="../assets/safety-check.svg" alt="" width="56" height="56" loading="lazy">
         <div class="pdp-safety__copy">
           <p class="pdp__eyebrow">Clinically Tested for Primary Skin Irritation</p>
           <p class="pdp-safety__label body-m">민감성 피부 대상 일차자극 테스트 완료</p>
@@ -292,18 +292,22 @@
         <p class="pdp-origin__badge sm--body-m body-l">KIST 천연물 연구 배경 · AYROW 최초 사용 신규 화장품 성분명 등재</p>
       </header>
       <div class="pdp-origin__kist" data-scroll-reveal>
-        <img class="pdp-origin__kist-logo" src="/ayrow-sun-veil-planning/bio-elixir/assets/kist-logo.svg" alt="KIST 한국과학기술연구원" width="300" height="70" loading="lazy">
+        <img class="pdp-origin__kist-logo" src="../assets/kist-logo.svg" alt="KIST 한국과학기술연구원" width="300" height="70" loading="lazy">
         <div class="pdp-origin__kist-copy">
           <p class="heading-m"><strong>KIST 연구성과 기술이전 제품</strong></p>
           <p class="sm--body-m body-l">KIST 천연물 연구소에서 연구한<br class="sm--hide"> 피뿌리풀 유래 원료 기술을 적용했습니다.</p>
         </div>
       </div>
     </div>
-    <figure class="pdp-origin__field">
-      <img class="pdp-origin__field-image" src="/ayrow-sun-veil-planning/bio-elixir/assets/plant-origin-field.png" alt="몽골 초원에 핀 피뿌리풀(Stellera chamaejasme)" width="2720" height="1536" loading="lazy">
+    <!-- 패럴렉스: 이미지 레이어가 스크롤보다 느리게 움직인다 (pdp-elixir.js initParallax) · 데스크톱/모바일(≤767px, 3:4 세로 크롭) 이미지를 CSS로 전환 -->
+    <figure class="pdp-origin__field" data-pdp-parallax>
+      <div class="pdp-origin__field-media" data-pdp-parallax-layer>
+        <img class="pdp-origin__field-image pdp-origin__field-image--desktop" src="../assets/plant-origin-field-desktop.jpg" alt="몽골 초원에 핀 피뿌리풀(Stellera chamaejasme)" width="2400" height="1355" loading="lazy">
+        <img class="pdp-origin__field-image pdp-origin__field-image--mobile" src="../assets/plant-origin-field-mobile.jpg" alt="" width="1080" height="1440" loading="lazy" aria-hidden="true">
+      </div>
       <figcaption class="pdp-origin__field-copy" data-scroll-reveal>
         <p class="pdp-origin__field-name"><strong class="heading-l">STECHA™</strong><span class="sm--body-m body-l">FROM STELLERA</span></p>
-        <p class="sm--body-m body-l">척박한 환경에서 살아남은 몽골의 약용식물,<br><em>Stellera chamaejasme.</em></p>
+        <p class="sm--body-m body-l">척박한 환경에서 살아남은 몽골 약용식물,<br><em>Stellera chamaejasme.</em></p>
         <p class="sm--body-m body-l">오래전부터 피부를 돌보는 데 활용되어 온 약용식물을<br class="sm--hide"> 바이오 피부과학으로 다시 발견했습니다.</p>
       </figcaption>
     </figure>
@@ -323,34 +327,39 @@
           </div>
         </header>
         <figure class="pdp-botanical__bottle" data-scroll-reveal data-scroll-direction="none">
-          <img class="pdp-botanical__bottle-body" src="/ayrow-sun-veil-planning/bio-elixir/assets/botanical-bottle.svg" alt="바이오 엘릭서 용기 일러스트" width="160" height="558" loading="lazy">
-          <img class="pdp-botanical__bottle-water" src="/ayrow-sun-veil-planning/bio-elixir/assets/botanical-bottle-water.svg" alt="" width="157" height="393" loading="lazy" aria-hidden="true">
-          <span class="pdp-botanical__bottle-blend" style="--pdp-liquid-mask: url('/ayrow-sun-veil-planning/bio-elixir/assets/botanical-bottle-liquid-mask.svg');" aria-hidden="true"></span>
-          <img class="pdp-botanical__bottle-ink" src="/ayrow-sun-veil-planning/bio-elixir/assets/botanical-bottle-ink.svg" alt="" width="160" height="558" loading="lazy" aria-hidden="true">
+          <img class="pdp-botanical__bottle-body" src="../assets/botanical-bottle.svg" alt="바이오 엘릭서 용기 일러스트" width="160" height="558" loading="lazy">
+          <img class="pdp-botanical__bottle-water" src="../assets/botanical-bottle-water.svg" alt="" width="157" height="393" loading="lazy" aria-hidden="true">
+          <span class="pdp-botanical__bottle-blend" style="--pdp-liquid-mask: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22157.194%22 height=%22392.594%22 viewBox=%220 0 157.194 392.594%22 preserveAspectRatio=%22none%22%3E%3Cdefs%3E%3CclipPath id=%22liquid-level%22%3E%3Crect x=%220%22 y=%2215%22 width=%22157.194%22 height=%22377.594%22/%3E%3C/clipPath%3E%3C/defs%3E%3Cpath clip-path=%22url%28%23liquid-level%29%22 fill=%22%23fff%22 d=%22M3.53276 0.182332C8.94605 -0.230385 19.0094 0.179176 24.8828 0.231839L63.2923 0.39727L117.281 0.301959C129.074 0.210372 140.873 0.0598345 152.665 0.140546C155.02 0.156574 157.203 1.09419 157.194 3.79231C157.166 12.0913 157.173 20.3911 157.169 28.6904L157.168 78.5476L157.171 230.497L157.168 306.675L157.191 328.321C157.211 348.539 156.719 364.083 141.884 379.559C138.818 382.375 135.637 384.839 131.85 386.62C128.619 388.139 125.128 389.121 121.626 389.776C101.909 393.471 46.5666 394.276 28.3428 387.598C17.9653 383.798 10.1241 374.876 5.56678 365.022C2.20212 357.747 0.716317 350.082 0.324971 342.111C-0.326319 328.851 0.201585 315.313 0.207883 302.03L0.208739 227.085L0.186129 9.20629C0.202733 5.07311 -0.846774 1.60652 3.53276 0.182332Z%22/%3E%3C/svg%3E');" aria-hidden="true"></span>
+          <img class="pdp-botanical__bottle-ink" src="../assets/botanical-bottle-ink.svg" alt="" width="160" height="558" loading="lazy" aria-hidden="true">
         </figure>
-        <!-- 병 애니메이션 순서에 맞춰 등장: 74% 피뿌리풀수(정제수가 찬 뒤) → 4% 피뿌리풀추출물(추출물이 부어진 뒤) -->
-        <dl class="pdp-botanical__stats">
-          <div class="pdp-botanical__stat pdp-botanical__stat--water">
-            <dt><span class="pdp-botanical__stat-value">74</span>% 피뿌리풀수</dt>
-            <dd class="sm--body-m body-l">식물이 품은 고유 수분을 담은 Botanical Water</dd>
-          </div>
-          <div class="pdp-botanical__stat pdp-botanical__stat--extract">
-            <dt><span class="pdp-botanical__stat-value">4</span>% 피뿌리풀추출물</dt>
-            <dd class="sm--body-m body-l">피뿌리풀 유래 성분을 더한 Hero Active</dd>
-          </div>
-        </dl>
+        <!-- 병 애니메이션 순서에 맞춰 등장: 영문 문구 · 74 + 4 → 74% 피뿌리풀수(정제수가 찬 뒤) → 4% 피뿌리풀추출물 + 각주(추출물이 부어진 뒤) -->
+        <div class="pdp-botanical__stats">
+          <p class="pdp-botanical__stats-kicker pdp__eyebrow">THE FORMULA BEGINS WITH THE BOTANICAL PLANT.</p>
+          <p class="pdp-botanical__stats-title">74 + 4</p>
+          <dl class="pdp-botanical__stats-list">
+            <div class="pdp-botanical__stat pdp-botanical__stat--water">
+              <dt>74% 피뿌리풀수</dt>
+              <dd class="sm--body-m body-l">식물이 품은 고유 수분을 담은 Botanical Water</dd>
+            </div>
+            <div class="pdp-botanical__stat pdp-botanical__stat--extract">
+              <dt>4% 피뿌리풀추출물 배합&#8288;*</dt>
+              <dd class="sm--body-m body-l">피뿌리풀 유래 성분을 더한 Hero Active</dd>
+              <dd class="pdp-botanical__stats-note body-xs">*4%는 해당 추출 원료의 처방 투입량 기준</dd>
+            </div>
+          </dl>
+        </div>
       </div>
       <ul class="pdp-botanical__features" aria-label="포뮬러 설계 원칙">
         <li class="pdp-botanical__feature">
-          <img src="/ayrow-sun-veil-planning/bio-elixir/assets/icon-leaf.svg" alt="" width="33" height="40" loading="lazy">
+          <img src="../assets/icon-leaf.svg" alt="" width="33" height="40" loading="lazy">
           <span class="pdp-botanical__feature-text"><strong>식물 유래 포뮬러</strong><span>PLANT-BASED FORMULA</span></span>
         </li>
         <li class="pdp-botanical__feature">
-          <img src="/ayrow-sun-veil-planning/bio-elixir/assets/icon-drop.svg" alt="" width="30" height="41" loading="lazy">
+          <img src="../assets/icon-drop.svg" alt="" width="30" height="41" loading="lazy">
           <span class="pdp-botanical__feature-text"><strong>피부 본연의 수분감</strong><span>NATURAL HYDRATION</span></span>
         </li>
         <li class="pdp-botanical__feature">
-          <img src="/ayrow-sun-veil-planning/bio-elixir/assets/icon-flask.svg" alt="" width="32" height="41" loading="lazy">
+          <img src="../assets/icon-flask.svg" alt="" width="32" height="41" loading="lazy">
           <span class="pdp-botanical__feature-text"><strong>꼼꼼한 성분 설계</strong><span>MINIMAL &amp; EFFECTIVE</span></span>
         </li>
       </ul>
@@ -363,30 +372,30 @@
       <header class="pdp__head" data-scroll-reveal>
         <p class="pdp__eyebrow">Low-Temperature Vacuum Extraction</p>
         <h2 class="pdp__head-title pdp-elixir__title sm--heading-xxl heading-xxxl">추출물을 넘어,<br>식물이 품은 수분까지.</h2>
-        <p class="pdp__head-lead body-l">AYROW LTVE™는 낮은 온도와 진공 환경에서<br class="sm--hide"> 피뿌리풀의 고유 수분과 유래 성분을 함께 얻는 추출 방식입니다.</p>
+        <p class="pdp__head-lead body-l">AYROW LTVE™는 저온·진공 환경에서<br class="sm--hide"> 피뿌리풀의 고유 수분과 유래 성분을 함께 얻는 추출 방식입니다.</p>
       </header>
       <ol class="pdp-ltve__steps" aria-label="LTVE™ 추출 4단계">
         <li class="pdp-ltve__step pdp-ltve__step--1" data-scroll-reveal>
-          <img src="/ayrow-sun-veil-planning/bio-elixir/assets/ltve-01.png" alt="" width="1122" height="1402" loading="lazy">
+          <img src="../assets/ltve-01.png" alt="" width="1122" height="1402" loading="lazy">
           <span class="pdp-ltve__num body-l">01</span><strong class="heading-m">저온</strong>
         </li>
         <li class="pdp-ltve__step pdp-ltve__step--2" data-scroll-reveal data-scroll-delay="80">
-          <img src="/ayrow-sun-veil-planning/bio-elixir/assets/ltve-02.png" alt="" width="1122" height="1402" loading="lazy">
+          <img src="../assets/ltve-02.png" alt="" width="1122" height="1402" loading="lazy">
           <span class="pdp-ltve__num body-l">02</span><strong class="heading-m">진공</strong>
         </li>
         <li class="pdp-ltve__step pdp-ltve__step--3" data-scroll-reveal data-scroll-delay="160">
-          <img src="/ayrow-sun-veil-planning/bio-elixir/assets/ltve-03.png" alt="" width="1448" height="1086" loading="lazy">
+          <img src="../assets/ltve-03.png" alt="" width="1448" height="1086" loading="lazy">
           <span class="pdp-ltve__num body-l">03</span><strong class="heading-m">식물 세포수</strong>
         </li>
         <li class="pdp-ltve__step pdp-ltve__step--4" data-scroll-reveal data-scroll-delay="240">
-          <img src="/ayrow-sun-veil-planning/bio-elixir/assets/ltve-04.png" alt="" width="941" height="1672" loading="lazy">
+          <img src="../assets/ltve-04.png" alt="" width="941" height="1672" loading="lazy">
           <span class="pdp-ltve__num body-l">04</span><strong class="heading-m">농축된 Botanical Base</strong>
         </li>
       </ol>
       <details class="pdp-disclosure pdp-ltve__more" open>
         <summary class="pdp-disclosure__summary sm--body-m body-l">LEARN ABOUT LTVE™<span class="pdp-disclosure__icon" aria-hidden="true"></span></summary>
         <div class="pdp-disclosure__body body-m">
-          <p>일반적인 고온 추출은 열에 약한 식물 성분과 고유의 수분을 쉽게 잃어버립니다.</p>
+          <p>일반적인 가열 추출 과정에서는 열에 민감한 식물 성분이 영향을 받고, 고유의 수분도 잃어버릴 수 있습니다.</p>
           <p>LTVE™는 압력을 낮춰 끓는점을 떨어뜨린 진공 상태에서, 낮은 온도로 피뿌리풀의 세포수와 유래 성분을 함께 얻습니다.</p>
           <p>이렇게 얻은 피뿌리풀수는 정제수를 대신해 포뮬러의 74%를 채우는 Botanical Base가 됩니다.</p>
         </div>
@@ -405,7 +414,7 @@
       </div>
       <div class="pdp-harmony__canvas" data-pdp-hotspots>
         <div class="pdp-harmony__canvas-inner">
-          <img class="pdp-harmony__photo" src="/ayrow-sun-veil-planning/bio-elixir/assets/harmony-spheres.png" alt="투명 큐브 안에 놓인 7가지 색의 성분 구체" width="1448" height="1086" loading="lazy">
+          <img class="pdp-harmony__photo" src="../assets/harmony-spheres.png" alt="투명 큐브 안에 놓인 7가지 색의 성분 구체" width="1448" height="1086" loading="lazy">
           <ul class="pdp-harmony__spots" aria-label="Reverse AG Code™ 성분">
             <li class="pdp-harmony__spot" data-pdp-hotspot style="--x: 46.4%; --y: 38.5%; --ring: 17.4%;">
               <button class="pdp-harmony__dot" type="button" data-pdp-hotspot-button aria-expanded="false" aria-controls="pdp-harmony-pop-1">NMN</button>
@@ -484,12 +493,12 @@
       </div>
 
       <div class="pdp-vegan" data-scroll-reveal>
-        <img class="pdp-vegan__logo" src="/ayrow-sun-veil-planning/bio-elixir/assets/vegan-society-logo.svg" alt="The Vegan Society 비건 트레이드마크" width="168" height="56" loading="lazy">
+        <img class="pdp-vegan__logo" src="../assets/vegan-society-logo.svg" alt="The Vegan Society 비건 트레이드마크" width="168" height="56" loading="lazy">
         <div class="pdp-vegan__title">
           <p class="pdp__eyebrow">VEGAN TRADEMARK CERTIFIED</p>
           <h3 class="heading-xl">피부를 위한 설계에,<br>더 나은 기준을 더했습니다.</h3>
         </div>
-        <p class="pdp-vegan__body sm--body-m body-l">바이오 엘릭서는 동물성 원료를 사용하지 않은 포뮬러로, <br class="sm--hide">1990년부터 이어져 온 영국 비건소사이어티의<br class="sm--hide"> 비건 트레이드마크 인증을 받았습니다.</p>
+        <p class="pdp-vegan__body sm--body-m body-l">바이오 엘릭서는 동물성 원료를 사용하지 않은 포뮬러로, <br class="sm--hide">1990년부터 이어져 온 <strong>영국 비건소사이어티의<br class="sm--hide"> 비건 트레이드마크 인증</strong>을 받았습니다.</p>
       </div>
     </div>
   </section>
@@ -508,7 +517,7 @@
         <ol class="pdp-ritual__list" aria-label="하루의 사용 장면">
           <li class="pdp-ritual__item is-active" data-pdp-ritual-item tabindex="0" aria-current="true">
             <p class="pdp-ritual__time"><strong>07:30</strong> MORNING</p>
-            <figure class="pdp-ritual__figure pdp-ritual__figure--morning"><img src="/ayrow-sun-veil-planning/bio-elixir/assets/ritual-morning-wide.png" alt="안경·이어폰과 함께 놓인 바이오 엘릭서" width="1411" height="1950" loading="lazy"></figure>
+            <figure class="pdp-ritual__figure pdp-ritual__figure--morning"><img src="../assets/ritual-morning-wide.png" alt="안경·이어폰과 함께 놓인 바이오 엘릭서" width="1411" height="1950" loading="lazy"></figure>
             <div class="pdp-ritual__copy">
               <h3 class="pdp-ritual__title">하루의 첫 레이어가<br>필요할 때</h3>
               <p class="pdp-ritual__desc">세안 직후, 메이크업 전 피부 컨디션을 정돈합니다.</p>
@@ -516,15 +525,15 @@
           </li>
           <li class="pdp-ritual__item" data-pdp-ritual-item tabindex="0">
             <p class="pdp-ritual__time"><strong>14:00</strong> WORK</p>
-            <figure class="pdp-ritual__figure"><img src="/ayrow-sun-veil-planning/bio-elixir/assets/ritual-work.jpg" alt="업무 책상 위의 바이오 엘릭서" width="1300" height="1950" loading="lazy"></figure>
+            <figure class="pdp-ritual__figure"><img src="../assets/ritual-work.jpg" alt="업무 책상 위의 바이오 엘릭서" width="1300" height="1950" loading="lazy"></figure>
             <div class="pdp-ritual__copy">
-              <h3 class="pdp-ritual__title">업무 중 피부가<br>건조해질 때</h3>
+              <h3 class="pdp-ritual__title">업무 중 피부 컨디션이<br>떨어질 때</h3>
               <p class="pdp-ritual__desc">메이크업 위로<br>가볍게 한 번 더 뿌립니다.</p>
             </div>
           </li>
           <li class="pdp-ritual__item" data-pdp-ritual-item tabindex="0">
             <p class="pdp-ritual__time"><strong>19:00</strong> ACTIVE</p>
-            <figure class="pdp-ritual__figure"><img src="/ayrow-sun-veil-planning/bio-elixir/assets/ritual-active.jpg" alt="골프 장갑과 함께 놓인 바이오 엘릭서" width="1300" height="1950" loading="lazy"></figure>
+            <figure class="pdp-ritual__figure"><img src="../assets/ritual-active.jpg" alt="골프 장갑과 함께 놓인 바이오 엘릭서" width="1300" height="1950" loading="lazy"></figure>
             <div class="pdp-ritual__copy">
               <h3 class="pdp-ritual__title">운동 후 피부가<br>달아올랐을 때</h3>
               <p class="pdp-ritual__desc">운동·골프·수영 후,<br>다시 한 번 레이어링합니다.</p>
@@ -532,7 +541,7 @@
           </li>
           <li class="pdp-ritual__item" data-pdp-ritual-item tabindex="0">
             <p class="pdp-ritual__time"><strong>ANYWHERE</strong> TRAVEL</p>
-            <figure class="pdp-ritual__figure"><img src="/ayrow-sun-veil-planning/bio-elixir/assets/ritual-travel.jpg" alt="여행 파우치 속 바이오 엘릭서" width="1300" height="1950" loading="lazy"></figure>
+            <figure class="pdp-ritual__figure"><img src="../assets/ritual-travel.jpg" alt="여행 파우치 속 바이오 엘릭서" width="1300" height="1950" loading="lazy"></figure>
             <div class="pdp-ritual__copy">
               <h3 class="pdp-ritual__title">건조한 기내나 호텔에<br>머물 때</h3>
               <p class="pdp-ritual__desc">휴대하기 좋은 엘릭서로<br>어디서든 같은 루틴으로</p>
@@ -547,7 +556,7 @@
           <button class="pdp-ritual__dot" type="button" data-pdp-ritual-dot aria-label="ANYWHERE TRAVEL"></button>
         </div>
       </div>
-      <p class="pdp-ritual__closing sm--body-m body-l" data-scroll-reveal>어디서든 이어지는 에스테틱 케어<br><strong>Aesthetic Care, Wherever You Are.</strong></p>
+      <p class="pdp-ritual__closing sm--body-m body-l" data-scroll-reveal>어디서나 이어지는 스킨 롱제비티<br><strong>Skin Longevity, Wherever You Are.</strong></p>
     </div>
   </section>
 
@@ -561,7 +570,7 @@
       </header>
       <div class="pdp-usage__layout">
         <figure class="pdp-usage__visual">
-          <img class="pdp-usage__video" src="/ayrow-sun-veil-planning/bio-elixir/assets/how-to-use.png" alt="바이오 엘릭서를 분사하는 모습" width="1024" height="1536" loading="lazy">
+          <img class="pdp-usage__video" src="../assets/how-to-use.png" alt="바이오 엘릭서를 분사하는 모습" width="1024" height="1536" loading="lazy">
         </figure>
         <div class="pdp-usage__steps" aria-label="바이오 엘릭서 사용 방법" data-pdp-steps>
           <article class="pdp-usage__step" data-scroll-reveal data-pdp-step role="button" tabindex="0">
@@ -611,8 +620,8 @@
           <div class="pdp-faq__panel" data-pdp-faq-panel>
             <div class="pdp-faq__answer body-m">
               <p class="body-m">분사해서 사용하지만, <strong>피부에 수분을 더하는 일반적인 미스트와는 사용 목적이 다릅니다.</strong></p>
-              <p class="body-m">바이오 엘릭서는 <strong>분사 방식의 편의성과 컨센트레이트의 스킨케어 가치를 결합</strong>해 피부 관리가 필요한 순간 언제든 사용할 수 있도록 설계한 <strong>페이스 컨센트레이트</strong>입니다.</p>
-              <p class="body-m">스킨케어 단계에서는 물론, 메이크업 전후나 피부 컨디션이 떨어지는 순간에도 간편하게 분사해 <strong>일상 속에서 스킨케어를 이어갈 수 있습니다.</strong></p>
+              <p class="body-m">바이오 엘릭서는 <strong>분사 방식의 편의성과 컨센트레이트의 스킨케어 가치를 결합해</strong> 피부 관리가 필요한 순간 언제든 사용할 수 있도록 설계한 <strong>페이스 컨센트레이트</strong>입니다.</p>
+              <p class="body-m">스킨케어 단계에서는 물론, 메이크업 전후나 피부 컨디션이 떨어지는 순간에도 간편하게 분사해 <strong>일상 속에서 고기능 스킨케어를 이어갈 수 있습니다.</strong></p>
             </div>
           </div>
         </article>
@@ -626,7 +635,7 @@
           <div class="pdp-faq__panel" data-pdp-faq-panel hidden>
             <div class="pdp-faq__answer body-m">
               <p class="body-m">세안 후 <strong>첫 단계에 사용하면 피부 컨디션을 정돈해 다음 스킨케어를 편안하게 이어갈 수 있습니다.</strong></p>
-              <p class="body-m">피부 상태에 따라 <strong>집중적인 스킨케어가 필요하거나 피부 컨디션의 변화가 느껴지는 순간</strong>에도<br class="sm--hide"> 덧뿌려 사용할 수 있습니다.</p>
+              <p class="body-m">피부 상태에 따라 <strong>집중적인 스킨케어가 필요하거나 피부 컨디션의 변화가 느껴지는 순간에도</strong><br class="sm--hide"> 덧뿌려 사용할 수 있습니다.</p>
             </div>
           </div>
         </article>
@@ -640,7 +649,7 @@
           <div class="pdp-faq__panel" data-pdp-faq-panel hidden>
             <div class="pdp-faq__answer body-m">
               <p class="body-m">네. <strong>메이크업 전후 모두 사용할 수 있습니다.</strong></p>
-              <p class="body-m">충분한 거리를 두고 얼굴 전체에 고르게 분사한 뒤 자연스럽게 밀착되도록 기다려 주세요. 메이크업 위에서는 한 번에 많은 양을 사용하기보다 <strong>얇게 분사하고 필요한 만큼 레이어링하는 것을 권장</strong>합니다.</p>
+              <p class="body-m">충분한 거리를 두고 얼굴 전체에 고르게 분사한 뒤 자연스럽게 밀착되도록 기다려 주세요.<br class="sm--hide"> 메이크업 위에서는 한 번에 많은 양을 사용하기보다 <strong>얇게 분사하고 필요한 만큼<br class="sm--hide"> 레이어링하는 것을 권장합니다.</strong></p>
             </div>
           </div>
         </article>
@@ -655,6 +664,7 @@
             <div class="pdp-faq__answer body-m">
               <p class="body-m">정해진 사용 횟수 없이 피부가 필요로 할 때마다 사용할 수 있습니다.</p>
               <p class="body-m">아침과 저녁의 기본 스킨케어는 물론, 낮 동안 건조함이나 피부 컨디션 변화가 느껴질 때 수시로 덧사용해 보세요.</p>
+              <p class="body-m"><strong>가볍게, 필요한 순간 반복하는 것이 바이오 엘릭서의 사용법입니다.</strong></p>
             </div>
           </div>
         </article>
@@ -667,7 +677,7 @@
           </h3>
           <div class="pdp-faq__panel" data-pdp-faq-panel hidden>
             <div class="pdp-faq__answer body-m">
-              <p class="body-m"><strong>민감성 피부 성인 남녀를 대상으로 한 일차자극 시험에서<br class="sm--hide"> 피부자극지수 0.00, 비(무)자극성으로 판정</strong>되었습니다.</p>
+              <p class="body-m"><strong>민감성 피부 성인 남녀를 대상으로 한 일차자극 시험에서 피부자극지수 0.00, 비(무)자극성으로 판정되었습니다.</strong></p>
               <p class="body-m">다만 피부 컨디션에는 개인차가 있으므로 유난히 예민한 날에는 작은 부위에 먼저 사용해 보세요.</p>
             </div>
           </div>
@@ -681,7 +691,7 @@
           </h3>
           <div class="pdp-faq__panel" data-pdp-faq-panel hidden>
             <div class="pdp-faq__answer body-m">
-              <p class="body-m">매일 여러 번 레이어링하는 제품인 만큼, 향에 대한 부담을 덜고<br class="sm--hide"> 스킨케어 자체에 집중하기 위해 별도의 향료를 더하지 않았습니다.</p>
+              <p class="body-m">매일 여러 번 레이어링하는 제품인 만큼, 향에 대한 부담을 덜고 스킨케어 자체에 집중하기 위해 별도의 향료를 더하지 않았습니다.</p>
               <p class="body-m">사용 중 은은하게 느껴지는 향은 <strong>포뮬러에 담긴 원료 고유의 향</strong>입니다.</p>
             </div>
           </div>
@@ -709,8 +719,8 @@
           </h3>
           <div class="pdp-faq__panel" data-pdp-faq-panel hidden>
             <div class="pdp-faq__answer body-m">
-              <p class="body-m"><strong>Reverse AG Code™는 장수과학(Longevity Science)에서 영감을 받아 설계한<br class="sm--hide"> AYROW의 독자적인 Science Platform입니다.</strong></p>
-              <p class="body-m">NMN, Resveratrol, Pterostilbene을 비롯한 성분 연구와 자체 기술을 바탕으로 하며, 자세한 연구 배경은 Reverse AG Code™ 페이지에서 확인하실 수 있습니다.</p>
+              <p class="body-m"><strong>Reverse AG Code™는 장수과학(Longevity Science)에서 영감을 받아 설계한 AYROW의 독자적인 Science Platform입니다.</strong></p>
+              <p class="body-m">NMN, Resveratrol, Pterostilbene을 비롯한 성분 연구와 자체 기술을 바탕으로 하며,<br class="sm--hide"> 자세한 연구 배경은 Reverse AG Code™ 페이지에서 확인하실 수 있습니다.</p>
             </div>
           </div>
         </article>
@@ -720,8 +730,12 @@
 
 </div>
 <script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp.js?ver=20261013000024"></script>
-<script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp-elixir.js?ver=20261013000034"></script>
-<script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp-elixir-proto.js?ver=20261013000044"></script>
+<script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp-elixir.js?ver=20261020000070"></script>
+<script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp-elixir-proto.js?ver=20261020000077"></script>
 
+  <script>/* 미리보기 전용: style 속성 CSS 변수 속 상대경로 url()을 문서 기준 절대 URL로 (변수를 쓰는 스타일시트 기준으로 풀리는 것 방지) */
+  document.querySelectorAll('[style*="url(\'../assets/"]').forEach(function (el) {
+    el.setAttribute('style', el.getAttribute('style').replace(/url\('([^']+)'\)/g, function (m, u) { return "url('" + new URL(u, location.href).href + "')"; }));
+  });</script>
 </body>
 </html>
