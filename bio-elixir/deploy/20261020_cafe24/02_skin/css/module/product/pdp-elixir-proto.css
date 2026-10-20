@@ -1,0 +1,2477 @@
+/* ============================================================
+   PDP — BIO Elixir · Clinical section UX test (PROTOTYPE)
+   ------------------------------------------------------------
+   테스트 상품 2개(A/B)에서만 로드. 결정 후 이 파일과
+   pdp-elixir-proto.js를 삭제하거나 채택안을 pdp-elixir.css로 이관.
+     A  [data-pdp-autorotate]  원본 탭 + 자동 회전(무한 반복)
+     B  .pdp-clinical--timepoints  요약 스트립 탭 + 1단계 인터랙션 + 1회 재생
+   ============================================================ */
+
+/* ---- A: pause control — 탭 그룹과 같은 줄 오른쪽, 같은 높이 ---- */
+.pdp-autoplay-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0 0 40px;
+}
+
+.pdp-autoplay-bar > .pdp-clinical__tabs {
+  grid-column: 2;
+  margin: 0;
+}
+
+/* 아이콘만 보이는 원형 버튼 — Pause/Resume 문구는 화면에서만 숨기고 버튼 이름으로 읽힌다 */
+.pdp-autoplay-pause {
+  grid-column: 3;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full, 999px);
+  background: var(--pdp-surface);
+  box-shadow: inset 0 0 0 1px var(--pdp-band);
+  color: var(--pdp-accent);
+  cursor: pointer;
+  font-size: 14px !important;
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pdp-autoplay-pause::before {
+  content: "";
+  box-sizing: border-box;
+  width: 9px;
+  height: 11px;
+  border-inline: 3px solid currentColor;
+}
+
+/* 일시정지됨(Resume) — 재생 ▶ 아이콘 */
+.pdp-autoplay-pause.is-paused::before {
+  width: 0;
+  height: 0;
+  border-block: 6px solid transparent;
+  border-inline: 9px solid currentColor;
+  border-inline-end: 0;
+}
+
+.pdp-autoplay-pause__text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pdp-autoplay-pause[hidden] {
+  display: none;
+}
+
+.pdp-autoplay-pause:focus-visible {
+  outline: 2px solid var(--pdp-accent);
+  outline-offset: 2px;
+}
+
+/* ---- A: original tabs + auto-rotate ---- */
+.pdp-clinical__tab {
+  position: relative;
+  overflow: hidden;
+}
+
+.pdp-clinical__tab-progress {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.6;
+  transform: scaleX(var(--pdp-progress, 0));
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* ============================================================
+   B: timepoints tabs
+   ============================================================ */
+.pdp-timepoints {
+  max-width: var(--pdp-mid);
+  margin: 0 auto;
+}
+
+/* ---- 타임라인 레일: 시점 pill = 노드, 노드 사이 선 = 자동 재생 진행 ----
+   박스 없이 선·텍스트만 쓰고, 면(카드)은 아래 근거에만 → 탭과 카드의 위계 분리 */
+.pdp-timepoints__tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pdp-timepoints__tab {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--pdp-accent);
+  cursor: pointer;
+  text-align: left;
+}
+
+.pdp-timepoints__tab:focus-visible {
+  border-radius: 12px;
+  outline: 2px solid var(--pdp-accent);
+  outline-offset: 6px;
+}
+
+.pdp-timepoints__time {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* 노드 pill — 비선택: 흰 바탕 + 블루 라인, 선택: 블루로 채움 */
+.pdp-timepoints__time strong {
+  flex: none;
+  padding: 7px 16px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--pdp-surface);
+  box-shadow: inset 0 0 0 1.5px var(--pdp-accent);
+  color: var(--pdp-accent);
+  font-family: var(--font-family-latin);
+  font-size: 15px;
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  transition: background-color 280ms ease, color 280ms ease, box-shadow 280ms ease;
+}
+
+/* 선택된 노드 pill은 그림자 없이 면만 */
+.pdp-timepoints__tab[aria-selected="true"] .pdp-timepoints__time strong {
+  background: var(--pdp-accent);
+  box-shadow: none;
+  color: var(--pdp-on-accent);
+}
+
+.pdp-timepoints__when {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* 다음 노드까지 이어지는 선 — 자동 재생 중엔 진행만큼 채워진다 */
+.pdp-timepoints__rail {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  margin-right: 12px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--pdp-accent) 20%, #fff); /* 옅은 bleu 트랙 — 진행선(블루)과 한 색 체계 */
+}
+
+.pdp-timepoints__progress {
+  position: absolute;
+  inset: 0;
+  background: var(--pdp-accent);
+  transform: scaleX(var(--pdp-progress, 0));
+  transform-origin: left;
+}
+
+/* 직접 고른 뒤(.is-manual, pdp-elixir-proto.js): 진행선이 순서대로 차오르고 비워진다.
+   자동 재생 중에는 매 프레임 값이 바뀌므로 트랜지션 없이 */
+.pdp-timepoints.is-manual .pdp-timepoints__progress {
+  transition: transform 450ms cubic-bezier(0.4, 0, 0.2, 1) var(--pdp-fill-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-timepoints.is-manual .pdp-timepoints__progress {
+    transition: none;
+  }
+}
+
+/* 수치 행: 라벨 왼쪽 · 값 오른쪽, 표처럼 얇은 선으로 구분 */
+.pdp-timepoints__metrics {
+  display: grid;
+  padding-right: 40px;
+  opacity: 0.7;
+  transition: opacity 280ms ease;
+}
+
+.pdp-timepoints__tab:last-child .pdp-timepoints__metrics {
+  padding-right: 0;
+}
+
+.pdp-timepoints__tab:hover .pdp-timepoints__metrics,
+.pdp-timepoints__tab[aria-selected="true"] .pdp-timepoints__metrics {
+  opacity: 1;
+}
+
+.pdp-timepoints__metric {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--pdp-rule);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.3;
+  word-break: keep-all;
+}
+
+.pdp-timepoints__metric:last-child {
+  border-bottom: 1px solid var(--pdp-rule);
+}
+
+/* 값은 모든 시점에서 같은 크기 */
+.pdp-timepoints__value {
+  flex: none;
+  font-family: var(--font-family-korean);
+  font-size: clamp(20px, 1.75vw, 26px);
+  font-weight: var(--font-weight-semibold, 600);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  text-align: right;
+}
+
+/* ---- C: 탭은 효과 라벨 한 줄, 수치는 근거 카드 머리에서 ---- */
+.pdp-timepoints__labels {
+  display: block;
+  padding: 14px 40px 14px 0;
+  border-block: 1px solid var(--pdp-rule);
+  font-size: 17px;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.4;
+  word-break: keep-all;
+  opacity: 0.7;
+  transition: opacity 280ms ease;
+}
+
+.pdp-timepoints__tab:last-child .pdp-timepoints__labels {
+  padding-right: 0;
+}
+
+.pdp-timepoints__tab:hover .pdp-timepoints__labels,
+.pdp-timepoints__tab[aria-selected="true"] .pdp-timepoints__labels {
+  opacity: 1;
+}
+
+.pdp-clinical--labels .pdp-timepoints__card-head {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 8px;
+  font-size: 14px;
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* 24H 패널 수치도 카드 수치와 같은 크기로 */
+.pdp-clinical--labels .pdp-clinical__hydration .pdp-clinical__metric,
+.pdp-clinical--labels .pdp-timepoints__card-head strong {
+  font-family: var(--font-family-korean);
+  font-size: clamp(26px, 2.2vw, 32px);
+  font-weight: var(--font-weight-bold, 700);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.pdp-timepoints__qualifier {
+  margin: 10px 0 24px !important;
+  color: var(--pdp-accent);
+  opacity: 0.75;
+  text-align: right;
+}
+
+
+/* 모든 패널을 같은 칸에 겹쳐 가장 큰 패널 높이로 고정 → 전환 시 레이아웃이 튀지 않음 */
+.pdp-timepoints__panels {
+  display: grid;
+}
+
+.pdp-timepoints__panel {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.pdp-timepoints__panel[hidden] {
+  display: block;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pdp-timepoints__panel:not([hidden]) {
+  animation: pdp-elixir-fade 420ms var(--pdp-ease) both;
+}
+
+.pdp-timepoints__row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pdp-timepoints__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--pdp-surface);
+  color: var(--pdp-accent);
+}
+
+/* 카드 머리는 차트 제목만 — 수치는 위 타임라인이 담당 */
+.pdp-timepoints__card-head {
+  margin: 0 !important;
+  padding: 18px 20px 4px;
+  color: var(--pdp-accent);
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.4;
+  text-align: left;
+  word-break: keep-all;
+}
+
+.pdp-timepoints__card-body {
+  position: relative;
+  flex: 1;
+  aspect-ratio: 1 / 1;
+}
+
+.pdp-timepoints__card-body--chart {
+  display: grid;
+  align-items: center;
+  aspect-ratio: auto;
+  padding: 8px 16px 16px 4px;
+}
+
+.pdp-timepoints__card-body.pdp-compare {
+  overflow: hidden;
+  flex: none;
+}
+
+.pdp-timepoints__ba {
+  position: absolute;
+  top: 12px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full, 999px);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-family: var(--font-family-latin);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: 0.06em;
+  pointer-events: none;
+}
+
+.pdp-timepoints__ba--before { left: 12px; }
+.pdp-timepoints__ba--after { right: 12px; }
+
+.pdp-timepoints__note {
+  margin: 12px 0 0 !important;
+  color: var(--pdp-accent);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.pdp-timepoints__summary {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 24px 20px;
+  border-radius: 16px;
+  background: var(--pdp-surface);
+  color: var(--pdp-accent);
+  text-align: center;
+}
+
+.pdp-clinical--timepoints .pdp-clinical__hydration {
+  color: var(--pdp-accent);
+}
+
+/* 차트 그리기: 패널이 활성 + 화면 진입 시(.is-drawn) 선 → 점·값 순서로 */
+/* 타임라인 변형은 차트 단위(.pdp-chart.is-drawn) 대신 패널 단위로 그린다 */
+.pdp--elixir .pdp-clinical--timepoints .pdp-chart__line {
+  stroke-dashoffset: 1;
+  animation: none;
+}
+
+.pdp-clinical--timepoints .pdp-chart__dot,
+.pdp-clinical--timepoints .pdp-chart__value {
+  opacity: 0;
+}
+
+.pdp-timepoints__panel.is-drawn .pdp-chart__line {
+  animation: pdp-elixir-draw 1400ms var(--pdp-ease) both;
+}
+
+.pdp-timepoints__panel.is-drawn .pdp-chart__dot,
+.pdp-timepoints__panel.is-drawn .pdp-chart__value {
+  animation: pdp-proto-pop 420ms var(--pdp-ease) both;
+}
+
+/* 시작점은 바로, 나머지는 선이 지나간 뒤 */
+.pdp-timepoints__panel.is-drawn .pdp-chart__dot--open,
+.pdp-timepoints__panel.is-drawn .pdp-chart__dot--open + .pdp-chart__value {
+  animation-delay: 150ms;
+}
+
+.pdp-timepoints__panel.is-drawn .pdp-chart__dot:not(.pdp-chart__dot--open),
+.pdp-timepoints__panel.is-drawn .pdp-chart__dot:not(.pdp-chart__dot--open) + .pdp-chart__value {
+  animation-delay: 900ms;
+}
+
+@keyframes pdp-proto-pop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ============================================================
+   D: A New Way to CONCENTRATE — 골드
+   ============================================================ */
+.pdp--proto-d .pdp-concentrate__title-main {
+  color: #bfad9b;
+}
+
+/* D: 'A NEW WAY TO'도 MIST·CONCENTRATE와 같은 타입 스케일 · 대문자, 줄 사이를 붙인다 */
+.pdp--proto-d .pdp-concentrate__title {
+  gap: 0;
+}
+
+/* .display 클래스 삭제(→ .type-display)로 CONCENTRATE가 스케일을 잃어, MIST·CONCENTRATE도 kicker와 같은 값을 직접 지정한다 */
+.pdp--proto-d .pdp-concentrate__title-kicker,
+.pdp--proto-d .pdp-concentrate__title-old,
+.pdp--proto-d .pdp-concentrate__title-main {
+  font-family: var(--font-heading-family);
+  font-size: var(--font-size-display);
+  line-height: var(--line-height-display);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   D: 옅은 블루 면 → --primitive-brand-tertiary-200(#ebf2fe) 하나로 통일
+   (KIST #f0f6fb · Ritual 카드 #f0f3f6 ·
+    이미지 뒤 플레이스홀더 ciel-soft #f5f9ff — Safety 박스는 .pdp-clinical--sv 블록에서 ·
+    Botanical callout은 크림 — 아래 Botanical 블록에서)
+   ============================================================ */
+.pdp--proto-d .pdp-origin__kist,
+.pdp--proto-d .pdp-ritual__item,
+.pdp--proto-d .pdp-ritual__figure,
+.pdp--proto-d .pdp-ltve__step {
+  background-color: var(--pdp-band);
+}
+
+/* D: STECHA 타이틀–배지 사이 추가 마진 없음 (헤드 gap만) */
+.pdp--proto-d .pdp-origin__badge {
+  margin-top: 0;
+}
+
+/* ============================================================
+   D: Botanical — 74% 피뿌리풀수 · 4% 피뿌리풀추출물(+ 각주)을 박스로 묶고, 병 속 해당 층과 o---- 선으로 잇는다.
+   수치 열 높이 = 병 높이 — 74% 박스는 가운데가 물 층 높이(39%), 4% 박스는 병 바닥(bottom: 0). 선은 박스 세로 가운데에서 수평으로.
+   데스크톱: 병 오른쪽 열 · 모바일: 병이 가운데 → 왼쪽으로 비켜서고 오른쪽 좁은 열.
+   순서는 병 애니메이션(공통 CSS): 정제수 → 74% → 붉은 추출물 → 4% — 점 → 선 → 박스 면 → 글자
+   ============================================================ */
+.pdp--proto-d .pdp-botanical__grid {
+  --pdp-bottle-w: 160px;
+  --pdp-bottle-gap: var(--pdp-botanical-gap); /* 병 – 수치 열 간격 */
+  --pdp-bottle-shift: 0px; /* 모바일: 병이 열 왼쪽 끝에서 안쪽으로 비켜선 만큼 */
+  --pdp-box-x: var(--spacing-12); /* 수치 열 시작 → 박스 왼쪽 (선이 병 밖으로 나와 지나는 길이) */
+  --pdp-box-pad: var(--spacing-6);
+  --pdp-box-bg: color-mix(in srgb, var(--primitive-ciel, #bbd5fd) 45%, #fff); /* 시엘 틴트 — 왼쪽 콜아웃과 같은 색 */
+  --pdp-dot-in: 1px; /* 점(선의 시작)은 병 오른쪽 외곽선 위 */
+  --pdp-stat-fs: var(--font-size-heading-l); /* 원료명 줄 — 선 높이 계산에도 쓴다 */
+  --pdp-stat-lh: var(--line-height-heading-l);
+}
+
+/* 왼쪽 74% 식물 세포수 콜아웃: 오른쪽 수치 박스와 같은 시엘 틴트(--pdp-box-bg) — 섹션 안 박스 세 개를 한 색으로.
+   아래 성분명 등재 각주는 다른 각주와 같은 body-xs */
+.pdp--proto-d .pdp-botanical__callout {
+  background-color: var(--pdp-box-bg);
+}
+
+.pdp--proto-d .pdp-botanical__callout-note {
+  margin-top: var(--spacing-2) !important;
+  font-size: var(--font-size-body-xs);
+  line-height: var(--line-height-body-xs);
+}
+
+.pdp--proto-d .pdp-botanical__stats {
+  position: relative;
+  display: block;
+  text-align: left;
+}
+
+.pdp--proto-d .pdp-botanical__stats-kicker,
+.pdp--proto-d .pdp-botanical__stats-title {
+  padding-left: calc(var(--pdp-bottle-shift) + var(--pdp-box-x));
+}
+
+.pdp--proto-d .pdp-botanical__stats-list {
+  display: block;
+}
+
+/* 수치 열이 block 흐름이라 공통 CSS의 grid gap 보정(음수 margin) 대신 8px */
+.pdp--proto-d .pdp-botanical__stats-kicker + .pdp-botanical__stats-title {
+  margin-top: var(--spacing-2) !important;
+}
+
+.pdp--proto-d .pdp-botanical__stat {
+  --pdp-pointer-len: calc(var(--pdp-bottle-gap) + var(--pdp-box-x) + var(--pdp-dot-in));
+
+  position: absolute;
+  left: calc(var(--pdp-bottle-shift) + var(--pdp-box-x));
+  right: 0;
+  gap: var(--spacing-1);
+  padding: var(--pdp-box-pad);
+  border-radius: 17px;
+  background: var(--pdp-box-bg);
+}
+
+/* 연결선은 박스 세로 가운데 — 74% 박스는 가운데가 물 층(39%)에, 4% 박스는 병 바닥에 맞춘다 */
+.pdp--proto-d .pdp-botanical__stat--water { top: 39%; translate: 0 -50%; }
+.pdp--proto-d .pdp-botanical__stat--extract { bottom: 0; }
+
+.pdp--proto-d .pdp-botanical__stat dt {
+  color: var(--pdp-accent);
+  font-size: var(--pdp-stat-fs);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--pdp-stat-lh);
+}
+
+.pdp--proto-d .pdp-botanical__stat dd {
+  color: var(--pdp-accent);
+  text-wrap: balance; /* 좁은 열에서 한 단어만 다음 줄로 떨어지지 않게 */
+}
+
+.pdp--proto-d .pdp-botanical__stat .pdp-botanical__stats-note {
+  margin-top: var(--spacing-1);
+}
+
+/* o---- : 점(::after)이 병 안쪽에 먼저 찍히고, 선(::before)이 박스 쪽으로 자라 박스 왼쪽 변에 닿는다 */
+.pdp--proto-d .pdp-botanical__stat::before,
+.pdp--proto-d .pdp-botanical__stat::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.pdp--proto-d .pdp-botanical__stat::before {
+  top: 50%;
+  right: 100%;
+  width: var(--pdp-pointer-len);
+  height: 1.5px;
+  margin-top: -0.75px;
+  background: var(--pdp-accent);
+  transform-origin: left center;
+}
+
+.pdp--proto-d .pdp-botanical__stat::after {
+  top: calc(50% - 5px);
+  right: calc(100% + var(--pdp-pointer-len) - 5px);
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--pdp-accent);
+  border-radius: 50%;
+  background: var(--pdp-surface);
+}
+
+@supports selector(:has(*)) {
+  .pdp--proto-d .pdp-botanical__stat {
+    background: transparent;
+  }
+
+  .pdp--proto-d .pdp-botanical__stat::before {
+    transform: scaleX(0);
+  }
+
+  .pdp--proto-d .pdp-botanical__stat::after {
+    opacity: 0;
+  }
+
+  .pdp--proto-d .pdp-botanical__grid:has(.pdp-botanical__bottle.is-revealed) .pdp-botanical__stat {
+    animation: pdp-proto-box-in 500ms ease var(--pdp-stat-delay) both;
+  }
+
+  .pdp--proto-d .pdp-botanical__grid:has(.pdp-botanical__bottle.is-revealed) .pdp-botanical__stat::after {
+    animation: pdp-proto-dot-in 240ms ease calc(var(--pdp-stat-delay) - 600ms) both;
+  }
+
+  .pdp--proto-d .pdp-botanical__grid:has(.pdp-botanical__bottle.is-revealed) .pdp-botanical__stat::before {
+    animation: pdp-proto-pointer 500ms var(--pdp-ease) calc(var(--pdp-stat-delay) - 450ms) both;
+  }
+}
+
+@keyframes pdp-proto-box-in {
+  from { background-color: transparent; }
+  to { background-color: var(--pdp-box-bg); }
+}
+
+@keyframes pdp-proto-dot-in {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pdp-proto-pointer {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* 병 속 피뿌리풀추출물: 붉은 층을 브랜드 oscar로 — 공통 CSS의 #b3122e 시작색 · 금빛 전환(tint) 시작색을 바꾼다.
+   정제수 레이어는 build.py에서 크림 틴트 SVG(botanical-bottle-water-creme.svg)로 교체 */
+.pdp--proto-d .pdp-botanical__bottle-blend {
+  --pdp-blend-color: var(--primitive-oscar, #ff4636);
+}
+
+.pdp--proto-d .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend::before {
+  animation:
+    pdp-elixir-pour 1000ms cubic-bezier(0.3, 0, 0.2, 1) 2800ms both,
+    pdp-elixir-expand 2600ms cubic-bezier(0.45, 0.05, 0.35, 1) 4800ms forwards,
+    pdp-elixir-dilute 2600ms ease-out 4800ms forwards,
+    pdp-proto-tint 2000ms ease-in-out 6000ms forwards;
+}
+
+@keyframes pdp-proto-tint {
+  from { --pdp-blend-color: var(--primitive-oscar, #ff4636); }
+  to { --pdp-blend-color: #f8d35a; }
+}
+
+/* 데스크톱: 세 열(문구 · 병 · 수치) 모두 위쪽 정렬 — 왼쪽 eyebrow(Botanical Base | …)와
+   오른쪽 영문 문구(THE FORMULA BEGINS…)의 윗선이 맞는다. 수치 열은 병과 같은 높이라 박스 · 선 위치는 그대로 */
+@media (min-width: 768px) {
+  .pdp--proto-d .pdp-botanical__head,
+  .pdp--proto-d .pdp-botanical__bottle,
+  .pdp--proto-d .pdp-botanical__stats {
+    align-self: start;
+  }
+
+  .pdp--proto-d .pdp-botanical__stats {
+    height: calc(var(--pdp-bottle-w) * 558 / 160.317);
+    margin-top: 0;
+    padding-left: 0;
+  }
+
+  .pdp--proto-d .pdp-botanical__stat {
+    right: auto;
+    width: min(100% - var(--pdp-box-x), 400px);
+  }
+}
+
+@media (max-width: 767px) {
+  .pdp--proto-d .pdp-botanical__grid {
+    --pdp-bottle-w: 120px;
+    --pdp-bottle-gap: 28px;
+    --pdp-bottle-shift: clamp(16px, 9cqw, 40px); /* 왼쪽 끝에서 살짝 안쪽 — 병 · 수치 묶음이 가운데로 모인다 */
+    --pdp-box-x: 0px;
+    --pdp-box-pad: var(--spacing-3);
+    --pdp-stat-fs: var(--font-size-body-m); /* 모바일: 좁은 열 — 원료명 줄을 body-m으로 줄여 두 박스가 병 높이 안에 들어가게 */
+    --pdp-stat-lh: var(--line-height-body-m);
+
+    container-type: inline-size;
+    grid-template-columns: var(--pdp-bottle-w) minmax(0, 1fr);
+    column-gap: var(--pdp-bottle-gap);
+    justify-items: stretch;
+  }
+
+  .pdp--proto-d .pdp-botanical__head {
+    grid-column: 1 / -1;
+  }
+
+  /* 병: 처음엔 가운데(열 왼쪽 끝에서 오른쪽으로 비켜 둠) → 진입하면 왼쪽으로 살짝(--pdp-bottle-shift 만큼 안쪽).
+     translate는 등장 효과의 transform과 겹치지 않는 별도 속성 */
+  .pdp--proto-d .pdp-botanical__bottle {
+    grid-column: 1;
+    width: var(--pdp-bottle-w);
+    translate: calc((100cqw - var(--pdp-bottle-w)) / 2) 0;
+    transition: opacity 900ms var(--pdp-ease), translate 900ms var(--pdp-ease) 150ms;
+  }
+
+  .pdp--proto-d .pdp-botanical__bottle.is-revealed {
+    translate: var(--pdp-bottle-shift) 0;
+  }
+
+  .pdp--proto-d .pdp-botanical__stats {
+    grid-column: 2;
+    align-self: stretch;
+  }
+
+  /* 모바일: 영문 문구 · 74 + 4도 좁은 열에 맞게 한 단계 작게 */
+  .pdp--proto-d .pdp-botanical__stats-kicker {
+    font-size: var(--font-size-body-xs) !important; /* .pdp__eyebrow 크기가 !important */
+    line-height: var(--line-height-body-xs) !important;
+  }
+
+  .pdp--proto-d .pdp-botanical__stats-title {
+    font-size: var(--font-size-heading-xxl);
+  }
+
+  .pdp--proto-d .pdp-botanical__stat {
+    border-radius: 12px;
+  }
+
+  .pdp--proto-d .pdp-botanical__stat dd {
+    font-size: var(--font-size-body-xs);
+    font-weight: var(--font-weight-medium, 500);
+    line-height: var(--line-height-body-xs);
+  }
+
+  .pdp--proto-d .pdp-botanical__stat .pdp-botanical__stats-note {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+}
+
+/* 374px 이하: 열이 좁아 박스 글자가 많이 줄바꿈된다 — 병의 안쪽 비킴 · 병–박스 간격을 줄여 박스 폭 확보 */
+@media (max-width: 374px) {
+  .pdp--proto-d .pdp-botanical__grid {
+    --pdp-bottle-gap: 16px;
+    --pdp-bottle-shift: 0px;
+    --pdp-box-pad: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp--proto-d .pdp-botanical__bottle {
+    translate: var(--pdp-bottle-shift) 0;
+    transition: none;
+  }
+
+  .pdp--proto-d .pdp-botanical__stat,
+  .pdp--proto-d .pdp-botanical__stat::before,
+  .pdp--proto-d .pdp-botanical__stat::after {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .pdp--proto-d .pdp-botanical__stat {
+    background: var(--pdp-box-bg) !important;
+  }
+
+  /* oscar 블렌딩도 공통 CSS처럼 완성된 금빛 상태로 바로 */
+  .pdp--proto-d .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend::before {
+    animation: none;
+  }
+}
+
+/* D 데스크톱: Vegan 블록 2열 — 1행 제목(왼쪽) · 로고(오른쪽 정렬), 2행 본문이 두 칸을 가로지른다(최대 54ch) */
+@media (min-width: 768px) {
+  .pdp--proto-d .pdp-vegan {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .pdp--proto-d .pdp-vegan__title {
+    order: 1;
+  }
+
+  .pdp--proto-d .pdp-vegan__logo {
+    order: 2;
+    justify-self: end;
+    align-self: start;
+    margin-top: 4px;
+  }
+
+  .pdp--proto-d .pdp-vegan__body {
+    order: 3;
+    grid-column: span 2;
+    max-width: 54ch;
+  }
+}
+
+/* D: 들판 위 STECHA 문구 상단 여백 — 화면 폭 5vw 기준, 40–80px */
+.pdp--proto-d .pdp-origin__field-copy {
+  padding-top: clamp(40px, 5vw, 80px);
+}
+
+/* ============================================================
+   D: 페이지 단위 조정 (.pdp--proto-d — D 테스트 페이지 루트에만 붙는다)
+   ============================================================ */
+/* ---- D 히어로: 새 제품 컷 hero-bg-desktop.jpg(16:9) · hero-bg-mobile.jpg(2:3, ≤767px) ----
+   · 비율 고정: 데스크톱 16:9(최소 760px · 화면 높이를 넘지 않음) · 모바일 2:3
+   · 문구는 캡 바로 위: 블록 하단 = 캡 상단(--pdp-hero-cap, 데스크톱 42% · 모바일 40%) − 간격.
+     위쪽은 최소 40px 확보 — 공간이 모자라면 위로 붙지 않고 아래(병 쪽)로 밀린다
+   · 패럴렉스: 스크롤하면 사진(picture)이 페이지의 35% 속도로 따라 내려온다(--pdp-hero-y · proto.js). 문구는 제자리에서 흐려진다 */
+.pdp--proto-d .pdp-elixir-hero {
+  --pdp-hero-cap: 42%;
+
+  aspect-ratio: 16 / 9;
+  min-height: 760px;
+  max-height: calc(100vh - var(--offset-header, 0px));
+  max-height: calc(100svh - var(--offset-header, 0px));
+  background: #98abc4; /* 사진이 뜨기 전 · 가장자리 바탕 = 사진 배경 톤 */
+}
+
+.pdp--proto-d .pdp-elixir-hero picture,
+.pdp--proto-d .pdp-elixir-hero::before {
+  translate: 0 calc(var(--pdp-hero-y, 0) * 0.35px);
+}
+
+.pdp--proto-d .pdp-elixir-hero picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+  will-change: translate;
+}
+
+.pdp--proto-d .pdp-elixir-hero__bg {
+  transform: none; /* 공통 CSS의 1934px 이상 가운데 정렬(transform)과 겹치지 않게 — 아래 넓은 화면 규칙이 담당 */
+}
+
+.pdp--proto-d .pdp-elixir-hero__content {
+  top: var(--spacing-10);
+  bottom: calc(100% - var(--pdp-hero-cap) + var(--pdp-hero-cap-gap));
+  justify-content: safe flex-end;
+  padding-top: 0;
+}
+
+/* 문구 색: 흰색 — 밝은 블루그레이 배경 위 가독성을 위해 아주 옅은 그림자 */
+.pdp--proto-d .pdp-elixir-hero__content,
+.pdp--proto-d .pdp-elixir-hero__content .pdp__eyebrow {
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(40, 62, 98, 0.18);
+}
+
+/* 피부 변화 확인하기: 반투명 유리 pill — 흰 면 45% + 배경 블러, 글자는 body-m 블루(대비 확보).
+   글자 크기는 마크업의 body-xl 클래스보다 우선하도록 여기서 지정 */
+.pdp--proto-d .pdp-elixir-hero__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-6);
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--radius-full, 999px);
+  background: rgba(255, 255, 255, 0.45);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 4px 16px rgba(40, 62, 98, 0.1);
+  color: var(--pdp-accent);
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-body-m);
+  letter-spacing: var(--letter-spacing-body-m);
+  text-shadow: none;
+  transition: background-color 200ms ease;
+}
+
+/* 블러 미지원 브라우저: 면을 더 불투명하게 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .pdp--proto-d .pdp-elixir-hero__link {
+    background: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.pdp--proto-d .pdp-elixir-hero__link:hover,
+.pdp--proto-d .pdp-elixir-hero__link:focus-visible {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.pdp--proto-d .pdp-elixir-hero__link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* 모바일: 2:3 히어로에서 캡 위 공간이 좁다 — 버튼을 한 단계 작게, 문구 블록 위 여백 24px */
+@media (max-width: 767px) {
+  .pdp--proto-d .pdp-elixir-hero__content {
+    top: var(--spacing-6);
+  }
+
+  .pdp--proto-d .pdp-elixir-hero__link {
+    margin-top: var(--spacing-4);
+    padding: var(--spacing-2) var(--spacing-5);
+  }
+}
+
+/* 문구 등장: 블록 전체가 한 번에 올라오던 것(scroll-reveal) 대신 줄마다 시간 차를 두고 아래 → 위로 페이드업
+   (리드 → eyebrow → BIO ELIXIR → 링크). 블록 자체는 움직이지 않고, 스크롤 흐림(데스크톱)만 블록에 건다 */
+.pdp--proto-d .pdp-elixir-hero__content[data-scroll-reveal] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.pdp--proto-d .pdp-elixir-hero__content[data-scroll-reveal]:not(.is-revealed) > * {
+  opacity: 0;
+}
+
+.pdp--proto-d .pdp-elixir-hero__content.is-revealed > * {
+  animation: pdp-proto-hero-up 900ms var(--easing-decelerate, cubic-bezier(0, 0, 0.2, 1)) both;
+}
+
+.pdp--proto-d .pdp-elixir-hero__content.is-revealed > :nth-child(2) { animation-delay: 140ms; }
+.pdp--proto-d .pdp-elixir-hero__content.is-revealed > :nth-child(3) { animation-delay: 280ms; }
+.pdp--proto-d .pdp-elixir-hero__content.is-revealed > :nth-child(4) { animation-delay: 420ms; }
+
+@keyframes pdp-proto-hero-up {
+  from { opacity: 0; translate: 0 24px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@media (min-width: 768px) {
+  /* 스크롤하면 문구는 제자리에서 흐려지기만 한다 */
+  .pdp--proto-d .pdp-elixir-hero__content[data-scroll-reveal] {
+    opacity: calc(1 - var(--pdp-hero-y, 0) / 360);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp--proto-d .pdp-elixir-hero__content > * {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .pdp--proto-d .pdp-elixir-hero {
+    --pdp-hero-cap: 40%;
+
+    aspect-ratio: 2 / 3;
+    min-height: 0;
+    max-height: none;
+  }
+}
+
+/* 1934px 이상이지만 화면이 16:9보다 세로로 긴 경우: 공통 CSS의 가운데 정렬 · 마스크를 풀고 폭 그대로 */
+@media (min-width: 1934px) and (max-aspect-ratio: 16 / 9) {
+  .pdp--proto-d .pdp-elixir-hero__bg {
+    left: 0;
+    width: 100%;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+/* 화면이 사진(16:9)보다 가로로 넓어 히어로가 화면 높이에 걸릴 때: 폭에 맞추면 위·아래가 잘리므로
+   사진을 히어로 높이에 맞춰 통째로 보여 주고(캡 위치 유지), 양옆은 같은 사진을 흐리게 깔아 이어 붙인다 */
+@media (min-width: 768px) and (min-aspect-ratio: 16 / 9) {
+  .pdp--proto-d .pdp-elixir-hero::before {
+    content: "";
+    position: absolute;
+    inset: -60px;
+    background: var(--pdp-hero-bg) center / cover no-repeat;
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  .pdp--proto-d .pdp-elixir-hero__bg {
+    inset: 0 auto 0 50%;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    translate: -50% 0;
+    object-fit: contain;
+    -webkit-mask: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    mask: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  }
+}
+
+/* ============================================================
+   D: Sun Veil 디자인 시스템 정렬 (.pdp-clinical--sv)
+   기준: sun-veil-pdp-figma-sequence-v3.css — section header · proof-data
+   - 너비 container--md(886px) · 섹션 상하 clamp(72px, 9vw, 120px)
+   - 타입은 core 토큰(--font-size-*), 굵기 medium/semibold 위주
+   - 간격 --spacing-* · 구분선 텍스트색 25% · 카드 bg-subtle + radius-2xl
+   ============================================================ */
+.pdp--elixir .pdp-clinical--sv {
+  --pdp-sv-rule: color-mix(in srgb, var(--pdp-accent) 25%, transparent);
+  --pdp-sv-muted: var(--semantic-on-surface-muted, var(--primitive-neutral-500, #7c7c7c));
+  --pdp-sv-surface: var(--semantic-bg-subtle, #f7f7f7);
+
+  --pdp-pad-y: clamp(72px, 9vw, 120px); /* = --sv-sequence-pdp-section-padding-y */
+
+  padding-block: var(--pdp-pad-y);
+}
+
+/* Section header = sv-sequence-pdp-section__header */
+.pdp-clinical--sv .pdp__head {
+  display: grid;
+  gap: var(--spacing-5);
+  max-width: 680px;
+  margin: 0 auto var(--spacing-10);
+  text-align: center;
+}
+
+.pdp-clinical--sv .pdp__head > * {
+  margin: 0 !important;
+}
+
+.pdp-clinical--sv .pdp__eyebrow {
+  font-size: var(--font-size-heading-s) !important;
+  line-height: var(--line-height-heading-s) !important;
+  letter-spacing: var(--letter-spacing-heading-s) !important;
+}
+
+.pdp-clinical--sv .pdp__head-title {
+  font-weight: var(--font-weight-semibold, 600);
+  text-wrap: pretty;
+}
+
+.pdp-clinical--sv .pdp__head-lead {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* Timeline */
+.pdp-clinical--sv .pdp-timepoints {
+  max-width: none;
+}
+
+.pdp-clinical--sv .pdp-timepoints__tab {
+  gap: var(--spacing-4);
+}
+
+.pdp-clinical--sv .pdp-timepoints__time {
+  gap: var(--spacing-2);
+  font-size: 14px; /* 사용 직후 · 24시간 후 … — 시점 줄 기준 크기 */
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* 시점 pill(NOW · 24H · 4 WEEKS) 글자: 옆 설명(사용 직후 …, 14px)보다 1px 작게 —
+   영문 대문자 · bold라 같은 크기면 시각적으로 더 커 보인다 */
+.pdp-clinical--sv .pdp-timepoints__time strong {
+  padding: 6px var(--spacing-3);
+  font-size: 13px;
+  letter-spacing: var(--letter-spacing-heading-s);
+}
+
+.pdp-clinical--sv .pdp-timepoints__rail {
+  margin-right: var(--spacing-3);
+}
+
+/* 타임라인과 근거 카드 사이 간격 (각주가 하단으로 이동해 직접 확보) */
+.pdp-clinical--sv .pdp-timepoints__tabs {
+  margin-bottom: var(--spacing-16);
+}
+
+/* 라벨: 구분선 없이 텍스트만 */
+.pdp-clinical--sv .pdp-timepoints__labels {
+  padding: var(--spacing-4) var(--spacing-5) 0 0;
+  border: 0;
+  font-size: var(--font-size-heading-m);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-heading-m);
+}
+
+.pdp-clinical--sv .pdp-timepoints__tab:last-child .pdp-timepoints__labels {
+  padding-right: 0;
+}
+
+/* 각주: 섹션 하단(안전성 다음) 오른쪽 정렬 */
+.pdp-clinical--sv .pdp-timepoints__qualifier {
+  margin: var(--spacing-6) 0 0 !important;
+  color: var(--pdp-sv-muted);
+  font-size: var(--font-size-body-xs) !important;
+  font-weight: var(--font-weight-medium, 500);
+  opacity: 1;
+}
+
+/* Evidence cards = sv-sequence-pdp-proof-data__card 서피스 */
+/* 카드 간격 = 탭 칸 간격(8px) — NOW 탭 3칸과 카드 3장의 좌우 경계가 세로로 맞는다 */
+.pdp-clinical--sv .pdp-timepoints__row {
+  gap: var(--spacing-2);
+}
+
+/* 섹션은 원본처럼 연한 블루 띠(--band) — 그 위의 카드 · 요약 · 24H 블록은 흰 면 */
+.pdp-clinical--sv .pdp-timepoints__card,
+.pdp-clinical--sv .pdp-timepoints__summary,
+.pdp-clinical--sv .pdp-clinical__hydration {
+  border-radius: var(--radius-2xl, 24px);
+  background: var(--pdp-surface);
+}
+
+/* 카드 설명은 회색, 수치는 크게 */
+.pdp-clinical--sv .pdp-timepoints__card-head {
+  gap: var(--spacing-3);
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-6);
+  color: var(--pdp-accent); /* 본문과 같은 브랜드 블루 */
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-body-m);
+}
+
+/* 카드(그리드 칸 · 세로 flex)는 같은 줄에서 높이가 같다. 남는 높이는 머리가 흡수하고 수치는 머리 바닥에 붙어,
+   설명이 1줄/2줄로 섞여도 수치·본문 시작선이 카드끼리 맞는다 (고정 min-height 없이) */
+.pdp-clinical--sv .pdp-timepoints__card-head {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+
+.pdp-clinical--sv .pdp-timepoints__card-head strong {
+  margin-top: auto;
+}
+
+/* 카드 설명: body-l(마크업 클래스) · semibold — 모바일도 같은 크기 */
+.pdp-clinical--sv .pdp-timepoints__card-head > span {
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pdp-clinical--sv .pdp-timepoints__card-body--chart {
+  flex: none;
+}
+
+/* NOW: 차트 본문은 정사각(1:1) — 차트(SVG)도 build.py에서 정사각 viewBox로 다시 배치해 본문을 꽉 채운다.
+   좌우·상하 여백 합이 같아(8+24) 안쪽도 정사각. 비교 이미지(정사각)와 본문 높이가 같아 머리 바닥선이 맞는다.
+   4 WEEKS 차트는 원래 가로형 비율 그대로 */
+.pdp-clinical--sv .pdp-timepoints__row:has(.pdp-compare) .pdp-timepoints__card-body--chart {
+  aspect-ratio: 1 / 1;
+}
+
+/* 수치 = proof-data metric 값 (desktop body-xxl · mobile display) */
+.pdp-clinical--sv .pdp-timepoints__card-head strong,
+.pdp-clinical--sv .pdp-clinical__hydration .pdp-clinical__metric {
+  color: var(--pdp-accent);
+  font-family: inherit;
+  font-size: var(--font-size-heading-xxxl);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-heading-xxxl);
+}
+
+.pdp-clinical--sv .pdp-timepoints__card-body--chart {
+  padding: var(--spacing-2) var(--spacing-6) var(--spacing-6) var(--spacing-2);
+}
+
+.pdp-clinical--sv .pdp-timepoints__note {
+  margin-top: var(--spacing-3) !important;
+  color: var(--pdp-sv-muted);
+  font-size: var(--font-size-body-xs);
+  opacity: 1;
+}
+
+.pdp-clinical--sv .pdp-clinical__hydration {
+  gap: var(--spacing-10);
+  padding: var(--spacing-8);
+}
+
+/* 24H 수치: 위 여백 12px · 아래 설명(사용 전 대비…)과는 붙여서(4px) 한 묶음으로 */
+.pdp-clinical--sv .pdp-clinical__hydration .pdp-clinical__metric {
+  margin-top: var(--spacing-3);
+}
+
+.pdp-clinical--sv .pdp-clinical__sublabel {
+  margin-top: calc(var(--spacing-1) * -1);
+  font-size: var(--font-size-body-m);
+}
+
+.pdp-clinical--sv .pdp-clinical__hydration-title {
+  margin-top: var(--spacing-3) !important;
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.pdp-clinical--sv .pdp-timepoints__summary {
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2); /* 요약 블록 → 카드 줄도 8px */
+  padding: var(--spacing-8);
+}
+
+.pdp-clinical--sv .pdp-clinical__summary-title {
+  font-size: var(--font-size-heading-l);
+  line-height: var(--line-height-heading-l);
+}
+
+.pdp-clinical--sv .pdp-clinical__summary-title strong {
+  font-size: inherit;
+}
+
+.pdp-clinical--sv .pdp-clinical__summary-note {
+  color: var(--pdp-sv-muted);
+  font-size: var(--font-size-body-m);
+  opacity: 1;
+}
+
+/* 안전성: 흰 박스 (섹션 배경이 --primitive-brand-tertiary-200 띠라 같은 색이면 묻힌다) · 위 VIEW THE STUDY 카드와 20px */
+.pdp-clinical--sv .pdp-safety {
+  max-width: none;
+  margin-top: var(--spacing-5);
+  background: var(--pdp-surface);
+}
+
+/* Study · safety도 같은 너비/간격 */
+.pdp-clinical--sv .pdp-clinical__study {
+  max-width: none;
+  margin-top: var(--spacing-10);
+}
+
+/* D 모바일: VIEW THE STUDY · LEARN ABOUT LTVE™ 요약 줄은 데스크톱과 같은 body-l (sm--body-m 한 단계 위) */
+@media (max-width: 767px) {
+  .pdp--proto-d .pdp-disclosure__summary {
+    --type-font-size: var(--font-size-body-l);
+    --type-line-height: var(--line-height-body-l);
+    --type-letter-spacing: var(--letter-spacing-body-l);
+  }
+}
+
+/* D: 연구 개요 표의 가로줄 — 섹션 배경(--band)과 같은 색이면 묻혀서 옅은 bleu로 */
+.pdp--proto-d .pdp-study th,
+.pdp--proto-d .pdp-study td {
+  border-bottom-color: color-mix(in srgb, var(--pdp-accent) 20%, #fff);
+}
+
+/* D: 연구 개요 · LTVE 설명 하단 경계선 없음 */
+.pdp--proto-d .pdp-clinical__study,
+.pdp--proto-d .pdp-ltve__more {
+  border-bottom: 0;
+}
+
+.pdp-clinical--sv .pdp-disclosure {
+  border-color: var(--pdp-sv-rule);
+}
+
+/* ---- D 2026-10-20 수정안 ---- */
+/* 4 WEEKS에 피부노화지수 결과가 더해져 시점별 높이 차가 커졌다 — 가장 높은 패널에 맞추면 NOW 아래가 비므로
+   데스크톱도 모바일처럼 보이는 시점만 자리를 차지한다 */
+.pdp-clinical--sv .pdp-timepoints__panel[hidden] {
+  display: none;
+}
+
+/* 24H: 제목 · 24시간 후 개선율 · 사용 직후 개선율 · 결론 문구를 가는 선으로 나눈다 */
+.pdp-clinical--sv .pdp-clinical__hydration-copy {
+  gap: 0;
+}
+
+.pdp-hydration__head {
+  display: grid;
+  gap: var(--spacing-1);
+  padding-bottom: var(--spacing-5);
+  border-bottom: 1px solid var(--pdp-sv-rule);
+}
+
+.pdp-hydration__title {
+  margin: 0 !important;
+  color: var(--pdp-accent);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pdp-hydration__sub {
+  margin: 0 !important;
+  color: var(--pdp-sv-muted);
+}
+
+.pdp-hydration__stats {
+  margin: 0;
+}
+
+.pdp-hydration__stat {
+  display: grid;
+  gap: var(--spacing-1);
+  padding: var(--spacing-5) 0;
+  border-bottom: 1px solid var(--pdp-sv-rule);
+}
+
+.pdp-hydration__stat dd {
+  margin: 0;
+}
+
+.pdp-clinical--sv .pdp-clinical__hydration .pdp-hydration__stat .pdp-clinical__metric {
+  margin-top: 0;
+}
+
+/* 사용 직후 개선율은 보조 수치 — 한 단계 작고 조금 옅게(비활성처럼 보이지 않을 만큼) */
+.pdp-hydration__stat--sub strong {
+  color: color-mix(in srgb, var(--pdp-accent) 65%, #fff);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* 24H 위계(크기는 마크업 클래스): 제목 heading-l > 수치 heading-xxxl · 보조 수치 heading-xl >
+   항목명 body-l semibold(= 카드 설명) · 결론 문구 body-l medium(세 줄 덩어리가 제목과 경쟁하지 않게) */
+.pdp-hydration__stat dt {
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* 정리: 문구 열 폭 400px(구분선이 글보다 길게 뻗지 않게) · 항목명–수치 4px ·
+   제목 · 두 수치는 위에 묶고 결론 문구는 블록 아래(차트 아래선)에 — 결론 위 구분선 대신 여백.
+   데스크톱 2열(1025px~)에서만 아래 정렬, 쌓이는 폭에서는 순서대로 */
+.pdp-clinical--sv .pdp-clinical__hydration-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch !important; /* 구분선이 열 폭 전체로 같은 길이 — 데스크톱 블록의 왼쪽 정렬 규칙보다 우선 */
+  width: 100%;
+  max-width: 400px;
+}
+
+.pdp-hydration__stat {
+  gap: var(--spacing-1);
+}
+
+.pdp-hydration__stat:last-child {
+  border-bottom: 0;
+}
+
+@media (min-width: 1025px) {
+  .pdp-clinical--sv .pdp-clinical__hydration-copy .pdp-hydration__claim {
+    margin-top: auto !important;
+    padding-top: var(--spacing-6);
+  }
+}
+
+.pdp-hydration__claim {
+  margin: var(--spacing-5) 0 0 !important;
+  color: var(--pdp-accent);
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+/* 4 WEEKS: 피부노화지수 + 탄력 · 눈가주름 · 피부결 카드 4개 — 데스크톱 4단 · 태블릿 2단 · 모바일 1단 */
+.pdp-clinical--sv .pdp-timepoints__row--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1024px) {
+  .pdp-clinical--sv .pdp-timepoints__row--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 카드 안을 머리(설명 · 수치) / 차트 / 유의성 각주 세 줄로 나누고, 같은 줄의 카드끼리 각 줄 높이를 공유(subgrid).
+   좁은 화면에서 한 카드의 # 각주만 두 줄이 돼도 각주 줄만 같이 높아지고, 수치 · 차트 위치는 카드끼리 그대로 맞는다 */
+@supports (grid-template-rows: subgrid) {
+  .pdp-clinical--sv .pdp-timepoints__row--4 > .pdp-timepoints__card {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .pdp-clinical--sv .pdp-timepoints__row--4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 통계적 유의성 주석: 카드 왼쪽 아래 */
+.pdp-timepoints__sig {
+  margin: 0 !important;
+  padding: 0 var(--spacing-8) var(--spacing-6);
+  color: var(--pdp-sv-muted);
+  text-align: left;
+}
+
+/* 시점별 각주 한 블록: 카드 줄 아래 왼쪽 정렬 목록 (NOW: 일시적 변화 · 출처 / 24H: 출처 / 4 WEEKS: 개선율 공식 · 출처).
+   카드 안 유의성 주석(*, #)은 클라이언트 요청대로 각 카드 왼쪽 아래에 그대로 */
+.pdp-timepoints__notes {
+  display: grid;
+  gap: 2px;
+  margin: var(--spacing-4) 0 0 !important;
+  padding: 0 0 0 var(--spacing-2);
+  color: var(--pdp-sv-muted);
+  font-weight: var(--font-weight-medium, 500);
+  list-style: none;
+  text-align: left;
+}
+
+.pdp-timepoints__notes li {
+  margin: 0;
+}
+
+/* VIEW THE STUDY: 각 시점 패널 안, 그 시점 시험 개요만 — 근거 카드와 같은 흰 카드 */
+.pdp-clinical--sv .pdp-study-card {
+  max-width: none;
+  margin-top: var(--spacing-6);
+  padding: 0 var(--spacing-8);
+  border: 0;
+  border-radius: var(--radius-2xl, 24px);
+  background: var(--pdp-surface);
+}
+
+.pdp-study-card .pdp-study tr:last-child th,
+.pdp-study-card .pdp-study tr:last-child td {
+  border-bottom: 0;
+}
+
+/* 민감성 피부 테스트: 효능 결과 다음 독립 배치 · 출처 각주 */
+.pdp-clinical--sv .pdp-safety__result,
+.pdp-safety__verdict {
+  margin: 0 !important;
+}
+
+.pdp-safety__verdict {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* 출처는 시점별 각주 블록과 같은 모양(왼쪽 정렬) */
+.pdp-safety__note {
+  margin: var(--spacing-4) 0 0 !important;
+  padding-left: var(--spacing-2);
+  color: var(--pdp-sv-muted);
+  font-weight: var(--font-weight-medium, 500);
+  text-align: left;
+}
+
+@media (max-width: 767px) {
+  .pdp-clinical--sv .pdp-study-card {
+    padding: 0 var(--spacing-5);
+    border-radius: 14px;
+  }
+
+  .pdp-timepoints__sig {
+    padding: 0 var(--spacing-5) var(--spacing-5);
+  }
+}
+
+/* D: 24H 블록 높이를 NOW 카드 줄에 맞추고 차트가 남는 높이를 채운다 (2열인 데스크톱만 —
+   1024px 이하는 문구·차트가 쌓여 NOW 높이에 맞추면 차트가 지나치게 작아진다).
+   차트(SVG)는 build.py에서 늘어난 영역 비율(약 1.25:1)로 세로 좌표를 다시 배치해 둔다 */
+@media (min-width: 1025px) {
+  .pdp-clinical--sv .pdp-clinical__hydration {
+    align-items: stretch;
+    height: var(--pdp-now-row-h, auto);
+  }
+
+  .pdp-clinical--sv .pdp-clinical__hydration-copy {
+    align-content: start;
+    align-items: flex-start;
+  }
+
+  .pdp-clinical--sv .pdp-clinical__hydration-chart {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .pdp-clinical--sv .pdp-clinical__hydration-chart .pdp-chart {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+}
+
+/* 1024px 이하(문구 위 · 차트 아래): 차트 비율이 1.25:1로 바뀌어 넓은 태블릿에서 너무 커지지 않게 높이 상한 */
+@media (max-width: 1024px) {
+  .pdp-clinical--sv .pdp-clinical__hydration-chart .pdp-chart {
+    max-height: 360px;
+  }
+}
+
+/* ---- Tablet ---- */
+@media (max-width: 1024px) {
+  .pdp-clinical--timepoints .pdp-clinical__hydration {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* ---- Mobile: 세로 타임라인 + 근거 카드 가로 스와이프 ---- */
+@media (max-width: 767px) {
+  /* A: 좁은 화면에서는 버튼을 아이콘만 남기고 탭 옆에 붙인다 */
+  .pdp-autoplay-bar {
+    grid-template-columns: auto auto;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .pdp-autoplay-bar > .pdp-clinical__tabs,
+  .pdp-autoplay-pause {
+    grid-column: auto;
+  }
+
+  /* 토글 버튼을 뺀 나머지 폭을 탭 그룹이 채우고, NOW · 24H · 4 WEEKS는 같은 너비로 나눈다 */
+  .pdp-autoplay-bar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    justify-content: stretch;
+  }
+
+  .pdp-autoplay-bar > .pdp-clinical__tabs {
+    display: flex;
+    width: 100%;
+  }
+
+  .pdp-autoplay-bar .pdp-clinical__tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: var(--spacing-2);
+  }
+
+  /* 탭 줄 높이가 늘어도(아주 좁은 화면에서 4 WEEKS 줄바꿈) 버튼은 56px 원형 유지 */
+  .pdp-autoplay-pause {
+    align-self: center;
+    width: 56px;
+    height: 56px;
+  }
+
+  /* 탭: 가로 슬라이더 — 한 장씩(78%) 넘기면 스냅된 시점이 선택된다 (pdp-elixir-proto.js).
+     섹션 안에서는 상단(헤더 아래)에 붙어, 아래로 쌓인 근거를 보다가도 바로 시점을 바꿀 수 있다 */
+  .pdp-timepoints__tabs {
+    position: sticky;
+    top: var(--offset-header, 0px);
+    z-index: 2;
+    display: flex;
+    gap: var(--spacing-3);
+    margin-inline: calc(var(--layout-page-x, 20px) * -1);
+    padding: var(--spacing-3) var(--layout-page-x, 20px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--layout-page-x, 20px);
+    scrollbar-width: none;
+    background: var(--pdp-surface);
+  }
+
+  .pdp__section--band .pdp-timepoints__tabs {
+    background: var(--pdp-band);
+  }
+
+  .pdp-timepoints__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-timepoints__tab {
+    flex: 0 0 78%;
+    gap: 10px;
+    scroll-snap-align: start;
+  }
+
+  .pdp-timepoints__time {
+    font-size: 13px;
+  }
+
+  .pdp-timepoints__time strong {
+    padding: 5px 12px;
+    font-size: 13px;
+  }
+
+  .pdp-timepoints__metrics {
+    padding-right: 0;
+  }
+
+  .pdp-timepoints__metric {
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .pdp-timepoints__value {
+    font-size: 20px;
+  }
+
+  .pdp-timepoints__labels {
+    padding: 10px 0;
+    font-size: 15px;
+  }
+
+  /* D: 모바일도 Sun Veil 토큰 (값은 display, 카드 간격 8px) */
+  .pdp-clinical--sv .pdp-timepoints__labels {
+    padding: var(--spacing-2) 0 0;
+  }
+
+  .pdp-clinical--sv .pdp-timepoints__tabs {
+    margin-bottom: var(--spacing-6);
+  }
+
+  /* D: 탭 = 콘텐츠 폭 — 넘길 때마다(마지막 4 WEEKS 포함) 시점 pill 왼쪽 끝이 아래 카드 왼쪽 선에 맞는다 */
+  .pdp-clinical--sv .pdp-timepoints__tab {
+    flex-basis: 100%;
+  }
+
+  .pdp-clinical--sv .pdp-timepoints__row {
+    gap: var(--spacing-2);
+  }
+
+  /* Sun Veil 모바일: 섹션 상하 64px · 카드 radius 14px · 카드 설명 body-s */
+  .pdp--elixir .pdp-clinical--sv {
+    --pdp-pad-y: var(--spacing-16);
+  }
+
+  .pdp-clinical--sv .pdp-timepoints__card,
+  .pdp-clinical--sv .pdp-timepoints__summary,
+  .pdp-clinical--sv .pdp-clinical__hydration {
+    border-radius: 14px;
+  }
+
+
+
+  .pdp--elixir .pdp-clinical--sv .pdp-timepoints__card-head strong,
+  .pdp--elixir .pdp-clinical--sv .pdp-clinical__hydration .pdp-clinical__metric {
+    font-size: var(--font-size-heading-xxxl);
+    line-height: var(--line-height-heading-xxxl);
+  }
+
+  .pdp-clinical--sv .pdp-timepoints__card-head {
+    padding: var(--spacing-5) var(--spacing-5) var(--spacing-5); /* 수치 ↔ 차트 · BEFORE/AFTER 이미지 20px */
+  }
+
+  .pdp-clinical--sv .pdp-clinical__hydration,
+  .pdp-clinical--sv .pdp-timepoints__summary {
+    padding: var(--spacing-6) var(--spacing-5);
+  }
+
+  .pdp-clinical--labels .pdp-clinical__hydration .pdp-clinical__metric,
+  .pdp-clinical--labels .pdp-timepoints__card-head strong {
+    font-size: 26px;
+  }
+
+  .pdp-timepoints__card-head {
+    font-size: 14px;
+  }
+
+  .pdp-timepoints__qualifier {
+    font-size: 11px !important;
+  }
+
+  /* 근거 카드는 가로 스와이프 대신 아래로 쌓는다 */
+  .pdp-timepoints__row {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+
+  /* 안 보이는 시점은 자리도 차지하지 않게 — 패널 높이가 시점마다 내용대로 바뀐다 */
+  .pdp-timepoints__panel[hidden] {
+    display: none;
+  }
+
+  .pdp-clinical--timepoints .pdp-clinical__hydration {
+    padding: 24px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-timepoints__panel:not([hidden]) {
+    animation: none;
+  }
+
+  .pdp-clinical--timepoints .pdp-chart__line,
+  .pdp-clinical--timepoints .pdp-chart__dot,
+  .pdp-clinical--timepoints .pdp-chart__value {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+   D: Daily ritual — 확대 카드 Sun Veil 하늘색 카드 톤 (.pdp--proto-d)
+   하단 틴트를 옅은 라이트 블루(ciel, Sun Veil at-glance 카드와 같은 100% 끝색)로,
+   확대된 카드의 제목·설명은 흰색
+   ============================================================ */
+/* D: 카드 디자인은 하나 — 모든 카드가 처음부터 큰 카드 디자인(사진이 카드를 채우고, 하단 카피 판 · 틴트 위
+   흰 시간 · 제목 · 설명). 선택(.is-active)하면 디자인은 그대로 크기만 커진다(너비 flex 1 → 2 · 높이 88% → 100%, 공통 CSS) */
+.pdp--proto-d .pdp-ritual__item {
+  --pdp-ritual-tint: var(--pdp-ciel);
+  --pdp-ritual-figure-inset: 0px;
+  --pdp-ritual-time-top: 20px;
+  --pdp-ritual-copy-inset-x: 0px;
+  --pdp-ritual-copy-inset-b: 0px;
+  --pdp-ritual-copy-pad-x: 26px;
+  --pdp-ritual-copy-pad-b: 32px;
+  --pdp-ritual-copy-radius: 0px;
+  --pdp-ritual-blur-extend: 140px;
+  --pdp-ritual-time-left: calc(var(--pdp-ritual-copy-inset-x) + var(--pdp-ritual-copy-pad-x) - 5px);
+
+  border-radius: 20px;
+}
+
+.pdp--proto-d .pdp-ritual__item .pdp-ritual__copy::after {
+  opacity: 1;
+}
+
+.pdp--proto-d .pdp-ritual__item .pdp-ritual__title,
+.pdp--proto-d .pdp-ritual__item .pdp-ritual__desc,
+.pdp--proto-d .pdp-ritual__item .pdp-ritual__time {
+  color: #fff;
+}
+
+/* 시간 라벨: 점 · 짧은 선까지 흰색 */
+.pdp--proto-d .pdp-ritual__item .pdp-ritual__time::before {
+  background:
+    radial-gradient(circle, currentColor 5px, transparent 5.5px) left center / 11px 11px no-repeat,
+    linear-gradient(currentColor, currentColor) 15px center / 11px 1px no-repeat;
+}
+
+/* 데스크톱 작은(비활성) 카드: 사진은 카드 안 1:1 정사각, 시간 · 제목 · 설명은 사진 아래 카드 바탕 위 블루 글자.
+   선택되면 사진이 카드를 채우며 세로로 길어지고(공통 CSS 트랜지션), 글자는 사진 위 흰색이 된다.
+   카드 높이 = 위 54 + 사진(카드 너비 - 18) + 아래 문구 영역 --pdp-ritual-copy-area */
+@media (min-width: 1025px) {
+  .pdp--proto-d .pdp-ritual__item:not(.is-active) {
+    --pdp-ritual-copy-area: 156px; /* 사진–제목 간격 + 제목 2줄 + 설명 2줄 + 아래 여백 */
+    --pdp-ritual-figure-inset: 54px 9px var(--pdp-ritual-copy-area);
+    --pdp-ritual-time-top: 19px;
+    --pdp-ritual-time-left: 14px;
+    --pdp-ritual-copy-inset-x: 9px;
+    --pdp-ritual-copy-inset-b: 0px;
+    --pdp-ritual-copy-pad-x: 5px;
+    --pdp-ritual-copy-pad-b: 22px;
+    --pdp-ritual-copy-radius: 0px;
+    --pdp-ritual-blur-extend: 0px;
+
+    height: 72%; /* container query 미지원 브라우저용 */
+    height: calc((100cqw - 24px) / 5 - 18px + 54px + var(--pdp-ritual-copy-area));
+    border-radius: 17px;
+  }
+
+  .pdp--proto-d .pdp-ritual__item:not(.is-active) .pdp-ritual__copy::after {
+    opacity: 0;
+  }
+
+  .pdp--proto-d .pdp-ritual__item:not(.is-active) .pdp-ritual__title,
+  .pdp--proto-d .pdp-ritual__item:not(.is-active) .pdp-ritual__time {
+    color: var(--pdp-accent);
+  }
+
+  .pdp--proto-d .pdp-ritual__item:not(.is-active) .pdp-ritual__desc {
+    color: var(--pdp-accent);
+  }
+
+  .pdp--proto-d .pdp-ritual__item:not(.is-active) .pdp-ritual__time::before {
+    background:
+      radial-gradient(circle, currentColor 5px, transparent 5.5px) left center / 11px 11px no-repeat,
+      linear-gradient(var(--pdp-muted), var(--pdp-muted)) 15px center / 11px 1px no-repeat;
+  }
+}
+
+/* 설명글은 모든 카드에서 보인다 · 본문 크기(body-m) */
+.pdp--proto-d .pdp-ritual__desc {
+  margin-top: 0 !important; /* 제목과 간격은 카피 판 gap(8px) */
+  font-size: var(--font-size-body-m);
+  line-height: var(--line-height-body-m);
+}
+
+/* 스와이프(≤1024px)는 공통 CSS의 카드 여백 그대로 */
+@media (max-width: 1024px) {
+  .pdp--proto-d .pdp-ritual__item {
+    --pdp-ritual-copy-pad-x: 22px;
+    --pdp-ritual-copy-pad-b: 24px;
+    --pdp-ritual-blur-extend: 120px;
+  }
+}
+
+/* ============================================================
+   D: Harmony — 정수 그리드 위 칸 채우기 (.pdp-harmony--grid, build.py에서 부착)
+   정방형 그리드(단위 --u). 요소는 칸에 딱 맞는 흰 정사각 모듈.
+   - 성분 큐브: 13×10 정수 좌표(--c --r --s), 사진 구도 그대로. 구체 = 솔리드 컬러 원 버튼
+   - 크리스털 구체: 3×3 흰 칸 + 선 원(장식)
+   - 소개 문구: 데스크톱은 같은 그리드의 왼쪽 --hg-intro칸 흰 블록, 높이는 칸 단위로 올림(proto.js)
+   - 경계선: 모눈 전체 대신 박스 변이 지나는 그리드 선만 섹션 끝까지(.pdp-harmony__rule, build.py 생성).
+     박스 면이 자기 안을 지나는 선을 가려, 선은 빈 공간과 박스 가장자리에만 보인다
+   배경 = 칸 채움 = 팝업 면 = --hg-bg(흰색), 선 = 옅은 bleu 한 색(--hg-line = --hg-mesh). 색은 성분 원에만
+   ============================================================ */
+.pdp-harmony--grid {
+  --hg-line: color-mix(in srgb, var(--pdp-accent, #0077bf) 20%, #fff); /* 옅은 bleu(≈ #cce4f2) — 경계선 · 크리스털 원 · 팝업 테두리 */
+  --hg-mesh: var(--hg-line); /* 경계선 · 섹션 위아래 선 — 선 색은 하나 */
+  --hg-bg: #fff;
+  --hg-ink: var(--color-text-primary, #111827);
+}
+
+/* 데스크톱: 스테이지 = 그리드. canvas · canvas-inner · ul은 상자 없이(display: contents)
+   소개와 큐브가 같은 트랙을 쓴다. 좌우 여백은 트랙 묶음을 가운데 두는 값(--hg-ox), 위아래 여백은 2칸(--hg-oy).
+   경계선 위치도 이 원점에서 계산한다 */
+/* 칸 크기는 화면 폭(vw)이 아니라 섹션 폭(cqw) 기준 — 실제 상세는 왼쪽 사이드바(240px) 옆 열이라
+   섹션 폭이 화면보다 좁다(1440px 화면 → 1200px). vw로 계산하면 그리드가 섹션 밖으로 넘친다 */
+.pdp-harmony--grid {
+  container-type: inline-size;
+}
+
+.pdp-harmony--grid .pdp-harmony__stage {
+  --hg-intro: 7;                                   /* 소개 블록 폭(칸) — 제목 2줄이 들어가는 폭 */
+  --hg-x: calc(var(--hg-intro) + 1);               /* 큐브 열 오프셋 = 소개 + 빈 칸 1 */
+  --hg-y: 0;                                       /* 큐브 행 오프셋(모바일은 소개 아래) */
+  --hg-n: calc(var(--hg-x) + 13);                  /* 전체 열 수 */
+  --u: min(calc(88cqw / var(--hg-n)), 72px);
+  --hg-ox: calc((100% - var(--hg-n) * var(--u)) / 2);
+  --hg-oy: calc(var(--u) * 2);
+
+  display: grid;
+  grid-template-columns: repeat(var(--hg-n), var(--u));
+  grid-template-rows: repeat(10, var(--u));
+  grid-auto-rows: var(--u);
+  aspect-ratio: auto;
+  padding: var(--hg-oy) var(--hg-ox);
+  border-block: 1px solid var(--hg-mesh); /* 섹션 위아래 경계선 */
+  background: var(--hg-bg);
+}
+
+/* 경계선 — 그리드 선 번호(--at, 큐브 좌표 1-based)를 스테이지 좌표로. 그리드 아이템이 아니다(absolute) */
+.pdp-harmony--grid .pdp-harmony__rules {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pdp-harmony--grid .pdp-harmony__rule {
+  position: absolute;
+  background: var(--hg-mesh);
+}
+
+.pdp-harmony--grid .pdp-harmony__rule--v {
+  --pos: calc(var(--hg-ox) + (var(--hg-x) + var(--at) - 1) * var(--u));
+
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 1px;
+  translate: -0.5px 0;
+}
+
+.pdp-harmony--grid .pdp-harmony__rule--h {
+  --pos: calc(var(--hg-oy) + (var(--hg-y) + var(--at) - 1) * var(--u));
+
+  top: var(--pos);
+  right: 0;
+  left: 0;
+  height: 1px;
+  translate: 0 -0.5px;
+}
+
+/* 소개 블록의 네 변 (소개는 항상 그리드 1열 · 1행에서 시작) */
+.pdp-harmony--grid .pdp-harmony__rule--intro-l {
+  --pos: var(--hg-ox);
+}
+
+.pdp-harmony--grid .pdp-harmony__rule--intro-t {
+  --pos: var(--hg-oy);
+}
+
+.pdp-harmony--grid .pdp-harmony__rule--intro-r {
+  --pos: calc(var(--hg-ox) + var(--hg-intro) * var(--u));
+}
+
+.pdp-harmony--grid .pdp-harmony__rule--intro-b {
+  --pos: calc(var(--hg-oy) + var(--hg-intro-rows, 7) * var(--u));
+}
+
+/* 선을 화면 픽셀에 맞춘다: 칸 단위(--u)가 소수점 px라 1px 선이 두 픽셀에 반씩 번지면
+   (특히 세로선) 일반 배율 화면에서 흐려져 칸 좌우 경계가 안 보였다 → 위치를 정수 px로 반올림 */
+@supports (left: round(nearest, 1.5px, 1px)) {
+  .pdp-harmony--grid .pdp-harmony__rule--v {
+    left: round(nearest, calc(var(--pos) - 0.5px), 1px);
+    translate: none;
+  }
+
+  .pdp-harmony--grid .pdp-harmony__rule--h {
+    top: round(nearest, calc(var(--pos) - 0.5px), 1px);
+    translate: none;
+  }
+}
+
+/* 진입 효과: 박스 · 원 · 글자는 처음부터 그대로, 경계선만 차례로(--i) 그려진다.
+   .is-drawing(숨김 상태)은 proto.js가 붙이므로 JS가 없거나 동작 줄이기면 처음부터 다 보인다.
+   섹션이 화면에 들어오면 .is-drawn */
+.pdp-harmony--grid .is-drawing .pdp-harmony__rule--v {
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+}
+
+.pdp-harmony--grid .is-drawing .pdp-harmony__rule--h {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* 1단계: 소개(텍스트) 블록 네 변(0–1.35s) → 2단계: 큐브 선(1s부터 40ms 간격) */
+.pdp-harmony--grid .is-drawing.is-drawn .pdp-harmony__rule {
+  transform: none;
+  transition: transform 900ms var(--pdp-ease) calc(1000ms + var(--i, 0) * 40ms);
+}
+
+.pdp-harmony--grid .is-drawing.is-drawn .pdp-harmony__rule[class*="--intro-"] {
+  transition-delay: calc(var(--i, 0) * 150ms);
+}
+
+/* 성분 이름만 번호순(--n: 01 → 07)으로 차례로 등장 — 큐브 선이 그려지기 시작할 때부터 */
+.pdp-harmony--grid .is-drawing .pdp-harmony__name {
+  opacity: 0;
+  translate: 0 6px;
+}
+
+.pdp-harmony--grid .is-drawing.is-drawn .pdp-harmony__name {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 600ms ease calc(1100ms + var(--n, 0) * 160ms),
+    translate 600ms var(--pdp-ease) calc(1100ms + var(--n, 0) * 160ms);
+}
+
+.pdp-harmony--grid .pdp-harmony__canvas,
+.pdp-harmony--grid .pdp-harmony__canvas-inner,
+.pdp-harmony--grid .pdp-harmony__spots {
+  display: contents;
+}
+
+/* 모듈 공통: 면(--hg-bg)으로 칸을 덮어 자기 안을 지나는 경계선을 가린다 — 테두리 없이 채움만으로 영역이 정해진다.
+   면은 안쪽으로 1px 들여(투명 border + padding-box) 칸 가장자리의 경계선은 덮지 않는다 */
+.pdp-harmony--grid .pdp-harmony__intro,
+/* 칸은 바탕 없이 — 경계선이 칸을 가리지 않고 그대로 지나가고, 공만 선 위에 놓인다 */
+.pdp-harmony--grid .pdp-harmony__spot,
+/* 성분 큐브 · 크리스털 칸 · 소개 블록: 흰 면을 사방 1px 안쪽부터 칠한다 —
+   칸 안을 지나는 모눈 선은 가리고, 칸 경계에 걸친 테두리 선(±0.5px)은 그대로 보인다 */
+.pdp-harmony--grid .pdp-harmony__spot,
+.pdp-harmony--grid .pdp-harmony__crystal,
+.pdp-harmony--grid .pdp-harmony__intro {
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  background: #fff;
+  background-clip: padding-box;
+}
+
+.pdp-harmony--grid .pdp-harmony__intro {
+  position: relative;
+  top: auto;
+  left: auto;
+  grid-column: 1 / span var(--hg-intro);
+  grid-row: 1 / span 1;
+  align-self: start;
+  width: auto;
+  padding: clamp(20px, calc(var(--u) * 0.5), 36px);
+}
+
+.pdp-harmony--grid .pdp-harmony__spot,
+.pdp-harmony--grid .pdp-harmony__crystal {
+  --orb-d: calc(var(--u) * 1.2);
+
+  position: relative;
+  top: auto;
+  left: auto;
+  grid-column: calc(var(--c) + var(--hg-x)) / span var(--s);
+  grid-row: var(--r) / span var(--s);
+  width: auto;
+  aspect-ratio: auto;
+  transform: none;
+}
+
+.pdp-harmony--grid .pdp-harmony__spot--lg,
+.pdp-harmony--grid .pdp-harmony__crystal {
+  --orb-d: calc(var(--u) * 2.4);
+}
+
+/* 칸 안 배치: 원은 칸 정중앙. 위·아래에 같은 높이의 글자 띠(--band = 여백 + 글자 줄 + 여백)를 두고
+   원 지름 = 지정 지름(--orb-d)과 띠 사이 남는 높이 중 작은 쪽 → 번호 · 이름이 선과 원에 붙지 않는다.
+   여백(--m)은 하나: 칸 가장자리 ↔ 글자 = 글자 ↔ 원 */
+.pdp-harmony--grid .pdp-harmony__spot {
+  --m: clamp(8px, calc(var(--u) * 0.17), 14px);
+  --fs: clamp(10px, calc(var(--u) * 0.18), 13px);
+  --band: calc(var(--m) * 2 + var(--fs) * 1.2);
+  --orb-size: min(var(--orb-d), calc(var(--s) * var(--u) - 2px - var(--band) * 2));
+}
+
+.pdp-harmony--grid .pdp-harmony__spot--lg {
+  --fs: clamp(13px, calc(var(--u) * 0.27), 20px);
+}
+
+.pdp-harmony--grid .pdp-harmony__spot::before {
+  content: none;
+}
+
+.pdp-harmony--grid .pdp-harmony__crystal {
+  display: grid;
+  place-items: center;
+  list-style: none;
+}
+
+/* 투명 크리스털 구체(장식): 유리 질감 — 왼쪽 위 반짝임 · 오른쪽 아래 맺히는 빛 · 가장자리 굴절 링 · 옅은 그림자 */
+.pdp-harmony--grid .pdp-harmony__crystal .pdp-harmony__orb {
+  --crystal-d: var(--orb-d);
+
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 16%),
+    radial-gradient(circle at 70% 78%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 22%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 64%, rgba(120, 138, 160, 0.28) 90%, rgba(255, 255, 255, 0.7) 100%),
+    linear-gradient(160deg, #f7f9fb 0%, #e9edf2 50%, #d9dfe7 100%); /* 가운데 급격한 밝기 변화(사선 경계) 없이 매끄럽게 */
+  box-shadow:
+    inset 0 0 calc(var(--crystal-d) * 0.06) rgba(255, 255, 255, 0.9),
+    0 calc(var(--crystal-d) * 0.12) calc(var(--crystal-d) * 0.14) calc(var(--crystal-d) * -0.08) rgba(16, 30, 54, 0.16);
+}
+
+/* 버튼 = 큐브 칸 전체(터치 영역), 시각적 버튼 = 원 */
+.pdp-harmony--grid .pdp-harmony__dot {
+  display: block;
+  padding: 0;
+  color: var(--hg-ink);
+  text-align: left;
+  text-shadow: none;
+  border-radius: 0;
+}
+
+.pdp-harmony--grid .pdp-harmony__dot:focus-visible {
+  outline: 2px solid var(--hg-ink);
+  outline-offset: -2px;
+}
+
+.pdp-harmony--grid .pdp-harmony__no {
+  position: absolute;
+  top: var(--m);
+  left: var(--m);
+  font-size: clamp(9px, calc(var(--u) * 0.15), 11px);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  opacity: 0.45;
+}
+
+.pdp-harmony--grid .pdp-harmony__orb {
+  position: relative;
+  align-self: center;
+  justify-self: center;
+  width: var(--orb-d);
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+/* 무광 3D 구체 (사진 속 벨벳 질감 구체):
+   ① 왼쪽 위 빛 → 원색 → 오른쪽 아래 깊은 그늘(명암 경계를 또렷하게)
+   ② 아래쪽 반사광 — 바닥에서 되비치는 빛으로 둥근 볼륨
+   ③ 외곽 어둡게(limb darkening) — 테두리가 안으로 말려 들어가 보이게
+   ④ 아래 접지 그림자 — 원 크기에 비례한 부드러운 그림자 */
+.pdp-harmony--grid .pdp-harmony__spot .pdp-harmony__orb {
+  --orb-shadow: 0 calc(var(--orb-size) * 0.14) calc(var(--orb-size) * 0.16) calc(var(--orb-size) * -0.08) rgba(16, 30, 54, 0.22);
+
+  position: absolute;
+  inset: 0;
+  width: var(--orb-size);
+  height: var(--orb-size);
+  margin: auto;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 62%, rgba(0, 0, 0, 0.14) 100%),
+    radial-gradient(circle at 66% 88%, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 34%),
+    radial-gradient(circle at 32% 26%,
+      color-mix(in srgb, var(--orb) 55%, #fff) 0%,
+      color-mix(in srgb, var(--orb) 88%, #fff) 20%,
+      var(--orb) 46%,
+      color-mix(in srgb, var(--orb) 70%, #000) 100%);
+  box-shadow: var(--orb-shadow);
+  transition: transform 320ms var(--pdp-ease), box-shadow 320ms ease;
+}
+
+/* + 표시: 누를 수 있다는 신호 · 활성 시 ×로 회전 (단색 막대 두 개) */
+.pdp-harmony--grid .pdp-harmony__spot .pdp-harmony__orb::before {
+  --plus: clamp(10px, calc(var(--orb-d) * 0.22), 20px);
+
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(var(--orb-ink), var(--orb-ink)) center / var(--plus) 1.5px no-repeat,
+    linear-gradient(var(--orb-ink), var(--orb-ink)) center / 1.5px var(--plus) no-repeat;
+  transition: transform 320ms var(--pdp-ease);
+}
+
+.pdp-harmony--grid .pdp-harmony__spot:hover .pdp-harmony__orb {
+  transform: scale(1.06);
+}
+
+.pdp-harmony--grid .pdp-harmony__spot.is-active .pdp-harmony__orb {
+  transform: scale(1.06);
+  box-shadow:
+    0 0 0 4px var(--hg-bg),
+    0 0 0 5.5px var(--orb),
+    var(--orb-shadow);
+}
+
+.pdp-harmony--grid .pdp-harmony__spot.is-active .pdp-harmony__orb::before {
+  transform: rotate(45deg);
+}
+
+.pdp-harmony--grid .pdp-harmony__name {
+  position: absolute;
+  bottom: var(--m);
+  left: var(--m);
+  color: var(--pdp-accent, #0077bf); /* bleu — 소개 제목과 같은 색 */
+  font-size: var(--fs);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* 팝업: 큐브 위쪽 모서리에 붙여 바깥으로(오른쪽 큐브는 왼쪽으로) */
+.pdp-harmony--grid .pdp-harmony__pop {
+  top: 12px;
+  left: calc(100% - 12px);
+  z-index: 4;
+  border: 1px solid var(--hg-line);
+  border-radius: 0;
+  background: var(--hg-bg);
+  filter: none;
+}
+
+.pdp-harmony--grid .pdp-harmony__spot--flip .pdp-harmony__pop {
+  right: calc(100% - 12px);
+  left: auto;
+}
+
+.pdp-harmony--grid .pdp-harmony__pop-kicker {
+  color: color-mix(in srgb, var(--orb) 65%, #000);
+}
+
+/* 성분명 앞 색 점 없음 — 위 kicker(성분 색)로 충분 */
+
+/* 모바일: 같은 13×10 구도를 화면 폭(page-margin 안)에 맞춰 비율 그대로 축소.
+   소개는 위쪽 전체 폭(13칸) 흰 블록, 큐브는 소개 행 수(--hg-intro-rows, proto.js) + 빈 행 1 아래로.
+   팝업은 그리드 전체 폭으로 큐브 아래(아래 줄 큐브는 위) */
+@media (max-width: 767px) {
+  .pdp-harmony--grid .pdp-harmony__stage {
+    --hg-intro: 13;
+    --hg-x: 0;
+    --hg-n: 13;
+    --hg-y: calc(var(--hg-intro-rows, 7) + 1);
+    --u: calc((100cqw - var(--page-margin, 20px) * 2) / 13);
+    --hg-ox: var(--page-margin, 20px);
+
+    grid-template-rows: none;
+    overflow: hidden;
+    padding: var(--hg-oy) var(--hg-ox);
+  }
+
+  .pdp-harmony--grid .pdp-harmony__intro {
+    padding: var(--spacing-5, 20px);
+  }
+
+  .pdp-harmony--grid .pdp-harmony__spot,
+  .pdp-harmony--grid .pdp-harmony__crystal {
+    grid-row: calc(var(--r) + var(--hg-y)) / span var(--s);
+  }
+
+  .pdp-harmony--grid .pdp-harmony__spot {
+    --m: 5px;
+    --fs: 12px;
+  }
+
+  /* 작은 칸(약 52px)은 이름까지 넣으면 원이 점이 된다 → 원만(띠 = 여백), 이름은 팝업 제목으로 */
+  .pdp-harmony--grid .pdp-harmony__spot:not(.pdp-harmony__spot--lg) {
+    --band: var(--m);
+  }
+
+  .pdp-harmony--grid .pdp-harmony__spot:not(.pdp-harmony__spot--lg) .pdp-harmony__no,
+  .pdp-harmony--grid .pdp-harmony__spot:not(.pdp-harmony__spot--lg) .pdp-harmony__name {
+    display: none;
+  }
+
+  .pdp-harmony--grid .pdp-harmony__pop,
+  .pdp-harmony--grid .pdp-harmony__spot--flip .pdp-harmony__pop {
+    top: calc(100% - 4px);
+    right: auto;
+    left: calc((1 - var(--c)) * var(--u));
+    width: calc(var(--u) * 13);
+  }
+
+  .pdp-harmony--grid .pdp-harmony__spot--up .pdp-harmony__pop {
+    top: auto;
+    bottom: calc(100% - 4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-harmony--grid .pdp-harmony__orb,
+  .pdp-harmony--grid .pdp-harmony__orb::before {
+    transition: none;
+  }
+}
+
+/* D: 피뿌리풀 들판(패럴렉스 이미지) — 데스크톱은 16:9,
+   좁은 화면(≤767px)은 세로형(3:4) — 모바일 이미지가 이미 꽃 기준 3:4 크롭이라 정중앙 기준 */
+.pdp--proto-d .pdp-origin__field {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.pdp--proto-d .pdp-origin__field-image {
+  object-position: center center;
+}
+
+@media (max-width: 767px) {
+  .pdp--proto-d .pdp-origin__field {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+/* D: 패럴렉스를 더 또렷하게 — 이미지만 더 느리게(레이어 132% · ±12% 이동 = 프레임의 ±15.8%, 위아래 16% 여유 안).
+   STECHA 문구는 페이지와 함께 움직인다(반대 방향 이동은 어지러워 보여 뺌) */
+.pdp--proto-d .pdp-origin__field-media {
+  top: -16%;
+  height: 132%;
+  transform: translate3d(0, calc(var(--pdp-parallax, 0) * -12%), 0);
+}
+
+
+/* ============================================================
+   D: 시점 탭 = 세그먼트 컨트롤
+   - 흰 트랙 하나 안에 3칸이 붙어 있고(gap 0), 선택 칸만 Creme 면 → 카드 목록이 아니라 컨트롤로 읽힌다
+   - 테두리 없음 · 칸 구분선 항상
+   - 시점 pill 유지, 진행선은 각 칸의 시점 줄(pill · 사용 직후) 오른쪽으로 이어진다
+   - 섹션 배경 위에 탭(데스크톱 시엘 트랙)과 흰 카드만 — 별도 틀 없음
+   색·치수는 아래 변수만 바꾸면 된다.
+   ============================================================ */
+.pdp-clinical--sv .pdp-timepoints {
+  --pdp-tp-radius: 20px;                       /* 칸 — 트랙은 + 여백 6 */
+  --pdp-tp-gap: 16px;                          /* 칸 사이(데스크톱) — 세로선 양옆 여백 */
+  --pdp-tp-inset: 4px;                         /* 트랙과 선택 칸 사이 */
+  --pdp-tp-track: var(--pdp-surface);          /* 그레이로 바꾸려면 var(--pdp-sv-surface) */
+  --pdp-tp-active: var(--pdp-creme);
+  --pdp-tp-bar-track: color-mix(in srgb, var(--pdp-accent) 30%, #fff); /* 20%는 섹션 배경(band)에 묻힌다 */
+  --pdp-tp-bar: var(--pdp-accent);
+}
+
+.pdp-clinical--sv .pdp-timepoints__tabs {
+  gap: var(--spacing-2); /* 칸 사이 8px — hover 면이 선택 칸과 맞닿지 않게 */
+  margin-bottom: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.pdp-clinical--sv .pdp-timepoints__tab {
+  position: relative;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4) var(--spacing-5);
+  border-radius: var(--pdp-tp-radius);
+  background: transparent;
+  color: var(--pdp-accent);
+  transition: background-color var(--duration-medium, 240ms) var(--easing-standard, ease);
+}
+
+.pdp-clinical--sv .pdp-timepoints__tab[aria-selected="true"] {
+  background: var(--pdp-tp-active);
+}
+
+/* 탭 묶음(데스크톱): 탭 줄 전체를 시엘 틴트 트랙으로 감싼다 — 아래 흰 카드 그리드와 다른 종류(컨트롤)로 읽힌다.
+   트랙 안: 칸 사이 세로선(항상) · 선택 칸 크림 · hover 흰 반투명. 트랙 모서리 = 칸 20 + 여백 6 */
+@media (min-width: 768px) {
+  .pdp-clinical--sv .pdp-timepoints__tabs {
+    gap: var(--pdp-tp-gap);
+    padding: 6px;
+    border-radius: calc(var(--pdp-tp-radius) + 6px);
+    background: color-mix(in srgb, var(--primitive-ciel, #bbd5fd) 40%, #fff);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pdp-clinical--sv .pdp-timepoints__tab:not([aria-selected="true"]):hover {
+    background: rgba(255, 255, 255, 0.65);
+  }
+}
+
+.pdp-clinical--sv .pdp-timepoints__tab:focus-visible {
+  border-radius: var(--pdp-tp-radius);
+  outline-offset: 2px;
+}
+
+/* 칸 구분선(데스크톱): 칸 사이 항상, 칸 간격 가운데 — 선택이 바뀌어도 메뉴 구조가 고정돼 보인다 */
+@media (min-width: 768px) {
+  .pdp-clinical--sv .pdp-timepoints__tab + .pdp-timepoints__tab::before {
+    content: "";
+    position: absolute;
+    top: var(--spacing-4);
+    bottom: var(--spacing-4);
+    left: calc(var(--pdp-tp-gap) / -2 - 0.5px); /* 칸 간격 정가운데 */
+    width: 1px;
+    background: color-mix(in srgb, var(--pdp-accent) 14%, transparent); /* 트랙 위에서 옅게 */
+    transition: opacity var(--duration-medium, 240ms) var(--easing-standard, ease);
+  }
+}
+
+/* 진행 바(2px × 48px): 선택 칸에만, 시점 줄(pill · 사용 직후) 오른쪽 끝 — 지금 재생 중인 시점만 보여 준다.
+   자동 재생 중 차오르고, 재생이 끝나면 비워진다 */
+.pdp-clinical--sv .pdp-timepoints {
+  --pdp-tp-bar-h: 2px;
+  --pdp-tp-bar-w: 48px;
+}
+
+.pdp-clinical--sv .pdp-timepoints__rail {
+  flex: none;
+  width: var(--pdp-tp-bar-w);
+  height: var(--pdp-tp-bar-h);
+  margin: 0 0 0 auto;
+  border-radius: var(--pdp-tp-bar-h);
+  background: color-mix(in srgb, var(--pdp-creme, #f7f1a0) 60%, #9a9789); /* 크림 면 위 회색조 셰이드 */
+  opacity: 0;
+  transition: opacity var(--duration-medium, 240ms) var(--easing-standard, ease);
+}
+
+.pdp-clinical--sv .pdp-timepoints__tab[aria-selected="true"] .pdp-timepoints__rail {
+  opacity: 1;
+}
+
+.pdp-clinical--sv .pdp-timepoints__rail .pdp-timepoints__progress {
+  background: var(--pdp-tp-bar);
+}
+
+/* 틀 없음 — 섹션 배경 위에 탭 트랙(컨트롤)과 흰 카드(내용)만. 면 색이 겹겹이 쌓이지 않게 단순화 */
+.pdp-clinical--sv .pdp-timepoints__nav {
+  margin-bottom: var(--spacing-5);
+}
+
+
+
+/* 라벨: 여백 없이, 면 대비로 상태를 보여 주므로 흐림 없음 */
+.pdp-clinical--sv .pdp-timepoints__labels,
+.pdp-clinical--sv .pdp-timepoints__tab:last-child .pdp-timepoints__labels {
+  padding: 0;
+  opacity: 1;
+}
+
+/* 모바일: 탭이 한 칸씩 가로로 넘어가므로 트랙 없이 칸마다 면 — 비선택 흰색 · 선택 Creme.
+   탭 + 페이지네이션(nav)을 함께 상단 고정 → 넘겨도 몇 번째 시점인지 바로 보인다 */
+@media (max-width: 767px) {
+  .pdp-clinical--sv .pdp-timepoints__nav {
+    position: sticky;
+    top: var(--offset-header, 0px);
+    z-index: 2;
+    margin: 0 calc(var(--layout-page-x, 20px) * -1) var(--spacing-4);
+    padding: var(--spacing-3) 0;
+    background: var(--pdp-band); /* 틀 밖 섹션 배경 — 화면 폭 끝까지 */
+  }
+
+  /* 탭 줄은 화면 끝까지 스크롤(잘리지 않음) · 첫 칸은 좌우 여백에서 시작 · 칸 하나 = 콘텐츠 폭 85% —
+     칸 폭은 일정하고, 다음 메뉴의 시점 표시(24H …)가 오른쪽에 보여 넘길 수 있음을 알린다 */
+  .pdp-clinical--sv .pdp-timepoints__tabs {
+    position: static;
+    gap: var(--spacing-2);
+    margin: 0;
+    padding: 0 var(--layout-page-x, 20px);
+    scroll-padding-inline: var(--layout-page-x, 20px);
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .pdp-clinical--sv .pdp-timepoints__tab {
+    flex: 0 0 85%;
+  }
+
+  .pdp-clinical--sv .pdp-timepoints__tab {
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-4);
+    border-radius: 12px;
+    background: var(--pdp-tp-track);
+  }
+
+
+  .pdp-clinical--sv .pdp-timepoints__labels {
+    padding: 0;
+    font-size: var(--font-size-body-m);
+    line-height: var(--line-height-body-m);
+  }
+}
+
+/* ============================================================
+   D: border-radius 정리 — 토큰 단계로 세 가지만
+   · 콘텐츠 카드 --pdp-card-r: 데스크톱 radius-2xl(24) · 모바일 radius-xl(14)
+   · 작은 정보 카드 --pdp-card-r-s: radius-xl(14) — FORMULA SUPPORT
+   · 카드 안 이미지 --pdp-inner-r: radius-xl(14) · 모바일 radius-lg(10) — 리추얼 이미지
+   UI(칩 · 배지 · BEFORE/AFTER = pill, 시점 탭 트랙 20 / 칸 16 동심원)와 원형 장식은 그대로.
+   앞선 규칙보다 우선하도록 .pdp.pdp--proto-d 로 시작, 파일 맨 끝에 둔다
+   ============================================================ */
+.pdp.pdp--proto-d {
+  --pdp-card-r: var(--radius-2xl, 24px);
+  --pdp-card-r-s: var(--radius-xl, 14px);
+  --pdp-inner-r: var(--radius-xl, 14px);
+}
+
+@media (max-width: 767px) {
+  .pdp.pdp--proto-d {
+    --pdp-card-r: var(--radius-xl, 14px);
+    --pdp-inner-r: var(--radius-lg, 10px);
+  }
+}
+
+.pdp.pdp--proto-d :is(
+  .pdp-timepoints__card,
+  .pdp-timepoints__summary,
+  .pdp-clinical__hydration,
+  .pdp-clinical__study,
+  .pdp-safety,
+  .pdp-concentrate__visual,
+  .pdp-origin__kist,
+  .pdp-botanical__callout,
+  .pdp-botanical__stat,
+  .pdp-ltve__step,
+  .pdp-vegan,
+  .pdp-ritual__item,
+  .pdp-usage__step,
+  .pdp-usage__visual
+) {
+  border-radius: var(--pdp-card-r);
+}
+
+.pdp.pdp--proto-d .pdp-support__card {
+  border-radius: var(--pdp-card-r-s);
+}
+
+.pdp.pdp--proto-d .pdp-ritual__figure {
+  border-radius: var(--pdp-inner-r);
+}
+
+/* D 모바일: Botanical 하단 특징 3개(식물 유래 포뮬러 …) 너비 220px (공통 260px) */
+@media (max-width: 767px) {
+  .pdp--proto-d .pdp-botanical__feature {
+    width: 220px;
+  }
+}
+
+/* D Harmony: 칸 크기(--u) · 좌우 여백(--hg-ox)을 정수 px로 내림 — 박스 경계가 정수 픽셀에 놓여,
+   픽셀에 맞춰 그리는 모눈 선(round)과 같은 자리에 겹친다(폭에 따라 박스 흰 면이 테두리 선을 덮던 문제).
+   데스크톱 · 모바일 정의보다 뒤에 둬야 하므로 파일 끝에 */
+@supports (width: round(down, 1.5px, 1px)) {
+  .pdp-harmony--grid .pdp-harmony__stage {
+    --u: round(down, min(calc(88cqw / var(--hg-n)), 72px), 1px);
+    --hg-ox: round(down, calc((100% - var(--hg-n) * var(--u)) / 2), 1px);
+  }
+
+  @media (max-width: 767px) {
+    .pdp-harmony--grid .pdp-harmony__stage {
+      --u: round(down, calc((100cqw - var(--page-margin, 20px) * 2) / 13), 1px);
+      --hg-ox: var(--page-margin, 20px);
+    }
+  }
+}
+
+/* D Concentrate: 실제 상세는 사이드바(240px) 옆이라 1100px 화면에서 섹션 폭이 860px까지 좁아진다.
+   이미지 열(511px 고정) + 간격 96px이면 "CONCENTRATE"(줄바꿈 금지)가 넘치므로, 섹션 폭 기준으로 두 열을 비율로 · 간격을 줄인다 */
+.pdp--proto-d .pdp-concentrate {
+  container-type: inline-size;
+}
+
+/* 데스크톱(2열 배치)에서만 — 모바일 1단 배치(공통 CSS)는 그대로 */
+@media (min-width: 768px) {
+  @container (max-width: 1100px) {
+    .pdp--proto-d .pdp-concentrate__grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+      gap: var(--spacing-10);
+    }
+  }
+}
+
+/* D 모바일: 시점 탭(상단 고정)을 toc-bar 바로 아래에 붙인다.
+   toc-bar(components/toc-bar.css)는 헤더 아래(--offset-header)에 높이 40px(--spacing-10)로 고정되고,
+   헤더가 숨으면(body[data-header-state="hidden"]) 화면 맨 위로 올라간다 — 탭도 같은 시간(240ms)에 따라 움직인다 */
+@media (max-width: 767px) {
+  body:has([data-toc-bar]) .pdp-clinical--sv .pdp-timepoints__nav {
+    top: calc(var(--offset-header, 0px) + var(--spacing-10, 40px));
+    transition: top var(--duration-medium, 240ms) var(--easing-standard, ease);
+  }
+
+  body[data-header-state="hidden"]:has([data-toc-bar]) .pdp-clinical--sv .pdp-timepoints__nav {
+    top: var(--spacing-10, 40px);
+  }
+}
+
+/* D 모바일: 4 WEEKS 카드 4장은 세로로 쌓지 않고 옆으로 넘긴다(탭과 같은 85% 폭 · 다음 카드가 오른쪽에 걸쳐 보임).
+   NOW 카드는 BEFORE/AFTER 비교(좌우 드래그)와 겹치지 않게 세로 그대로 */
+@media (max-width: 767px) {
+  .pdp-clinical--sv .pdp-timepoints__row--4 {
+    display: flex;
+    gap: var(--spacing-2);
+    margin-inline: calc(var(--layout-page-x, 20px) * -1);
+    padding: 0 var(--layout-page-x, 20px) var(--spacing-1);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--layout-page-x, 20px);
+    scrollbar-width: none;
+  }
+
+  .pdp-clinical--sv .pdp-timepoints__row--4::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-clinical--sv .pdp-timepoints__row--4 > .pdp-timepoints__card {
+    display: flex;
+    flex: 0 0 85%;
+    scroll-snap-align: start;
+  }
+}

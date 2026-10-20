@@ -1,0 +1,2438 @@
+/* ============================================================
+   PDP — BIO Elixir (admin-injected story content)
+   ------------------------------------------------------------
+   Theme + product-specific blocks layered on pdp.css.
+   Shared from pdp.css as-is: section system, .pdp__head,
+   scroll reveal, .pdp-usage, .pdp-faq.
+   Behaviour: pdp.js + pdp-elixir.js.
+   ============================================================ */
+
+/* ---- Theme: product palette → framework tokens ---- */
+.pdp--elixir {
+  --pdp-accent: var(--semantic-brand, #0077bf);
+  --pdp-accent-deep: #0082c8;
+  --pdp-creme: var(--primitive-creme, #f7f1a0);
+  --pdp-ciel: var(--primitive-ciel, #bbd5fd);
+  --pdp-ciel-soft: var(--primitive-ciel-soft, #f5f9ff);
+  --pdp-band: var(--primitive-brand-tertiary-200, #ebf2fe);
+  --pdp-muted: #66a3e5;
+  --pdp-on-accent: var(--semantic-on-surface-inverse, #fff);
+  --pdp-surface: var(--semantic-bg-default, #fff);
+  --pdp-surface-subtle: var(--semantic-bg-subtle, #f7f7f7);
+  --pdp-rule: rgba(0, 119, 191, 0.18);
+  /* 너비는 container--lg(--container-max-width 1280px 토큰)가 정한다 */
+  --pdp-wide: 100%;
+  --pdp-mid: 1072px; /* 임상 패널 · 연구 개요 안쪽 폭 */
+}
+
+/* Every section opens its own top gap; the framework collapses the bottom */
+.pdp--elixir .pdp__section + .pdp__section {
+  padding-top: var(--pdp-pad-y);
+}
+
+.pdp--elixir .pdp__eyebrow {
+  font-weight: var(--font-weight-bold, 700) !important;
+}
+
+/* 섹션 제목 = Sun Veil display-title (semibold) */
+.pdp--elixir .pdp-elixir__title,
+.pdp--elixir .pdp__head-title {
+  font-weight: var(--font-weight-semibold, 600);
+  text-wrap: pretty;
+  word-break: keep-all;
+}
+
+.pdp--elixir .pdp__head-lead {
+  word-break: keep-all;
+}
+
+/* ---- Disclosure (VIEW THE STUDY · LEARN ABOUT LTVE™) ---- */
+.pdp-disclosure {
+  position: relative;
+  border-bottom: 1px solid var(--pdp-rule);
+}
+
+.pdp-disclosure__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  min-height: 64px;
+  padding: var(--spacing-5) 0;
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  list-style: none;
+}
+
+.pdp-disclosure__summary::-webkit-details-marker {
+  display: none;
+}
+
+.pdp-disclosure__summary:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.pdp-disclosure__icon {
+  position: relative;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.pdp-disclosure__icon::before,
+.pdp-disclosure__icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 2px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.pdp-disclosure__icon::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.pdp-disclosure[open] .pdp-disclosure__icon::after {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.pdp-disclosure__body {
+  display: grid;
+  gap: 0;
+  padding-bottom: var(--spacing-6);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* ---- Inline SVG charts ---- */
+.pdp-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font-family-korean);
+}
+
+.pdp-chart__grid {
+  stroke: rgba(0, 119, 191, 0.15);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.pdp-chart__tick {
+  fill: rgba(0, 119, 191, 0.6);
+}
+
+.pdp-chart__line {
+  fill: none;
+  stroke: var(--pdp-accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  /* no vector-effect: non-scaling-stroke here — with pathLength="1" Chrome cuts the dash short */
+}
+
+.pdp-chart__dot {
+  fill: var(--pdp-accent);
+}
+
+.pdp-chart__dot--open {
+  fill: var(--pdp-surface);
+  stroke: var(--pdp-accent);
+  stroke-width: 2;
+}
+
+.pdp-chart__value {
+  fill: var(--pdp-accent);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.pdp-chart__label {
+  fill: rgba(0, 119, 191, 0.85);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* Draw the line in once the chart scrolls into view (pdp-elixir.js adds .is-drawn);
+   re-shown panels/visuals redraw because display:none restarts the animation.
+   Lines carry pathLength="1", so the dash is the whole line regardless of size. */
+.pdp--elixir .pdp-chart__line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.pdp--elixir.is-chart-draw .pdp-chart:not(.is-drawn) .pdp-chart__line {
+  stroke-dashoffset: 1;
+}
+
+.pdp-chart.is-drawn .pdp-chart__line {
+  animation: pdp-elixir-draw 1100ms var(--pdp-ease) both;
+}
+
+@keyframes pdp-elixir-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ===== 1. Hero ===== */
+.pdp-elixir-hero {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  aspect-ratio: 1680 / 1088;
+  min-height: 720px; /* 태블릿~1280px: 비율대로면 너무 낮아 캡 위 텍스트 공간이 부족 */
+  max-height: 1088px;
+  overflow: hidden;
+  padding: 0 !important;
+  background: #e9e9e9;
+}
+
+.pdp-elixir-hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+}
+
+.pdp-elixir-hero__glow {
+  position: absolute;
+  inset: 3.26% 32.63% 30.68%;
+  width: auto;
+  height: auto;
+  border-radius: 280px;
+  object-fit: cover;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* 텍스트 블록은 용기 캡을 기준으로 배치한다.
+   캡 상단은 모든 폭에서 히어로 높이의 39.1% (배경 이미지가 높이 기준 cover · 하단 정렬이므로)
+   → 블록 하단을 캡 위 --pdp-hero-cap-gap 지점에 고정하고 위로 쌓는다 */
+.pdp-elixir-hero__content {
+  --pdp-hero-cap-gap: clamp(var(--spacing-8), 3.5vw, var(--spacing-16));
+
+  position: absolute;
+  right: 0;
+  bottom: calc(60.9% + var(--pdp-hero-cap-gap));
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 var(--page-margin, 16px);
+  text-align: center;
+}
+
+/* 이미지 비율(1672:941)보다 넓은 화면: 폭 기준으로 키우면 위가 잘려 캡이 올라오므로
+   높이 기준으로 가운데 두고, 좌우 끝은 이미지 가장자리 톤의 바탕으로 페이드 */
+@media (min-width: 1934px) {
+  .pdp-elixir-hero {
+    background: linear-gradient(90deg, #ecebeb 0%, #e6e5e5 50%, #d7d6d5 100%);
+  }
+
+  .pdp-elixir-hero__bg {
+    left: 50%;
+    width: auto;
+    max-width: none;
+    transform: translateX(-50%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+  }
+}
+
+.pdp-elixir-hero__lead {
+  margin-bottom: var(--spacing-6) !important;
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+.pdp-elixir-hero__title {
+  font-family: var(--font-family-latin);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pdp-elixir-hero__link {
+  margin-top: var(--spacing-5);
+  color: inherit;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+}
+
+.pdp-elixir-hero__link span {
+  display: inline-block;
+  transition: transform 240ms var(--pdp-ease);
+}
+
+.pdp-elixir-hero__link:hover span,
+.pdp-elixir-hero__link:focus-visible span {
+  transform: translateY(3px);
+}
+
+/* ===== 2. A New Way to Concentrate ===== */
+.pdp-concentrate__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 511px) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--spacing-24);
+  max-width: 1108px;
+  margin: 0 auto;
+}
+
+.pdp-concentrate__visual {
+  position: relative;
+  aspect-ratio: 511 / 639;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--pdp-radius);
+  background: #d3d2d2;
+}
+
+.pdp-concentrate__layer {
+  position: absolute;
+  max-width: none;
+  object-fit: cover;
+}
+
+.pdp-concentrate__layer--crop {
+  top: -6%;
+  left: 0;
+  width: 100%;
+  height: 120%;
+}
+
+.pdp-concentrate__layer--back {
+  top: -7.36%;
+  left: -9.22%;
+  width: 123.29%;
+  height: 114.56%;
+}
+
+.pdp-concentrate__layer--front {
+  top: -14.56%;
+  left: -0.02%;
+  width: 101.37%;
+  height: 121.44%;
+}
+
+.pdp-concentrate__copy {
+  display: grid;
+  gap: var(--spacing-5);
+}
+
+.pdp-concentrate__title {
+  display: grid;
+  gap: var(--spacing-2);
+  font-family: var(--font-family-latin);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pdp-concentrate__title-kicker {
+  font-weight: inherit;
+  letter-spacing: 0.03em;
+}
+
+.pdp-concentrate__title-swap {
+  position: relative;
+  display: block;
+}
+
+.pdp-concentrate__title-old,
+.pdp-concentrate__title-main {
+  display: block;
+  font-weight: inherit;
+  white-space: nowrap;
+}
+
+.pdp-concentrate__title-old {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* CONCENTRATE(.type-display)와 같은 타입 스케일 — 크기·행간을 맞춰 같은 자리에서 교차한다 */
+  font-family: var(--font-heading-family);
+  font-size: var(--font-size-display);
+  line-height: var(--line-height-display);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  opacity: 0;
+}
+
+.pdp-concentrate__title-main {
+  letter-spacing: -0.01em;
+}
+
+/* Fallback (no JS): MIST blurs out, then CONCENTRATE sharpens in — 같은 자리에서 교차(위치 이동 없음) */
+.pdp-concentrate__copy.is-revealed .pdp-concentrate__title-old {
+  animation: pdp-elixir-mist-out 1500ms var(--pdp-ease) 300ms both;
+}
+
+.pdp-concentrate__copy.is-revealed .pdp-concentrate__title-main {
+  animation: pdp-elixir-concentrate-in 900ms var(--pdp-ease) 1300ms both;
+}
+
+/* Scroll-linked (pdp-elixir.js): MIST blurs away as you scroll, CONCENTRATE comes in blurred and sharpens.
+   두 단어는 같은 자리에 겹쳐 있고 opacity · blur만 바뀐다 */
+.pdp-concentrate__title-swap.is-scroll-linked .pdp-concentrate__title-old {
+  opacity: calc(1 - var(--pdp-mist-progress, 0));
+  filter: blur(calc(var(--pdp-mist-progress, 0) * 10px));
+  animation: none;
+  will-change: opacity, filter;
+}
+
+.pdp-concentrate__title-swap.is-scroll-linked .pdp-concentrate__title-main {
+  opacity: var(--pdp-concentrate-progress, 0);
+  filter: blur(calc((1 - var(--pdp-concentrate-progress, 0)) * 10px));
+  animation: none;
+  will-change: opacity, filter;
+}
+
+@keyframes pdp-elixir-mist-out {
+  0% { opacity: 0; filter: blur(0); }
+  20% { opacity: 1; filter: blur(0); }
+  50% { opacity: 1; filter: blur(0); }
+  100% { opacity: 0; filter: blur(3px); }
+}
+
+@keyframes pdp-elixir-concentrate-in {
+  from { opacity: 0; filter: blur(10px); }
+  to { opacity: 1; filter: blur(0); }
+}
+
+.pdp-concentrate__body {
+  padding-top: 0;
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+/* ===== 3. Clinical proof ===== */
+.pdp--elixir .pdp-clinical {
+  padding-bottom: var(--pdp-pad-y);
+  background: var(--pdp-band);
+}
+
+.pdp-clinical__tabs {
+  display: flex;
+  gap: 6px;
+  width: max-content;
+  margin: 0 auto var(--spacing-10);
+  padding: 6px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--pdp-surface);
+  box-shadow: inset 0 0 0 1px var(--pdp-band);
+}
+
+.pdp-clinical__tab {
+  min-width: 105px;
+  padding: 9.8px 22px;
+  border: 0;
+  border-radius: var(--radius-full, 999px);
+  background: transparent;
+  color: var(--pdp-accent);
+  cursor: pointer;
+  font-size: var(--font-size-heading-s) !important;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 24px;
+  transition: background-color 240ms ease, color 240ms ease;
+}
+
+.pdp-clinical__tab.is-active {
+  background: var(--pdp-accent);
+  color: var(--pdp-on-accent);
+}
+
+.pdp-clinical__tab:focus-visible {
+  outline: 2px solid var(--pdp-accent);
+  outline-offset: 2px;
+}
+
+.pdp-clinical__panel {
+  max-width: var(--pdp-mid);
+  margin: 0 auto;
+  animation: pdp-elixir-fade 480ms var(--pdp-ease) both;
+}
+
+.pdp-clinical__panel[hidden] {
+  display: none;
+}
+
+@keyframes pdp-elixir-fade {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.pdp--elixir .pdp-clinical__metric {
+  display: block;
+  font-family: var(--font-family-korean);
+  font-size: var(--font-size-heading-xxxl);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-heading-xxxl);
+  letter-spacing: -0.01em;
+}
+
+/* NOW — result cards + visual */
+.pdp-clinical__panel--now {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: start;
+  gap: var(--spacing-10);
+}
+
+/* 카드 3장은 우측 그래프(비율 고정) 높이에 맞춰 늘어나 위·아래 끝을 맞춘다 */
+.pdp-clinical__cards {
+  display: grid;
+  grid-auto-rows: 1fr;
+  align-self: stretch;
+  gap: var(--spacing-3);
+}
+
+.pdp-clinical__card {
+  display: grid;
+  align-content: center;
+  gap: var(--spacing-3);
+  width: 100%;
+  padding: var(--spacing-5) var(--spacing-6) var(--spacing-6);
+  border: 1px solid var(--pdp-band);
+  border-radius: var(--radius-2xl, 24px);
+  background: var(--pdp-surface);
+  color: var(--pdp-accent);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 280ms ease, color 280ms ease, border-color 280ms ease;
+}
+
+.pdp-clinical__card:hover {
+  border-color: rgba(0, 119, 191, 0.35);
+}
+
+.pdp-clinical__card.is-active {
+  border-color: var(--pdp-accent);
+  background: var(--pdp-accent);
+  color: var(--pdp-on-accent);
+}
+
+.pdp-clinical__card:focus-visible {
+  outline: 2px solid var(--pdp-accent);
+  outline-offset: 3px;
+}
+
+.pdp-clinical__desc {
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+.pdp-clinical__visuals {
+  position: relative;
+  aspect-ratio: 513 / 448;
+}
+
+.pdp-clinical__visual {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-2xl, 24px);
+  background: var(--pdp-surface);
+  animation: pdp-elixir-fade 420ms var(--pdp-ease) both;
+}
+
+.pdp-clinical__visual[hidden] {
+  display: none;
+}
+
+.pdp-clinical__visual--chart {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-8) var(--spacing-5) var(--spacing-6) 0;
+}
+
+.pdp-clinical__visual-title {
+  padding-left: var(--spacing-9);
+  color: inherit;
+  text-align: left;
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.pdp-clinical__visual-note {
+  padding-left: var(--spacing-5);
+  color: var(--semantic-on-surface-muted, var(--primitive-neutral-500, #7c7c7c));
+  font-size: var(--font-size-body-xs);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-body-xs);
+  text-align: center;
+}
+
+/* Before / after comparison */
+.pdp-compare {
+  --pdp-compare: 51%;
+
+  cursor: ew-resize;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.pdp-compare__img {
+  position: absolute;
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.pdp-compare__img--thermal-before {
+  top: -15.18%;
+  left: -7.6%;
+  width: 104.09%;
+  height: 119.2%;
+}
+
+.pdp-compare__img--thermal-after {
+  top: -15.18%;
+  left: -3.9%;
+  width: 103.9%;
+  height: 119%;
+}
+
+.pdp-compare__img--redness-before {
+  top: -15.85%;
+  left: -16.96%;
+  width: 116.96%;
+  height: 133.93%;
+}
+
+.pdp-compare__img--redness-after {
+  top: -15.18%;
+  left: 10.92%;
+  width: 104.09%;
+  height: 119.2%;
+}
+
+.pdp-compare__after {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 var(--pdp-compare));
+}
+
+.pdp-compare__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pdp-compare);
+  width: 1px;
+  background: rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+}
+
+.pdp-compare__handle img {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 56px;
+  height: 56px;
+  max-width: none;
+  transform: translate(-50%, calc(-50% + 2px));
+  transition: transform 200ms ease;
+}
+
+.pdp-compare.is-dragging .pdp-compare__handle img {
+  transform: translate(-50%, calc(-50% + 2px)) scale(1.08);
+}
+
+.pdp-compare__range {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.pdp-compare:focus-within .pdp-compare__handle img {
+  border-radius: 50%;
+  outline: 2px solid var(--pdp-accent);
+  outline-offset: -6px;
+}
+
+/* 24H — hydration */
+.pdp-clinical__hydration {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: var(--spacing-10);
+  padding: var(--spacing-8);
+  border-radius: var(--radius-2xl, 24px);
+  background: var(--pdp-surface);
+}
+
+.pdp-clinical__hydration-copy {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.pdp-clinical__sublabel {
+  font-weight: var(--font-weight-medium, 500);
+  opacity: 0.75;
+}
+
+.pdp-clinical__hydration-title {
+  margin-top: var(--spacing-3) !important;
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+.pdp-clinical__hydration-title strong {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.pdp-clinical__hydration-chart .pdp-chart {
+  padding-left: var(--spacing-2);
+}
+
+/* 4 WEEKS — skin aging index */
+.pdp-clinical__summary {
+  display: grid;
+  justify-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-8);
+  border-radius: var(--radius-2xl, 24px);
+  background: var(--pdp-surface);
+  text-align: center;
+}
+
+.pdp-clinical__summary-label {
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pdp-clinical__summary-title {
+  font-size: var(--font-size-heading-l);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-heading-l);
+  word-break: keep-all;
+}
+
+.pdp-clinical__summary-title strong {
+  font-size: var(--font-size-heading-xl);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.pdp-clinical__summary-note {
+  padding-top: 3px;
+  font-weight: var(--font-weight-medium, 500);
+  opacity: 0.75;
+  word-break: keep-all;
+}
+
+.pdp-clinical__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-5);
+  margin-top: var(--spacing-5);
+}
+
+.pdp-clinical__metric-card {
+  display: grid;
+  gap: var(--spacing-3);
+  padding: var(--spacing-6) var(--spacing-5) var(--spacing-3);
+  border-radius: var(--radius-2xl, 24px);
+  background: var(--pdp-surface);
+}
+
+.pdp-clinical__metric-title {
+  padding-top: var(--spacing-1);
+  font-weight: var(--font-weight-medium, 500);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pdp-clinical__metric-title strong {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* Study table */
+.pdp-clinical__study {
+  max-width: var(--pdp-mid);
+  margin: var(--spacing-16) auto 0;
+}
+
+.pdp-study {
+  width: 100%;
+  margin-bottom: var(--spacing-4);
+  border-collapse: collapse;
+  font-size: var(--font-size-body-m);
+  line-height: var(--line-height-body-m);
+}
+
+.pdp-study th,
+.pdp-study td {
+  padding: var(--spacing-3) var(--spacing-4) var(--spacing-3) 0;
+  border-bottom: 1px solid var(--pdp-band);
+  text-align: left;
+  vertical-align: top;
+}
+
+.pdp-study th {
+  width: 32.2%;
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pdp-study td {
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+.pdp-study__disclaimer {
+  margin-top: var(--spacing-4);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* Safety strip */
+.pdp-safety {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  max-width: 1096px;
+  margin: var(--spacing-20) auto 0;
+  padding: var(--spacing-10) var(--spacing-14) var(--spacing-9);
+  border-radius: var(--pdp-radius);
+  background: var(--pdp-surface);
+}
+
+.pdp-safety__icon {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+}
+
+.pdp-safety__copy {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.pdp-safety__label {
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* eyebrow와 label은 한 묶음으로 붙이고, 결과 줄과만 간격을 둔다 */
+.pdp-safety__copy .pdp__eyebrow + .pdp-safety__label {
+  margin-top: calc(var(--spacing-2) * -1);
+}
+
+.pdp-safety__result {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.pdp-safety__result strong {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* ===== 4. Plant origin ===== */
+.pdp-origin {
+  padding-bottom: 0 !important;
+}
+
+.pdp-origin__badge {
+  justify-self: center;
+  margin-top: var(--spacing-7); /* head gap 20px + 28px = 타이틀과 48px */
+  padding: 6px 12px;
+  border: 1px solid var(--pdp-accent);
+  border-radius: var(--radius-full, 999px);
+  background: rgba(255, 255, 255, 0.7);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1;
+}
+
+.pdp-origin__kist {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-10);
+  margin: 0 auto;
+  padding: var(--spacing-8) var(--spacing-10);
+  border-radius: var(--pdp-radius);
+  background: rgba(240, 246, 251, 0.93);
+}
+
+.pdp-origin__kist-logo {
+  flex: 0 1 300px;
+  width: 300px;
+  height: auto;
+}
+
+.pdp-origin__kist-copy {
+  display: grid;
+  max-width: 396px;
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+.pdp-origin__kist-copy .heading-m {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.pdp-origin__field {
+  position: relative;
+  height: clamp(520px, 47.4vw, 796px);
+  margin: var(--spacing-16) 0 0;
+  overflow: hidden;
+}
+
+/* 패럴렉스 레이어: 프레임보다 위아래로 10%씩 크게 두고, JS가 --pdp-parallax(-1 → 1)를 넘겨
+   스크롤보다 느리게 움직인다 (최대 ±8% × 120% = 프레임의 ±9.6% → 가장자리가 드러나지 않음) */
+.pdp-origin__field-media {
+  position: absolute;
+  top: -10%;
+  right: 0;
+  left: 0;
+  height: 120%;
+  transform: translate3d(0, calc(var(--pdp-parallax, 0) * -8%), 0);
+  will-change: transform;
+}
+
+.pdp-origin__field-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.pdp-origin__field-image--mobile {
+  display: none;
+}
+
+.pdp-origin__field-copy {
+  position: relative;
+  display: grid;
+  gap: var(--spacing-3);
+  max-width: 1028px;
+  margin: 0 auto;
+  padding: clamp(40px, 3.15vw, 53px) var(--page-margin, 16px) 0;
+  color: #fff;
+  font-weight: var(--font-weight-medium, 500);
+  text-align: center;
+  text-shadow: 0 0 2px rgba(23, 33, 43, 0.2);
+  word-break: keep-all;
+}
+
+.pdp-origin__field-copy p + p {
+  margin-top: var(--spacing-4);
+}
+
+/* 학명은 이탤릭 (Suisse Int'l 이탤릭 폰트 파일이 없어 브라우저 기울임으로 표현) */
+.pdp-origin__field-copy em {
+  font-style: italic;
+}
+
+.pdp-origin__field-name {
+  display: grid;
+}
+
+.pdp-origin__field-name strong {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* ===== 5. Botanical formula ===== */
+.pdp-botanical__grid {
+  display: grid;
+  --pdp-botanical-gap: var(--spacing-10);
+
+  grid-template-columns: minmax(0, 1fr) 160px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--pdp-botanical-gap);
+  max-width: var(--pdp-wide);
+  margin: 0 auto;
+}
+
+.pdp-botanical__head {
+  display: grid;
+  gap: var(--spacing-5);
+}
+
+.pdp-botanical__body {
+  margin-top: 0;
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+.pdp-botanical__eyebrow-sep {
+  margin: 0 0.4em;
+}
+
+/* 74% 식물 세포수 콜아웃 */
+.pdp-botanical__callout {
+  display: grid;
+  gap: var(--spacing-1);
+  max-width: 398px;
+  margin-top: var(--spacing-3);
+  padding: var(--spacing-7) var(--spacing-6);
+  border-radius: 17px;
+  background: #f1f7fb;
+  word-break: keep-all;
+}
+
+.pdp-botanical__callout p {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.pdp-botanical__callout strong {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.pdp-botanical__callout sup {
+  font-size: 0.6em;
+  line-height: 0;
+}
+
+.pdp-botanical__bottle {
+  position: relative;
+  width: 160px;
+  aspect-ratio: 160.317 / 558;
+  margin: 0;
+}
+
+.pdp-botanical__bottle-body {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pdp-botanical__bottle-water {
+  position: absolute;
+  top: 29.39%;
+  left: 0.97%;
+  width: 98.05%;
+  height: auto;
+  transform-origin: bottom center;
+}
+
+.pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-water {
+  animation:
+    pdp-elixir-fill 1600ms var(--pdp-ease) 200ms both,
+    pdp-elixir-water-fade 2400ms ease 4800ms both;
+}
+
+@keyframes pdp-elixir-fill {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* 정제수 → 피뿌리풀 블렌딩 (병이 화면에 들어온 시점 기준)
+   0.2–1.8s  옅은 파랑 정제수가 용기 끝까지 차오른다
+   1.8–2.4s  74% 피뿌리풀수 텍스트 등장 (다 나온 뒤에 추출물이 들어간다)
+   2.8–3.8s  붉은 피뿌리풀추출물이 바닥에 깔리며 차오른다(경계 그라디언트)
+   4.0–4.6s  4% 피뿌리풀추출물 텍스트 등장 (붉은 층이 보이는 동안)
+   4.8–7.4s  확산: 추출물 층의 바닥은 고정, 일자 경계만 수면까지 올라간다. 올라갈수록 위쪽은 묽어져 금빛,
+             6.0–8.0s 원천(바닥)도 묽어져 병 전체가 고른 금빛 Botanical Base가 된다
+   multiply로 섞고 글자 레이어를 위에 얹어 AYROW 블루를 유지한다. */
+@property --pdp-blend-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #b3122e;
+}
+
+/* 확산 정도 — 0%: 층 전체가 붉은 추출물, 100%: 층 아래쪽이 묽어진 금빛 */
+@property --pdp-diffuse {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+.pdp-botanical__bottle-blend {
+  --pdp-blend-color: #b3122e;
+  --pdp-blend-edge: 24px; /* 경계 번짐 높이 — 층이 늘어나도 일정 */
+  --pdp-blend-gold: #f8d35a; /* 확장되는 Botanical Base */
+
+  position: absolute;
+  top: 29.39%;
+  left: 0.97%;
+  width: 98.05%;
+  aspect-ratio: 157.194 / 392.594;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-mask: var(--pdp-liquid-mask) center / 100% 100% no-repeat;
+  mask: var(--pdp-liquid-mask) center / 100% 100% no-repeat;
+}
+
+/* 용기 바닥에서 시작. 위 경계는 고정 높이(--pdp-blend-edge)만큼 일자로 부드럽게 사라지고,
+   층이 늘어나면 경계도 같이 올라간다 */
+.pdp-botanical__bottle-blend::before,
+.pdp-botanical__bottle-blend::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+}
+
+/* 피뿌리풀추출물 층: 바닥에 고정된 채 위로 확산한다.
+   층 안의 색은 농도 기울기 — 아래(원천)는 붉고, 위로 갈수록 묽어져 금빛. 기울기는 층 높이와 함께 늘어난다 */
+.pdp-botanical__bottle-blend::before {
+  background: linear-gradient(
+    0deg,
+    var(--pdp-blend-color) 0%,
+    var(--pdp-blend-color) 12%,
+    color-mix(in srgb, var(--pdp-blend-gold) var(--pdp-diffuse), var(--pdp-blend-color)) 70%,
+    color-mix(in srgb, var(--pdp-blend-gold) var(--pdp-diffuse), var(--pdp-blend-color)) 100%
+  );
+  -webkit-mask: linear-gradient(0deg, #000 calc(100% - var(--pdp-blend-edge)), transparent 100%);
+  mask: linear-gradient(0deg, #000 calc(100% - var(--pdp-blend-edge)), transparent 100%);
+}
+
+.pdp-botanical__bottle-blend::after {
+  content: none;
+}
+
+.pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend {
+  animation: pdp-elixir-blend-in 300ms ease 2800ms both;
+}
+
+.pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend::before {
+  animation:
+    pdp-elixir-pour 1000ms cubic-bezier(0.3, 0, 0.2, 1) 2800ms both,
+    pdp-elixir-expand 2600ms cubic-bezier(0.45, 0.05, 0.35, 1) 4800ms forwards,
+    pdp-elixir-dilute 2600ms ease-out 4800ms forwards,
+    pdp-elixir-tint 2000ms ease-in-out 6000ms forwards;
+}
+
+@keyframes pdp-elixir-dilute {
+  from { --pdp-diffuse: 0%; }
+  to { --pdp-diffuse: 100%; }
+}
+
+@keyframes pdp-elixir-tint {
+  from { --pdp-blend-color: #b3122e; }
+  to { --pdp-blend-color: #f8d35a; }
+}
+
+@keyframes pdp-elixir-blend-in {
+  from { opacity: 0; }
+  to { opacity: 0.92; }
+}
+
+@keyframes pdp-elixir-pour {
+  from { height: 0; }
+  to { height: 20%; }
+}
+
+/* 붉은 층 높이에서 시작해, 경계가 수면 위로 완전히 빠질 때까지 (바닥~수면 96.18% + 경계 높이) */
+@keyframes pdp-elixir-expand {
+  from { height: 20%; }
+  to { height: calc(96.18% + var(--pdp-blend-edge)); }
+}
+
+@keyframes pdp-elixir-water-fade {
+  to { opacity: 0; }
+}
+
+/* 용기 선·글자만 블렌딩 위에 다시 얹어 브랜드 블루를 유지 */
+.pdp-botanical__bottle-ink {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* 영문 문구 → 수치 목록(dl) → 각주 */
+.pdp-botanical__stats {
+  display: grid;
+  gap: var(--spacing-8);
+  margin: 0;
+}
+
+.pdp-botanical__stats-list {
+  display: grid;
+  gap: var(--spacing-12);
+  margin: 0;
+}
+
+.pdp-botanical__stats-kicker,
+.pdp-botanical__stats-note {
+  margin: 0 !important;
+  word-break: keep-all;
+  text-wrap: balance;
+}
+
+.pdp-botanical__stats-note {
+  font-weight: var(--font-weight-medium, 500);
+  opacity: 0.75;
+}
+
+.pdp-botanical__stats-kicker + .pdp-botanical__stats-title {
+  margin-top: calc(var(--spacing-8) * -1 + var(--spacing-3)) !important;
+}
+
+.pdp-botanical__stat {
+  position: relative;
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+/* 데스크톱 시안: 병 오른쪽에 두 수치를 세로로 쌓는다 (지시선 없음).
+   병과 간격 ≈136px(그리드 gap + 좌측 여백), 블록 사이 56px, 묶음 중심은 병 중앙보다 약간 아래 */
+@media (min-width: 768px) {
+  .pdp-botanical__stats-list {
+    gap: var(--spacing-14);
+  }
+
+  .pdp-botanical__stats {
+    align-self: center;
+    margin-top: var(--spacing-14);
+    padding-left: clamp(var(--spacing-6), 6vw, var(--spacing-24));
+  }
+}
+
+/* 등장 순서는 병(.is-revealed) 기준 — :has 미지원 브라우저는 처음부터 보인다 */
+@supports selector(:has(*)) {
+  .pdp-botanical__stat > *,
+  .pdp-botanical__stats-kicker,
+  .pdp-botanical__stats-title,
+  .pdp-botanical__stats-note {
+    opacity: 0;
+  }
+
+  .pdp-botanical__grid:has(.pdp-botanical__bottle.is-revealed) :is(.pdp-botanical__stat > *, .pdp-botanical__stats-kicker, .pdp-botanical__stats-title, .pdp-botanical__stats-note) {
+    animation: pdp-elixir-stat-in 600ms var(--pdp-ease) var(--pdp-stat-delay) both;
+  }
+}
+
+/* 순서: 정제수 → 74% 피뿌리풀수 텍스트 → 붉은 추출물 → 4% 피뿌리풀추출물 텍스트 */
+.pdp-botanical__stats-kicker,
+.pdp-botanical__stats-title { --pdp-stat-delay: 600ms; }
+.pdp-botanical__stat--water { --pdp-stat-delay: 1800ms; }
+.pdp-botanical__stat--extract,
+.pdp-botanical__stats-note { --pdp-stat-delay: 4000ms; }
+
+@keyframes pdp-elixir-stat-in {
+  from { opacity: 0; transform: translate3d(8px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.pdp-botanical__stat dt {
+  font-size: var(--font-size-heading-l);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-heading-l);
+}
+
+/* 74 + 4: 수치 묶음의 큰 제목(Regular) — 아래 원료명 줄은 숫자까지 heading-l Bold로 통일 */
+.pdp-botanical__stats-title {
+  margin: 0 !important;
+  font-size: calc(var(--font-size-display) * 1.35);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.pdp-botanical__stat dd {
+  margin: 0;
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+.pdp-botanical__features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-5);
+  margin: var(--spacing-16) auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 데스크톱: 세 항목을 내용 폭만큼만 묶어 가운데 정렬 */
+@media (min-width: 768px) {
+  .pdp-botanical__features {
+    max-width: max-content;
+    gap: var(--spacing-12);
+  }
+}
+
+.pdp-botanical__feature {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.pdp-botanical__feature img {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.pdp-botanical__feature-text {
+  display: grid;
+  margin-left: var(--spacing-4);
+  padding-left: var(--spacing-4);
+  border-left: 1px solid var(--pdp-rule);
+}
+
+.pdp-botanical__feature-text strong {
+  color: var(--pdp-accent);
+  font-size: var(--font-size-body-l);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-body-l);
+}
+
+.pdp-botanical__feature-text span {
+  color: var(--pdp-muted);
+  font-family: var(--font-family-latin);
+  font-size: var(--font-size-body-s);
+  line-height: var(--line-height-body-s);
+}
+
+/* ===== 6. Extraction technology — LTVE™ ===== */
+.pdp-ltve__steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-5);
+  max-width: var(--pdp-wide);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.pdp-ltve__step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  height: 246px;
+  padding: var(--spacing-8) var(--spacing-6);
+  overflow: hidden;
+  border-radius: var(--radius-2xl, 24px);
+  background: var(--pdp-ciel-soft);
+  color: #fff;
+  isolation: isolate;
+}
+
+/* 등장: 카드가 순서대로 아래에서 떠오르며 나타난다 (pdp.js가 .is-revealed를 붙임).
+   마크업의 data-scroll-delay(80ms 간격)는 너무 촘촘해 여기서 간격을 넓힌다 — 인라인 지연을 덮으려고 !important */
+.pdp-ltve__step[data-scroll-reveal] {
+  transform: translate3d(0, 32px, 0);
+  transition:
+    opacity 900ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 1200ms var(--pdp-ease);
+}
+
+.pdp-ltve__step[data-scroll-reveal].is-revealed {
+  transform: translate3d(0, 0, 0);
+}
+
+.pdp-ltve__step--2[data-scroll-reveal] { transition-delay: 140ms !important; }
+.pdp-ltve__step--3[data-scroll-reveal] { transition-delay: 280ms !important; }
+.pdp-ltve__step--4[data-scroll-reveal] { transition-delay: 420ms !important; }
+
+.pdp-ltve__step::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0) 100%);
+}
+
+.pdp-ltve__step img {
+  position: absolute;
+  z-index: -2;
+  max-width: none;
+  object-fit: cover;
+  transition: transform 900ms var(--pdp-ease);
+}
+
+.pdp-ltve__step:hover img {
+  transform: scale(1.04);
+}
+
+.pdp-ltve__step--1 img { inset: 0; width: 100%; height: 100%; }
+.pdp-ltve__step--2 img { top: -25.8%; left: -32.77%; width: 137.5%; height: 137.4%; }
+.pdp-ltve__step--3 img { top: -28.65%; left: -10.81%; width: 133.45%; height: 133.33%; }
+.pdp-ltve__step--4 img { inset: 0; width: 100%; height: 100%; object-position: center 40%; }
+
+.pdp-ltve__num {
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.pdp-ltve__step strong {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.pdp-ltve__more {
+  max-width: var(--pdp-wide);
+  margin: var(--spacing-10) auto 0;
+}
+
+.pdp-ltve__more .pdp-disclosure__body p {
+  line-height: var(--line-height-body-m);
+  word-break: keep-all;
+}
+
+/* ===== 7. Reverse AG Code™ — Harmony Ratio ===== */
+.pdp-harmony__stage {
+  position: relative;
+  aspect-ratio: 1680 / 1300;
+  overflow: hidden;
+  background: #e8eaec;
+}
+
+.pdp-harmony__intro {
+  position: absolute;
+  top: 8.24%;
+  left: 5vw; /* 모바일(≤767px)은 아래에서 static + page-margin */
+  z-index: 2;
+  display: grid;
+  width: min(386px, 23vw);
+  pointer-events: none;
+}
+
+.pdp-harmony__intro .pdp__eyebrow {
+  margin-bottom: var(--spacing-5) !important;
+}
+
+.pdp-harmony__intro h2 {
+  margin-bottom: var(--spacing-5) !important;
+}
+
+.pdp-harmony__hint,
+.pdp-harmony__desc {
+  max-width: 340px;
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+.pdp-harmony__desc strong {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* 시안: 설명 → 안내 순서 */
+.pdp-harmony__hint {
+  margin-top: var(--spacing-5) !important;
+}
+
+.pdp-harmony__canvas,
+.pdp-harmony__canvas-inner {
+  position: absolute;
+  inset: 0;
+}
+
+/* 4:3 photo scaled to 120% and lifted 5% so the cubes clear the copy
+   column; hotspot --x / --y / --ring are measured against this frame. */
+.pdp-harmony__photo {
+  position: absolute;
+  top: -5%;
+  left: 0;
+  width: 120%;
+  max-width: none;
+  height: 116.3%;
+  object-fit: cover;
+}
+
+.pdp-harmony__spots {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pdp-harmony__spot {
+  --dot: clamp(40px, 5.11vw, 86px);
+
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--ring);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+
+.pdp-harmony__spot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.95),
+    0 0 28px 6px rgba(255, 255, 255, 0.75);
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 320ms ease, transform 420ms var(--pdp-ease);
+  pointer-events: none;
+}
+
+.pdp-harmony__spot.is-active {
+  z-index: 3;
+}
+
+.pdp-harmony__spot.is-active::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.pdp-harmony__dot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 12%;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-family-latin);
+  font-size: clamp(11px, 1.1vw, 19px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.25;
+  text-align: center;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.18);
+}
+
+.pdp-harmony__dot:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.pdp-harmony__pop {
+  position: absolute;
+  top: calc(50% - var(--dot) / 2);
+  left: calc(50% + var(--dot) / 2 - 10px);
+  display: grid;
+  gap: 3px;
+  width: clamp(260px, 22.6vw, 380px);
+  padding: clamp(18px, 1.52vw, 25.5px) clamp(18px, 1.6vw, 27px);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.88);
+  filter: drop-shadow(0 10.7px 16.8px rgba(50, 48, 37, 0.05));
+  animation: pdp-elixir-fade 320ms var(--pdp-ease) both;
+}
+
+.pdp-harmony__pop[hidden] {
+  display: none;
+}
+
+.pdp-harmony__spot--flip .pdp-harmony__pop {
+  right: calc(50% + var(--dot) / 2 - 10px);
+  left: auto;
+}
+
+.pdp-harmony__pop-kicker {
+  color: #802727;
+  font-family: var(--font-family-latin);
+  font-size: var(--font-size-body-s);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-body-s);
+}
+
+.pdp-harmony__pop-title {
+  font-size: var(--font-size-body-xl);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-body-xl);
+  word-break: keep-all;
+}
+
+.pdp-harmony__pop-sub {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.pdp-harmony__pop p {
+  margin-top: 6px !important;
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+/* Formula support + */
+.pdp-support {
+  display: grid;
+  gap: var(--spacing-4);
+  margin: var(--spacing-10) auto 0;
+}
+
+.pdp-support__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pdp-support__card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--spacing-2);
+  padding: var(--spacing-5) var(--spacing-6);
+  border-radius: var(--radius-xl, 14px);
+  background: var(--pdp-surface-subtle);
+}
+
+.pdp-support__card strong {
+  font-family: var(--font-family-latin);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pdp-support__card p {
+  grid-column: 1 / -1;
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.pdp-support__note {
+  color: var(--semantic-on-surface-muted, var(--primitive-neutral-500, #7c7c7c));
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* Vegan banner */
+.pdp-vegan {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr) minmax(0, 420px);
+  align-items: center;
+  gap: var(--spacing-10);
+  margin: var(--spacing-16) auto 0;
+  padding: var(--spacing-10) var(--spacing-16);
+  border-radius: var(--pdp-radius);
+  background: var(--pdp-creme);
+}
+
+.pdp-vegan__logo {
+  width: 168px;
+  height: auto;
+}
+
+.pdp-vegan__title {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.pdp-vegan__title h3 {
+  font-weight: var(--font-weight-bold, 700);
+  word-break: keep-all;
+}
+
+.pdp-vegan__body {
+  font-weight: var(--font-weight-medium, 500);
+  word-break: keep-all;
+}
+
+/* ===== 8. Daily ritual ===== */
+.pdp-ritual__brand {
+  margin-top: 0 !important;
+  font-family: var(--font-family-latin);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* 데스크톱: 카드 순서는 고정(시간 흐름 유지), 선택한 장면(.is-active)만 제자리에서 넓어진다.
+   카드는 같은 박스 하나가 작은 카드 ↔ 큰 카드로 변한다 — 위치값을 변수로 바꿔 트랜지션한다. */
+.pdp-ritual__carousel {
+  position: relative;
+  max-width: var(--pdp-wide);
+  margin: 0 auto;
+}
+
+.pdp-ritual__list {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  aspect-ratio: 1232 / 600; /* 큰 카드 485×600 + 작은 카드 3장 */
+  container-type: inline-size; /* D안: 작은 카드 높이를 목록 너비(cqw)로 계산 (pdp-elixir-proto.css) */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pdp-ritual__item {
+  --pdp-ritual-ease: 700ms var(--pdp-ease);
+  --pdp-ritual-figure-inset: 54px 9px calc(133px + var(--spacing-3)); /* 아래: 카피 영역 + 사진–제목 간격 */
+  --pdp-ritual-time-top: 19px;
+  --pdp-ritual-time-left: 14px;
+  /* copy 박스: 카드 하단에 붙은 블러 판. 글자 위치는 padding으로 잡는다 */
+  --pdp-ritual-copy-inset-x: 9px;
+  --pdp-ritual-copy-inset-b: 0px;
+  --pdp-ritual-copy-pad-x: 5px;
+  --pdp-ritual-copy-pad-b: 22px;
+  --pdp-ritual-copy-radius: 0px;
+  --pdp-ritual-blur-extend: 0px; /* 블러 판이 글자 위로 더 올라가는 높이 */
+  --pdp-ritual-tint: rgba(255, 255, 255, 0.5);
+
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 88%; /* 작은 카드 528 / 큰 카드 600 */
+  overflow: hidden;
+  isolation: isolate; /* Sun Veil 카드와 같은 방식: backdrop-filter를 라운드 안으로 가둔다 */
+  border-radius: 17px;
+  background: #f0f3f6;
+  color: var(--pdp-muted);
+  cursor: pointer;
+  transition:
+    flex-grow var(--pdp-ritual-ease),
+    height var(--pdp-ritual-ease),
+    border-radius var(--pdp-ritual-ease),
+    background-color 500ms ease,
+    color 500ms ease;
+}
+
+/* 큰 카드: 사진이 카드를 채우고 시간·카피를 사진 위에 얹는다 */
+/* 큰 카드: 사진 · 카피 판이 카드 끝까지 채운다 (들여쓰기를 두면 카드 배경이 얇은 테두리처럼 보인다).
+   모서리는 카드의 overflow: hidden + radius가 자른다 */
+.pdp-ritual__item.is-active {
+  --pdp-ritual-figure-inset: 0px;
+  --pdp-ritual-time-top: 20px;
+  /* 점(●) 시작선 = 아래 제목 시작선 (시간 라벨은 padding-left 5px 뒤에서 점이 시작) */
+  --pdp-ritual-time-left: calc(var(--pdp-ritual-copy-inset-x) + var(--pdp-ritual-copy-pad-x) - 5px);
+  --pdp-ritual-copy-inset-x: 0px;
+  --pdp-ritual-copy-inset-b: 0px;
+  --pdp-ritual-copy-pad-x: 26px;
+  --pdp-ritual-copy-pad-b: 32px;
+  --pdp-ritual-copy-radius: 0px;
+  --pdp-ritual-blur-extend: 140px;
+
+  flex-grow: 2;
+  height: 100%;
+  border-radius: 20px;
+  background: var(--pdp-surface);
+  color: var(--pdp-accent);
+  cursor: default;
+}
+
+.pdp-ritual__item:focus-visible {
+  outline: 2px solid var(--pdp-accent);
+  outline-offset: 2px;
+}
+
+.pdp-ritual__time {
+  position: absolute;
+  top: var(--pdp-ritual-time-top);
+  left: var(--pdp-ritual-time-left);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  font-family: var(--font-family-latin);
+  font-size: var(--font-size-heading-xs);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-heading-xs);
+  white-space: nowrap;
+  transition: top var(--pdp-ritual-ease), left var(--pdp-ritual-ease);
+}
+
+/* ● — 타임라인 점과 짧은 선 */
+.pdp-ritual__time::before {
+  content: "";
+  flex: 0 0 26px;
+  height: 11px;
+  margin-right: 2px;
+  background:
+    radial-gradient(circle, currentColor 5px, transparent 5.5px) left center / 11px 11px no-repeat,
+    linear-gradient(var(--pdp-muted), var(--pdp-muted)) 15px center / 11px 1px no-repeat;
+}
+
+.pdp-ritual__time strong {
+  margin-right: var(--spacing-3);
+  font-weight: inherit;
+}
+
+.pdp-ritual__figure {
+  position: absolute;
+  inset: var(--pdp-ritual-figure-inset);
+  margin: 0;
+  overflow: hidden;
+  border-radius: 15px;
+  background: var(--pdp-ciel-soft);
+  transition: inset var(--pdp-ritual-ease);
+}
+
+.pdp-ritual__figure img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 900ms var(--pdp-ease);
+}
+
+/* 사진 위 설명은 연한 파랑 대신 브랜드 블루로 */
+.pdp-ritual__item.is-active .pdp-ritual__desc {
+  color: var(--pdp-accent);
+}
+
+.pdp-ritual__item:not(.is-active):hover .pdp-ritual__figure img {
+  transform: scale(1.03);
+}
+
+/* 시안 크롭: 큰 카드의 MORNING 사진은 오른쪽 그림자를 덜어낸 확대 구도(가로 78% · 중심 41%/51%) */
+.pdp-ritual__item.is-active .pdp-ritual__figure--morning img {
+  transform: scale(1.28);
+  transform-origin: 7.5% 57%;
+}
+
+/* copy 박스 = Sun Veil(.pdp-glance) 하단 블러 판. 블러(6px)는 처음부터 켜져 있고,
+   작은 카드에서는 단색 배경 위라 보이지 않다가 확대되며 사진이 밑으로 들어오면 드러난다.
+   확대 중에는 위치·크기(블러 판 높이)만 바뀌므로 backdrop-filter가 끊기지 않는다. */
+.pdp-ritual__copy {
+  position: absolute;
+  right: var(--pdp-ritual-copy-inset-x);
+  bottom: var(--pdp-ritual-copy-inset-b);
+  left: var(--pdp-ritual-copy-inset-x);
+  z-index: 1;
+  display: grid;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--pdp-ritual-copy-pad-x) var(--pdp-ritual-copy-pad-b);
+  word-break: keep-all;
+  transition:
+    right var(--pdp-ritual-ease),
+    bottom var(--pdp-ritual-ease),
+    left var(--pdp-ritual-ease),
+    padding var(--pdp-ritual-ease);
+}
+
+.pdp-ritual__copy::before,
+.pdp-ritual__copy::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--pdp-ritual-blur-extend) * -1);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 0 0 var(--pdp-ritual-copy-radius) var(--pdp-ritual-copy-radius);
+  pointer-events: none;
+  transition: top var(--pdp-ritual-ease), border-radius var(--pdp-ritual-ease);
+}
+
+.pdp-ritual__copy::before {
+  background: rgba(255, 255, 255, 0.01);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 14%, #000 100%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 14%, #000 100%);
+}
+
+/* 틴트는 backdrop이 아니라 opacity 전환이 부드럽다 — 작은 카드에서는 꺼 둔다 */
+.pdp-ritual__copy::after {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 28%, var(--pdp-ritual-tint) 100%);
+  opacity: 0;
+  transition:
+    top var(--pdp-ritual-ease),
+    border-radius var(--pdp-ritual-ease),
+    opacity 700ms var(--pdp-ease);
+}
+
+.pdp-ritual__item.is-active .pdp-ritual__copy::after {
+  opacity: 1;
+}
+
+.pdp-ritual__title {
+  color: var(--pdp-accent);
+  font-size: var(--font-size-heading-m);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-heading-m);
+  transition: color 500ms ease;
+}
+
+.pdp-ritual__desc {
+  color: #4f9ccc;
+  font-size: var(--font-size-heading-xs);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-heading-xs);
+  transition: color 500ms ease;
+}
+
+/* 위치 표시 점: 모바일 가로 스와이프에서만 */
+.pdp-ritual__dots {
+  display: none;
+  justify-content: center;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.pdp-ritual__dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #cfe2f5;
+  cursor: pointer;
+  transition: background-color 240ms ease;
+}
+
+.pdp-ritual__dot[aria-current="true"] {
+  background: var(--pdp-accent);
+}
+
+.pdp-ritual__dot:focus-visible {
+  outline: 2px solid var(--pdp-accent);
+  outline-offset: 2px;
+}
+
+.pdp-ritual__closing {
+  margin-top: var(--spacing-16) !important;
+  font-weight: var(--font-weight-medium, 500);
+  text-align: center;
+}
+
+.pdp-ritual__closing strong {
+  font-family: var(--font-family-latin);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* ===== 9. How to use (extends .pdp-usage) ===== */
+.pdp-elixir-usage .pdp-usage__layout {
+  grid-template-columns: minmax(0, 362fr) minmax(0, 514fr);
+  gap: var(--spacing-5);
+}
+
+.pdp-elixir-usage .pdp-usage__visual {
+  aspect-ratio: 362 / 507;
+  margin: 0;
+}
+
+.pdp-elixir-usage .pdp-usage__steps {
+  grid-auto-rows: 1fr;
+  gap: var(--spacing-5);
+}
+
+.pdp-elixir-usage .pdp-usage__step {
+  align-content: center;
+  padding: var(--spacing-6) var(--spacing-8);
+}
+
+.pdp-elixir-usage__when {
+  display: grid;
+  justify-items: center;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-16);
+}
+
+.pdp-elixir-usage__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pdp-elixir-usage__chips li {
+  padding: 9px 17px;
+  border: 1px solid var(--pdp-band);
+  border-radius: var(--radius-full, 999px);
+  background: var(--pdp-surface);
+  box-shadow: 0 0 0 1px rgba(0, 119, 191, 0.08);
+  font-weight: var(--font-weight-medium, 500);
+  white-space: nowrap;
+}
+
+/* ===== 10. FAQ (extends .pdp-faq) ===== */
+.pdp--elixir .pdp-faq__answer {
+  max-width: none;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1100px) {
+  .pdp-clinical__panel--now {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+  }
+
+  /* 위아래로 쌓일 때는 카드 높이를 맞추지 않는다 */
+  .pdp-clinical__cards {
+    grid-auto-rows: auto;
+  }
+
+  .pdp-clinical__visuals {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .pdp-botanical__grid {
+    --pdp-botanical-gap: 48px;
+  }
+
+  .pdp-botanical__features {
+    flex-wrap: wrap;
+  }
+
+  .pdp-vegan {
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: var(--spacing-8);
+  }
+
+  .pdp-vegan__body {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .pdp-ltve__steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* 태블릿 이하: 가로 스와이프(옆 카드가 살짝 보이게) — 모든 카드가 큰 카드 모양 */
+  .pdp-ritual__list {
+    gap: var(--spacing-3);
+    aspect-ratio: auto;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pdp-ritual__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-ritual__item,
+  .pdp-ritual__item.is-active {
+    --pdp-ritual-figure-inset: 0px;
+    --pdp-ritual-time-top: 20px;
+    --pdp-ritual-time-left: calc(var(--pdp-ritual-copy-inset-x) + var(--pdp-ritual-copy-pad-x) - 5px);
+    --pdp-ritual-copy-inset-x: 0px;
+    --pdp-ritual-copy-inset-b: 0px;
+    --pdp-ritual-copy-pad-x: 22px;
+    --pdp-ritual-copy-pad-b: 24px;
+    --pdp-ritual-copy-radius: 0px;
+    --pdp-ritual-blur-extend: 120px;
+
+    flex: 0 0 min(78%, 420px);
+    height: auto;
+    aspect-ratio: 485 / 600;
+    border-radius: 20px;
+    background: var(--pdp-surface);
+    color: var(--pdp-accent);
+    cursor: default;
+    scroll-snap-align: start;
+  }
+
+  /* 스와이프에서는 모든 카드가 큰 카드 모양 → 틴트 상시 */
+  .pdp-ritual__item .pdp-ritual__copy::after {
+    opacity: 1;
+  }
+
+  .pdp-ritual__item .pdp-ritual__desc {
+    color: var(--pdp-accent);
+  }
+
+  .pdp-ritual__dots {
+    display: flex;
+  }
+
+  .pdp-clinical__metrics {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  /* 프레임워크(.pdp-glance)와 같이 모바일은 블러 없이 틴트만 */
+  .pdp-ritual__copy::before {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  /* Sun Veil 모바일 섹션 상하 여백 64px */
+  .pdp--elixir .pdp__section {
+    --pdp-pad-y: var(--spacing-16);
+  }
+
+  .pdp-elixir-hero {
+    aspect-ratio: auto;
+    min-height: 640px; /* 상단 40px + 텍스트 블록 + 캡 간격이 들어가는 높이 */
+  }
+
+  .pdp-elixir-hero__bg {
+    object-position: 50% 100%;
+  }
+
+  .pdp-elixir-hero__glow {
+    inset: 3% 18% 30%;
+  }
+
+  /* 모바일: 위쪽 최소 40px 확보 — 블록 상단을 고정하고 캡 쪽(아래)으로 정렬 */
+  .pdp-elixir-hero__content {
+    top: var(--spacing-10);
+    justify-content: safe flex-end; /* 넘치면 위가 아니라 캡 쪽으로 — 상단 40px 유지 */
+  }
+
+  .pdp-elixir-hero__lead {
+    margin-bottom: var(--spacing-4) !important;
+  }
+
+  .pdp-concentrate__grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-8);
+  }
+
+  .pdp-concentrate__copy {
+    gap: var(--spacing-3);
+  }
+
+  .pdp-clinical__tabs {
+    margin-bottom: var(--spacing-6);
+  }
+
+  .pdp-clinical__tab {
+    min-width: 88px;
+    padding-inline: var(--spacing-4);
+  }
+
+  .pdp-clinical__card {
+    gap: var(--spacing-3);
+    padding: var(--spacing-5);
+  }
+
+  /* 모바일: 차트 카드는 내용 높이에 맞춘다 (비율 고정이면 주석이 잘림).
+     비교 이미지 카드는 사진 비율(513:448)을 유지 — 보이는 카드 하나가 영역 높이를 정한다 */
+  .pdp-clinical__visuals {
+    aspect-ratio: auto;
+  }
+
+  .pdp-clinical__visual {
+    position: relative;
+    inset: auto;
+  }
+
+  .pdp-clinical__visual.pdp-compare {
+    aspect-ratio: 513 / 448;
+  }
+
+  /* 모바일: 캐러셀은 화면 끝까지(full-bleed). 첫 카드는 본문 여백 선에서 시작하고 스냅도 그 선에 맞춘다 */
+  .pdp-ritual__carousel {
+    max-width: none;
+    margin-inline: calc(var(--page-margin, 16px) * -1);
+  }
+
+  .pdp-ritual__list {
+    padding-inline: var(--page-margin, 16px);
+    scroll-padding-inline: var(--page-margin, 16px);
+  }
+
+  .pdp-clinical__visual--chart {
+    padding: var(--spacing-6) var(--spacing-3) var(--spacing-4) 0;
+  }
+
+  .pdp-clinical__visual-title {
+    padding-left: var(--spacing-6);
+  }
+
+  .pdp-clinical__hydration {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+    padding: var(--spacing-7) var(--spacing-5);
+  }
+
+  .pdp-clinical__summary {
+    padding: var(--spacing-7) var(--spacing-5);
+  }
+
+  .pdp-clinical__study {
+    margin-top: var(--spacing-12);
+  }
+
+  .pdp-study th,
+  .pdp-study td {
+    display: block;
+    width: 100%;
+  }
+
+  /* 모바일: th 위 · td 아래로 쌓일 때 맞닿는 면을 붙인다 */
+  .pdp-study th {
+    padding-bottom: 0;
+    border-bottom: 0;
+    font-weight: var(--font-weight-bold, 700);
+  }
+
+  .pdp-study td {
+    padding-top: 0;
+  }
+
+  .pdp-safety {
+    align-items: flex-start;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-12);
+    padding: var(--spacing-6) var(--spacing-5);
+  }
+
+  .pdp-safety__icon {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .pdp-origin__badge {
+    line-height: 1.4;
+  }
+
+  .pdp-origin__kist {
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-7) var(--spacing-5);
+    text-align: center;
+  }
+
+  .pdp-origin__kist-logo {
+    flex-basis: auto;
+    width: 220px;
+  }
+
+  .pdp-origin__field {
+    margin-top: var(--spacing-10);
+  }
+
+  /* 모바일: 꽃 기준 3:4 세로 크롭 이미지로 전환 */
+  .pdp-origin__field-image--desktop {
+    display: none;
+  }
+
+  .pdp-origin__field-image--mobile {
+    display: block;
+    object-position: center top;
+  }
+
+  .pdp-botanical__grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: var(--spacing-10);
+    text-align: center;
+  }
+
+  .pdp-botanical__bottle {
+    width: 120px;
+  }
+
+  .pdp-botanical__stats,
+  .pdp-botanical__stats-list {
+    gap: var(--spacing-8);
+  }
+
+  .pdp-botanical__features {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-12);
+  }
+
+  .pdp-botanical__feature {
+    width: 260px;
+  }
+
+  .pdp-ltve__steps {
+    gap: var(--spacing-2);
+  }
+
+  .pdp-ltve__step {
+    height: 200px;
+    padding: var(--spacing-5) var(--spacing-4);
+  }
+
+  .pdp-harmony__stage {
+    aspect-ratio: auto;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .pdp-harmony__intro {
+    position: static;
+    width: auto;
+    padding: 0 var(--page-margin, 16px) var(--spacing-8);
+  }
+
+  .pdp-harmony__intro .pdp__eyebrow {
+    margin-bottom: var(--spacing-4) !important;
+  }
+
+  .pdp-harmony__intro h2 {
+    margin-bottom: var(--spacing-4) !important;
+  }
+
+  .pdp-harmony__hint,
+  .pdp-harmony__desc {
+    max-width: none;
+  }
+
+  .pdp-harmony__hint {
+    margin-top: var(--spacing-4) !important;
+  }
+
+  .pdp-harmony__canvas {
+    position: relative;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pdp-harmony__canvas::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-harmony__canvas-inner {
+    position: relative;
+    width: 900px;
+    aspect-ratio: 1680 / 1300;
+    overflow: hidden;
+    background: #e8eaec;
+  }
+
+  .pdp-harmony__spot {
+    --dot: 46px;
+  }
+
+  .pdp-harmony__dot {
+    font-size: var(--font-size-body-xs);
+  }
+
+  .pdp-harmony__pop {
+    width: 240px;
+  }
+
+  .pdp-harmony__pop p {
+    font-size: var(--font-size-heading-s) !important;
+    line-height: var(--line-height-heading-s) !important;
+  }
+
+  .pdp-support__grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2);
+  }
+
+  .pdp-support {
+    margin-top: var(--spacing-8);
+  }
+
+  .pdp-vegan {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-12);
+    padding: var(--spacing-8) var(--spacing-5);
+    text-align: center;
+  }
+
+  .pdp-vegan__logo {
+    width: 140px;
+  }
+
+  .pdp-ritual__closing {
+    margin-top: var(--spacing-12) !important;
+  }
+
+  .pdp-elixir-usage .pdp-usage__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .pdp-elixir-usage .pdp-usage__visual {
+    aspect-ratio: 4 / 5;
+    min-height: 0;
+  }
+
+  .pdp-elixir-usage .pdp-usage__steps {
+    grid-auto-rows: auto;
+    gap: var(--spacing-2);
+  }
+
+  .pdp-elixir-usage .pdp-usage__step {
+    padding: var(--spacing-4);
+  }
+
+  .pdp-elixir-usage__when {
+    margin-top: var(--spacing-10);
+  }
+
+  .pdp-elixir-usage__chips li {
+    padding: 7px 14px;
+  }
+
+  /* Sun Veil 모바일 카드: radius 14px */
+  .pdp-concentrate__visual,
+  .pdp-clinical__card,
+  .pdp-clinical__visual,
+  .pdp-clinical__hydration,
+  .pdp-clinical__summary,
+  .pdp-clinical__metric-card,
+  .pdp-origin__kist,
+  .pdp-ltve__step,
+  .pdp-vegan,
+  .pdp-ritual__figure {
+    border-radius: var(--radius-xl, 14px);
+  }
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .pdp-ltve__step[data-scroll-reveal] {
+    transform: none;
+    transition: none;
+    transition-delay: 0s !important;
+  }
+
+  .pdp-chart.is-drawn .pdp-chart__line,
+  .pdp-clinical__panel,
+  .pdp-clinical__visual,
+  .pdp-harmony__pop,
+  .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-water {
+    animation: none;
+  }
+
+  .pdp-ritual__item,
+  .pdp-ritual__time,
+  .pdp-ritual__figure,
+  .pdp-ritual__figure img,
+  .pdp-ritual__copy,
+  .pdp-ritual__copy::before,
+  .pdp-ritual__copy::after,
+  .pdp-ritual__title,
+  .pdp-ritual__desc {
+    transition: none;
+  }
+
+  /* 블렌딩은 완성된 금빛 상태로 바로 보여준다 */
+  .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-water {
+    opacity: 0;
+  }
+
+  .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend {
+    opacity: 0.92;
+    animation: none;
+  }
+
+  .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend::before {
+    --pdp-blend-color: #f8d35a;
+    --pdp-diffuse: 100%;
+
+    height: calc(96.18% + var(--pdp-blend-edge));
+    animation: none;
+  }
+
+  .pdp-botanical__grid .pdp-botanical__stat > *,
+  .pdp-botanical__grid .pdp-botanical__stats-kicker,
+  .pdp-botanical__grid .pdp-botanical__stats-title,
+  .pdp-botanical__grid .pdp-botanical__stats-note {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .pdp-concentrate__copy .pdp-concentrate__title-old {
+    display: none;
+  }
+
+  .pdp-concentrate__copy .pdp-concentrate__title-main {
+    animation: none !important;
+    opacity: 1;
+  }
+}
