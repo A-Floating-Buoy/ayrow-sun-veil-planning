@@ -366,11 +366,11 @@
 
 /* Fallback (no JS): MIST blurs out, then CONCENTRATE sharpens in — 같은 자리에서 교차(위치 이동 없음) */
 .pdp-concentrate__copy.is-revealed .pdp-concentrate__title-old {
-  animation: pdp-elixir-mist-out 1500ms var(--pdp-ease) 300ms both;
+  animation: pdp-elixir-mist-out 1000ms var(--pdp-ease) 100ms both;
 }
 
 .pdp-concentrate__copy.is-revealed .pdp-concentrate__title-main {
-  animation: pdp-elixir-concentrate-in 900ms var(--pdp-ease) 1300ms both;
+  animation: pdp-elixir-concentrate-in 900ms var(--pdp-ease) 300ms both; /* 2026-10-21: 1300ms → 300ms (블러 해제 1초 앞당김) */
 }
 
 /* Scroll-linked (pdp-elixir.js): MIST blurs away as you scroll, CONCENTRATE comes in blurred and sharpens.
@@ -2436,3 +2436,100 @@
     opacity: 1;
   }
 }
+
+/* =========================================================
+   2026-10-21 수정안 (노션 「엘릭서 상세페이지 수정안」)
+   ========================================================= */
+
+/* 2. Concentrate 라벨: 대소문자 정리 + 그레이로 위계 낮춤 */
+.pdp--elixir .pdp-concentrate__eyebrow {
+  color: var(--primitive-neutral-500, #7c7c7c);
+}
+
+/* 본문 링크: AYROW FAQs와 같은 소라색 + 밑줄 */
+.pdp--elixir .pdp-link {
+  color: #89b6fc;
+  text-decoration: underline;
+  text-decoration-color: #89b6fc;
+  text-decoration-thickness: 0.75px;
+  text-underline-offset: 0.25em;
+}
+
+/* 7. Harmony: 특허 번호 + Reverse AG Code™ 페이지 링크 */
+.pdp-harmony__patent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-1);
+  margin-top: var(--spacing-5);
+}
+
+.pdp-harmony__patent-no {
+  margin: 0;
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pdp-harmony__more {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* 7. Harmony: 사용 안내 문구는 본문과 구분되는 가이드로 — 그레이 · 한 단계 작은 글자(HTML sm--body-s body-m)
+   (소라색은 링크 관례라 쓰지 않는다) */
+.pdp--elixir .pdp-harmony__hint {
+  color: var(--primitive-neutral-500, #7c7c7c);
+}
+
+/* 8. Ritual 마무리 슬로건: 국문 2줄(「스킨 롱제비티」 강조) + 영문 · 순서대로 등장(pdp-elixir.js initSlogan) */
+.pdp-ritual__closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.pdp-ritual__closing-line {
+  display: block;
+}
+
+.pdp-ritual__closing-lead {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.pdp-ritual__closing .pdp-ritual__closing-main {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.pdp-ritual__closing .pdp-ritual__closing-en {
+  margin-top: var(--spacing-2);
+  color: var(--primitive-neutral-500, #7c7c7c);
+  font-family: var(--font-family-latin);
+  font-weight: var(--font-weight-regular, 400);
+}
+
+.pdp-ritual__closing.is-staged .pdp-ritual__closing-line {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+
+.pdp-ritual__closing.is-staged.is-revealed .pdp-ritual__closing-line {
+  opacity: 1;
+  transform: none;
+}
+
+.pdp-ritual__closing.is-staged .pdp-ritual__closing-main { transition-delay: 250ms; }
+.pdp-ritual__closing.is-staged .pdp-ritual__closing-en { transition-delay: 650ms; }
+
+/* 10. FAQ: 질문에 커서를 올리면 연하게 (AYROW FAQs와 같은 --opacity-hover) */
+.pdp--elixir .pdp-faq__button .pdp-faq__text,
+.pdp--elixir .pdp-faq__button .pdp-faq__icon {
+  transition: opacity 200ms ease;
+}
+
+@media (hover: hover) {
+  .pdp--elixir .pdp-faq__button:hover .pdp-faq__text,
+  .pdp--elixir .pdp-faq__button:hover .pdp-faq__icon {
+    opacity: var(--opacity-hover, 0.6);
+  }
+}
+

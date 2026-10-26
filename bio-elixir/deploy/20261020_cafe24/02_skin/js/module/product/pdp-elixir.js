@@ -106,10 +106,30 @@
       frame.__pdpCompare = true;
 
       var range = frame.querySelector('[data-pdp-compare-range]');
+      var beforeImg = frame.querySelector(':scope > .pdp-compare__img');
+      var afterImg = frame.querySelector('.pdp-compare__after .pdp-compare__img');
+      var beforeLabel = frame.querySelector('.pdp-timepoints__ba--before');
+      var afterLabel = frame.querySelector('.pdp-timepoints__ba--after');
       var dragging = false;
 
+      // 이동 범위: 경계선이 BEFORE/AFTER 라벨을 침범하지 않고(라벨에서 8px), 두 사진이 덮지 못하는
+      // 가장자리(흰 여백 · 뒤쪽 사진)가 드러나지 않는 구간으로 제한 (2026-10-21 수정안 1안)
+      function limits() {
+        var rect = frame.getBoundingClientRect();
+        var lo = 0;
+        var hi = 100;
+        if (!rect.width) return [lo, hi];
+        function pct(x) { return ((x - rect.left) / rect.width) * 100; }
+        if (afterImg) lo = Math.max(lo, pct(afterImg.getBoundingClientRect().left));
+        if (beforeImg) hi = Math.min(hi, pct(beforeImg.getBoundingClientRect().right));
+        if (beforeLabel && beforeLabel.offsetWidth) lo = Math.max(lo, pct(beforeLabel.getBoundingClientRect().right + 8));
+        if (afterLabel && afterLabel.offsetWidth) hi = Math.min(hi, pct(afterLabel.getBoundingClientRect().left - 8));
+        return lo < hi ? [lo, hi] : [0, 100];
+      }
+
       function set(percent) {
-        var value = Math.max(0, Math.min(100, percent));
+        var bounds = limits();
+        var value = Math.max(bounds[0], Math.min(bounds[1], percent));
         frame.style.setProperty('--pdp-compare', value + '%');
         if (range && Number(range.value) !== value) range.value = String(value);
       }
@@ -170,13 +190,20 @@
         var button = spot.querySelector('[data-pdp-hotspot-button]');
         if (!button) return;
 
+        // 터치 시 focus가 click보다 먼저 와서 열자마자 click이 닫아 버리던 문제(두 번 탭해야 열림) —
+        //   포인터로 생긴 focus는 무시하고 키보드 focus만 연다
+        var pointerFocus = false;
+        button.addEventListener('pointerdown', function () { pointerFocus = true; });
         button.addEventListener('click', function () {
+          pointerFocus = false;
           setActive(active === spot && !canHover() ? null : spot);
         });
         spot.addEventListener('mouseenter', function () {
           if (canHover()) setActive(spot);
         });
-        button.addEventListener('focus', function () { setActive(spot); });
+        button.addEventListener('focus', function () {
+          if (!pointerFocus) setActive(spot);
+        });
       });
 
       stage.addEventListener('mouseleave', function () {
@@ -365,7 +392,7 @@
     if (!swaps.length || reduce) return;
 
     var START = 0.85; // title top at 85% of the viewport → MIST fully visible
-    var END = 0.4;    // title top at 40% of the viewport → only CONCENTRATE
+    var END = 0.6;    // title top at 60% of the viewport → only CONCENTRATE (2026-10-21: 40% → 60%, 블러 해제를 약 1초 앞당김)
     var ticking = false;
 
     function clamp(value) { return Math.min(1, Math.max(0, value)); }
@@ -458,10 +485,59 @@
     root.classList.add('is-chart-draw');
   }
 
+  /* ---- Ritual slogan: 국문 첫 줄 → 「스킨 롱제비티」 → 영문 순서로 등장 (지연은 CSS) ---- */
+  function initSlogan(root) {
+    if (root.__pdpSlogan) return;
+    root.__pdpSlogan = true;
+
+    var slogans = qsa('[data-pdp-slogan]', root);
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!slogans.length || reduce || !('IntersectionObserver' in window)) return;
+
+    // JS가 붙은 뒤에만 숨김 상태로 시작 — 스크립트가 없으면 처음부터 보인다
+    slogans.forEach(function (el) { el.classList.add('is-staged'); });
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.6 });
+    slogans.forEach(function (el) { observer.observe(el); });
+  }
+
+  /* ---- Botanical 병 애니메이션: 섹션에 들어올 때마다 처음부터 재생 ----
+     병이 화면에 40% 이상 보이면 .is-revealed(정제수 → 추출물 → 확산 · 수치 등장이 모두 이 클래스 기준)를 붙이고,
+     섹션이 화면 밖으로 완전히 나가면 떼어 초기 상태로 되돌린다. 다시 들어오면 처음부터 재생된다 */
+  function initBotanicalReplay(root) {
+    if (root.__pdpBotanicalReplay) return;
+    root.__pdpBotanicalReplay = true;
+    if (!('IntersectionObserver' in window)) return;
+
+    qsa('[data-pdp-section="botanical"]', root).forEach(function (section) {
+      var bottle = section.querySelector('.pdp-botanical__bottle');
+      if (!bottle) return;
+
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.intersectionRatio >= 0.4) bottle.classList.add('is-revealed');
+        });
+      }, { threshold: [0, 0.4] }).observe(bottle);
+
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) bottle.classList.remove('is-revealed');
+        });
+      }, { threshold: 0 }).observe(section);
+    });
+  }
+
   /* ---- Boot ---- */
   function init(root) {
     if (!root) return;
     initChartDraw(root);
+    initSlogan(root);
+    initBotanicalReplay(root);
     initConcentrateSwap(root);
     initParallax(root);
     initTabs(root);

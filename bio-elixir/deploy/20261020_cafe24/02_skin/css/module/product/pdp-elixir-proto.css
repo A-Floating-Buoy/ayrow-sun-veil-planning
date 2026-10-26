@@ -439,10 +439,10 @@
 }
 
 /* ============================================================
-   D: A New Way to CONCENTRATE — 골드
+   D: A New Way to CONCENTRATE — 멀롯 (2026-10-21: 골드 #bfad9b → 에이로우 멀롯)
    ============================================================ */
 .pdp--proto-d .pdp-concentrate__title-main {
-  color: #bfad9b;
+  color: var(--primitive-merlot, #802727);
 }
 
 /* D: 'A NEW WAY TO'도 MIST·CONCENTRATE와 같은 타입 스케일 · 대문자, 줄 사이를 붙인다 */
@@ -450,7 +450,7 @@
   gap: 0;
 }
 
-/* .display 클래스 삭제(→ .type-display)로 CONCENTRATE가 스케일을 잃어, MIST·CONCENTRATE도 kicker와 같은 값을 직접 지정한다 */
+/* MIST·CONCENTRATE도 kicker와 같은 display 스케일을 직접 지정한다 (HTML의 .type-display와 같은 값) */
 .pdp--proto-d .pdp-concentrate__title-kicker,
 .pdp--proto-d .pdp-concentrate__title-old,
 .pdp--proto-d .pdp-concentrate__title-main {
@@ -459,6 +459,14 @@
   line-height: var(--line-height-display);
   letter-spacing: -0.01em;
   text-transform: uppercase;
+}
+
+/* D 라벨(Layerable Skin Longevity Concentrate): PC에서 14px이 큰 제목 옆에 너무 작아 보여 한 단계(16px) 키운다(2026-10-23 수정안) */
+@media (min-width: 1025px) {
+  .pdp--proto-d .pdp-concentrate__eyebrow {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
 }
 
 /* ============================================================
@@ -630,24 +638,121 @@
   to { transform: scaleX(1); }
 }
 
-/* 병 속 피뿌리풀추출물: 붉은 층을 브랜드 oscar로 — 공통 CSS의 #b3122e 시작색 · 금빛 전환(tint) 시작색을 바꾼다.
+/* 병 속 피뿌리풀추출물 — 2026-10-21: 결과는 오일 사진 톤(맑은 금빛).
+   레드 계열 피뿌리풀추출물이 바닥에 부어져 → 위로 퍼질수록 묽어져 맑은 금빛 Botanical Base가 된다.
+   입체감: 원통 용기라 가로로 양옆 진하게 · 가운데 밝게(+ 왼쪽 안쪽 옅은 빛), 세로로 바닥 진하게 · 위 옅게.
    정제수 레이어는 build.py에서 크림 틴트 SVG(botanical-bottle-water-creme.svg)로 교체 */
 .pdp--proto-d .pdp-botanical__bottle-blend {
-  --pdp-blend-color: var(--primitive-oscar, #ff4636);
+  --pdp-blend-color: #b3122e;  /* 부어지는 피뿌리풀추출물(레드 계열 · 오스카는 아껴 씀) */
+  --pdp-blend-gold: #f9e9b0;   /* 퍼져서 묽어진 맑은 금빛 — 2026-10-24: 한 단계 밝게(오일 사진처럼 맑게) */
+}
+
+.pdp--proto-d .pdp-botanical__bottle-blend::before {
+  background:
+    linear-gradient(0deg,
+      var(--pdp-blend-color) 0%,
+      var(--pdp-blend-color) 12%,
+      color-mix(in srgb, var(--pdp-blend-gold) var(--pdp-diffuse), var(--pdp-blend-color)) 70%,
+      color-mix(in srgb, var(--pdp-blend-gold) var(--pdp-diffuse), var(--pdp-blend-color)) 100%);
 }
 
 .pdp--proto-d .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend::before {
   animation:
-    pdp-elixir-pour 1000ms cubic-bezier(0.3, 0, 0.2, 1) 2800ms both,
-    pdp-elixir-expand 2600ms cubic-bezier(0.45, 0.05, 0.35, 1) 4800ms forwards,
-    pdp-elixir-dilute 2600ms ease-out 4800ms forwards,
-    pdp-proto-tint 2000ms ease-in-out 6000ms forwards;
+    pdp-proto-pour 800ms cubic-bezier(0.3, 0, 0.2, 1) 1700ms both,
+    pdp-proto-expand 1900ms cubic-bezier(0.45, 0.05, 0.35, 1) 2700ms forwards,
+    pdp-elixir-dilute 1900ms ease-out 2700ms forwards,
+    pdp-proto-tint 1500ms ease-in-out 3300ms forwards;
+}
+
+/* 2026-10-24 수정안: 색이 차오르는 시간을 빠르게 — 전체 약 8초 → 5초.
+   정제수 0.15–1.35초 → 붓기 1.7–2.5초 → 확산 · 금빛 2.7–4.8초 (상자 · 연결선 등장도 같은 비율로 당김) */
+.pdp--proto-d .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend {
+  animation-delay: 1700ms;
+}
+
+.pdp--proto-d .pdp-botanical__stats-kicker,
+.pdp--proto-d .pdp-botanical__stats-title { --pdp-stat-delay: 400ms; }
+.pdp--proto-d .pdp-botanical__stat--water { --pdp-stat-delay: 1100ms; }
+.pdp--proto-d .pdp-botanical__stat--extract,
+.pdp--proto-d .pdp-botanical__stats-note { --pdp-stat-delay: 2500ms; }
+
+/* 원통 입체감(2026-10-22): 세로 줄무늬가 바닥까지 일자로 내려가던 것을 용기 모양대로 —
+   음영 = 큰 타원(가운데 투명 → 양옆 · 둥근 바닥 쪽으로 진하게)이라 바닥 곡률을 따라 돈다.
+   하이라이트 = 왼쪽 안쪽(32%)의 세로 타원, 위아래로 사라져 바닥 곡선까지 내려가지 않는다.
+   액체 영역(용기 높이 76.6%)에 고정해 두고, 추출물 층(::before)이 차오르는 높이만큼만 마스크로 드러낸다 —
+   붓기 단계의 레드 면부터 같은 하이라이트가 보이고, 아직 추출물이 없는 정제수 위로는 겹치지 않는다.
+   정제수 SVG(botanical-bottle-water-full.svg)도 같은 타원 · 같은 위치 */
+.pdp--proto-d .pdp-botanical__bottle-blend::after {
+  content: "";
+  height: 76.6%;
+  background:
+    radial-gradient(ellipse 16% 42% at 32% 40%, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0)),
+    radial-gradient(ellipse 58% 62% at 50% 40%, rgba(150, 105, 20, 0) 70%, rgba(150, 105, 20, 0.14) 100%);
+  /* 위 경계는 ::before와 같은 번짐(--pdp-blend-edge) */
+  -webkit-mask: linear-gradient(0deg, #000 calc(100% - var(--pdp-blend-edge)), transparent 100%) bottom / 100% 0% no-repeat;
+  mask: linear-gradient(0deg, #000 calc(100% - var(--pdp-blend-edge)), transparent 100%) bottom / 100% 0% no-repeat;
+}
+
+/* 높이 = ::before의 pdp-proto-pour(0 → 14%) · pdp-proto-expand(14% → 76.6%)와 같은 타이밍 · 이징.
+   마스크 높이는 ::after(액체 영역 76.6%) 기준이라 14% → 18.3%, 76.6% → 100% + 번짐 */
+.pdp--proto-d .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend::after {
+  animation:
+    pdp-proto-shade-pour 800ms cubic-bezier(0.3, 0, 0.2, 1) 1700ms both,
+    pdp-proto-shade-expand 1900ms cubic-bezier(0.45, 0.05, 0.35, 1) 2700ms forwards;
+}
+
+@keyframes pdp-proto-shade-pour {
+  from { -webkit-mask-size: 100% 0%; mask-size: 100% 0%; }
+  to { -webkit-mask-size: 100% 18.3%; mask-size: 100% 18.3%; }
+}
+
+@keyframes pdp-proto-shade-expand {
+  from { -webkit-mask-size: 100% 18.3%; mask-size: 100% 18.3%; }
+  to { -webkit-mask-size: 100% calc(100% + var(--pdp-blend-edge)); mask-size: 100% calc(100% + var(--pdp-blend-edge)); }
+}
+
+/* D 2026-10-21: 액체를 뚜껑 칼라 바로 아래(빨간선, 용기 높이 23.4%)까지 —
+   정제수(botanical-bottle-water-full.svg) · 블렌딩 마스크를 용기 전체 좌표(161×558)로 바꿔 몸통에 겹친다.
+   액체 높이 = 용기의 76.6%(y 130.8 → 558) — 붓기 · 확산 높이도 이 기준으로 다시 잡는다 */
+.pdp--proto-d .pdp-botanical__bottle-water {
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.pdp--proto-d .pdp-botanical__bottle-blend {
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 161 / 558;
+}
+
+.pdp--proto-d .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-water {
+  animation:
+    pdp-proto-fill 1200ms var(--pdp-ease) 150ms both,
+    pdp-elixir-water-fade 1800ms ease 2700ms both;
+}
+
+@keyframes pdp-proto-fill {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(23% 0 0 0); }
+}
+
+@keyframes pdp-proto-pour {
+  from { height: 0; }
+  to { height: 14%; }
+}
+
+@keyframes pdp-proto-expand {
+  from { height: 14%; }
+  to { height: calc(76.6% + var(--pdp-blend-edge)); }
 }
 
 @keyframes pdp-proto-tint {
-  from { --pdp-blend-color: var(--primitive-oscar, #ff4636); }
-  to { --pdp-blend-color: #f8d35a; }
+  from { --pdp-blend-color: #b3122e; }
+  to { --pdp-blend-color: #f4dc8a; }
 }
+
 
 /* 데스크톱: 세 열(문구 · 병 · 수치) 모두 위쪽 정렬 — 왼쪽 eyebrow(Botanical Base | …)와
    오른쪽 영문 문구(THE FORMULA BEGINS…)의 윗선이 맞는다. 수치 열은 병과 같은 높이라 박스 · 선 위치는 그대로 */
@@ -761,8 +866,15 @@
     background: var(--pdp-box-bg) !important;
   }
 
-  /* oscar 블렌딩도 공통 CSS처럼 완성된 금빛 상태로 바로 */
+  /* 추출물 블렌딩도 공통 CSS처럼 완성된 금빛 상태로 바로 — 높이는 D 액체 기준(76.6%) */
   .pdp--proto-d .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend::before {
+    height: calc(76.6% + var(--pdp-blend-edge));
+    animation: none;
+  }
+
+  .pdp--proto-d .pdp-botanical__bottle.is-revealed .pdp-botanical__bottle-blend::after {
+    -webkit-mask-size: 100% calc(100% + var(--pdp-blend-edge));
+    mask-size: 100% calc(100% + var(--pdp-blend-edge));
     animation: none;
   }
 }
@@ -815,15 +927,60 @@
 }
 
 .pdp--proto-d .pdp-elixir-hero picture,
+.pdp--proto-d .pdp-elixir-hero__media,
 .pdp--proto-d .pdp-elixir-hero::before {
   translate: 0 calc(var(--pdp-hero-y, 0) * 0.35px);
 }
 
-.pdp--proto-d .pdp-elixir-hero picture {
+.pdp--proto-d .pdp-elixir-hero picture,
+.pdp--proto-d .pdp-elixir-hero__media {
   position: absolute;
   inset: 0;
   display: block;
   will-change: translate;
+}
+
+/* 히어로 영상 테스트(?hero=loop | greenery | sand · proto.js initHeroVideo):
+   영상이 재생되기 시작하면 사진과 와이드 화면의 흐린 사진 바탕을 숨긴다.
+   영상은 모든 폭에서 히어로를 꽉 채운다(cover · 하단 기준) — 사진용 와이드 화면 contain · 마스크 규칙은 풀어 둔다 */
+.pdp--proto-d .pdp-elixir-hero__media {
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.pdp--proto-d .pdp-elixir-hero.is-hero-video .pdp-elixir-hero__media {
+  opacity: 1;
+}
+
+.pdp--proto-d .pdp-elixir-hero.is-hero-video picture,
+.pdp--proto-d .pdp-elixir-hero.is-hero-video::before {
+  visibility: hidden;
+  transition: visibility 0s 600ms;
+}
+
+.pdp--proto-d .pdp-elixir-hero .pdp-elixir-hero__video {
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  translate: none;
+  transform: none;
+  object-fit: cover;
+  object-position: center bottom;
+  -webkit-mask: none;
+  mask: none;
+}
+
+/* loop 영상: 용기가 화면 위쪽에 떠 있어 문구와 겹친다 — 영상을 높이의 8%만큼 아래로 내린다(아래는 여백이라 잘려도 무방).
+   위로 드러나는 띠는 영상 윗단과 같은 하늘색 가로 그라디언트로 채우고, 영상 윗단 6%를 페이드해 경계를 숨긴다 */
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video="loop"].is-hero-video {
+  background: linear-gradient(90deg, #96b3d8 0%, #9cb9de 16%, #a5c1e4 36%, #aac6e6 50%, #9dbde1 68%, #94b5db 88%, #94b1d8 100%);
+}
+
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video="loop"] .pdp-elixir-hero__video {
+  translate: 0 8%;
+  -webkit-mask: linear-gradient(to bottom, transparent 0, #000 6%);
+  mask: linear-gradient(to bottom, transparent 0, #000 6%);
 }
 
 .pdp--proto-d .pdp-elixir-hero__bg {
@@ -842,6 +999,73 @@
 .pdp--proto-d .pdp-elixir-hero__content .pdp__eyebrow {
   color: #fff;
   text-shadow: 0 1px 12px rgba(40, 62, 98, 0.18);
+}
+
+/* 제품명(BIO ELIXIR™): 2026-10-23 수정안 — 용기 박처럼 샴페인 골드 계열. 용기 색(#bfa46f)은 히어로 배경(약 #b3c2d8)과
+   대비 1.33:1로 묻혀서, 같은 계열을 어둡게 한 앤티크 골드(3.24:1 · 큰 글자 AA)로 쓴다.
+   크기는 마크업의 heading-xl(이전 24px보다 1–3pt 큰 28px · 모바일 20px → 23–24px).
+   흰 빛 번짐으로 밝은 배경과 분리 */
+/* 2026-10-24 수정안: 한 톤 밝게 #7d6033 → #8f7040 (배경 대비 약 2.6:1) */
+.pdp--proto-d .pdp-elixir-hero__title {
+  --pdp-champagne-gold: #8f7040;
+  color: var(--pdp-champagne-gold);
+  text-shadow: 0 0 24px rgba(255, 255, 255, 0.55);
+}
+
+/* 영상 테스트(?hero=…): 영상 위에서는 샴페인 골드 · 블루 없이 문구를 모두 흰색으로.
+   링크 pill도 흰 글자 + 옅은 흰 유리면(테두리)으로 맞춘다 */
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__title {
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.18);
+}
+
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__link {
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  color: #fff;
+}
+
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__link:hover,
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__link:focus-visible {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* 영상 테스트(?hero=…): 영상 속 캡과 링크 pill 사이가 빠듯해 문구 블록을 위로 — 캡 간격을 화면 폭에 비례해 더 벌린다
+   (+32px → 1920px 화면 약 +67px · 최대 +96px). 1440px 이하는 블록이 이미 상단 여백(40px)에 닿아 거의 그대로 */
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__content {
+  --pdp-hero-cap-gap: calc(clamp(var(--spacing-8), 3.5vw, var(--spacing-16)) + clamp(var(--spacing-8), 3.5vw, var(--spacing-24)));
+}
+
+@media (max-width: 767px) {
+  .pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__content {
+    --pdp-hero-cap-gap: calc(clamp(var(--spacing-8), 3.5vw, var(--spacing-16)) + var(--spacing-4));
+  }
+}
+
+/* loop 영상(밝은 하늘색 배경): BIO ELIXIR™만 사진 버전과 같은 샴페인 골드 */
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video="loop"] .pdp-elixir-hero__title {
+  color: var(--pdp-champagne-gold);
+  text-shadow: 0 0 24px rgba(255, 255, 255, 0.55);
+}
+
+/* loop 영상: 밝은 하늘색 위에서 흰 글자 버튼이 묻힌다 — 사진 버전과 같은 흰 유리면 + 블루 글자로 */
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video="loop"] .pdp-elixir-hero__link {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 4px 16px rgba(40, 62, 98, 0.1);
+  color: var(--pdp-accent);
+}
+
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video="loop"] .pdp-elixir-hero__link:hover,
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video="loop"] .pdp-elixir-hero__link:focus-visible {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* ™: 제품명 위쪽에 작게 */
+.pdp--proto-d .pdp-elixir-hero__tm {
+  margin-left: 0.04em;
+  font-size: 0.42em;
+  line-height: 0;
+  vertical-align: 1.1em;
 }
 
 /* 피부 변화 확인하기: 반투명 유리 pill — 흰 면 45% + 배경 블러, 글자는 body-m 블루(대비 확보).
@@ -914,6 +1138,28 @@
 .pdp--proto-d .pdp-elixir-hero__content.is-revealed > :nth-child(2) { animation-delay: 140ms; }
 .pdp--proto-d .pdp-elixir-hero__content.is-revealed > :nth-child(3) { animation-delay: 280ms; }
 .pdp--proto-d .pdp-elixir-hero__content.is-revealed > :nth-child(4) { animation-delay: 420ms; }
+
+/* 영상 테스트 reveal(?hero=greenery | sand · proto.js initHeroVideo): 문구 전체가 영상 25% 지점(.is-hero-text)에
+   사진 버전과 같은 순서 · 간격으로 페이드업. loop는 대기 없음 */
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-delay]:not(.is-hero-text) .pdp-elixir-hero__content > * {
+  opacity: 0;
+  animation: none;
+}
+
+/* 영상 테스트(?hero=…): 리드 → (한 박자) → eyebrow + BIO ELIXIR™ 함께 → … 버튼은 영상 후반부 */
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__content.is-revealed > :nth-child(1) { animation-delay: 0ms; }
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__content.is-revealed > :nth-child(2),
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__content.is-revealed > :nth-child(3) { animation-delay: 800ms; }
+
+/* 버튼은 영상 후반부(75% · .is-hero-cta)에 따로 등장 — 그 전까지 숨기고, 나올 때는 대기 없이 */
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video]:not(.is-hero-cta) .pdp-elixir-hero__content > :nth-child(4) {
+  opacity: 0;
+  animation: none;
+  pointer-events: none;
+}
+
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video] .pdp-elixir-hero__content.is-revealed > :nth-child(4) { animation-delay: 0ms; }
+.pdp--proto-d .pdp-elixir-hero[data-proto-hero-video="loop"] .pdp-elixir-hero__content.is-revealed > :nth-child(4) { animation-delay: 1600ms; } /* loop: 한 박자 뒤 바로 */
 
 @keyframes pdp-proto-hero-up {
   from { opacity: 0; translate: 0 24px; }
@@ -1129,6 +1375,47 @@
   aspect-ratio: 1 / 1;
 }
 
+/* 2026-10-24 수정안: NOW 쿨링 카드 — 수치(-5.376°C)를 옆 카드 수치와 같은 줄에, 그래프 윗선을 옆 사진 윗선에.
+   카드 안을 머리 / 본문 / 유의성 주석(Ŧ) 세 줄로 나누고 같은 줄의 카드끼리 줄 높이를 공유(subgrid) —
+   사진(정사각)은 본문 · 주석 두 줄에 걸치고, 그래프는 사진 높이에서 주석 높이를 뺀 본문 줄을 채운다.
+   (그래프 본문은 contain: size로 줄 높이 계산에서 빠져 사진 높이를 따른다 · SVG는 build.py에서 위아래 여백을 잘라 둠) */
+@media (min-width: 768px) {
+  @supports (grid-template-rows: subgrid) {
+    /* 사진이 두 줄에 걸쳐 남는 높이는 본문 줄(1fr)이 가져간다 — 주석 줄은 글자 높이만 */
+    .pdp-clinical--sv .pdp-timepoints__row:has(.pdp-compare) {
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .pdp-clinical--sv .pdp-timepoints__row:has(.pdp-compare) > .pdp-timepoints__card {
+      display: grid;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+      row-gap: 0;
+    }
+
+    .pdp-clinical--sv .pdp-timepoints__row:has(.pdp-compare) > .pdp-timepoints__card > .pdp-compare {
+      grid-row: span 2;
+    }
+
+    .pdp-clinical--sv .pdp-timepoints__row:has(.pdp-compare) .pdp-timepoints__card-body--chart {
+      contain: size;
+      grid-template-rows: minmax(0, 1fr);
+      aspect-ratio: auto;
+      padding-top: 0;
+    }
+
+    .pdp-clinical--sv .pdp-timepoints__row:has(.pdp-compare) .pdp-timepoints__card-body--chart .pdp-chart {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* X축 라벨 ↔ 주석(Ŧ) 간격 = 4 WEEKS 카드(약 36px) — 주석 줄이 높아진 만큼 그래프 줄이 줄어든다 */
+    .pdp-clinical--sv .pdp-timepoints__row:has(.pdp-compare) .pdp-timepoints__sig {
+      padding-top: var(--spacing-1);
+    }
+  }
+}
+
 /* 수치 = proof-data metric 값 (desktop body-xxl · mobile display) */
 .pdp-clinical--sv .pdp-timepoints__card-head strong,
 .pdp-clinical--sv .pdp-clinical__hydration .pdp-clinical__metric {
@@ -1196,6 +1483,50 @@
   max-width: none;
   margin-top: var(--spacing-5);
   background: var(--pdp-surface);
+}
+
+/* 안전성 배치(2026-10-21 수정안): 요소가 왼쪽에 몰려 보이던 것을 VEGAN TRADEMARK CERTIFIED 블록과 같은 구성으로 —
+   데스크톱: 1행 제목 묶음(왼쪽) · 아이콘(오른쪽 위), 2행 판정 문구 · 패딩 40/64 · 행 간격 40
+   모바일: 아이콘 위 · 가운데 정렬 한 줄 쌓기 (Vegan 모바일과 같은 간격) */
+.pdp-clinical--sv .pdp-safety {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--spacing-6) var(--spacing-10);
+  padding: var(--spacing-10) var(--spacing-16);
+}
+
+.pdp-clinical--sv .pdp-safety__copy {
+  order: 1;
+}
+
+.pdp-clinical--sv .pdp-safety__icon {
+  order: 2;
+  justify-self: end;
+  width: 72px;
+  height: 72px;
+}
+
+.pdp-clinical--sv .pdp-safety__verdict {
+  order: 3;
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 767px) {
+  .pdp-clinical--sv .pdp-safety {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-8) var(--spacing-5);
+    text-align: center;
+  }
+
+  .pdp-clinical--sv .pdp-safety__icon {
+    order: 0;
+    justify-self: center;
+    width: 56px;
+    height: 56px;
+  }
 }
 
 /* Study · safety도 같은 너비/간격 */
@@ -1966,18 +2297,25 @@
   list-style: none;
 }
 
-/* 투명 크리스털 구체(장식): 유리 질감 — 왼쪽 위 반짝임 · 오른쪽 아래 맺히는 빛 · 가장자리 굴절 링 · 옅은 그림자 */
+/* 투명 크리스털 구체(장식) — 2026-10-21: 사진(harmony-spheres.png)의 형태를 따르지 않고, 성분 구체와 같은 방식으로
+   테두리 선 없이 명암만으로 구 형태를 만든다. 칸은 다른 큐브처럼 흰 면으로 모눈을 가린다
+   ① 가운데는 거의 비치는 투명 — 가장자리로 갈수록 굴절로 옅은 유리색이 차오른다
+   ② 왼쪽 위 넓은 빛 · 오른쪽 아래로 옅은 그늘(구 볼륨)
+   ③ 유리 특유의 맺히는 빛: 빛 반대편(오른쪽 아래)에 밝은 면을 번지게
+   ④ 아래 접지 그림자는 옅고 넓게 */
 .pdp-harmony--grid .pdp-harmony__crystal .pdp-harmony__orb {
   --crystal-d: var(--orb-d);
 
   background:
-    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 16%),
-    radial-gradient(circle at 70% 78%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 22%),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 64%, rgba(120, 138, 160, 0.28) 90%, rgba(255, 255, 255, 0.7) 100%),
-    linear-gradient(160deg, #f7f9fb 0%, #e9edf2 50%, #d9dfe7 100%); /* 가운데 급격한 밝기 변화(사선 경계) 없이 매끄럽게 */
-  box-shadow:
-    inset 0 0 calc(var(--crystal-d) * 0.06) rgba(255, 255, 255, 0.9),
-    0 calc(var(--crystal-d) * 0.12) calc(var(--crystal-d) * 0.14) calc(var(--crystal-d) * -0.08) rgba(16, 30, 54, 0.16);
+    radial-gradient(circle at 68% 78%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 26%),
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 30%),
+    linear-gradient(140deg, rgba(255, 255, 255, 0) 30%, rgba(150, 166, 188, 0.14) 100%),
+    radial-gradient(circle closest-side at 50% 52%,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(244, 247, 251, 0.35) 42%,
+      rgba(222, 229, 238, 0.8) 78%,
+      rgba(203, 212, 224, 0.95) 100%);
+  box-shadow: 0 calc(var(--crystal-d) * 0.12) calc(var(--crystal-d) * 0.2) calc(var(--crystal-d) * -0.1) rgba(16, 30, 54, 0.12);
 }
 
 /* 버튼 = 큐브 칸 전체(터치 영역), 시각적 버튼 = 원 */
@@ -2015,13 +2353,13 @@
   border-radius: 50%;
 }
 
-/* 무광 3D 구체 (사진 속 벨벳 질감 구체):
-   ① 왼쪽 위 빛 → 원색 → 오른쪽 아래 깊은 그늘(명암 경계를 또렷하게)
-   ② 아래쪽 반사광 — 바닥에서 되비치는 빛으로 둥근 볼륨
-   ③ 외곽 어둡게(limb darkening) — 테두리가 안으로 말려 들어가 보이게
-   ④ 아래 접지 그림자 — 원 크기에 비례한 부드러운 그림자 */
+/* 매트 구체 (사진 harmony-spheres.png 속 벨벳 질감) — 2026-10-21
+   광택점·테두리 선·안쪽 하이라이트 띠(액체 표면장력처럼 보임) 없이, 명암만으로 구 형태를 만든다
+   ① 빛(왼쪽 위)은 넓고 부드럽게 → 원색 → 오른쪽 아래로 갈수록 깊어지는 그늘(Lambert 명암)
+   ② 오른쪽 아래 반사광 — 바닥에서 되비치는 옅은 빛을 면으로 번지게(선이 생기지 않게)
+   ③ 아래 접지 그림자는 옅고 넓게 */
 .pdp-harmony--grid .pdp-harmony__spot .pdp-harmony__orb {
-  --orb-shadow: 0 calc(var(--orb-size) * 0.14) calc(var(--orb-size) * 0.16) calc(var(--orb-size) * -0.08) rgba(16, 30, 54, 0.22);
+  --orb-shadow: 0 calc(var(--orb-size) * 0.12) calc(var(--orb-size) * 0.2) calc(var(--orb-size) * -0.1) rgba(16, 30, 54, 0.16);
 
   position: absolute;
   inset: 0;
@@ -2029,13 +2367,13 @@
   height: var(--orb-size);
   margin: auto;
   background:
-    radial-gradient(circle at 50% 50%, transparent 62%, rgba(0, 0, 0, 0.14) 100%),
-    radial-gradient(circle at 66% 88%, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 34%),
-    radial-gradient(circle at 32% 26%,
-      color-mix(in srgb, var(--orb) 55%, #fff) 0%,
-      color-mix(in srgb, var(--orb) 88%, #fff) 20%,
-      var(--orb) 46%,
-      color-mix(in srgb, var(--orb) 70%, #000) 100%);
+    radial-gradient(circle at 74% 84%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 32%),
+    radial-gradient(circle at 34% 28%,
+      color-mix(in srgb, var(--orb) 62%, #fff) 0%,
+      color-mix(in srgb, var(--orb) 86%, #fff) 20%,
+      var(--orb) 44%,
+      color-mix(in srgb, var(--orb) 84%, #000) 70%,
+      color-mix(in srgb, var(--orb) 70%, #000) 92%);
   box-shadow: var(--orb-shadow);
   transition: transform 320ms var(--pdp-ease), box-shadow 320ms ease;
 }
@@ -2266,7 +2604,8 @@
 }
 
 /* 진행 바(2px × 48px): 선택 칸에만, 시점 줄(pill · 사용 직후) 오른쪽 끝 — 지금 재생 중인 시점만 보여 준다.
-   자동 재생 중 차오르고, 재생이 끝나면 비워진다 */
+   자동 재생 중 차오르고, 재생이 끝나면 비워진다.
+   2026-10-21: D안 마크업에서 진행선(.pdp-timepoints__rail)을 뺐다(build.py) — 아래 규칙은 다시 쓸 때를 위해 남겨 둠 */
 .pdp-clinical--sv .pdp-timepoints {
   --pdp-tp-bar-h: 2px;
   --pdp-tp-bar-w: 48px;
@@ -2474,4 +2813,25 @@
     flex: 0 0 85%;
     scroll-snap-align: start;
   }
+}
+
+/* D 결과 수치의 %(2026-10-21 수정안): 숫자 글꼴(Suisse)의 %는 가로로 넓어 숫자보다 커 보인다 —
+   Pretendard로 바꾸고 숫자보다 살짝 작게(0.9em), 숫자 바로 뒤에 붙인다 */
+.pdp-clinical--sv .pdp-metric__unit {
+  margin-left: 0.02em;
+  font-family: "Pretendard", var(--font-ko-family, sans-serif);
+  font-size: 0.9em;
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: 0;
+}
+
+/* D: Ritual 마무리 슬로건 — 영문(Skin Longevity, Wherever You Are.)은 「스킨 롱제비티」가 다 나온 뒤 한 박자 쉬고 등장
+   (공통 CSS 650ms → 1200ms · 「스킨 롱제비티」는 250ms 시작 + 700ms 전환 = 950ms에 완료) */
+.pdp--proto-d .pdp-ritual__closing.is-staged .pdp-ritual__closing-en { transition-delay: 1200ms; }
+
+/* 2026-10-26 MORNING 장면 보정본(ritual-morning-0405.jpg, 2:3): 예전 와이드 컷에 맞춘 1.28배 · 왼쪽 기준 확대(pdp-elixir.css)를
+   새 컷 구도에 맞게 — 안경 · 이어폰이 잘리지 않도록 살짝만, 가운데 기준 */
+.pdp--proto-d .pdp-ritual__item.is-active .pdp-ritual__figure--morning img {
+  transform: scale(1.06);
+  transform-origin: 50% 50%;
 }

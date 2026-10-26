@@ -1,0 +1,215 @@
+/**
+ * Hero Slider
+ * 메인 히어로 이미지 슬라이더 (Swiper)
+ */
+
+.hero-slider {
+  --hero-slider-h: calc(100vh - var(--offset-header));
+  --hero-slider-h: calc(100svh - var(--offset-header));
+
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--primitive-neutral-0, #ffffff);
+}
+
+.hero-slider__swiper,
+.hero-slider__slide {
+  height: var(--hero-slider-h);
+  min-height: 480px;
+}
+
+/* 모바일: 화면 높이 대신 고정 비율 (아래 푸터가 바로 이어진다 — mainpage.css .site-main) */
+@media screen and (max-width: 767px) {
+  .hero-slider {
+    --hero-slider-ratio: 2 / 3;
+  }
+
+  .hero-slider__swiper,
+  .hero-slider__slide {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: var(--hero-slider-ratio);
+  }
+}
+
+.hero-slider__slide {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hero-slider__media {
+  position: relative;
+  display: block;
+  flex: 1 1 0;
+  min-height: 0;
+  line-height: 0;
+}
+
+.hero-slider__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* --------------------------------------------------------------------------
+   2컬럼 슬라이드 (모바일: 세로 스택)
+   -------------------------------------------------------------------------- */
+
+.hero-slider__panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-8);
+  padding: var(--spacing-8) var(--page-margin);
+  background-color: var(--primitive-neutral-0, #ffffff);
+  color: var(--primitive-neutral-950, #292929);
+  box-sizing: border-box;
+}
+
+.hero-slider__eyebrow {
+  margin: 0 0 var(--spacing-6);
+  color: var(--primitive-neutral-600, #656565);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* 색: 제목·링크·버튼 = 블루 / 라벨·서브카피 = 그레이 (세 슬라이드 공통) */
+.hero-slider__title {
+  margin: 0;
+  color: var(--primitive-bleu, #0077BF);
+}
+
+.hero-slider__desc {
+  max-width: 40ch;
+  margin: var(--spacing-2) 0 0;
+  color: var(--primitive-neutral-600, #656565);
+}
+
+.hero-slider__cta {
+  margin-top: var(--spacing-8);
+}
+
+/* CTA — 각진 흰 버튼 + 블루 글자·테두리 · hover 시 모양 변화 없음 */
+.hero-slider .hero-slider__cta.btn--secondary,
+.hero-slider .hero-slider__cta.btn--secondary:hover:not(:disabled):not(.is-disabled) {
+  --_btn-radius: 0;
+  background-color: var(--primitive-neutral-0, #ffffff);
+  color: var(--primitive-bleu, #0077BF);
+  border-color: var(--primitive-bleu, #0077BF);
+}
+
+.hero-slider__thumb {
+  display: none;
+  line-height: 0;
+}
+
+.hero-slider__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --------------------------------------------------------------------------
+   풀블리드 슬라이드 — 제품명 + 텍스트 링크 (레이아웃은 메인 히어로 .hero__content · mainpage.css)
+   -------------------------------------------------------------------------- */
+
+.template-index .hero-slider .hero-slider__overlay {
+  padding-top: calc(var(--spacing-8) * 3);
+  row-gap: var(--spacing-2);
+  pointer-events: none;
+}
+
+/* 카피가 놓이는 위쪽 여백을 확보하도록 풀블리드 사진은 위 기준으로 자른다 */
+.hero-slider__slide:not(.hero-slider__slide--split) .hero-slider__image {
+  object-position: 50% 0;
+}
+
+/* 선반 사진: 위 기준이면 아래 칸 용기가 잘려서 65% 지점 기준 (데스크톱 1440·1920 확인) */
+.hero-slider__slide:not(.hero-slider__slide--split) .hero-slider__image--shelf {
+  object-position: 50% 65%;
+}
+
+/* 제품명 — 크기는 .heading-xl (display는 카페24 표시 상태 클래스라 타이포에 쓰지 않는다) */
+.hero-slider .hero-slider__name {
+  color: var(--primitive-bleu, #0077BF);
+}
+
+.hero-slider__tm {
+  margin-left: 0.04em;
+  font-size: 0.45em;
+  vertical-align: 0.9em;
+  line-height: 0;
+}
+
+/* 작은 텍스트 링크 CTA */
+.hero-slider .hero-slider__text-link {
+  pointer-events: auto;
+  color: var(--primitive-bleu, #0077BF);
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+
+/* 모바일: 카피가 제품(보틀 상단)을 가리지 않도록 사진 위쪽 벽 영역 안에 붙인다 */
+@media screen and (max-width: 767px) {
+  .template-index .hero-slider .hero-slider__overlay {
+    padding-top: var(--spacing-10);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Pagination
+   -------------------------------------------------------------------------- */
+
+.hero-slider .hero-slider__pagination {
+  --swiper-pagination-bullet-size: 6px;
+  --swiper-pagination-bullet-horizontal-gap: 4px;
+  --swiper-pagination-color: var(--primitive-bleu, #0077BF);
+  --swiper-pagination-bullet-inactive-color: var(--primitive-bleu, #0077BF);
+  --swiper-pagination-bullet-inactive-opacity: 0.25;
+  bottom: var(--spacing-6);
+}
+
+@media screen and (min-width: 768px) {
+  /* 데스크톱: 화면 높이 대신 라인업 사진 원본 비율(3:2)로 고정 — 넘겨도 높이가 바뀌지 않는다 */
+  .hero-slider__swiper,
+  .hero-slider__slide {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 3 / 2;
+  }
+
+  .hero-slider__slide--split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-slider__slide--split .hero-slider__media {
+    height: 100%;
+  }
+
+  .hero-slider__panel {
+    height: 100%;
+    padding: calc(var(--spacing-8) * 2) calc(var(--page-margin) * 2);
+  }
+
+  /* 왼쪽 아래 사진: 2026-10-24 수정안 — 시안 비율(화면 폭의 약 21%)로 키움 · 1440px 화면 약 300px */
+  .hero-slider__thumb {
+    display: block;
+    width: 48%;
+    max-width: 360px;
+    aspect-ratio: 2 / 3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slider .swiper-wrapper {
+    transition-duration: 0ms !important;
+  }
+}

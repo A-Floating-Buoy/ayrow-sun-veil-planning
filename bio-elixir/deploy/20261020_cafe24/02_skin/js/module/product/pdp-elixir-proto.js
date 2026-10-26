@@ -464,6 +464,74 @@
     update();
   }
 
+  /* D: 히어로 영상 테스트 — URL에 ?hero=loop | greenery | sand를 붙이면 히어로 사진 대신 영상을 띄운다.
+     loop는 무한 반복, greenery·sand(reveal)는 한 번 재생 후 마지막 장면에서 멈춘다.
+     영상이 재생되기 시작할 때까지는 기존 사진을 그대로 보여 준다(.is-hero-video가 붙으면 사진을 숨김).
+     reveal 영상에서는 문구 등장을 영상 진행에 맞춘다(.is-hero-text). 영상일 때 문구는 모두 흰색(CSS) */
+  var HERO_VIDEO_BASE = 'https://smvt.b-cdn.net/BIO-ELIXIR_hero_';
+  var HERO_VIDEOS = {
+    loop: { file: 'loop_4k.mp4', loop: true },
+    greenery: { file: 'reveal_greenery_4k.mp4', loop: false },
+    sand: { file: 'reveal_sand_4k.mp4', loop: false }
+  };
+
+  function initHeroVideo(root) {
+    var hero = root.querySelector('.pdp-elixir-hero');
+    if (!hero || hero.hasAttribute('data-proto-hero-video')) return;
+    var key = '';
+    try { key = (new URLSearchParams(window.location.search).get('hero') || '').toLowerCase(); } catch (e) { return; }
+    key = key.replace(/^reveal[_-]/, '');
+    var config = HERO_VIDEOS[key];
+    if (!config) return;
+    hero.setAttribute('data-proto-hero-video', key);
+
+    var media = document.createElement('div');
+    media.className = 'pdp-elixir-hero__media';
+    var video = document.createElement('video');
+    video.className = 'pdp-elixir-hero__bg pdp-elixir-hero__video';
+    // iOS 자동 재생: src보다 먼저 muted · playsinline
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('aria-hidden', 'true');
+    video.autoplay = true;
+    video.loop = config.loop;
+    video.preload = 'auto';
+    video.src = HERO_VIDEO_BASE + config.file;
+    media.appendChild(video);
+
+    var picture = hero.querySelector('picture') || hero.querySelector('.pdp-elixir-hero__bg');
+    hero.insertBefore(media, picture ? picture.nextSibling : hero.firstChild);
+
+    // 문구 등장 시점: loop는 바로, reveal(greenery · sand)은 영상 25% 지점에서(.is-hero-text).
+    //   버튼은 reveal에서 후반부(75% 지점)에 따로 나온다(.is-hero-cta). loop는 문구 다음 박자에 바로.
+    //   영상을 못 띄우면(오류 · 자동 재생 차단) 바로 또는 늦어도 8초 뒤에는 전부 보여 준다
+    function showText() {
+      hero.classList.add('is-hero-text');
+    }
+    function showAll() {
+      hero.classList.add('is-hero-text', 'is-hero-cta');
+    }
+    if (config.loop) hero.classList.add('is-hero-cta'); // loop: 버튼도 대기 없이(문구 박자에 맞춰 CSS가 지연)
+    else hero.setAttribute('data-proto-hero-delay', '');
+    var fallbackTimer = window.setTimeout(showAll, 8000);
+    video.addEventListener('playing', function () {
+      window.clearTimeout(fallbackTimer);
+      hero.classList.add('is-hero-video');
+    });
+    video.addEventListener('timeupdate', function () {
+      if (!video.duration) return;
+      if (video.currentTime >= video.duration * 0.25) showText();
+      if (!config.loop && video.currentTime >= video.duration * 0.75) hero.classList.add('is-hero-cta');
+    });
+    video.addEventListener('ended', showAll);
+    video.addEventListener('error', function () { media.remove(); hero.classList.remove('is-hero-video'); showAll(); });
+    var played = video.play();
+    if (played && played.catch) played.catch(function () {});
+  }
+
   /* ---- D: Harmony 모눈 — 소개 블록 높이를 칸(--u) 단위로 올리고 행 수를 --hg-intro-rows로 넘긴다 ---- */
   function initHarmonyGrid(section) {
     if (section.__pdpHarmonyGrid) return;
@@ -513,12 +581,13 @@
 
     function fit(svg) {
       var vb = svg.viewBox && svg.viewBox.baseVal;
-      var width = svg.getBoundingClientRect().width;
-      if (!vb || !vb.width || !width) return; // 숨은 패널(모바일 display: none)은 보일 때 다시 계산
+      var box = svg.getBoundingClientRect();
+      if (!vb || !vb.width || !box.width) return; // 숨은 패널(모바일 display: none)은 보일 때 다시 계산
       // 화면에 그려지는 글자 크기를 모든 차트에서 같게: 수치 14 · 축 라벨 12 · 눈금/단위 11 (모바일 12 · 11 · 10)
       var mobile = MOBILE && MOBILE.matches;
       var target = mobile ? 12 : 14;
-      var scale = width / vb.width;
+      // SVG가 영역을 채우며 비율을 지키면(meet) 너비 · 높이 중 작은 쪽 배율로 그려진다(24H · NOW 쿨링)
+      var scale = Math.min(box.width / vb.width, box.height ? box.height / vb.height : Infinity);
       var units = target / scale;
       qsa('.pdp-chart__label', svg).forEach(function (text) {
         text.style.fontSize = ((mobile ? 11 : 12) / scale).toFixed(2) + 'px';
@@ -551,8 +620,63 @@
       });
     }
 
+    // 통계 주석(Ŧ · ** · * · #)의 시작을 Y축 숫자 왼쪽 끝에 맞춘다(2026-10-24 수정안 — 10-23엔 첫 눈금선 x1) —
+    //   숫자는 오른쪽 정렬이라 가장 긴 숫자(예: 0.675)의 왼쪽 끝. 맨 위 단위(°C · SAI · A.U. …)는 제외.
+    //   SVG가 비율을 지키며 가운데 놓이는 폭이 있어 CSS 패딩으로는 맞출 수 없다
+    function alignSig(svg) {
+      var box = svg.closest('.pdp-timepoints__card, .pdp-clinical__hydration-chart');
+      var sig = box && box.querySelector('.pdp-timepoints__sig');
+      var ticks = qsa('.pdp-chart__tick', svg);
+      if (!sig || ticks.length < 2) return;
+      sig.style.paddingLeft = '';
+      var unit = ticks.reduce(function (top, t) {
+        return parseFloat(t.getAttribute('y')) < parseFloat(top.getAttribute('y')) ? t : top;
+      });
+      var axisLeft = Infinity;
+      ticks.forEach(function (t) {
+        if (t !== unit) axisLeft = Math.min(axisLeft, t.getBoundingClientRect().left);
+      });
+      if (!axisLeft || axisLeft === Infinity) return; // 숨은 패널은 보일 때 다시 계산
+      var indent = axisLeft - sig.getBoundingClientRect().left;
+      if (indent >= 0) sig.style.paddingLeft = indent.toFixed(1) + 'px'; // 숫자가 길면(0.675) 카드 기본 여백보다 안쪽으로도
+    }
+
+    // 24H(2026-10-24 수정안): 왼쪽 문구의 구분선을 그래프 눈금선에 맞춘다 —
+    //   제목 묶음 아래선 = 80 눈금선, 24시간 후 개선율 아래선 = 60 눈금선.
+    //   두 열이 나란한 데스크톱에서만. 글자가 칸보다 크면(좁은 화면) 맞추지 않고 원래 간격으로 둔다
+    function alignHydration(svg) {
+      var block = svg.closest('.pdp-clinical__hydration');
+      var head = block && block.querySelector('.pdp-hydration__head');
+      var stat = block && block.querySelector('.pdp-hydration__stat');
+      var grids = qsa('.pdp-chart__grid', svg);
+      if (!head || !stat || grids.length < 2) return;
+      head.style.paddingBottom = '';
+      stat.style.paddingTop = '';
+      stat.style.paddingBottom = '';
+      var lines = grids.map(function (g) { return g.getBoundingClientRect().top; })
+        .sort(function (a, b) { return a - b; });
+      var copy = head.parentElement.getBoundingClientRect();
+      if (!lines[0] || copy.right > svg.getBoundingClientRect().left) return; // 숨김 · 위아래로 쌓인 배치
+      // 칸 높이는 위아래 여백으로 맞춘다: 제목 묶음은 위에 붙이고 아래 여백으로, 24시간 후 개선율은 칸 가운데에
+      function inner(el) {
+        var cs = getComputedStyle(el);
+        return el.offsetHeight - (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0) - (parseFloat(cs.borderBottomWidth) || 0);
+      }
+      var headTop = head.getBoundingClientRect().top + (parseFloat(getComputedStyle(head).paddingTop) || 0);
+      var headPad = lines[0] - 0.5 - headTop - inner(head); // 아래선(1px)의 가운데가 눈금선에
+      var statPad = (lines[1] - lines[0] - 1 - inner(stat)) / 2;
+      if (headPad < 8 || statPad < 8) return; // 글자 위아래 최소 8px — 모자라면(좁은 화면) 원래 간격
+      head.style.paddingBottom = headPad.toFixed(1) + 'px';
+      stat.style.paddingTop = statPad.toFixed(1) + 'px';
+      stat.style.paddingBottom = statPad.toFixed(1) + 'px';
+    }
+
     var observer = new ResizeObserver(function (entries) {
-      entries.forEach(function (entry) { fit(entry.target); });
+      entries.forEach(function (entry) {
+        fit(entry.target);
+        alignSig(entry.target);
+        alignHydration(entry.target);
+      });
     });
     charts.forEach(function (svg) { observer.observe(svg); });
   }
@@ -566,6 +690,7 @@
 
   function boot() {
     qsa('.pdp--proto-d[data-pdp]').forEach(initMobileStudy);
+    qsa('.pdp--proto-d[data-pdp]').forEach(initHeroVideo);
     qsa('.pdp--proto-d[data-pdp]').forEach(initHeroParallax);
     qsa('.pdp--proto-d[data-pdp]').forEach(initChartValueSize);
     qsa('.pdp-harmony--grid').forEach(initHarmonyGrid);

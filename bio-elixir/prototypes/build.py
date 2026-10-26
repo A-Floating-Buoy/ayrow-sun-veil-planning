@@ -17,7 +17,7 @@ HERE = Path(__file__).resolve().parent
 ADMIN = HERE.parent / "cafe24-admin"
 OUT = ADMIN / "test"
 SKIN = "../../../ayrow-cafe24-skin-2026"  # preview → skin repo (sibling of planning repo)
-VER = "20261020000077"
+VER = "20261026000001"
 
 src = (ADMIN / "bio-elixir-pdp.html").read_text(encoding="utf-8")
 start = src.index("  <!-- 3. Clinical proof")
@@ -139,7 +139,7 @@ assert d.count('class="heading-xxxl" data-proto-metric') == 6, "D values"
 # D안 시안(2026-10-13): 라벨 문구 · 각주를 섹션 하단(안전성 다음)으로
 for old, new in [
     ('<span class="pdp-timepoints__labels heading-m">피부 온도 · 붓기 · 붉은기*</span>',
-     '<span class="pdp-timepoints__labels heading-m">피부 온도 · 붓기 · 붉은기 개선*</span>'),
+     '<span class="pdp-timepoints__labels heading-m">피부 온도 · 붓기 · 붉은기 개선</span>'),
     ('<span class="pdp-timepoints__labels heading-m">탄력 · 눈가 주름 · 피부결</span>',
      '<span class="pdp-timepoints__labels heading-m">피부노화지수 완화</span>'),
 ]:
@@ -149,6 +149,8 @@ for old, new in [
 #   탭 밖 페이지네이션 바는 없앰(2026-10-20). 탭은 nav로 감싸 모바일에서 상단 고정
 RAIL = '<span class="pdp-timepoints__rail" aria-hidden="true"><span class="pdp-timepoints__progress"></span></span>'
 assert d.count(RAIL) == 3, "D rails"
+# 2026-10-21 수정안: 진행선도 삭제 — 노란 면으로 선택 상태가 충분히 구분되고 그래프에도 인터랙션이 있다
+d = d.replace(RAIL, "")
 d = sub_once(r'(\n {8})(<div class="pdp-timepoints__tabs".*?\n {8}</div>)',
              lambda m: (m.group(1) + '<div class="pdp-timepoints__nav">'
                         + m.group(1) + '  ' + m.group(2).replace("\n", "\n  ")
@@ -177,7 +179,8 @@ swap('y="279.4" text-anchor="end" dominant-baseline="middle" font-size="16.7">°
      'y="17" text-anchor="end" dominant-baseline="middle" font-size="16.7">°C')
 swap('<p class="pdp-timepoints__note body-xs">*연구관리번호 PNK-26622-K1R 인체적용시험 결과 (2026.06.22–2026.07.23) · 개인에 따라 차이가 있을 수 있습니다.</p>',
      f'''<ul class="pdp-timepoints__notes body-xs">
-              <li>*사용 직후 결과는 일시적인 변화입니다.</li>
+              <li>※ 피부 붓기 개선율(%)=│(after-before)│/before*100</li>
+              <li>※ 붉은기 진정 개선율(%)=(자극 후-사용 직후)/(자극 후-자극 전)*100</li>
               <li>{PNK} 인체적용시험 결과(2026.06.15~07.09 / 2026.06.22~07.23) · 개인에 따라 차이가 있을 수 있습니다.</li>
             </ul>''')
 
@@ -201,6 +204,7 @@ swap('''            </div>
 
           <!-- 4 WEEKS -->''', f'''            </div>
             <ul class="pdp-timepoints__notes body-xs">
+              <li>※ 개선율(%)=│(after-before)│/before*100</li>
               <li>{PNK} 인체적용시험 결과(2026.06.15~07.09) · 개인에 따라 차이가 있을 수 있습니다.</li>
             </ul>
           </div>
@@ -218,6 +222,7 @@ SAI_CHART = '''<svg class="pdp-chart" viewBox="0 0 307 198" role="img" aria-labe
               <text class="pdp-chart__tick" x="47.3" y="113.2" text-anchor="end" dominant-baseline="middle" font-size="12.5">40</text>
               <line class="pdp-chart__grid" x1="57.3" y1="152.1" x2="278.4" y2="152.1"/>
               <text class="pdp-chart__tick" x="47.3" y="152.1" text-anchor="end" dominant-baseline="middle" font-size="12.5">30</text>
+              <text class="pdp-chart__tick" x="47.3" y="13.9" text-anchor="end" dominant-baseline="middle" font-size="12.5">SAI</text>
               <polyline class="pdp-chart__line" pathLength="1" points="57.3,67 278.4,104.4"/>
               <circle class="pdp-chart__dot pdp-chart__dot--open" cx="57.3" cy="67" r="6"/>
               <text class="pdp-chart__value" x="51.3" y="55" text-anchor="start" font-size="15.6">51.868</text>
@@ -239,7 +244,7 @@ swap('''<div class="pdp-timepoints__row">
               <article class="pdp-timepoints__card">
                 <h4 class="pdp-timepoints__card-head"><span class="body-l">피부노화지수 완화</span><strong class="heading-xxxl">18.537%</strong></h4>
                 <div class="pdp-timepoints__card-body pdp-timepoints__card-body--chart">{SAI_CHART}</div>
-                {SIG_T}
+                <p class="pdp-timepoints__sig body-xs">※ SAI: Skin Aging Index(피부노화지수)<br>* : <i>p</i>&lt;0.05 by Paired t-test</p>
               </article>
               <article class="pdp-timepoints__card" data-proto-visual="elasticity">''')
 for value, sig in [("0.746", SIG_T), ("22.324", SIG_W), ("6.690", SIG_W)]:
@@ -258,6 +263,17 @@ swap('''            </div>
           </div>
         </div>
       </div>''')
+
+# ---- D안 2026-10-21 수정안 ----
+# NOW 피부 온도: 사용 직후 수치에 Ŧ · 그래프 카드 좌측 하단 통계 주석
+swap('font-size="20">30.905</text>', 'font-size="20">30.905Ŧ</text>')
+d = sub_once(r'(font-size="20">30\.905Ŧ</text>.*?</svg>\s*</div>)',
+             r'\1\n                <p class="pdp-timepoints__sig body-xs">Ŧ : <i>p</i>&lt;0.05 by repeated measures ANOVA</p>', d)
+# 24H: 사용 직후 · 24시간 후 수치에 ** · 그래프 좌측 하단 통계 주석
+swap('font-size="20">69.365</text>', 'font-size="20">69.365**</text>')
+swap('font-size="20">56.229</text>', 'font-size="20">56.229**</text>')
+d = sub_once(r'(<div class="pdp-clinical__hydration-chart">.*?</svg>)',
+             r'\1\n                <p class="pdp-timepoints__sig body-xs">** : <i>p</i>&lt;0.05 by repeated measures ANOVA, post hoc C.I correction by Bonferroni.</p>', d)
 
 # VIEW THE STUDY: 시점별 시험 개요 · 효능 결과(+ 각 시점 연구 개요) → 민감성 피부 테스트(신뢰 영역) 순서
 STUDIES = [
@@ -298,22 +314,29 @@ for key, tag, rows in STUDIES:
                 <p class="pdp-study__disclaimer pdp__note body-xs">인체적용시험 결과가 모든 사용자에게 동일하게 나타나는 것은 아닙니다.</p>
               </div>
             </details>''')
+# 2026-10-21 수정안: Vegan 블록처럼 제목 묶음(왼쪽) · 아이콘(오른쪽 위) · 판정 문구(아래 전체 폭) — 배치는 pdp-elixir-proto.css
 safety_d = '''<div class="pdp-safety" data-scroll-reveal>
         <img class="pdp-safety__icon" src="https://ecimg.cafe24img.com/pg2475b11771033004/ayrow/web/src/bio-elixir/safety-check.svg" alt="" width="56" height="56" loading="lazy">
         <div class="pdp-safety__copy">
           <p class="pdp__eyebrow">Clinically Tested for Primary Skin Irritation</p>
           <p class="pdp-safety__label body-m">민감성 피부 대상 일차자극 테스트 완료</p>
           <p class="pdp-safety__result heading-xl"><strong>피부자극지수 0.00</strong></p>
-          <p class="pdp-safety__verdict sm--body-m body-l">비(무)자극성 판정 · 민감성 피부 사용 적합</p>
         </div>
+        <p class="pdp-safety__verdict sm--body-m body-l">비(무)자극성 판정 · 민감성 피부 사용 적합</p>
       </div>
       <p class="pdp-safety__note body-xs">*P&amp;K 피부임상연구센타㈜ 민감성 피부 대상 일차자극 시험 결과(2026.07.08~07.10, 성인 남녀 31명) · 개인에 따라 차이가 있을 수 있습니다.</p>'''
 # 섹션 하단 qualifier("인체적용시험 측정 항목 · *사용 직후…")는 NOW 패널 각주로 옮겼다 — 각주는 시점마다 한 블록
 swap(f"{study}\n\n      {safety}", safety_d)
+# 2026-10-21 수정안: 결과 수치의 % — 숫자 글꼴(Suisse)의 %가 넓어 보여 Pretendard로 · 크기/간격은 CSS(.pdp-metric__unit)
+d, n = re.subn(r'(<strong class="(?:pdp-clinical__metric )?heading-x+l"[^>]*>[\d.]+)%(</strong>)',
+               r'\1<span class="pdp-metric__unit">%</span>\2', d)
+assert n == 8, f"D % units: {n}"  # 붓기 · 붉은기 · 보습 2 · 노화지수 · 탄력 · 주름 · 피부결
 page_d = add_proto_assets(src[:start] + d + rest, "D · 텍스트형 + Sun Veil 디자인 시스템")
 # D안 페이지 단위 조정용 루트 클래스 (.pdp--proto-d)
 assert page_d.count('class="pdp pdp--elixir"') == 1, "D root"
 page_d = page_d.replace('class="pdp pdp--elixir"', 'class="pdp pdp--elixir pdp--proto-d"', 1)
+# D안(실제 상세): pdp-elixir.css 캐시 버전도 VER로 — 원본 HTML의 ?ver=는 원본 기준이라 D안에서만 올린다
+page_d = sub_once(r'(pdp-elixir\.css\?ver=)\d+', rf'\g<1>{VER}', page_d)
 # 카페24는 <img src>만 CDN 주소로 바꿔 준다 — style url()·poster는 CDN 절대경로로 적는다 (원본 도메인 /web/src/는 404)
 CDN_SRC = "https://ecimg.cafe24img.com/pg2475b11771033004/ayrow/web/src/"
 # D안 히어로: 와이드 화면 양옆을 채우는 흐린 배경용 이미지 경로
@@ -341,9 +364,25 @@ page_d = page_d.replace(hero_bg, (
 page_d = sub_once(r'\n\s*<img class="pdp-elixir-hero__glow"[^>]*>', "", page_d)
 assert page_d.count("bio-elixir/hero-bg.png") == 1, "D hero bg var"
 page_d = page_d.replace("bio-elixir/hero-bg.png", "bio-elixir/hero-bg-desktop.jpg")
+# D안 2026-10-23: 제품명 BIO ELIXIR™ 크기 = heading-xl — 10-22의 heading-xxxl(40px)은 너무 커서
+#   이전 버전(24px)보다 1–3pt 큰 28px로 · ™는 작은 윗첨자(색 · ™ 크기는 pdp-elixir-proto.css)
+page_d = sub_once(r'(<h2 class="pdp-elixir-hero__title) type-display(">BIO ELIXIR)™(</h2>)',
+                  r'\1 heading-xl\2<span class="pdp-elixir-hero__tm">™</span>\3', page_d)
 # D안: 병 속 정제수 레이어를 크림 틴트 버전으로(브랜드 일관성) — 새 에셋 botanical-bottle-water-creme.svg 업로드 필요
 assert page_d.count("bio-elixir/botanical-bottle-water.svg") == 1, "D water"
 page_d = page_d.replace("bio-elixir/botanical-bottle-water.svg", "bio-elixir/botanical-bottle-water-creme.svg")
+# D안 2026-10-21: 액체를 뚜껑 칼라 바로 아래(빨간선)까지 — 어깨 안쪽까지 포함한 용기 전체 좌표의 정제수 · 액체 마스크로 교체
+#   (새 에셋 botanical-bottle-water-full.svg 업로드 필요 · 위치/높이는 pdp-elixir-proto.css의 .pdp--proto-d 블록)
+# SVG도 CDN 캐시가 남으므로 ?ver=로 갱신 — 그라디언트를 바꾸면 값을 올린다
+WATER_VER = "2026102201"
+page_d = page_d.replace("bio-elixir/botanical-bottle-water-creme.svg", f"bio-elixir/botanical-bottle-water-full.svg?ver={WATER_VER}")
+page_d = page_d.replace('width="157" height="393" loading="lazy" aria-hidden="true">', 'width="161" height="558" loading="lazy" aria-hidden="true">', 1)
+_mask_full = (HERE.parent / "assets" / "botanical-bottle-liquid-mask-full.svg").read_text(encoding="utf-8").strip()
+for _a, _b in (('"', "%22"), ("<", "%3C"), (">", "%3E"), ("#", "%23"), ("(", "%28"), (")", "%29")):
+    _mask_full = _mask_full.replace(_a, _b)
+page_d, _n = re.subn(r"--pdp-liquid-mask: url\('data:image/svg\+xml,[^']*'\)",
+                     "--pdp-liquid-mask: url('data:image/svg+xml," + _mask_full + "')", page_d)
+assert _n == 1, "D liquid mask"
 # (D안 피뿌리풀 들판 영상은 2026-10-20 원본의 패럴렉스 이미지로 대체 — 영상 URL: https://smvt.b-cdn.net/hf_20261012_060423_e13d5c59-94ad-4b97-9dda-793c338bf6cb.mp4)
 
 # D안만: Harmony 섹션 — 사진(harmony-spheres.png)을 모눈 위 칸 채우기로 벡터화.
@@ -358,9 +397,9 @@ page_d = page_d.replace("bio-elixir/botanical-bottle-water.svg", "bio-elixir/bot
 #    9-10  L L R R R R X X X P  P  P  P     (X = 투명 크리스털 구체 · 장식)
 #   소개 문구도 같은 모눈 위 흰 블록(데스크톱: 이 그리드 왼쪽 7칸, 높이는 칸 단위로 올림 — proto.js)
 HARMONY = {  # aria-controls 번호 → (열, 행, 크기, 코어?, 원 색, + 표시 색)
-    1: (4, 3, 4, True, "#f3da62", "#fff"),      # NMN — 노랑 (+ 표시도 다른 구체처럼 흰색)
-    2: (3, 7, 4, True, "#a6372d", "#fff"),      # Resveratrol — 빨강
-    3: (10, 7, 4, True, "#2c7bd0", "#fff"),     # Pterostilbene — 파랑
+    1: (4, 3, 4, True, "#F7F1A0", "#0077BF"),   # NMN — 브랜드 크렘 (+ 표시는 블루)
+    2: (3, 7, 4, True, "#802727", "#fff"),      # Resveratrol — 브랜드 멀롯
+    3: (10, 7, 4, True, "#0077BF", "#fff"),     # Pterostilbene — 브랜드 블루
     4: (6, 1, 2, False, "#efa232", "#fff"),     # Quercetin — 주황, 맨 위
     5: (8, 5, 2, False, "#86b547", "#fff"),     # Vegan PRN — 초록 ┐ 사진에선 한 큐브
     6: (10, 5, 2, False, "#f29c7c", "#fff"),    # Kakadu Plum — 살구 ┘
@@ -460,6 +499,17 @@ page_d, n = re.subn(
     r'<svg class="pdp-chart" viewBox="0 0 ([\d.]+) ([\d.]+)" role="img" aria-labelledby="pdp-chart-(%s)-title">(.*?)</svg>'
     % "|".join(SQUARE_CHARTS + tuple(CHART_RATIO)), square_chart, page_d, flags=re.S)
 assert n == len(SQUARE_CHARTS) + len(CHART_RATIO), f"D chart relayout: {n}"
+# 2026-10-24 수정안: NOW 쿨링 그래프 — 윗선(°C)을 옆 사진 윗선에 붙이고, X축 라벨 ↔ 주석(Ŧ) 간격을 4 WEEKS 카드와 같게
+#   viewBox 위(°C 글자 위 빈 곳) · 아래(라벨 아래 여백)를 잘라 낸다
+page_d = sub_once(r'viewBox="0 0 502 502"( role="img" aria-labelledby="pdp-chart-now-title")', r'viewBox="0 18 502 468"\1', page_d)
+# 24H: 왼쪽 문구 구분선을 80 · 60 눈금선에 맞추려면(proto.js alignHydration) 80 눈금선이 제목 묶음보다 아래여야 한다 —
+#   viewBox 위에 빈 곳을 더해 그래프를 조금 내린다
+page_d = sub_once(r'viewBox="0 0 515 412"( role="img" aria-labelledby="pdp-chart-24h-title")', r'viewBox="0 -24 515 436"\1', page_d)
+# 2026-10-26 사진 보정본: Concentrate 앞 사진 = 26-10-01_AYROW_0500 · MORNING 장면 = 26-09-30_AYROW_0405 (둘 다 1300×1950)
+#   CDN 캐시가 남지 않도록 덮어쓰지 않고 새 파일명으로
+page_d = sub_once(r'bio-elixir/concentrate-0275\.jpg', "bio-elixir/concentrate-0500.jpg", page_d)
+page_d = sub_once(r'bio-elixir/ritual-morning-wide\.png(" alt="[^"]*") width="1411" height="1950"',
+                  r'bio-elixir/ritual-morning-0405.jpg\1 width="1300" height="1950"', page_d)
 
 # ---- 원본 전용 변경 — A–D에는 반영하지 않는다 (원본 HTML에서 바뀐 것을 테스트안에서만 되돌림) ----
 # (원본 문자열, 테스트안 문자열, 적용할 안)

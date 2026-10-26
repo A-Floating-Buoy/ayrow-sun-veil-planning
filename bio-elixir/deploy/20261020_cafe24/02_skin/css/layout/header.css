@@ -1,0 +1,941 @@
+/*-----------------------------------------------
+  ● Header Block
+  2-theme header: Default (transparent + brand blue)
+  and Inverted (brand blue bg + brand secondary)
+------------------------------------------------*/
+.header {
+  position: relative;
+  width: 100%;
+  background-color: var(--semantic-bg-default);
+  opacity: 1;
+  z-index: 50;
+  transition: background-color var(--duration-medium) var(--easing-standard);
+}
+
+/* Modifier: Fixed Header */
+.header--fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: transform var(--duration-medium) var(--easing-standard),
+              opacity var(--duration-short) var(--easing-standard),
+              background-color var(--duration-medium) var(--easing-standard);
+}
+
+/* 스크롤 다운 시 헤더 숨김 */
+.header--hidden {
+  transform: translateY(-100%);
+}
+
+.header--visible {
+  transform: translateY(0);
+}
+
+.drawer-open .header {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 팝업 페이지 패딩 제거 */
+body#popup {
+  padding-top: 0 !important;
+}
+
+@media screen and (max-width: 1024px) {
+  .header::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background-color: var(--primitive-brand-500);
+  }
+}
+
+/* -----------------------------------------------
+   ● Inverted Theme
+   ----------------------------------------------- */
+.inverted .header,
+body[data-header-theme="inverted"] .header {
+  background-color: var(--semantic-brand);
+}
+
+.inverted .header::after,
+body[data-header-theme="inverted"] .header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* -----------------------------------------------
+   ● Bordered Variant (사이드바 레이아웃과 함께 사용 시)
+   페이지에 .sidebar-nav 가 존재하면 헤더 하단에 1px 디바이더가 자동 추가됨.
+   ----------------------------------------------- */
+body:has(.sidebar-nav) .header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--primitive-brand-500); /* BLEU full — 본문 데이터 블록 패턴과 일치 */
+}
+
+/*-----------------------------------------------
+  ● Header Container & Grid
+------------------------------------------------*/
+.header__container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
+  box-sizing: border-box;
+}
+
+@media screen and (min-width: 1025px) {
+  .header__container {
+    padding-left: var(--spacing-5);
+    padding-right: var(--spacing-5);
+  }
+}
+
+.header__grid {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--spacing-4);
+  height: var(--header-height);
+}
+
+@media screen and (max-width: 1024px) {
+  .header__container {
+    padding-left: 20px;
+    padding-right: 12px;
+  }
+
+  .header__grid {
+    column-gap: 12px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .header__grid {
+    column-gap: var(--spacing-6);
+  }
+}
+
+/*-----------------------------------------------
+  ● Header Logo
+------------------------------------------------*/
+.header__logo {
+  /* 기본값은 기존 중앙 배치, 모바일/데스크탑에서 각각 재정렬 */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--spacing-4) 0;
+  line-height: 0;
+  z-index: 5;
+}
+
+@media screen and (max-width: 1024px) {
+  .header__logo {
+    position: static;
+    left: auto;
+    order: 1;
+    flex: 1 0 auto;
+    transform: none;
+    padding: 0;
+  }
+}
+
+.header__logo svg,
+.header__logo img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+@media screen and (max-width: 1024px) {
+  .header__logo svg,
+  .header__logo img {
+    width: 84px;
+    height: 16px;
+  }
+}
+
+/* 로고 SVG fill: default = brand blue */
+.header__logo svg path {
+  fill: var(--primitive-brand-500);
+  transition: fill var(--duration-medium) var(--easing-standard);
+}
+
+/* Inverted: logo = brand secondary yellow */
+.inverted .header__logo svg path,
+body[data-header-theme="inverted"] .header__logo svg path {
+  fill: var(--primitive-brand-secondary-500);
+}
+
+@media screen and (min-width: 1025px) {
+  .header__logo {
+    /* 데스크탑: 왼쪽 정렬 */
+    position: static;
+    transform: none;
+    flex: 1 0 0;
+    order: 1;
+    padding: 0;
+  }
+
+  .header__logo svg,
+  .header__logo img {
+    height: 16px;
+    width: 84px;
+  }
+}
+
+/*-----------------------------------------------
+  ● Navigation Wrapper (공통)
+------------------------------------------------*/
+.header__nav-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+/*-----------------------------------------------
+  ● Main Navigation Wrapper
+------------------------------------------------*/
+.header__nav-wrapper--main {
+  display: none; /* 모바일 숨김 */
+}
+
+@media screen and (min-width: 1025px) {
+  .header__nav-wrapper--main {
+    display: flex;
+    flex: 1 1 0;
+    justify-content: center;
+    order: 2;
+  }
+}
+
+/*-----------------------------------------------
+  ● Sub Navigation Wrapper
+------------------------------------------------*/
+.header__nav-wrapper--sub {
+  flex: 1 1 0;
+  justify-content: flex-end;
+  z-index: 2;
+  padding-right: var(--spacing-2);
+}
+
+@media screen and (max-width: 1024px) {
+  .header__nav-wrapper--sub {
+    order: 2;
+    flex: 1 0 auto;
+    margin-left: auto;
+    padding-right: 0;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .header__nav-wrapper--sub {
+    flex: 1 0 0;
+    order: 3;
+    padding-right: 0;
+  }
+}
+
+/*-----------------------------------------------
+  ● Navigation Elements
+------------------------------------------------*/
+.header__nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Main Navigation */
+.header__nav--main {
+  justify-content: center;
+}
+
+/* Sub Navigation */
+.header__nav--sub {
+  justify-content: flex-end;
+  column-gap: var(--spacing-4);
+}
+
+/*-----------------------------------------------
+  ● Mobile Drawer Toggle
+------------------------------------------------*/
+.header__drawer-toggle {
+  display: flex;
+  flex: 1 1 0;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 2;
+}
+
+@media screen and (max-width: 1024px) {
+  .header__drawer-toggle {
+    order: 3;
+    flex: 0 0 auto;
+    justify-content: center;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .header__drawer-toggle {
+    display: none;
+  }
+}
+
+.header-drawer-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 8px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+@media screen and (max-width: 1024px) {
+  .header-drawer-toggle {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    color: var(--primitive-brand-500);
+  }
+}
+
+.header-drawer-toggle:hover {
+  opacity: 0.7;
+}
+
+.header-drawer-toggle:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.header-drawer-toggle:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Element: header-drawer-toggle__icon */
+.header-drawer-toggle__icon {
+  position: relative;
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+/* Element: header-drawer-toggle__line */
+.header-drawer-toggle__line {
+  position: absolute;
+  left: 8px;
+  display: block !important;
+  width: 16px;
+  height: 1px;
+  background-color: var(--semantic-on-surface);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.inverted .header-drawer-toggle__line,
+body[data-header-theme="inverted"] .header-drawer-toggle__line {
+  background-color: var(--primitive-brand-secondary-500);
+}
+
+@media screen and (max-width: 1024px) {
+  .header-drawer-toggle__line {
+    background-color: var(--primitive-brand-500);
+  }
+
+  .inverted .header-drawer-toggle__line,
+  body[data-header-theme="inverted"] .header-drawer-toggle__line {
+    background-color: var(--primitive-brand-secondary-500);
+  }
+}
+
+/* Modifier: header-drawer-toggle__line--top */
+.header-drawer-toggle__line--top {
+  top: 13px;
+}
+
+/* Modifier: header-drawer-toggle__line--bottom */
+.header-drawer-toggle__line--bottom {
+  top: 19px;
+}
+
+.header-drawer-toggle[aria-expanded="true"] .header-drawer-toggle__line--top {
+  top: 16px;
+  transform: rotate(45deg);
+}
+
+.header-drawer-toggle[aria-expanded="true"] .header-drawer-toggle__line--bottom {
+  top: 16px;
+  transform: rotate(-45deg);
+}
+
+/*-----------------------------------------------
+  ● Navigation List (Main)
+------------------------------------------------*/
+.header__nav-list {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.header__nav--main .header__nav-list {
+  height: var(--header-height);
+  transform: translateX(6px);
+  padding: 0 var(--spacing-6);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/*-----------------------------------------------
+  ● Navigation Item
+------------------------------------------------*/
+.header__nav-item {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.header__nav-item--has-mega {
+  position: static;
+}
+
+/*-----------------------------------------------
+  ● Navigation Link
+------------------------------------------------*/
+.header__nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  font-family: var(--font-body-family);
+  font-size: var(--nav-main-link-font-size);
+  font-weight: var(--nav-main-link-font-weight);
+  line-height: var(--nav-main-link-line-height);
+  letter-spacing: var(--nav-main-link-letter-spacing);
+  color: var(--nav-main-link-color);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--duration-short) var(--easing-standard),
+              opacity var(--duration-short) var(--easing-standard);
+}
+
+.header__nav-link:hover,
+.header__nav-link:focus-visible {
+  opacity: 0.7;
+  text-decoration: none;
+  outline: none;
+}
+
+/* New badge — 메뉴명 앞 포인트 (NEW → Bio Elixir 순서 · 크렘 + 블루 · 오스카 레드는 아껴 쓰기 위해 2026-10-21 변경) */
+.header__nav-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+  padding: 2px 5px;
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--primitive-bleu);
+  background-color: var(--primitive-creme);
+  border-radius: var(--radius-full);
+}
+
+/* Inverted: nav links = brand secondary */
+.inverted .header__nav-link,
+body[data-header-theme="inverted"] .header__nav-link {
+  color: var(--primitive-brand-secondary-500);
+}
+
+/*-----------------------------------------------
+  ● Sub Navigation List
+------------------------------------------------*/
+.header__nav-sub-list {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .header__nav-sub-list {
+    gap: 12px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .header__nav-sub-list {
+    gap: var(--spacing-6);
+  }
+}
+
+/*-----------------------------------------------
+  ● Sub Navigation Item
+------------------------------------------------*/
+.header__nav-sub-item {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+/*-----------------------------------------------
+  ● Sub Navigation Link
+------------------------------------------------*/
+.header__nav-sub-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+  font-family: var(--font-body-family);
+  color: var(--semantic-on-surface);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity var(--duration-medium) var(--easing-standard),
+              background-color var(--duration-medium) var(--easing-standard),
+              color var(--duration-medium) var(--easing-standard);
+}
+
+@media screen and (max-width: 1024px) {
+  .header__nav-sub-link {
+    width: 24px;
+    height: 24px;
+    color: var(--primitive-brand-500);
+  }
+}
+
+.header__nav-sub-link.btn--primary {
+  min-height: 50px;
+  padding: 12px 16px;
+  border-radius: var(--radius-full);
+  background-color: var(--semantic-brand) !important;
+  color: #fff !important;
+}
+
+.header__nav-sub-link.btn--primary .header__nav-sub-link-text {
+  color: #fff !important;
+}
+
+.inverted .header__nav-sub-link.btn--primary,
+body[data-header-theme="inverted"] .header__nav-sub-link.btn--primary {
+  background-color: var(--primitive-brand-secondary-500) !important;
+  color: var(--semantic-brand) !important;
+}
+
+.inverted .header__nav-sub-link.btn--primary .header__nav-sub-link-text,
+body[data-header-theme="inverted"] .header__nav-sub-link.btn--primary .header__nav-sub-link-text {
+  color: var(--semantic-brand) !important;
+}
+
+.header__nav-sub-link:hover,
+.header__nav-sub-link:focus {
+  opacity: var(--opacity-hover);
+}
+
+@media screen and (min-width: 1025px) {
+  .header__nav-sub-link {
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+}
+
+/*-----------------------------------------------
+  ● Link Icon (모바일에서만 표시)
+------------------------------------------------*/
+.header__nav-sub-link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 32px;
+  height: 32px;
+  line-height: 0;
+}
+
+@media screen and (max-width: 1024px) {
+  .header__nav-sub-link-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .header__nav-sub-link-icon {
+    display: none;
+  }
+}
+
+/*-----------------------------------------------
+  ● Link Text (데스크탑에서만 표시)
+------------------------------------------------*/
+.header__nav-sub-link-text {
+  display: none;
+  font-family: var(--font-body-family);
+  font-size: var(--nav-sub-link-font-size);
+  font-weight: var(--nav-sub-link-font-weight);
+  line-height: var(--nav-sub-link-line-height);
+  letter-spacing: var(--nav-sub-link-letter-spacing);
+  white-space: nowrap;
+  color: var(--primitive-brand-500);
+  transition: color var(--duration-medium) var(--easing-standard);
+}
+
+@media screen and (max-width: 1024px) {
+  .header__nav-sub-link-text {
+    display: none !important;
+  }
+}
+
+/* Inverted: sub link text = brand secondary */
+.inverted .header__nav-sub-link-text,
+body[data-header-theme="inverted"] .header__nav-sub-link-text {
+  color: var(--primitive-brand-secondary-500);
+}
+
+@media screen and (min-width: 1025px) {
+  .header__nav-sub-link-text {
+    display: block;
+  }
+}
+
+/*-----------------------------------------------
+  ● Header Icon
+------------------------------------------------*/
+.header__icon {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media screen and (max-width: 1024px) {
+  .header__icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Inverted: mobile icon color */
+.inverted .header__nav-sub-link,
+body[data-header-theme="inverted"] .header__nav-sub-link {
+  color: var(--primitive-brand-secondary-500);
+}
+
+/*-----------------------------------------------
+  ● Cart Count Badge
+------------------------------------------------*/
+.header__cart-count {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: var(--font-size-caption-s);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  color: var(--semantic-on-surface-inverse);
+  background-color: transparent;
+}
+
+@media screen and (max-width: 1024px) {
+  .header__cart-count.is-empty {
+    display: none;
+  }
+
+  .header__cart-count.has-items {
+    background-color: var(--semantic-on-surface);
+    overflow: hidden;
+    text-indent: -9999px;
+    min-width: unset;
+    width: 8px;
+    height: 4px;
+    padding: 0;
+    border-radius: 0;
+    right: 50%;
+    top: 50%;
+    transform: translate(50%, calc(-50% + 2px));
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .header__cart-count {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .header__cart-count {
+    position: static;
+    min-width: 14px;
+    height: 14px;
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    font-weight: var(--font-weight-medium);
+    color: var(--semantic-on-surface-inverse);
+    background-color: var(--primitive-brand-500);
+    transition: background-color var(--duration-medium) var(--easing-standard),
+                color var(--duration-medium) var(--easing-standard);
+  }
+
+  .inverted .header__cart-count,
+  body[data-header-theme="inverted"] .header__cart-count {
+    background-color: var(--primitive-brand-secondary-500);
+    color: var(--primitive-brand-500);
+  }
+}
+
+/* Modifier: Hidden */
+.header__cart-count--hidden {
+  display: none;
+}
+
+/* 데스크탑에서 텍스트 모드일 때 카운트 배지 위치 조정 */
+@media screen and (min-width: 1025px) {
+  .header__nav-sub-link--cart .header__cart-count {
+    margin-left: var(--spacing-1);
+  }
+
+  .header__nav-sub-link--cart .header__nav-sub-link-text {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+  }
+}
+
+/*-----------------------------------------------
+  ● Drawer
+------------------------------------------------*/
+.header__drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  display: flex;
+  justify-content: flex-end;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--duration-medium) var(--easing-standard),
+              visibility var(--duration-medium) var(--easing-standard);
+}
+
+/* Drawer Active State */
+.header__drawer[aria-hidden="false"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.header__drawer[aria-hidden="false"] .header__drawer-panel {
+  transform: translateX(0);
+}
+
+/*-----------------------------------------------
+  ● Drawer Overlay
+------------------------------------------------*/
+.header__drawer-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--overlay-dim);
+  cursor: pointer;
+}
+
+/*-----------------------------------------------
+  ● Drawer Panel
+------------------------------------------------*/
+.header__drawer-panel {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--semantic-bg-default);
+  transform: translateX(100%);
+  transition: transform var(--duration-medium) var(--easing-elegant);
+  overflow: hidden;
+}
+
+@media screen and (min-width: 750px) {
+  .header__drawer-panel {
+    max-width: 560px;
+  }
+}
+
+/*-----------------------------------------------
+  ● Drawer Header
+------------------------------------------------*/
+.header__drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-5);
+  border-bottom: 1px solid var(--semantic-border-default);
+}
+
+/*-----------------------------------------------
+  ● Drawer Title
+------------------------------------------------*/
+.header__drawer-title {
+  margin: 0;
+  font-family: var(--font-body-family);
+  font-size: var(--font-size-heading-l);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-heading-l);
+  letter-spacing: var(--letter-spacing-heading-l);
+  color: var(--semantic-on-surface);
+}
+
+@media screen and (min-width: 750px) {
+  .header__drawer-title {
+    font-size: var(--font-size-heading-xl);
+    line-height: var(--line-height-heading-xl);
+    letter-spacing: var(--letter-spacing-heading-xl);
+  }
+}
+
+/*-----------------------------------------------
+  ● Drawer Close Button
+------------------------------------------------*/
+.header__drawer-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--semantic-on-surface);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--duration-short) var(--easing-standard);
+}
+
+.header__drawer-close:hover,
+.header__drawer-close:focus-visible {
+  color: var(--semantic-on-surface-accent);
+  outline: none;
+}
+
+/*-----------------------------------------------
+  ● Drawer Content
+------------------------------------------------*/
+.header__drawer-content {
+  flex: 1;
+  padding: var(--spacing-5);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/*-----------------------------------------------
+  ● Search Form (in Drawer)
+------------------------------------------------*/
+.header__search-form {
+  width: 100%;
+}
+
+.header__search-fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.header__search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.header__search-input {
+  flex: 1;
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-14) var(--spacing-3) var(--spacing-4);
+  font-family: var(--font-body-family);
+  font-size: var(--font-size-heading-m);
+  line-height: var(--line-height-heading-m);
+  letter-spacing: var(--letter-spacing-heading-m);
+  color: var(--input-on);
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-none);
+  transition: border-color var(--duration-short) var(--easing-standard);
+}
+
+.header__search-input:focus {
+  outline: none;
+  border-color: var(--input-border-focus);
+}
+
+.header__search-input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.header__search-submit {
+  position: absolute;
+  right: var(--spacing-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  color: var(--btn-primary-on);
+  background-color: var(--btn-primary-bg);
+  border: none;
+  border-radius: var(--radius-none);
+  cursor: pointer;
+  transition: background-color var(--duration-short) var(--easing-standard);
+}
+
+.header__search-submit:hover,
+.header__search-submit:focus-visible {
+  background-color: var(--btn-primary-bg-hover);
+  outline: none;
+}
+
+.header__search-submit .header__icon {
+  stroke: currentColor;
+}
+
+/*-----------------------------------------------
+  ● Body Lock (드로어 열릴 때)
+------------------------------------------------*/
+body.drawer-open {
+  overflow: hidden;
+}

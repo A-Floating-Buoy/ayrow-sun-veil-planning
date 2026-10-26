@@ -1,0 +1,95 @@
+<!--@css(/css/components/nav-mobile.css)-->
+
+<div class="header-drawer-overlay" aria-hidden="true"></div>
+
+<aside id="mobile-drawer"
+       class="header-drawer"
+       role="dialog"
+       aria-label="메뉴"
+       aria-modal="true"
+       aria-hidden="true"
+       data-drawer-state="closed"
+       data-current-depth="1">
+  <div class="header-drawer__header">
+    <button type="button" class="header-drawer__close-btn" aria-label="메뉴 닫기">
+      <span class="header-drawer__close-icon" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="header-drawer__body">
+    <div class="header-drawer__panel"
+         data-panel-level="1"
+         data-panel-id="main"
+         aria-label="메인 메뉴">
+      <div class="header-drawer__content">
+        <nav class="header-drawer__nav header-drawer__nav--primary" aria-label="주요 메뉴">
+          <ul class="header-drawer__list header-drawer__list--primary" role="list">
+            <li class="header-drawer__item">
+              <a href="/product/detail.html?product_no=16" class="header-drawer__link">
+                <span class="header-drawer__link-text">
+                  <span class="header-drawer__badge">New</span>
+                  Bio Elixir
+                </span>
+              </a>
+            </li>
+            <li class="header-drawer__item">
+              <a href="/product/detail.html?product_no=12" class="header-drawer__link">
+                <span class="header-drawer__link-text">Sun Veil</span>
+              </a>
+            </li>
+            <li class="header-drawer__item">
+              <a href="/reverse-ag-code/index.html" class="header-drawer__link">
+                <span class="header-drawer__link-text">Reverse AG Code™</span>
+              </a>
+            </li>
+            <li class="header-drawer__item">
+              <a href="/about/" class="header-drawer__link">
+                <span class="header-drawer__link-text">Me & My AYROW</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="header-drawer__divider" aria-hidden="true"></div>
+
+        <nav class="header-drawer__nav header-drawer__nav--secondary" aria-label="회원 메뉴">
+          <ul class="header-drawer__list header-drawer__list--secondary" role="list" module="Layout_statelogoff">
+            <li class="header-drawer__item">
+              <a href="/member/login.html" class="header-drawer__link header-drawer__link--secondary">
+                <span class="header-drawer__link-text">로그인</span>
+              </a>
+            </li>
+            <li class="header-drawer__item">
+              <a href="/member/join.html" class="header-drawer__link header-drawer__link--secondary">
+                <span class="header-drawer__link-text">회원가입</span>
+              </a>
+            </li>
+            <li class="header-drawer__item">
+              <a href="/myshop/order/list.html" class="header-drawer__link header-drawer__link--secondary">
+                <span class="header-drawer__link-text">주문내역</span>
+              </a>
+            </li>
+          </ul>
+
+          <ul class="header-drawer__list header-drawer__list--secondary" role="list" module="Layout_stateLogon">
+            <li class="header-drawer__item">
+              <a href="/myshop/index.html" class="header-drawer__link header-drawer__link--secondary">
+                <span class="header-drawer__link-text">마이페이지</span>
+              </a>
+            </li>
+            <li class="header-drawer__item">
+              <a href="/myshop/order/list.html" class="header-drawer__link header-drawer__link--secondary">
+                <span class="header-drawer__link-text">주문내역</span>
+              </a>
+            </li>
+            <li class="header-drawer__item">
+              <a href="{$action_logout}" class="header-drawer__link header-drawer__link--secondary">
+                <span class="header-drawer__link-text">로그아웃</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</aside>

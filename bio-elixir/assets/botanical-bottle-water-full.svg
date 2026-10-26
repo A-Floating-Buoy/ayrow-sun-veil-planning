@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="161" height="558" viewBox="0 0 161 558" preserveAspectRatio="none">
+  <!-- D안 정제수 레이어(크림 틴트) — 용기 전체 좌표. 어깨 안쪽(botanical-bottle.svg 49번째 흰 면) + 몸통 안쪽(2번째 흰 면)
+       → 액체가 뚜껑 칼라 바로 아래(y≈131)까지 찬다.
+       2026-10-22: 처음 차오를 때부터 절제된 그라디언트 — 세로(바닥 살짝 진하게) + 용기 모양을 따르는 원통 음영 · 하이라이트,
+       뒤에 부어지는 추출물 레이어(pdp-elixir-proto.css .pdp-botanical__bottle-blend::before)와 같은 음영 -->
+  <defs>
+    <path id="liquid" d="M132.561 130.757L132.814 130.81C133.196 131.553 134.329 133.371 135.118 133.491C155.377 136.564 153.752 145.817 153.618 162.708C111.547 163.024 69.4738 163.091 27.4014 162.908C20.6789 162.686 13.6063 162.737 6.86983 162.714C6.84578 150.354 4.69095 137.728 20.6242 134.51C24.3662 133.754 25.4587 134.071 27.9625 131.061C30.6796 130.837 36.0345 131.369 38.9517 131.534C44.5794 131.85 50.2137 132.035 55.85 132.088C82.2806 132.338 106.189 132.452 132.561 130.757Z M5.08281 164.184C10.4961 163.772 20.5595 164.181 26.4328 164.234L64.8423 164.399L118.831 164.304C130.624 164.212 142.423 164.062 154.215 164.142C156.57 164.159 158.753 165.096 158.744 167.794C158.716 176.093 158.723 184.393 158.719 192.692L158.718 242.55L158.721 394.499L158.718 470.677L158.741 492.323C158.761 512.541 158.269 528.085 143.434 543.561C140.368 546.377 137.187 548.841 133.4 550.622C130.169 552.141 126.678 553.123 123.176 553.778C103.459 557.473 48.1166 558.278 29.8928 551.6C19.5154 547.799 11.6741 538.878 7.11683 529.024C3.75217 521.749 2.26637 514.084 1.87502 506.113C1.22373 492.853 1.75163 479.315 1.75793 466.032L1.75879 391.087L1.73618 173.208C1.75278 169.075 0.703275 165.608 5.08281 164.184Z"/>
+    <linearGradient id="depth" gradientUnits="userSpaceOnUse" x1="0" y1="131" x2="0" y2="558">
+      <stop offset="0" stop-color="#F7F1A0" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#F2E890" stop-opacity="0.68"/>
+    </linearGradient>
+    <!-- 원통 입체감 — 추출물 레이어(pdp-elixir-proto.css .pdp-botanical__bottle-blend::after)와 같은 타원 · 같은 위치.
+         액체 영역 y 131–558(높이 427) 기준: 음영 = 중심 (50%, 40%) · 반지름 58% × 62%, 70%까지 투명 → 양옆 · 둥근 바닥 쪽 진하게
+         하이라이트 = 중심 (32%, 40%) · 반지름 16% × 42% — 위아래로 사라져 바닥 곡선까지 내려가지 않는다 -->
+    <radialGradient id="shade" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="translate(80.5 301.8) scale(93.4 264.7)">
+      <stop offset="0.7" stop-color="#96691A" stop-opacity="0"/>
+      <stop offset="1" stop-color="#96691A" stop-opacity="0.14"/>
+    </radialGradient>
+    <radialGradient id="highlight" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="translate(51.5 301.8) scale(25.8 179.3)">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <use href="#liquid" fill="url(#depth)"/>
+  <use href="#liquid" fill="url(#shade)"/>
+  <use href="#liquid" fill="url(#highlight)"/>
+</svg>

@@ -32,8 +32,8 @@
 <!-- Framework: .pdp / .pdp--elixir  ·  styles: /css/module/product/pdp.css + pdp-elixir.css  ·  behaviour: /js/module/product/pdp.js + pdp-elixir.js  ·  CSS/JS 수정 후 ?ver= 값을 올려 캐시 갱신 -->
 <!-- Images: bio-elixir/assets/* → 관리자 ../assets/ 업로드 · HTML에는 CDN 절대경로(../assets/...)로 적는다 — 상대경로(/web/...)는 카페24가 모바일용 사본(NNEditor)으로 바꾸며 SVG가 404가 됨(Sun Veil과 같은 방식) · CSS mask는 CDN이 CORS를 막아 data URI로 넣는다 -->
 <link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp.css?ver=20261013000024">
-<link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp-elixir.css?ver=20261020000070">
-<link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp-elixir-proto.css?ver=20261020000077">
+<link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp-elixir.css?ver=20261021000001">
+<link rel="stylesheet" href="../../../ayrow-cafe24-skin-2026/css/module/product/pdp-elixir-proto.css?ver=20261026000001">
 <div class="pdp pdp--elixir" data-pdp itemscope itemtype="https://schema.org/Product">
   <h1 class="visually-hidden" itemprop="name">에이로우 바이오 엘릭서</h1>
   <p class="visually-hidden" itemprop="description">에이로우 바이오 엘릭서는 피뿌리풀수 74%를 베이스로 설계해 쉽게 뿌리고, 얇게 쌓고, 필요한 순간 다시 레이어링하는 스킨 롱제비티 컨센트레이트입니다.</p>
@@ -45,7 +45,7 @@
     <div class="pdp-elixir-hero__content" data-scroll-reveal>
       <p class="pdp-elixir-hero__lead sm--body-l body-mega">피부를 위한 시간을 다시 설계하는<br>바이오 컨센트레이트</p>
       <p class="pdp__eyebrow">Skin Longevity Concentrate</p>
-      <h2 class="pdp-elixir-hero__title display">BIO ELIXIR</h2>
+      <h2 class="pdp-elixir-hero__title type-display">BIO ELIXIR™</h2>
       <a class="pdp-elixir-hero__link body-xl" href="#pdp-elixir-clinical">피부 변화 확인하기 <span aria-hidden="true">↓</span></a>
     </div>
   </section>
@@ -60,12 +60,12 @@
           <img class="pdp-concentrate__layer pdp-concentrate__layer--front" src="../assets/concentrate-0275.jpg" alt="바이오 엘릭서 제품 이미지" width="1300" height="1950" loading="lazy" itemprop="image">
         </figure>
         <div class="pdp-concentrate__copy" data-scroll-reveal>
-          <p class="pdp__eyebrow">LAYERABLE Skin Longevity Concentrate</p>
+          <p class="pdp__eyebrow pdp-concentrate__eyebrow">Layerable Skin Longevity Concentrate</p>
           <h2 class="pdp-concentrate__title">
             <span class="pdp-concentrate__title-kicker heading-xl">A New Way to</span>
             <span class="pdp-concentrate__title-swap">
               <s class="pdp-concentrate__title-old" aria-hidden="true">MIST</s>
-              <span class="pdp-concentrate__title-main display">CONCENTRATE</span>
+              <span class="pdp-concentrate__title-main type-display">CONCENTRATE</span>
             </span>
           </h2>
           <p class="pdp-concentrate__body sm--body-m body-l">피뿌리풀을 베이스로 한 고기능 포뮬러를<br class="sm--hide"> 쉽게 뿌리고, 얇게 쌓고, 필요한 순간 다시 레이어링합니다.</p>
@@ -334,7 +334,7 @@
         </figure>
         <!-- 병 애니메이션 순서에 맞춰 등장: 영문 문구 · 74 + 4 → 74% 피뿌리풀수(정제수가 찬 뒤) → 4% 피뿌리풀추출물 + 각주(추출물이 부어진 뒤) -->
         <div class="pdp-botanical__stats">
-          <p class="pdp-botanical__stats-kicker pdp__eyebrow">THE FORMULA BEGINS WITH THE BOTANICAL PLANT.</p>
+          <p class="pdp-botanical__stats-kicker pdp__eyebrow">THE FORMULA BEGINS WITH THE BOTANICAL PLANT</p>
           <p class="pdp-botanical__stats-title">74 + 4</p>
           <dl class="pdp-botanical__stats-list">
             <div class="pdp-botanical__stat pdp-botanical__stat--water">
@@ -370,7 +370,7 @@
   <section class="pdp__section pdp__section--contained pdp-ltve" data-pdp-section="ltve">
     <div class="container container--lg">
       <header class="pdp__head" data-scroll-reveal>
-        <p class="pdp__eyebrow">Low-Temperature Vacuum Extraction</p>
+        <p class="pdp__eyebrow">Low Temperature Vacuum Extraction</p>
         <h2 class="pdp__head-title pdp-elixir__title sm--heading-xxl heading-xxxl">추출물을 넘어,<br>식물이 품은 수분까지.</h2>
         <p class="pdp__head-lead body-l">AYROW LTVE™는 저온·진공 환경에서<br class="sm--hide"> 피뿌리풀의 고유 수분과 유래 성분을 함께 얻는 추출 방식입니다.</p>
       </header>
@@ -404,13 +404,17 @@
   </section>
 
   <!-- 7. Reverse AG Code™ — Harmony Ratio -->
-  <section class="pdp__section pdp__section--full pdp-harmony" data-pdp-section="harmony" data-pdp-nav-title="어떤 성분이 들어있나요?">
+  <section class="pdp__section pdp__section--full pdp-harmony" data-pdp-section="harmony" data-pdp-nav-title="어떤 성분으로 설계했나요?">
     <div class="pdp-harmony__stage">
       <div class="pdp-harmony__intro" data-scroll-reveal>
-        <p class="pdp__eyebrow">POWERED BY REVERSE AG CODE™</p>
+        <p class="pdp__eyebrow">Powered by Reverse AG Code™</p>
         <h2 class="pdp-elixir__title sm--heading-xxl heading-xxxl">세 가지 활성 성분을<br>Harmony Ratio로.</h2>
         <p class="pdp-harmony__desc sm--body-m body-l">장수과학에서 영감을 받은 세 가지 성분을 바탕으로 피부 컨디션을 체계적으로 관리하도록 설계한 <strong>AYROW의 독자 Science Platform.</strong></p>
-        <p class="pdp-harmony__hint sm--body-m body-l">공에 마우스를 올리거나 터치하면<br>성분의 역할을 확인할 수 있습니다.</p>
+        <div class="pdp-harmony__patent">
+          <p class="pdp-harmony__patent-no body-m">특허 제10-2966324호</p>
+          <a class="pdp-harmony__more pdp-link body-m" href="https://www.ayrow.co/reverse-ag-code/index.html">Reverse AG Code™ 더 알아보기 <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="pdp-harmony__hint sm--body-s body-m">공에 마우스를 올리거나 터치하면<br>성분의 역할을 확인할 수 있습니다.</p>
       </div>
       <div class="pdp-harmony__canvas" data-pdp-hotspots>
         <div class="pdp-harmony__canvas-inner">
@@ -508,7 +512,7 @@
     <div class="container container--lg">
       <header class="pdp__head pdp-ritual__head" data-scroll-reveal>
         <p class="pdp__eyebrow">From Routine to Ritual</p>
-        <h2 class="pdp__head-title pdp-elixir__title sm--heading-xxl heading-xxxl">아침저녁 두 번의 스킨케어에서,<br>하루종일 이어지는 리추얼로.</h2>
+        <h2 class="pdp__head-title pdp-elixir__title sm--heading-xxl heading-xxxl">아침·저녁 두 번의 루틴에서,<br>하루 종일 이어지는 리추얼로</h2>
         <p class="pdp-ritual__brand heading-xl">Whereable Beauty™</p>
       </header>
       <!-- 데스크톱: 순서 고정, 선택한 장면(.is-active)만 제자리에서 넓어진다 · 모바일: 가로 스와이프
@@ -556,7 +560,11 @@
           <button class="pdp-ritual__dot" type="button" data-pdp-ritual-dot aria-label="ANYWHERE TRAVEL"></button>
         </div>
       </div>
-      <p class="pdp-ritual__closing sm--body-m body-l" data-scroll-reveal>어디서나 이어지는 스킨 롱제비티<br><strong>Skin Longevity, Wherever You Are.</strong></p>
+      <p class="pdp-ritual__closing" data-pdp-slogan>
+        <span class="pdp-ritual__closing-line pdp-ritual__closing-lead sm--body-l heading-m">어디서나 이어지는</span>
+        <strong class="pdp-ritual__closing-line pdp-ritual__closing-main sm--heading-xl heading-xxl">스킨 롱제비티</strong>
+        <span class="pdp-ritual__closing-line pdp-ritual__closing-en sm--body-m body-l">Skin Longevity, Wherever You Are.</span>
+      </p>
     </div>
   </section>
 
@@ -677,8 +685,9 @@
           </h3>
           <div class="pdp-faq__panel" data-pdp-faq-panel hidden>
             <div class="pdp-faq__answer body-m">
-              <p class="body-m"><strong>민감성 피부 성인 남녀를 대상으로 한 일차자극 시험에서 피부자극지수 0.00, 비(무)자극성으로 판정되었습니다.</strong></p>
-              <p class="body-m">다만 피부 컨디션에는 개인차가 있으므로 유난히 예민한 날에는 작은 부위에 먼저 사용해 보세요.</p>
+              <p class="body-m">네, 민감성 피부도 사용하실 수 있습니다.</p>
+              <p class="body-m"><strong>민감성 피부를 가진 성인 남녀 31명을 대상으로 한 피부 일차자극 시험에서 피부자극지수 0.00으로 비(무)자극성 판정을 받았으며, 민감성 피부에 사용 적합한 것으로 평가되었습니다.</strong></p>
+              <p class="body-m">다만 피부 컨디션에는 개인차가 있으므로, 유난히 예민한 날에는 작은 부위에 먼저 사용해 보시는 것을 권장합니다.</p>
             </div>
           </div>
         </article>
@@ -720,7 +729,7 @@
           <div class="pdp-faq__panel" data-pdp-faq-panel hidden>
             <div class="pdp-faq__answer body-m">
               <p class="body-m"><strong>Reverse AG Code™는 장수과학(Longevity Science)에서 영감을 받아 설계한 AYROW의 독자적인 Science Platform입니다.</strong></p>
-              <p class="body-m">NMN, Resveratrol, Pterostilbene을 비롯한 성분 연구와 자체 기술을 바탕으로 하며,<br class="sm--hide"> 자세한 연구 배경은 Reverse AG Code™ 페이지에서 확인하실 수 있습니다.</p>
+              <p class="body-m">NMN, Resveratrol, Pterostilbene을 비롯한 성분 연구와 자체 기술을 바탕으로 하며,<br class="sm--hide"> 자세한 연구 배경은 <a class="pdp-link" href="https://www.ayrow.co/reverse-ag-code/index.html">Reverse AG Code™ 페이지</a>에서 확인하실 수 있습니다.</p>
             </div>
           </div>
         </article>
@@ -728,10 +737,11 @@
     </div>
   </section>
 
+
 </div>
 <script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp.js?ver=20261013000024"></script>
-<script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp-elixir.js?ver=20261020000070"></script>
-<script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp-elixir-proto.js?ver=20261020000077"></script>
+<script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp-elixir.js?ver=20261021000001"></script>
+<script src="../../../ayrow-cafe24-skin-2026/js/module/product/pdp-elixir-proto.js?ver=20261026000001"></script>
 
   <script>/* 미리보기 전용: style 속성 CSS 변수 속 상대경로 url()을 문서 기준 절대 URL로 (변수를 쓰는 스타일시트 기준으로 풀리는 것 방지) */
   document.querySelectorAll('[style*="url(\'../assets/"]').forEach(function (el) {
