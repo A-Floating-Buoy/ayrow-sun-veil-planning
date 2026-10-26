@@ -3,19 +3,28 @@
  * Product-specific behaviour layered on top of the shared `.pdp` framework (pdp.js).
  * pdp.js already handles scroll reveal · videos · FAQ accordion; this file adds:
  *
- *   [data-pdp-tabs]       clinical timepoint tabs (NOW · 24H · 4 WEEKS)
- *   [data-pdp-results]    result cards → matching visual (chart / before·after)
- *   [data-pdp-compare]    draggable before/after comparison
- *   [data-pdp-hotspots]   ingredient spheres with hover/tap popups
- *   [data-pdp-steps]      usage steps without a video (hover / click to highlight)
- *   [data-pdp-ritual]     daily ritual scenes (active widens in place · swipe on mobile · optional autoplay)
+ *   .pdp-elixir-hero          문구 흐림(스크롤) · 반복 영상(loop)
  *   .pdp-concentrate__title-swap  MIST → CONCENTRATE crossfade driven by scroll position
+ *   [data-pdp-timepoints]     임상 시점 탭(NOW · 24H · 4 WEEKS) — 1회 자동 재생 · 모바일 가로 슬라이더
+ *   svg.pdp-chart             차트 그리기 · 화면 px 기준 글자 · 선 크기 · 통계 주석 · 24H 구분선 정렬
+ *   [data-pdp-compare]        draggable before/after comparison
+ *   [data-pdp-parallax]       STECHA 들판 패럴렉스
+ *   .pdp-botanical__bottle    병 애니메이션 — 섹션에 들어올 때마다 처음부터
+ *   .pdp-harmony--grid        Harmony 모눈 — 소개 블록 높이를 칸 단위로 · 경계선 그리기
+ *   [data-pdp-hotspots]       ingredient spheres with hover/tap popups
+ *   [data-pdp-ritual]         daily ritual scenes (active widens in place · swipe on mobile · optional autoplay)
+ *   [data-pdp-slogan]         Ritual 마무리 문구 순서 등장
+ *   [data-pdp-steps]          usage steps without a video (hover / click to highlight)
+ *
+ * 2026-10-26: 테스트안(A–D) 스크립트 pdp-elixir-proto.js를 이 파일로 합침 — 실제 상세(D안) 동작만 남김
  */
 (function (window, document) {
   'use strict';
 
   var ROOT_SELECTOR = '.pdp--elixir[data-pdp]';
   var HOVER = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)');
+  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  var MOBILE = window.matchMedia && window.matchMedia('(max-width: 767px)');
 
   function qsa(selector, scope) {
     return Array.prototype.slice.call((scope || document).querySelectorAll(selector));
@@ -25,78 +34,12 @@
     return !!(HOVER && HOVER.matches);
   }
 
-  /* ---- Tabs (roving tabindex, arrow keys) ---- */
-  function initTabs(root) {
-    qsa('[data-pdp-tabs]', root).forEach(function (group, groupIndex) {
-      if (group.__pdpTabs) return;
-      group.__pdpTabs = true;
-
-      var tabs = qsa('[role="tab"]', group);
-      var scope = group.closest('[data-pdp-section]') || root;
-      var panels = tabs.map(function (tab) {
-        return scope.querySelector('#' + tab.getAttribute('aria-controls'));
-      });
-
-      function select(index, focus) {
-        tabs.forEach(function (tab, i) {
-          var active = i === index;
-          tab.setAttribute('aria-selected', active ? 'true' : 'false');
-          tab.tabIndex = active ? 0 : -1;
-          tab.classList.toggle('is-active', active);
-          if (panels[i]) panels[i].hidden = !active;
-        });
-        if (focus) tabs[index].focus();
-      }
-
-      tabs.forEach(function (tab, index) {
-        tab.addEventListener('click', function () { select(index, false); });
-        tab.addEventListener('keydown', function (event) {
-          var next = null;
-          if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
-          if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
-          if (event.key === 'Home') next = 0;
-          if (event.key === 'End') next = tabs.length - 1;
-          if (next === null) return;
-          event.preventDefault();
-          select(next, true);
-        });
-      });
-
-      var initial = tabs.findIndex(function (tab) { return tab.getAttribute('aria-selected') === 'true'; });
-      select(initial < 0 ? 0 : initial, false);
-      group.setAttribute('data-pdp-tabs-index', String(groupIndex));
-    });
+  function reduceMotion() {
+    return !!(REDUCED && REDUCED.matches);
   }
 
-  /* ---- Result cards → visual ---- */
-  function initResults(root) {
-    qsa('[data-pdp-results]', root).forEach(function (group) {
-      if (group.__pdpResults) return;
-      group.__pdpResults = true;
-
-      var cards = qsa('[data-pdp-result]', group);
-      var visuals = qsa('[data-pdp-result-visual]', group);
-
-      function select(key) {
-        cards.forEach(function (card) {
-          var active = card.getAttribute('data-pdp-result') === key;
-          card.classList.toggle('is-active', active);
-          card.setAttribute('aria-pressed', active ? 'true' : 'false');
-        });
-        visuals.forEach(function (visual) {
-          var active = visual.getAttribute('data-pdp-result-visual') === key;
-          visual.hidden = !active;
-          visual.classList.toggle('is-active', active);
-        });
-      }
-
-      cards.forEach(function (card) {
-        card.addEventListener('click', function () { select(card.getAttribute('data-pdp-result')); });
-      });
-
-      var initial = cards.filter(function (card) { return card.classList.contains('is-active'); })[0] || cards[0];
-      if (initial) select(initial.getAttribute('data-pdp-result'));
-    });
+  function isMobile() {
+    return !!(MOBILE && MOBILE.matches);
   }
 
   /* ---- Before / after comparison ---- */
@@ -260,7 +203,7 @@
    * Autoplay pauses on hover · focus · hidden tab and stops for good once the visitor clicks or swipes. */
   function initRitual(root) {
     var SWIPE = window.matchMedia && window.matchMedia('(max-width: 1024px)');
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var reduce = reduceMotion();
 
     qsa('[data-pdp-ritual]', root).forEach(function (carousel) {
       if (carousel.__pdpRitual) return;
@@ -388,7 +331,7 @@
     root.__pdpConcentrateSwap = true;
 
     var swaps = qsa('.pdp-concentrate__title-swap', root);
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var reduce = reduceMotion();
     if (!swaps.length || reduce) return;
 
     var START = 0.85; // title top at 85% of the viewport → MIST fully visible
@@ -428,7 +371,7 @@
     root.__pdpParallax = true;
 
     var frames = qsa('[data-pdp-parallax]', root);
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var reduce = reduceMotion();
     if (!frames.length || reduce) return;
 
     var ticking = false;
@@ -441,7 +384,7 @@
         if (rect.bottom < 0 || rect.top > vh) return;
         // -1: frame just below the viewport → 0: centred → 1: frame just above it
         var progress = ((vh - rect.top) / (vh + rect.height)) * 2 - 1;
-        // 프레임에 넘겨 이미지 레이어와 프레임 안 다른 요소(D: 문구)가 같은 값을 물려받는다
+        // 프레임에 넘겨 이미지 레이어와 프레임 안 문구가 같은 값을 물려받는다
         frame.style.setProperty('--pdp-parallax', (-progress).toFixed(4));
       });
     }
@@ -463,7 +406,7 @@
     root.__pdpChartDraw = true;
 
     var charts = qsa('.pdp-chart', root);
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var reduce = reduceMotion();
 
     function draw(chart) { chart.classList.add('is-drawn'); }
 
@@ -491,7 +434,7 @@
     root.__pdpSlogan = true;
 
     var slogans = qsa('[data-pdp-slogan]', root);
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var reduce = reduceMotion();
     if (!slogans.length || reduce || !('IntersectionObserver' in window)) return;
 
     // JS가 붙은 뒤에만 숨김 상태로 시작 — 스크립트가 없으면 처음부터 보인다
@@ -532,6 +475,419 @@
     });
   }
 
+  /* ---- Clinical timepoints (NOW · 24H · 4 WEEKS) ----
+     섹션에 들어오면 한 번 자동 재생(시점마다 data-pdp-timepoints ms) 후 마지막 시점에서 멈춘다.
+     화면 밖 · 탭 비활성 · 마우스를 올린 동안은 멈추고, 탭 · 카드를 직접 만지면 끝낸다.
+     모바일(≤767px)은 근거가 아래로 쌓여 길어지므로 자동 재생 없음 · 동작 줄이기면 자동 재생 없음 */
+  function createAutoplay(options) {
+    var state = { index: 0, elapsed: 0, stopped: false, hover: false, inView: false };
+    var last = 0;
+
+    if (reduceMotion()) return { stop: function () {} };
+
+    function running() {
+      return !state.stopped && !state.hover && state.inView && !document.hidden &&
+        !(options.disableOn && options.disableOn.matches);
+    }
+
+    function tick(now) {
+      if (state.stopped) return;
+      var dt = last ? now - last : 0;
+      last = now;
+      if (running()) {
+        state.elapsed += dt;
+        if (state.elapsed >= options.duration) {
+          state.index += 1;
+          state.elapsed = 0;
+          if (state.index >= options.count) {
+            state.stopped = true;
+            return;
+          }
+          options.select(state.index);
+        }
+      }
+      window.requestAnimationFrame(tick);
+    }
+
+    if (canHover()) {
+      options.hoverTarget.addEventListener('mouseenter', function () { state.hover = true; });
+      options.hoverTarget.addEventListener('mouseleave', function () { state.hover = false; });
+    }
+
+    if ('IntersectionObserver' in window) {
+      // 화면 세로 중앙 40% 띠에 걸쳐 있으면 재생 — 요소가 화면보다 커도(모바일) 동작
+      new IntersectionObserver(function (entries) {
+        state.inView = entries[0].isIntersecting;
+      }, { rootMargin: '-30% 0px -30% 0px', threshold: 0 }).observe(options.observe);
+    } else {
+      state.inView = true;
+    }
+
+    window.requestAnimationFrame(tick);
+    return { stop: function () { state.stopped = true; } };
+  }
+
+  /* 차트 그리기: 보이는 시점 패널이 화면에 들어오거나 시점이 바뀔 때마다 선 · 점 · 값을 다시 그린다 */
+  function drawCharts(panel) {
+    if (!panel) return;
+    panel.classList.remove('is-drawn');
+    void panel.offsetWidth; // restart animation
+    panel.classList.add('is-drawn');
+  }
+
+  function initTimepoints(timepoints) {
+    if (timepoints.__pdpTimepoints) return;
+    timepoints.__pdpTimepoints = true;
+
+    var tabs = qsa('[role="tab"]', timepoints);
+    var panels = tabs.map(function (tab) {
+      return timepoints.querySelector('#' + tab.getAttribute('aria-controls'));
+    });
+    var panelsWrap = timepoints.querySelector('.pdp-timepoints__panels');
+    var strip = timepoints.querySelector('.pdp-timepoints__tabs');
+    var stuck = timepoints.querySelector('.pdp-timepoints__nav') || strip; // 모바일에서 상단에 고정되는 탭 묶음
+    var player = null;
+    var seen = false;
+
+    function select(index, focus) {
+      tabs.forEach(function (tab, i) {
+        var active = i === index;
+        tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        tab.tabIndex = active ? 0 : -1;
+        tab.classList.toggle('is-active', active);
+        if (panels[i]) panels[i].hidden = !active;
+      });
+      if (focus) tabs[index].focus();
+      if (seen) drawCharts(panels[index]);
+    }
+
+    function choose(index, focus) {
+      if (player) player.stop();
+      select(index, focus);
+    }
+
+    function selectedIndex() {
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].getAttribute('aria-selected') === 'true') return i;
+      }
+      return 0;
+    }
+
+    // 모바일: 탭 줄은 가로 슬라이더 — 넘겨서 멈춘(스냅된) 탭이 선택되고, 누른 탭은 앞으로 당겨온다
+    function scrollToTab(index) {
+      if (!strip || !isMobile()) return;
+      strip.scrollTo({ left: tabs[index].offsetLeft - tabs[0].offsetLeft, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }
+
+    // 모바일: 탭을 눌러 시점을 바꾸면 새 콘텐츠의 시작이 고정된 탭 줄 바로 아래 오도록 부드럽게 올린다
+    // (콘텐츠 시작이 이미 보이면 움직이지 않음 · 스와이프 선택에는 적용하지 않음)
+    function revealPanel(index) {
+      if (!strip || !isMobile() || !panels[index]) return;
+      // 위로 올리면 숨었던 헤더 · toc-bar가 다시 내려와 탭 줄도 내려간다 — 지금 위치가 아니라
+      // 헤더 + toc-bar가 모두 보이는 상태를 기준으로 계산해야 콘텐츠 시작이 가려지지 않는다
+      var header = parseFloat(window.getComputedStyle(document.documentElement).getPropertyValue('--offset-header')) || 0;
+      var toc = document.querySelector('[data-toc-bar]');
+      var tocHeight = toc && window.getComputedStyle(toc).display !== 'none' ? toc.offsetHeight : 0;
+      var stuckBottom = Math.max((parseFloat(window.getComputedStyle(stuck).top) || 0), header + tocHeight) + stuck.offsetHeight;
+      var target = stuckBottom + 12;
+      var top = panels[index].getBoundingClientRect().top;
+      if (top >= target - 1) return;
+      window.scrollTo({ top: window.pageYOffset + top - target, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }
+
+    if (strip) {
+      var settle = null;
+      strip.addEventListener('scroll', function () {
+        if (!isMobile()) return;
+        window.clearTimeout(settle);
+        settle = window.setTimeout(function () {
+          var nearest = 0;
+          var best = Infinity;
+          tabs.forEach(function (tab, i) {
+            var d = Math.abs(tab.offsetLeft - tabs[0].offsetLeft - strip.scrollLeft);
+            if (d < best) { best = d; nearest = i; }
+          });
+          if (nearest !== selectedIndex()) choose(nearest, false);
+        }, 120);
+      }, { passive: true });
+    }
+
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener('click', function () { choose(index, false); scrollToTab(index); revealPanel(index); });
+      tab.addEventListener('keydown', function (event) {
+        var next = null;
+        if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+        if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === 'Home') next = 0;
+        if (event.key === 'End') next = tabs.length - 1;
+        if (next === null) return;
+        event.preventDefault();
+        choose(next, true);
+        scrollToTab(next);
+        revealPanel(next);
+      });
+    });
+
+    select(0, false);
+
+    // NOW 카드 줄 높이를 변수로 — 24H 블록이 이 높이에 맞춘다.
+    // 숨은 시점은 display: none이라 NOW가 숨으면 높이가 0 — 마지막으로 보였을 때 높이를 유지한다
+    var nowRow = panels[0] && panels[0].querySelector('.pdp-timepoints__row');
+    if (nowRow && 'ResizeObserver' in window) {
+      new ResizeObserver(function () {
+        var height = nowRow.getBoundingClientRect().height;
+        if (height) panelsWrap.style.setProperty('--pdp-now-row-h', height + 'px');
+      }).observe(nowRow);
+    }
+    // 근거 카드를 만지면(슬라이더 드래그 · 스와이프) 자동 재생을 멈춘다
+    panelsWrap.addEventListener('pointerdown', function () { if (player) player.stop(); });
+
+    if ('IntersectionObserver' in window) {
+      var drawObserver = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        seen = true;
+        drawObserver.disconnect();
+        drawCharts(panels.filter(function (panel) { return !panel.hidden; })[0]);
+      }, { threshold: 0.3 });
+      drawObserver.observe(panelsWrap);
+    } else {
+      seen = true;
+      drawCharts(panels[0]);
+    }
+
+    player = createAutoplay({
+      count: tabs.length,
+      duration: Number(timepoints.getAttribute('data-pdp-timepoints')) || 7000,
+      hoverTarget: timepoints,
+      observe: panelsWrap,
+      disableOn: MOBILE,
+      select: function (index) { select(index, false); }
+    });
+  }
+
+  /* ---- 차트 수치 라벨 · 선 · 점을 화면 px 기준으로 통일 ----
+     SVG는 차트가 그려지는 배율(렌더 너비 / viewBox 너비)만큼 글자 · 선 · 점이 커지고 작아져 차트마다 달랐다.
+     배율을 되돌린 user unit으로 넣는다: 수치 라벨 14px(모바일 12px) · 선 2px · 점 지름 8px.
+     (선의 vector-effect: non-scaling-stroke는 pathLength 그리기 애니메이션과 충돌해 쓰지 않는다) */
+  function initChartValueSize(root) {
+    if (root.__pdpChartValueSize) return;
+    root.__pdpChartValueSize = true;
+
+    var charts = qsa('svg.pdp-chart', root);
+    if (!charts.length || !('ResizeObserver' in window)) return;
+
+    function fit(svg) {
+      var vb = svg.viewBox && svg.viewBox.baseVal;
+      var box = svg.getBoundingClientRect();
+      if (!vb || !vb.width || !box.width) return; // 숨은 패널(모바일 display: none)은 보일 때 다시 계산
+      // 화면에 그려지는 글자 크기를 모든 차트에서 같게: 수치 14 · 축 라벨 12 · 눈금/단위 11 (모바일 12 · 11 · 10)
+      var mobile = isMobile();
+      var target = mobile ? 12 : 14;
+      // SVG가 영역을 채우며 비율을 지키면(meet) 너비 · 높이 중 작은 쪽 배율로 그려진다(24H · NOW 쿨링)
+      var scale = Math.min(box.width / vb.width, box.height ? box.height / vb.height : Infinity);
+      var units = target / scale;
+      qsa('.pdp-chart__label', svg).forEach(function (text) {
+        text.style.fontSize = ((mobile ? 11 : 12) / scale).toFixed(2) + 'px';
+      });
+      qsa('.pdp-chart__tick', svg).forEach(function (text) {
+        text.style.fontSize = ((mobile ? 10 : 11) / scale).toFixed(2) + 'px';
+      });
+      var gap = 6 / scale; // 점과 글자 사이 화면 6px
+      var stroke = 2 / scale;
+      qsa('.pdp-chart__line', svg).forEach(function (line) {
+        line.style.strokeWidth = stroke.toFixed(3);
+      });
+      // 점: 바깥 지름 8px — 속 빈 점은 테두리(2px) 포함, 채운 점은 반지름 4px
+      qsa('.pdp-chart__dot', svg).forEach(function (dot) {
+        var open = dot.classList.contains('pdp-chart__dot--open');
+        dot.setAttribute('r', ((open ? 3 : 4) / scale).toFixed(2));
+        if (open) dot.style.strokeWidth = stroke.toFixed(3);
+      });
+      qsa('.pdp-chart__value', svg).forEach(function (text) {
+        text.style.fontSize = units.toFixed(2) + 'px';
+        // 글자가 커지거나 작아져도 점과 겹치지 않게: 바로 앞 점 기준 위(아랫선) · 아래(윗선)로 다시 놓는다
+        var dot = text.previousElementSibling;
+        if (!dot || dot.tagName.toLowerCase() !== 'circle') return;
+        if (!text.hasAttribute('data-y')) text.setAttribute('data-y', text.getAttribute('y'));
+        var cy = parseFloat(dot.getAttribute('cy'));
+        var r = parseFloat(dot.getAttribute('r')) || 0;
+        var below = parseFloat(text.getAttribute('data-y')) > cy;
+        var y = below ? cy + r + gap + units * 0.74 : cy - r - gap; // 0.74 ≈ 숫자 높이(대문자 높이) 비율
+        text.setAttribute('y', y.toFixed(1));
+      });
+    }
+
+    // 통계 주석(Ŧ · ** · * · #)의 시작을 Y축 숫자 왼쪽 끝에 맞춘다(2026-10-24 수정안 — 10-23엔 첫 눈금선 x1) —
+    //   숫자는 오른쪽 정렬이라 가장 긴 숫자(예: 0.675)의 왼쪽 끝. 맨 위 단위(°C · SAI · A.U. …)는 제외.
+    //   SVG가 비율을 지키며 가운데 놓이는 폭이 있어 CSS 패딩으로는 맞출 수 없다
+    function alignSig(svg) {
+      var box = svg.closest('.pdp-timepoints__card, .pdp-clinical__hydration-chart');
+      var sig = box && box.querySelector('.pdp-timepoints__sig');
+      var ticks = qsa('.pdp-chart__tick', svg);
+      if (!sig || ticks.length < 2) return;
+      sig.style.paddingLeft = '';
+      var unit = ticks.reduce(function (top, t) {
+        return parseFloat(t.getAttribute('y')) < parseFloat(top.getAttribute('y')) ? t : top;
+      });
+      var axisLeft = Infinity;
+      ticks.forEach(function (t) {
+        if (t !== unit) axisLeft = Math.min(axisLeft, t.getBoundingClientRect().left);
+      });
+      if (!axisLeft || axisLeft === Infinity) return; // 숨은 패널은 보일 때 다시 계산
+      var indent = axisLeft - sig.getBoundingClientRect().left;
+      if (indent >= 0) sig.style.paddingLeft = indent.toFixed(1) + 'px'; // 숫자가 길면(0.675) 카드 기본 여백보다 안쪽으로도
+    }
+
+    // 24H(2026-10-24 수정안): 왼쪽 문구의 구분선을 그래프 눈금선에 맞춘다 —
+    //   제목 묶음 아래선 = 80 눈금선, 24시간 후 개선율 아래선 = 60 눈금선.
+    //   두 열이 나란한 데스크톱에서만. 글자가 칸보다 크면(좁은 화면) 맞추지 않고 원래 간격으로 둔다
+    function alignHydration(svg) {
+      var block = svg.closest('.pdp-clinical__hydration');
+      var head = block && block.querySelector('.pdp-hydration__head');
+      var stat = block && block.querySelector('.pdp-hydration__stat');
+      var grids = qsa('.pdp-chart__grid', svg);
+      if (!head || !stat || grids.length < 2) return;
+      head.style.paddingBottom = '';
+      stat.style.paddingTop = '';
+      stat.style.paddingBottom = '';
+      var lines = grids.map(function (g) { return g.getBoundingClientRect().top; })
+        .sort(function (a, b) { return a - b; });
+      var copy = head.parentElement.getBoundingClientRect();
+      if (!lines[0] || copy.right > svg.getBoundingClientRect().left) return; // 숨김 · 위아래로 쌓인 배치
+      // 칸 높이는 위아래 여백으로 맞춘다: 제목 묶음은 위에 붙이고 아래 여백으로, 24시간 후 개선율은 칸 가운데에
+      function inner(el) {
+        var cs = getComputedStyle(el);
+        return el.offsetHeight - (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0) - (parseFloat(cs.borderBottomWidth) || 0);
+      }
+      var headTop = head.getBoundingClientRect().top + (parseFloat(getComputedStyle(head).paddingTop) || 0);
+      var headPad = lines[0] - 0.5 - headTop - inner(head); // 아래선(1px)의 가운데가 눈금선에
+      var statPad = (lines[1] - lines[0] - 1 - inner(stat)) / 2;
+      if (headPad < 8 || statPad < 8) return; // 글자 위아래 최소 8px — 모자라면(좁은 화면) 원래 간격
+      head.style.paddingBottom = headPad.toFixed(1) + 'px';
+      stat.style.paddingTop = statPad.toFixed(1) + 'px';
+      stat.style.paddingBottom = statPad.toFixed(1) + 'px';
+    }
+
+    var observer = new ResizeObserver(function (entries) {
+      entries.forEach(function (entry) {
+        fit(entry.target);
+        alignSig(entry.target);
+        alignHydration(entry.target);
+      });
+    });
+    charts.forEach(function (svg) { observer.observe(svg); });
+  }
+
+  /* ---- Hero: 문구 흐림 — 히어로 상단이 화면 위를 지난 거리(px)를 --pdp-hero-y로 넘긴다.
+     이미지는 움직이지 않는다: 와이드 화면에서는 CSS가 사진을 히어로 높이에 맞춰 통째로 보여 준다 */
+  function initHeroParallax(root) {
+    var hero = root.querySelector('.pdp-elixir-hero');
+    if (!hero || hero.__pdpHeroParallax) return;
+    hero.__pdpHeroParallax = true;
+    if (reduceMotion()) return;
+    var queued = false;
+
+    function update() {
+      queued = false;
+      var rect = hero.getBoundingClientRect();
+      hero.style.setProperty('--pdp-hero-y', Math.min(rect.height, Math.max(0, -rect.top)).toFixed(1));
+    }
+
+    function request() {
+      if (queued) return;
+      queued = true;
+      window.requestAnimationFrame(update);
+    }
+
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request);
+    update();
+  }
+
+  /* ---- Hero: 반복 영상(2026-10-26 loop로 확정) — 히어로 사진 위에 영상을 얹는다.
+     영상이 재생되기 시작할 때까지는 사진을 그대로 보여 준다(.is-hero-video가 붙으면 사진을 숨김).
+     문구 색 · 등장 순서는 [data-pdp-hero-video] 기준(CSS). 동작 줄이기 설정이면 영상 없이 사진만 */
+  var HERO_VIDEO_SRC = 'https://smvt.b-cdn.net/BIO-ELIXIR_hero_loop_4k.mp4';
+
+  function initHeroVideo(root) {
+    var hero = root.querySelector('.pdp-elixir-hero');
+    if (!hero || hero.hasAttribute('data-pdp-hero-video') || reduceMotion()) return;
+    hero.setAttribute('data-pdp-hero-video', '');
+
+    var media = document.createElement('div');
+    media.className = 'pdp-elixir-hero__media';
+    var video = document.createElement('video');
+    video.className = 'pdp-elixir-hero__bg pdp-elixir-hero__video';
+    // iOS 자동 재생: src보다 먼저 muted · playsinline
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('aria-hidden', 'true');
+    video.autoplay = true;
+    video.loop = true;
+    video.preload = 'auto';
+    video.src = HERO_VIDEO_SRC;
+    media.appendChild(video);
+
+    var picture = hero.querySelector('picture') || hero.querySelector('.pdp-elixir-hero__bg');
+    hero.insertBefore(media, picture ? picture.nextSibling : hero.firstChild);
+
+    video.addEventListener('playing', function () { hero.classList.add('is-hero-video'); });
+    // 영상을 못 띄우면 사진 버전으로 되돌린다(자동 재생 차단 시에는 사진이 그대로 보인다)
+    video.addEventListener('error', function () {
+      media.remove();
+      hero.classList.remove('is-hero-video');
+      hero.removeAttribute('data-pdp-hero-video');
+    });
+    var played = video.play();
+    if (played && played.catch) played.catch(function () {});
+  }
+
+  /* ---- Harmony 모눈 — 소개 블록 높이를 칸(--u) 단위로 올리고 행 수를 --hg-intro-rows로 넘긴다 ---- */
+  function initHarmonyGrid(section) {
+    if (section.__pdpHarmonyGrid) return;
+    section.__pdpHarmonyGrid = true;
+
+    var stage = section.querySelector('.pdp-harmony__stage');
+    var intro = section.querySelector('.pdp-harmony__intro');
+    if (!stage || !intro) return;
+
+    function snap() {
+      var u = parseFloat(window.getComputedStyle(stage).gridTemplateColumns);
+      if (!u) return;
+      intro.style.minHeight = '';
+      var rows = Math.max(1, Math.ceil(intro.offsetHeight / u - 0.01));
+      intro.style.minHeight = (rows * u) + 'px';
+      stage.style.setProperty('--hg-intro-rows', rows);
+    }
+
+    if (window.ResizeObserver) new window.ResizeObserver(snap).observe(stage);
+    window.addEventListener('resize', snap);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(snap);
+    snap();
+
+    // 진입 효과: 경계선이 그려진 뒤 박스가 차오른다(1회). 동작 줄이기 · IO 미지원이면 생략
+    if (reduceMotion() || !('IntersectionObserver' in window)) return;
+    stage.classList.add('is-drawing');
+    var io = new window.IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        stage.classList.add('is-drawn');
+        io.disconnect();
+      });
+    }, { threshold: 0.25 });
+    io.observe(stage);
+  }
+
+  /* ---- 모바일: 시점별 연구 개요(VIEW THE STUDY)는 기본 접힘 — 펼쳐 두면 시점마다 표가 길게 붙는다(데스크톱은 펼침)  ---- */
+  function initMobileStudy(root) {
+    if (root.__pdpMobileStudy || !isMobile()) return;
+    root.__pdpMobileStudy = true;
+    qsa('.pdp-study-card[open]', root).forEach(function (d) { d.removeAttribute('open'); });
+  }
+
   /* ---- Boot ---- */
   function init(root) {
     if (!root) return;
@@ -540,12 +896,16 @@
     initBotanicalReplay(root);
     initConcentrateSwap(root);
     initParallax(root);
-    initTabs(root);
-    initResults(root);
     initCompare(root);
     initHotspots(root);
     initSteps(root);
     initRitual(root);
+    initMobileStudy(root);
+    initHeroVideo(root);
+    initHeroParallax(root);
+    initChartValueSize(root);
+    qsa('.pdp-harmony--grid', root).forEach(initHarmonyGrid);
+    qsa('[data-pdp-timepoints]', root).forEach(initTimepoints);
   }
 
   function boot() {

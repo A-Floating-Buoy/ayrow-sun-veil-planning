@@ -38,7 +38,7 @@
 | 4 | 통계 주석 시작점 | 모든 그래프(NOW · 24H · 4 WEEKS)에서 Y축 숫자 왼쪽 끝에 맞춤 (`pdp-elixir.js` `alignSig`) |
 | 5 | 24H 구분선 | 제목 아래선 = 80 눈금선, 24시간 후 개선율 아래선 = 60 눈금선 (데스크톱 2열, `alignHydration`) |
 | 6 | Botanical 병 | 금빛을 한 단계 밝게 · 음영 옅게 · 색이 차오르는 시간 약 8초 → 5초 |
-| 7 | 메인 왼쪽 하단 사진 | 크기만 키움(패널 폭 48% · 최대 360px, `css/components/hero-slider.css` → `/css/components/`). 사진은 2026-10-26 보정본 `26-10-01_AYROW_0500` → `hero-elixir-bottle-600.jpg/.webp` (`02_skin/src/hero/` → 스킨 `/src/hero/`, 덮어쓰기) |
+| 7 | 메인 왼쪽 하단 사진 | 크기만 키움(패널 폭 48% · 최대 360px, `css/components/hero-slider.css` → `/css/components/`). 사진은 2026-10-26 보정본 `26-09-30_AYROW_0276_02` → `hero-elixir-bottle-600.jpg/.webp` (`?ver=2026102603` · 0500 → 0276 → 0276_02로 교체) (`02_skin/src/hero/` → 스킨 `/src/hero/`, 덮어쓰기) |
 | — | 메인 선반 슬라이드 · MORNING 장면 | 2026-10-26 보정본: `26-09-30_AYROW_0387` → `hero-elixir-shelf-2560.jpg/.webp` (스킨 `/src/hero/`) · `26-09-30_AYROW_0405` → `ritual-morning-0405.jpg` (확대는 1.28배 → 1.06배 · 가운데 기준, `pdp-elixir.css`). `26-09-30_AYROW_0276`은 사용하지 않음 |
 | — | Ritual WORK · ACTIVE · TRAVEL · 메인 플랫레이 | 2026-10-26 보정본 2차: `0420` → `ritual-work-0420.jpg` · `hero-elixir-flatlay-1440.jpg/.webp`, `0435` → `ritual-active-0435.jpg`, `0398` → `ritual-travel-0398.jpg` (0500 · 0387 · 0405도 새 보정본으로 다시 만듦) |
 
@@ -47,7 +47,7 @@
 | 파일 | 버전 | 이번에 변경 |
 | --- | --- | --- |
 | `pdp.css` | 20261013000024 | — |
-| `pdp-elixir.css` | 20261026000002 | ✓ (proto 합침) |
+| `pdp-elixir.css` | 20261026000003 | ✓ (proto 합침 · 히어로 loop · 24H 주석 간격 · 골드 #908776) |
 | `pdp.js` | 스킨이 불러옴 | — |
 | `pdp-elixir.js` | 스킨이 불러옴 | ✓ (proto 합침) |
 | `components/hero-slider.css` (메인) | 스킨이 불러옴 | ✓ |
