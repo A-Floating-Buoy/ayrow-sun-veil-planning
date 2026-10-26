@@ -19,6 +19,7 @@
    - `02_skin/css/module/product/` → `/css/module/product/`
    - `02_skin/js/module/product/` → `/js/module/product/`
    - `02_skin/product/detail.html` → `/product/` (proto JS 로드 줄 삭제)
+   - `02_skin/sections/hero-slider.html` → `/sections/` (메인 슬라이더 사진에 `?ver=20261026` — 덮어쓴 사진 캐시 갱신) · `02_skin/src/hero/` → `/src/hero/`
    - 스킨에 남아 있는 `pdp-elixir-proto.css` · `pdp-elixir-proto.js`는 새 HTML을 붙여 넣은 뒤 삭제해도 됩니다(더 이상 불러오지 않음)
    - 상단 띠(헤더) — 2026-10-21 수정안: `Bio Elixir` ™ 삭제 · NEW 배지를 제품명 앞으로 · 배지 색 크렘+블루
      - `02_skin/snippets/header-nav-main.html` · `header-mobile-drawer.html` → `/snippets/`

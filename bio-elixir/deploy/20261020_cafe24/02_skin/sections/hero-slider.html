@@ -1,0 +1,60 @@
+<!-- 카페24는 src/srcset 속성의 첫 경로에만 스킨 경로를 붙인다 → srcset에 후보를 여러 개 쓰지 말 것 -->
+<!-- 이미지를 같은 이름으로 덮어쓰면 ?ver= 값을 올린다(브라우저 · CDN 캐시 갱신) — 2026-10-26 사진 보정본 -->
+<section class="hero-slider" data-hero-slider aria-roledescription="carousel" aria-label="Bio Elixir">
+  <div class="swiper hero-slider__swiper">
+    <div class="swiper-wrapper">
+
+      <!-- 01 : 라인업 (풀블리드) + 제품명 · 텍스트 링크 (3번 슬라이드와 역할 구분: 브랜드 장면) -->
+      <div class="swiper-slide hero-slider__slide">
+        <picture class="hero-slider__media">
+          <source type="image/webp" srcset="/src/hero/hero-elixir-lineup-2560.webp?ver=20261026">
+          <img src="/src/hero/hero-elixir-lineup-2560.jpg?ver=20261026" alt="AYROW Bio Elixir 라인업" class="hero-slider__image" width="2560" height="1707" loading="eager" fetchpriority="high">
+        </picture>
+        <div class="hero__content hero-slider__overlay center">
+          <h2 class="hero__title hero-slider__name heading-xl" data-scroll-reveal data-scroll-delay="500">BIO ELIXIR<span class="hero-slider__tm">™</span></h2>
+          <a href="/product/detail.html?product_no=16" class="hero-slider__text-link body-m" aria-label="Bio Elixir 자세히 보기" data-scroll-reveal data-scroll-delay="1000">Discover <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+
+      <!-- 02 : 선반 (풀블리드) + 콘셉트 문구(PDP 2번 섹션 "A New Way to CONCENTRATE") · 텍스트 링크 -->
+      <div class="swiper-slide hero-slider__slide">
+        <picture class="hero-slider__media">
+          <source type="image/webp" srcset="/src/hero/hero-elixir-shelf-2560.webp?ver=20261026">
+          <img src="/src/hero/hero-elixir-shelf-2560.jpg?ver=20261026" alt="아크릴 선반 위의 Bio Elixir" class="hero-slider__image hero-slider__image--shelf" width="2560" height="2064" loading="lazy">
+        </picture>
+        <div class="hero__content hero-slider__overlay center">
+          <h2 class="hero__title hero-slider__name heading-xl" data-scroll-reveal data-scroll-delay="500">A New Way to <br class="sm--show">CONCENTRATE</h2>
+          <a href="/product/detail.html?product_no=16" class="hero-slider__text-link body-m" aria-label="Bio Elixir 자세히 보기" data-scroll-reveal data-scroll-delay="1000">Discover <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+
+      <!-- 03 : 2컬럼 그리드 (텍스트 + 이미지) -->
+      <div class="swiper-slide hero-slider__slide hero-slider__slide--split">
+        <div class="hero-slider__panel">
+          <div class="hero-slider__copy">
+            <!-- 카피 1안 (적용) -->
+            <p class="hero-slider__eyebrow body-s">BIO ELIXIR</p>
+            <h2 class="hero-slider__title heading-l">Skin Longevity, Wherever You Are.</h2>
+            <p class="hero-slider__desc body-m">피부의 시간을 다시 설계하는 바이오 컨센트레이트</p>
+            <a href="/product/detail.html?product_no=16" class="hero-slider__cta btn btn--secondary btn--md">DISCOVER BIO ELIXIR <span aria-hidden="true">↗</span></a>
+            <!--
+              2안 : 헤드 Skin Longevity, Wherever You Are. / 서브 어디서나 이어지는 스킨 롱제비티 / CTA DISCOVER BIO ELIXIR ↗
+              3안 : 헤드 The New Skin Longevity Ritual / 서브 피부의 시간을 다시 설계하는 바이오 컨센트레이트 / CTA DISCOVER BIO ELIXIR ↗
+              4안 : 헤드 The New Skin Longevity Ritual / 서브 피부의 시간을 다시 설계하는 바이오 컨센트레이트 / CTA DISCOVER MORE ↗
+            -->
+          </div>
+          <picture class="hero-slider__thumb">
+            <source type="image/webp" srcset="/src/hero/hero-elixir-bottle-600.webp?ver=20261026">
+            <img src="/src/hero/hero-elixir-bottle-600.jpg?ver=20261026" alt="" width="600" height="900" loading="lazy">
+          </picture>
+        </div>
+        <picture class="hero-slider__media">
+          <source type="image/webp" srcset="/src/hero/hero-elixir-flatlay-1440.webp?ver=20261026">
+          <img src="/src/hero/hero-elixir-flatlay-1440.jpg?ver=20261026" alt="데스크 위 플랫레이와 Bio Elixir" class="hero-slider__image" width="1440" height="2160" loading="lazy">
+        </picture>
+      </div>
+
+    </div>
+    <div class="swiper-pagination hero-slider__pagination"></div>
+  </div>
+</section>
