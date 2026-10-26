@@ -6,8 +6,8 @@
 ## 등록 순서
 
 1. **이미지** → 관리자 파일 업로드 `/web/src/bio-elixir/`
-   - `03_images/web/src/bio-elixir/` 안의 33개 파일 전부 (같은 이름은 덮어쓰기)
-   - 2026-10-26 새 파일: `concentrate-0500.jpg`(Concentrate 사진) · `ritual-morning-0405.jpg`(MORNING 장면)
+   - `03_images/web/src/bio-elixir/` 안의 36개 파일 전부 (같은 이름은 덮어쓰기)
+   - 2026-10-26 새 파일: `concentrate-0500.jpg`(Concentrate 사진) · `ritual-morning-0405.jpg` · `ritual-work-0420.jpg` · `ritual-active-0435.jpg` · `ritual-travel-0398.jpg`(Ritual 장면 4개)
    - 이번에 새로 생긴 파일 — 빠지면 화면이 깨집니다
      - `hero-bg-desktop.jpg`, `hero-bg-mobile.jpg` (히어로)
      - `botanical-bottle-water-creme.svg` (Botanical 병 속 정제수)
@@ -35,6 +35,7 @@
 | 6 | Botanical 병 | 금빛을 한 단계 밝게 · 음영 옅게 · 색이 차오르는 시간 약 8초 → 5초 |
 | 7 | 메인 왼쪽 하단 사진 | 크기만 키움(패널 폭 48% · 최대 360px, `css/components/hero-slider.css` → `/css/components/`). 사진은 2026-10-26 보정본 `26-10-01_AYROW_0500` → `hero-elixir-bottle-600.jpg/.webp` (`02_skin/src/hero/` → 스킨 `/src/hero/`, 덮어쓰기) |
 | — | 메인 선반 슬라이드 · MORNING 장면 | 2026-10-26 보정본: `26-09-30_AYROW_0387` → `hero-elixir-shelf-2560.jpg/.webp` (스킨 `/src/hero/`) · `26-09-30_AYROW_0405` → `ritual-morning-0405.jpg` (확대는 1.28배 → 1.06배 · 가운데 기준, `pdp-elixir-proto.css`). `26-09-30_AYROW_0276`은 사용하지 않음 |
+| — | Ritual WORK · ACTIVE · TRAVEL · 메인 플랫레이 | 2026-10-26 보정본 2차: `0420` → `ritual-work-0420.jpg` · `hero-elixir-flatlay-1440.jpg/.webp`, `0435` → `ritual-active-0435.jpg`, `0398` → `ritual-travel-0398.jpg` (0500 · 0387 · 0405도 새 보정본으로 다시 만듦) |
 
 ## 파일 버전 (HTML의 `?ver=` 값)
 

@@ -510,6 +510,9 @@ page_d = sub_once(r'viewBox="0 0 515 412"( role="img" aria-labelledby="pdp-chart
 page_d = sub_once(r'bio-elixir/concentrate-0275\.jpg', "bio-elixir/concentrate-0500.jpg", page_d)
 page_d = sub_once(r'bio-elixir/ritual-morning-wide\.png(" alt="[^"]*") width="1411" height="1950"',
                   r'bio-elixir/ritual-morning-0405.jpg\1 width="1300" height="1950"', page_d)
+# 2026-10-26 보정본 2차: WORK = 0420 · ACTIVE = 0435 · TRAVEL = 0398 (크기 그대로 1300×1950)
+for _old, _new in (("ritual-work", "ritual-work-0420"), ("ritual-active", "ritual-active-0435"), ("ritual-travel", "ritual-travel-0398")):
+    page_d = sub_once(rf'bio-elixir/{_old}\.jpg"', f'bio-elixir/{_new}.jpg"', page_d)
 
 # ---- 원본 전용 변경 — A–D에는 반영하지 않는다 (원본 HTML에서 바뀐 것을 테스트안에서만 되돌림) ----
 # (원본 문자열, 테스트안 문자열, 적용할 안)
