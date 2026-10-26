@@ -951,6 +951,10 @@
   pointer-events: none;
 }
 
+.pdp-harmony__intro a {
+  pointer-events: auto;
+}
+
 .pdp-harmony__intro .pdp__eyebrow {
   margin-bottom: var(--spacing-5) !important;
 }
@@ -2618,6 +2622,8 @@
 .pdp--elixir .pdp-clinical--sv {
   --pdp-sv-rule: color-mix(in srgb, var(--pdp-accent) 25%, transparent);
   --pdp-sv-muted: var(--semantic-on-surface-muted, var(--primitive-neutral-500, #7c7c7c));
+  /* 각주 (.pdp-timepoints__sig · .pdp-timepoints__notes · .pdp-safety__note) */
+  --pdp-sv-note: var(--primitive-neutral-400, #989898);
   --pdp-sv-surface: var(--semantic-bg-subtle, #f7f7f7);
 
   --pdp-pad-y: clamp(72px, 9vw, 120px);
@@ -2949,7 +2955,7 @@
 .pdp-timepoints__sig {
   margin: 0 !important;
   padding: 0 var(--spacing-8) var(--spacing-6);
-  color: var(--pdp-sv-muted);
+  color: var(--pdp-sv-note);
   text-align: left;
 }
 .pdp-timepoints__notes {
@@ -2957,7 +2963,7 @@
   gap: 2px;
   margin: var(--spacing-4) 0 0 !important;
   padding: 0 0 0 var(--spacing-2);
-  color: var(--pdp-sv-muted);
+  color: var(--pdp-sv-note);
   font-weight: var(--font-weight-medium, 500);
   list-style: none;
   text-align: left;
@@ -2990,7 +2996,7 @@
 .pdp-safety__note {
   margin: var(--spacing-4) 0 0 !important;
   padding-left: var(--spacing-2);
-  color: var(--pdp-sv-muted);
+  color: var(--pdp-sv-note);
   font-weight: var(--font-weight-medium, 500);
   text-align: left;
 }
