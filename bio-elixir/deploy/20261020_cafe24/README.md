@@ -47,7 +47,7 @@
 | 파일 | 버전 | 이번에 변경 |
 | --- | --- | --- |
 | `pdp.css` | 20261013000024 | — |
-| `pdp-elixir.css` | 20261026000005 | ✓ (proto 합침 · 히어로 loop + 첫 프레임 포스터 · 24H 주석 간격 · 골드 #9c9484 · 주석 삭제 · Reverse AG Code 링크 클릭) |
+| `pdp-elixir.css` | 20261026000006 | ✓ (proto 합침 · 히어로 loop + 첫 프레임 포스터 · 24H 주석 간격 · 골드 #9c9484 · 주석 삭제 · Reverse AG Code 링크 클릭) |
 | `pdp.js` | 스킨이 불러옴 | — |
 | `pdp-elixir.js` | 스킨이 불러옴 | ✓ (proto 합침) |
 | `components/hero-slider.css` (메인) | 스킨이 불러옴 | ✓ |
