@@ -804,15 +804,16 @@
     update();
   }
 
-  /* ---- Hero: 반복 영상(2026-10-26 loop로 확정) — 히어로 사진 위에 영상을 얹는다.
-     영상이 재생되기 시작할 때까지는 사진을 그대로 보여 준다(.is-hero-video가 붙으면 사진을 숨김).
-     문구 색 · 등장 순서는 [data-pdp-hero-video] 기준(CSS). 동작 줄이기 설정이면 영상 없이 사진만 */
+  /* ---- Hero: 반복 영상(2026-10-26 loop로 확정) — 히어로 포스터(영상 첫 프레임 <picture>) 위에 영상을 얹는다.
+     재생이 시작되면(.is-hero-video) 포스터를 숨긴다 — 같은 장면이라 이어진다.
+     배치 · 문구 색 · 등장 순서는 섹션의 [data-pdp-hero-video](상세 HTML) 기준(CSS). 동작 줄이기 설정이면 영상 없이 포스터만 */
   var HERO_VIDEO_SRC = 'https://smvt.b-cdn.net/BIO-ELIXIR_hero_loop_4k.mp4';
 
   function initHeroVideo(root) {
     var hero = root.querySelector('.pdp-elixir-hero');
-    if (!hero || hero.hasAttribute('data-pdp-hero-video') || reduceMotion()) return;
-    hero.setAttribute('data-pdp-hero-video', '');
+    if (!hero || hero.__pdpHeroVideo || reduceMotion()) return;
+    hero.__pdpHeroVideo = true;
+    hero.setAttribute('data-pdp-hero-video', ''); // 예전 상세 HTML(속성 없음)에서도 같은 배치로
 
     var media = document.createElement('div');
     media.className = 'pdp-elixir-hero__media';
@@ -835,11 +836,10 @@
     hero.insertBefore(media, picture ? picture.nextSibling : hero.firstChild);
 
     video.addEventListener('playing', function () { hero.classList.add('is-hero-video'); });
-    // 영상을 못 띄우면 사진 버전으로 되돌린다(자동 재생 차단 시에는 사진이 그대로 보인다)
+    // 영상을 못 띄우면 영상만 걷어 낸다 — 포스터가 정지 화면으로 남는다(자동 재생 차단 시에도 포스터)
     video.addEventListener('error', function () {
       media.remove();
       hero.classList.remove('is-hero-video');
-      hero.removeAttribute('data-pdp-hero-video');
     });
     var played = video.play();
     if (played && played.catch) played.catch(function () {});

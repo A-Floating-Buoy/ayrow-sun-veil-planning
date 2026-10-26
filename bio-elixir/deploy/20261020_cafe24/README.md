@@ -8,8 +8,8 @@
 ## 등록 순서
 
 1. **이미지** → 관리자 파일 업로드 `/web/src/bio-elixir/`
-   - `03_images/web/src/bio-elixir/` 안의 36개 파일 전부 (같은 이름은 덮어쓰기)
-   - 2026-10-26 새 파일: `concentrate-0500.jpg`(Concentrate 사진) · `ritual-morning-0405.jpg` · `ritual-work-0420.jpg` · `ritual-active-0435.jpg` · `ritual-travel-0398.jpg`(Ritual 장면 4개)
+   - `03_images/web/src/bio-elixir/` 안의 37개 파일 전부 (같은 이름은 덮어쓰기)
+   - 2026-10-26 새 파일: `concentrate-0500.jpg`(Concentrate 사진) · `ritual-morning-0405.jpg` · `ritual-work-0420.jpg` · `ritual-active-0435.jpg` · `ritual-travel-0398.jpg`(Ritual 장면 4개) · `hero-loop-poster.jpg`(히어로 포스터 = loop 영상 첫 프레임 — **빠지면 히어로가 빈 화면**)
    - 이번에 새로 생긴 파일 — 빠지면 화면이 깨집니다
      - `hero-bg-desktop.jpg`, `hero-bg-mobile.jpg` (히어로)
      - `botanical-bottle-water-creme.svg` (Botanical 병 속 정제수)
@@ -47,7 +47,7 @@
 | 파일 | 버전 | 이번에 변경 |
 | --- | --- | --- |
 | `pdp.css` | 20261013000024 | — |
-| `pdp-elixir.css` | 20261026000003 | ✓ (proto 합침 · 히어로 loop · 24H 주석 간격 · 골드 #908776) |
+| `pdp-elixir.css` | 20261026000004 | ✓ (proto 합침 · 히어로 loop + 첫 프레임 포스터 · 24H 주석 간격 · 골드 #9c9484 · 주석 삭제) |
 | `pdp.js` | 스킨이 불러옴 | — |
 | `pdp-elixir.js` | 스킨이 불러옴 | ✓ (proto 합침) |
 | `components/hero-slider.css` (메인) | 스킨이 불러옴 | ✓ |
