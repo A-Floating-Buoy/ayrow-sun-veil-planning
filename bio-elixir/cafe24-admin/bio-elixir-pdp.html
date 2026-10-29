@@ -2,7 +2,7 @@
 <!-- Framework: .pdp / .pdp--elixir  ·  styles: /css/module/product/pdp.css + pdp-elixir.css  ·  behaviour: /js/module/product/pdp.js + pdp-elixir.js  ·  CSS 수정 후 ?ver= 값을 올려 캐시 갱신 · JS는 스킨 product/detail.html이 불러온다(상세 HTML에 script를 넣으면 카페24가 이미지 CDN 주소로 바꿔 403) -->
 <!-- Images: bio-elixir/assets/* → 관리자 /web/src/bio-elixir/ 업로드 · HTML에는 CDN 절대경로(https://ecimg.cafe24img.com/pg2475b11771033004/ayrow/web/src/bio-elixir/...)로 적는다 — 상대경로(/web/...)는 카페24가 모바일용 사본(NNEditor)으로 바꾸며 SVG가 404가 됨(Sun Veil과 같은 방식) · CSS mask는 CDN이 CORS를 막아 data URI로 넣는다 -->
 <link rel="stylesheet" href="/css/module/product/pdp.css?ver=20261013000024">
-<link rel="stylesheet" href="/css/module/product/pdp-elixir.css?ver=20261028000001">
+<link rel="stylesheet" href="/css/module/product/pdp-elixir.css?ver=20261028000005">
 <div class="pdp pdp--elixir" data-pdp itemscope itemtype="https://schema.org/Product">
   <h1 class="visually-hidden" itemprop="name">에이로우 바이오 엘릭서</h1>
   <p class="visually-hidden" itemprop="description">에이로우 바이오 엘릭서는 피뿌리풀수 74%를 베이스로 설계해 쉽게 뿌리고, 얇게 쌓고, 필요한 순간 다시 레이어링하는 스킨 롱제비티 컨센트레이트입니다.</p>
@@ -345,7 +345,7 @@
   <section class="pdp__section pdp__section--full pdp-origin" data-pdp-section="origin" data-pdp-nav-title="어떤 원료에서 시작했나요?">
     <div class="container container--md">
       <header class="pdp__head pdp-origin__head" data-scroll-reveal>
-        <p class="pdp__eyebrow">Discover STECHA™</p>
+        <p class="pdp__eyebrow">Discover STECHA<span class="pdp-tm">™</span></p>
         <h2 class="pdp__head-title pdp-elixir__title sm--heading-xl heading-xxxl">척박한 땅에서 살아남은 약용 식물,<br>피뿌리풀에서 시작했습니다.</h2>
         <p class="pdp-origin__badge sm--body-m body-l">KIST 천연물 연구 배경 · AYROW 최초 사용 신규 화장품 성분명 등재</p>
       </header>
@@ -364,7 +364,7 @@
         <img class="pdp-origin__field-image pdp-origin__field-image--mobile" src="https://ecimg.cafe24img.com/pg2475b11771033004/ayrow/web/src/bio-elixir/plant-origin-field-mobile.jpg" alt="" width="1080" height="1440" loading="lazy" aria-hidden="true">
       </div>
       <figcaption class="pdp-origin__field-copy" data-scroll-reveal>
-        <p class="pdp-origin__field-name"><strong class="heading-xl">STECHA™</strong><span class="sm--body-m body-l">FROM STELLERA</span></p>
+        <p class="pdp-origin__field-name"><strong class="heading-xl">STECHA<span class="pdp-tm pdp-tm--xs">™</span></strong><span class="sm--body-m body-l">FROM STELLERA</span></p>
         <p class="sm--body-m body-l">척박한 환경에서 살아남은 몽골 약용식물,<br><em>Stellera chamaejasme.</em></p>
         <p class="sm--body-m body-l">오래전부터 피부를 돌보는 데 활용되어 온 약용식물을<br class="sm--hide"> 바이오 피부과학으로 다시 발견했습니다.</p>
       </figcaption>
@@ -376,7 +376,7 @@
     <div class="container container--lg">
       <div class="pdp-botanical__grid">
         <header class="pdp-botanical__head" data-scroll-reveal>
-          <p class="pdp__eyebrow">Botanical Base<span class="pdp-botanical__eyebrow-sep" aria-hidden="true">|</span>피뿌리풀 LTVE™</p>
+          <p class="pdp__eyebrow">Botanical Base<span class="pdp-botanical__eyebrow-sep" aria-hidden="true">|</span>피뿌리풀 LTVE<span class="pdp-tm">™</span></p>
           <h2 class="pdp-elixir__title sm--heading-xxl heading-xxxl">정제수 대신,<br>피뿌리풀로 채웠습니다.</h2>
           <p class="pdp-botanical__body sm--body-m body-l">정제수에 추출물을 한 방울 더하는 방식이 아니라,<br class="sm--hide"> 포뮬러의 시작부터 피뿌리풀로 설계했습니다.</p>
           <div class="pdp-botanical__callout">
@@ -430,7 +430,7 @@
       <header class="pdp__head" data-scroll-reveal>
         <p class="pdp__eyebrow">Low Temperature Vacuum Extraction</p>
         <h2 class="pdp__head-title pdp-elixir__title sm--heading-xxl heading-xxxl">추출물을 넘어,<br>식물이 품은 수분까지.</h2>
-        <p class="pdp__head-lead body-l">AYROW LTVE™는 저온·진공 환경에서<br class="sm--hide"> 피뿌리풀의 고유 수분과 유래 성분을 함께 얻는 추출 방식입니다.</p>
+        <p class="pdp__head-lead body-l">AYROW LTVE<span class="pdp-tm">™</span>는 저온·진공 환경에서<br class="sm--hide"> 피뿌리풀의 고유 수분과 유래 성분을 함께 얻는 추출 방식입니다.</p>
       </header>
       <ol class="pdp-ltve__steps" aria-label="LTVE™ 추출 4단계">
         <li class="pdp-ltve__step pdp-ltve__step--1" data-scroll-reveal>
@@ -451,10 +451,10 @@
         </li>
       </ol>
       <details class="pdp-disclosure pdp-ltve__more" open>
-        <summary class="pdp-disclosure__summary sm--body-m body-l">LEARN ABOUT LTVE™<span class="pdp-disclosure__icon" aria-hidden="true"></span></summary>
+        <summary class="pdp-disclosure__summary sm--body-m body-l"><span>LEARN ABOUT LTVE<span class="pdp-tm">™</span></span><span class="pdp-disclosure__icon" aria-hidden="true"></span></summary>
         <div class="pdp-disclosure__body body-m">
           <p>일반적인 가열 추출 과정에서는 열에 민감한 식물 성분이 영향을 받고, 고유의 수분도 잃어버릴 수 있습니다.</p>
-          <p>LTVE™는 압력을 낮춰 끓는점을 떨어뜨린 진공 상태에서, <span class="text-underline-mark text-underline-mark--creme">낮은 온도로 피뿌리풀의 세포수와 유래 성분을 함께</span> 얻습니다.</p>
+          <p>LTVE<span class="pdp-tm">™</span>는 압력을 낮춰 끓는점을 떨어뜨린 진공 상태에서, <span class="text-underline-mark text-underline-mark--creme">낮은 온도로 피뿌리풀의 세포수와 유래 성분을 함께</span> 얻습니다.</p>
           <p>이렇게 얻은 피뿌리풀수는 정제수를 대신해 <span class="text-underline-mark text-underline-mark--creme">포뮬러의 74%</span>를 채우는 Botanical Base가 됩니다.</p>
         </div>
       </details>
@@ -466,12 +466,12 @@
     <div class="pdp-harmony__stage">
       <div class="pdp-harmony__rules" aria-hidden="true"><span class="pdp-harmony__rule pdp-harmony__rule--h pdp-harmony__rule--intro-t" style="--i: 0;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v pdp-harmony__rule--intro-l" style="--i: 1;"></span><span class="pdp-harmony__rule pdp-harmony__rule--h pdp-harmony__rule--intro-b" style="--i: 2;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v pdp-harmony__rule--intro-r" style="--i: 3;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v" style="--at: 1; --i: 0;"></span><span class="pdp-harmony__rule pdp-harmony__rule--h" style="--at: 1; --i: 1;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v" style="--at: 3; --i: 2;"></span><span class="pdp-harmony__rule pdp-harmony__rule--h" style="--at: 3; --i: 3;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v" style="--at: 4; --i: 4;"></span><span class="pdp-harmony__rule pdp-harmony__rule--h" style="--at: 5; --i: 5;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v" style="--at: 6; --i: 6;"></span><span class="pdp-harmony__rule pdp-harmony__rule--h" style="--at: 7; --i: 7;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v" style="--at: 7; --i: 8;"></span><span class="pdp-harmony__rule pdp-harmony__rule--h" style="--at: 8; --i: 9;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v" style="--at: 8; --i: 10;"></span><span class="pdp-harmony__rule pdp-harmony__rule--h" style="--at: 9; --i: 11;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v" style="--at: 10; --i: 12;"></span><span class="pdp-harmony__rule pdp-harmony__rule--h" style="--at: 11; --i: 13;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v" style="--at: 12; --i: 14;"></span><span class="pdp-harmony__rule pdp-harmony__rule--v" style="--at: 14; --i: 15;"></span></div>
       <div class="pdp-harmony__intro" data-scroll-reveal>
-        <p class="pdp__eyebrow">Powered by Reverse AG Code<span class="pdp-tm">™</span></p>
+        <p class="pdp__eyebrow">Powered by Reverse AG Code<span class="pdp-tm pdp-tm--lg">™</span></p>
         <h2 class="pdp-elixir__title sm--heading-xxl heading-xxxl">세 가지 활성 성분을<br>Harmony Ratio로.</h2>
         <p class="pdp-harmony__desc sm--body-m body-l">장수과학에서 영감을 받은 세 가지 성분을 바탕으로 피부 컨디션을 체계적으로 관리하도록 설계한 <strong>AYROW의 독자 Science Platform.</strong></p>
         <div class="pdp-harmony__patent">
           <p class="pdp-harmony__patent-no body-m">특허 제10-2966324호</p>
-          <a class="pdp-harmony__more pdp-link body-m" href="https://www.ayrow.co/reverse-ag-code/index.html">Reverse AG Code<span class="pdp-tm">™</span> 더 알아보기 <span aria-hidden="true">→</span></a>
+          <a class="pdp-harmony__more pdp-link body-m" href="https://www.ayrow.co/reverse-ag-code/index.html">Reverse AG Code<span class="pdp-tm pdp-tm--lg">™</span> 더 알아보기 <span aria-hidden="true">→</span></a>
         </div>
         <p class="pdp-harmony__hint sm--body-s body-m">공에 마우스를 올리거나 터치하면<br>성분의 역할을 확인할 수 있습니다.</p>
       </div>
@@ -572,7 +572,7 @@
       <header class="pdp__head pdp-ritual__head" data-scroll-reveal>
         <p class="pdp__eyebrow">From Routine to Ritual</p>
         <h2 class="pdp__head-title pdp-elixir__title sm--heading-xxl heading-xxxl">아침·저녁 두 번의 루틴에서,<br>하루 종일 이어지는 리추얼로</h2>
-        <p class="pdp-ritual__brand heading-xl">Whereable Beauty<span class="pdp-tm">™</span></p>
+        <p class="pdp-ritual__brand heading-xl">Whereable Beauty<span class="pdp-tm pdp-tm--sm">™</span></p>
       </header>
       <!-- 데스크톱: 순서 고정, 선택한 장면(.is-active)만 제자리에서 넓어진다 · 모바일: 가로 스와이프
            data-pdp-ritual-autoplay(ms): 화면에 보이는 동안 자동 전환 — 속성을 지우면 꺼진다 -->
